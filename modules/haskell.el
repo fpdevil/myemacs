@@ -17,7 +17,7 @@
 (cua-mode 1)
 
 ; Set up haskell environment
-(setenv "PATH" (concat "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/sampathsingamsetty/Library/Haskell/bin"
+(setenv "PATH" (concat "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:~/Library/Haskell/bin"
     (getenv "PATH")))
 (add-to-list 'exec-path "~/Library/Haskell/bin")
 ; Make Emacs look in Cabal directory for binaries
