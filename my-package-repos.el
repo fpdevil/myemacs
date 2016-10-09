@@ -31,7 +31,7 @@
 (defvar module-dir (expand-file-name "modules" emacs-dir)
   "Personal stuff.")
 (defvar save-dir (expand-file-name "cache" emacs-dir)
-  "Common place to save Emacs save/history-files.")
+  "Common directory for automatically generated save/history/etc. files.")
 (defvar pkg-dir (expand-file-name "packages" emacs-dir)
     "Package installation directory for all emacs packages.")
 
@@ -60,6 +60,13 @@
     ;; color themes pack
     sublime-themes
 
+    ;; monpkai color theme
+    ; monokai-theme
+    ;; zenburn theme
+    zenburn-theme
+    ;; material theme
+    material-theme
+
     ;; essential
     buffer-move
 
@@ -85,16 +92,29 @@
     markdown-mode
     ;; auctex
 
+    ;; virtualenv wrapper for python
+    virtualenvwrapper
     ;; python jedi IDE
     jedi
     ;; python epc
 
     ;; flycheck
     flycheck
+
+    ;; flymake on the fly syntax check
+    flymake-easy
+    ;; flymake handler for syntax-checking Python source code using pyflakes or flake8
+    flymake-python-pyflakes
+    ;; linting for haskell
+    flymake-hlint
+
     ;; org-mode
+    org
     org-bullets
+
     ;; Yasnippets package
     yasnippet
+
     ;; git
     magit
     ;; Diminished modes are minor modes with no modeline display
@@ -105,21 +125,23 @@
     ;; haskell programming mode
     haskell-mode
     company-ghc
+    company-cabal
     shm
     haskell-snippets
     hindent
     flycheck-haskell
     ;; haskell-indentation, 2nd try
     hi2
+    ghc
+
+    ;; complete dev environment for haskell
+    intero
 
     ;; scala edevelopment with ensime
     ensime
 
     ;; incremental completion and selection narrowing framework
     helm
-
-    ;; Complete interactive development program for Haskell
-    ;intero
 
     ;; math input symbols
     xah-math-input
@@ -169,7 +191,7 @@
 ; package loading from custom el files
 ;;
 (defvar packages
-    '("haskell")
+    '("haskell-config")
     "configuration files which follow the modules/pkg-name.el format"
     )
 

@@ -1,21 +1,14 @@
 ; ~/.emacs.d/my-internals.el
 
-; (when window-system
-;   (tooltip-mode -1)
-;   (tool-bar-mode -1)
-;   (menu-bar-mode 1)
-;   (scroll-bar-mode 1))
-
-(global-set-key (kbd "<C-S-up>")     'windmove-up)
-(global-set-key (kbd "<C-S-down>")   'windmove-down)
-(global-set-key (kbd "<C-S-left>")   'windmove-left)
-(global-set-key (kbd "<C-S-right>")  'windmove-right)
 
 (global-set-key (kbd "<menu>") 'nil)
 
 ;;********************************************************
 ;; some customizations
 ;;********************************************************
+(setq user-full-name "Sampath Singamsetty"
+      user-mail-address "Singamsetty.Sampath@gmail.com")
+
 (show-paren-mode t)
 
 (recentf-mode 1)
@@ -33,21 +26,32 @@
 (put 'upcase-region 'disabled nil)
 
 
+
 ;;
 ; Saving Emacs Sessions
 ;;
 (desktop-save-mode nil)
-(setq desktop-restore-eager 10)
-(setq desktop-save t) ;; save without asking
+;(setq desktop-restore-eager 10)
+(setq desktop-save nil) ;; save without asking
 
 (defalias 'list-buffers 'ibuffer)
 
+;;
+; electric pair mode
+;;
 ; (electric-pair-mode 1)
 ; (defvar markdown-electric-pairs '((?* . ?*)) "Electric pairs for markdown-mode.")
 ; (defun markdown-add-electric-pairs ()
 ;   (setq-local electric-pair-pairs (append electric-pair-pairs markdown-electric-pairs))
 ;   (setq-local electric-pair-text-pairs electric-pair-pairs))
 ; (add-hook 'markdown-mode-hook 'markdown-add-electric-pairs)
+
+
+;;
+; disable electric indent mode to prevent auto indentation
+;;
+(when (fboundp 'electric-indent-mode) (electric-indent-mode -1))
+
 
 (global-set-key (kbd "<C-S-up>")     'windmove-up)
 (global-set-key (kbd "<C-S-down>")   'windmove-down)
@@ -108,10 +112,16 @@ This command does the inverse of `fill-region'."
 ;;
 ; colorize the output of the compilation mode.
 ;;
+; (require 'ansi-color)
+; (defun colorize-compilation-buffer ()
+;   (toggle-read-only)
+;   (ansi-color-apply-on-region (point-min) (point-max))
+
 (require 'ansi-color)
 (defun colorize-compilation-buffer ()
-  (toggle-read-only)
-  (ansi-color-apply-on-region (point-min) (point-max))
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region (point-min) (point-max))))
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 
   ;; mocha seems to output some non-standard control characters that
   ;; aren't recognized by ansi-color-apply-on-region, so we'll
@@ -148,3 +158,12 @@ This command does the inverse of `fill-region'."
 
 ;; Set the filter
 (add-hook 'rainbow-identifiers-filter-functions 'rainbow-identifiers-filter)
+
+;;
+; for python process in inferior mode run
+;;
+(defun run-python-once ()
+  (remove-hook 'python-mode-hook 'run-python-once)
+  (run-python (python-shell-parse-command)))
+
+(add-hook 'python-mode-hook 'run-python-once)
