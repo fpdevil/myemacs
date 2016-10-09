@@ -1,4 +1,4 @@
-# my emacs settings
+# My emacs settings
 
 Clone the repository
 
@@ -6,7 +6,7 @@ Clone the repository
 git clone https://github.com/singamsetty/myemacs.git .emacs.d
 ```
 
-Move the file `dotemacs` to the home folder and rename it as `.emacs`
+- Move the file `dotemacs` to the home folder and rename it as `.emacs`
 
-Main languages supported as `python3` throguh `jedi` and `haskell` through the `haskell-mode`
-Additional customization opetions through `helm`
+- Main languages supported as `python3` through `jedi` and `haskell` through the `haskell-mode`
+Additional customization options through `helm`
