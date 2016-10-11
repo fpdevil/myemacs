@@ -19,10 +19,13 @@
 
 
 ;;
+;------------------------------------------------------
 ; byte recompiling everything during bootstrap
 ;;
 ;(byte-recompile-directory (expand-file-name "~/Library/Preferences/Aquamacs Emacs/Packages/elpa") 0)
+;; uncomment below section if needed
 (byte-recompile-directory (expand-file-name "~/.emacs.d/packages/elpa") 0)
+;------------------------------------------------------
 
 
 ;;=====================================================
@@ -66,6 +69,7 @@
 
 
 ;;
+; fancy stuff
 ; for rainbow delimiters
 ;;
 (require 'rainbow-delimiters)
@@ -108,7 +112,9 @@
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
 
 
+
 ;;
+; fancy stuff
 ; for rainbow identifiers
 ;;
 (require 'rainbow-identifiers)
@@ -121,7 +127,9 @@
 (setq rainbow-identifiers-cie-l*a*b*-saturation 45)
 
 
+
 ;;
+; fancy stuff
 ; rainbow mode
 ;;
 (require 'rainbow-mode)
@@ -138,14 +146,18 @@
 ; smart parenthesis matching
 ;;
 (require 'smartparens)
-(show-smartparens-global-mode +1)
-(smartparens-global-mode 1)
+(smartparens-global-mode t)
+(show-smartparens-global-mode t)
+; (show-smartparens-global-mode +1)
+; (smartparens-global-mode 1)
 
 
 ;;
 ; syntax checking for GNU Emacs - http://www.flycheck.org/
 ;;
 (require 'flycheck)
+(with-eval-after-load 'flycheck
+  (flycheck-pos-tip-mode))
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (setq flycheck-check-syntax-automatically
   '(mode-enabled save new-line idle-change))
@@ -179,10 +191,17 @@
 
 
 ;;
+; fancy modeline
 ; powerline
 ;;
 (require 'powerline)
 (powerline-default-theme)
+
+
+;;
+; utility package to collect various Icon Fonts and propertize them within Emacs
+;;
+(require 'all-the-icons)
 
 
 ;;
@@ -269,6 +288,7 @@
 (setq flymake-log-level 3)
 ;; Hook up to autocomplete
 ; (add-to-list ’ac-sources ’ac-source-jedi-direct)
+(require 'ring)
 (require 'epc)
 (autoload 'jedi:setup "jedi" nil t)
 ;; enable python-mode
@@ -301,6 +321,9 @@
 (setq python-check-command "/usr/local/bin/pyflakes")
 (setq python-environment-directory "~/.emacs.d/.python-environments")
 
+; load jedi-core
+(require 'jedi-core)
+
 ; system path in the lisp
 ; set PATH, because we don't load .bashrc
 (setenv
@@ -315,6 +338,37 @@
 
 ; Set PYTHONPATH, because we don't load .bashrc
 (setenv "PYTHONPATH" "/usr/local/lib/python3.5/site-packages:")
+
+
+;;
+; python linting
+;;
+(require 'python-pylint)
+(load "python-pylint")
+
+
+;;
+; yapf to beautify a Python buffer
+;;
+(require 'py-yapf)
+(add-hook 'python-mode-hook 'py-yapf-enable-on-save)
+
+
+;;
+; elpy
+; Emacs Python Development Environment
+;;
+(require 'elpy)
+(elpy-enable)
+(elpy-use-ipython)
+(setq
+  elpy-rpc-backend "jedi"
+  elpy-rpc-python-command "/usr/local/bin/python3"
+  elpy-rpc-python-path "/usr/local/lib/python3.5/site-packages"
+  flycheck-python-flake8-executable "/usr/local/bin/flake8"
+  python-check-command "/usr/local/bin/pyflakes"
+  python-environment-directory "~/.emacs.d/.python-environments")
+
 
 
 ;;
@@ -368,6 +422,7 @@
 (require 'ensime)
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
+
 ;;
 ; haskell setup
 ;;
@@ -375,10 +430,26 @@
 
 
 ;;
+; Map pairs of simultaneously pressed keys to commands
+;;
+(require 'key-chord)
+(key-chord-define-global "fm" 'list-buffers)
+;(use fm instead of C-x b to list buffers)
+
+
+
+;;
+; helm
 ; Emacs incremental completion and selection narrowing framework
 ;;
 (require 'helm-config)
 (helm-mode 1)
+; listing files
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+; listing opened buffers
+(global-set-key (kbd "C-x b") 'helm-mini)
+(key-chord-define-global "fm" 'helm-mini)
+
 
 ;;
 ; Complete interactive development environment for Haskell
@@ -387,6 +458,20 @@
 ;;
 
 
+;;
+; erlang ide set-up and
+; erlang auto-completion using company distel
+;;
+
+
+
+;;
+; show flycheck/flymake errors by tooltip
+;;
+(require 'flycheck-tip)
+
+
 
 (provide 'init)
+;;;
 ;;;

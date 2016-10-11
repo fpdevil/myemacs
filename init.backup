@@ -2,6 +2,8 @@
 ;; reference
 ;; https://hristos.triantafillou.us/init.el/
 ;; http://y.tsutsumi.io/emacs-from-scratch-part-2-package-management.html
+;; https://github.com/gongzhitaao/dotemacs
+;; https://git.framasoft.org/distopico/distopico-dotemacs
 
 ;; utf-8 encoding
 (set-language-environment 'utf-8)

@@ -43,37 +43,40 @@
 ;;
 (package-initialize)
 
+;;=====================================================
 ;;
 ; packages to be installed
 ; defvar is the correct way to declare global variables
 ; setq is supposed to be use just to set variables and
 ; not create them.
 ;;
+;;=====================================================
 (defvar required-packages
   '(;; appearance
     ;; powerline smart mode
     powerline
-
     ;; fancy vim airline themes
     airline-themes
-
     ;; color themes pack
     sublime-themes
-
+    ;; dark theme
+    darkokai-theme
+    ;; package for various icons
+    all-the-icons
     ;; monpkai color theme
     ; monokai-theme
     ;; zenburn theme
     zenburn-theme
     ;; material theme
     material-theme
-
     ;; essential
     buffer-move
-
     ;; cmopany autocompletion modes
     company
     company-jedi
-
+    ;; distel-completion is needed for company-distel
+    distel-completion-lib
+    company-distel
     ;; smex
     ;; colorful modes
     rainbow-delimiters
@@ -83,45 +86,47 @@
     auto-complete
     ;; IDO mode
     ido
-
     ;; utilities
     ;; parenthesis management
     smartparens
-
     ;; language specific
     markdown-mode
     ;; auctex
-
     ;; virtualenv wrapper for python
     virtualenvwrapper
     ;; python jedi IDE
     jedi
-    ;; python epc
-
+    ;; python elpy
+    elpy
+    ;; python linter
+    python-pylint
+    ;; python yapf
+    py-yapf
     ;; flycheck
     flycheck
-
+    ;; flycheck errors display in tooltip
+    flycheck-pos-tip
+    ;; show flycheck/flymake errors by tooltip
+    flycheck-tip
+    ;; popup
+    popup
     ;; flymake on the fly syntax check
     flymake-easy
     ;; flymake handler for syntax-checking Python source code using pyflakes or flake8
     flymake-python-pyflakes
     ;; linting for haskell
     flymake-hlint
-
     ;; org-mode
     org
     org-bullets
-
     ;; Yasnippets package
     yasnippet
-
-    ;; git
+    ;; git integration
     magit
     ;; Diminished modes are minor modes with no modeline display
     diminish
     ;; emacs code browser
     ecb
-
     ;; haskell programming mode
     haskell-mode
     company-ghc
@@ -133,16 +138,16 @@
     ;; haskell-indentation, 2nd try
     hi2
     ghc
-
     ;; complete dev environment for haskell
-    intero
-
+    ;intero
+    ;; erlang ide
+    erlang
     ;; scala edevelopment with ensime
     ensime
-
     ;; incremental completion and selection narrowing framework
     helm
-
+    ;; map pairs of simultaneously pressed keys to commands
+    key-chord
     ;; math input symbols
     xah-math-input
   )
@@ -161,6 +166,7 @@
 ; Requires packages in the modules/ directory
 ;;
 (mapc 'load (directory-files module-dir nil "^[^#].*el$"))
+
 
 
 ;;
@@ -191,7 +197,8 @@
 ; package loading from custom el files
 ;;
 (defvar packages
-    '("haskell-config")
+    '("haskell-config"
+      "erlang-config")
     "configuration files which follow the modules/pkg-name.el format"
     )
 

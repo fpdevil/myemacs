@@ -30,11 +30,11 @@
 ;;
 ; Saving Emacs Sessions
 ;;
-(desktop-save-mode nil)
-;(setq desktop-restore-eager 10)
 (setq desktop-save nil) ;; save without asking
+;(setq desktop-restore-eager 10)
 
-(defalias 'list-buffers 'ibuffer)
+
+; (defalias 'list-buffers 'ibuffer)
 
 ;;
 ; electric pair mode
@@ -50,7 +50,8 @@
 ;;
 ; disable electric indent mode to prevent auto indentation
 ;;
-(when (fboundp 'electric-indent-mode) (electric-indent-mode -1))
+(when (fboundp 'electric-indent-mode)
+  (electric-indent-mode -1))
 
 
 (global-set-key (kbd "<C-S-up>")     'windmove-up)
@@ -77,9 +78,9 @@
       (while (and (< (point) posEnd)
                   (re-search-forward "\\w+\\W*" posEnd t))
         (setq wordCount (1+ wordCount)))
-
       (message "Words: %d. Chars: %d." wordCount charCount)
       )))
+
 
 (defun unfill-paragraph ()
   "Replace newline chars in current paragraph by single spaces.
@@ -87,6 +88,8 @@ This command does the inverse of `fill-paragraph'."
   (interactive)
   (let ((fill-column 90002000)) ; 90002000 is just random. you can use `most-positive-fixnum'
     (fill-paragraph nil)))
+
+
 (defun unfill-region (start end)
   "Replace newline chars in region by single spaces.
 This command does the inverse of `fill-region'."
@@ -114,25 +117,20 @@ This command does the inverse of `fill-region'."
 ;;
 ; (require 'ansi-color)
 ; (defun colorize-compilation-buffer ()
-;   (toggle-read-only)
-;   (ansi-color-apply-on-region (point-min) (point-max))
+;   (let ((inhibit-read-only t))
+;     (ansi-color-apply-on-region (point-min) (point-max))))
+; (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 
 (require 'ansi-color)
-(defun colorize-compilation-buffer ()
+(defun endless/colorize-compilation ()
+  "Colorize from `compilation-filter-start' to `point'."
   (let ((inhibit-read-only t))
-    (ansi-color-apply-on-region (point-min) (point-max))))
-(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+    (ansi-color-apply-on-region
+     compilation-filter-start (point))))
 
-  ;; mocha seems to output some non-standard control characters that
-  ;; aren't recognized by ansi-color-apply-on-region, so we'll
-  ;; manually convert these into the newlines they should be.
-  (goto-char (point-min))
-  (while (re-search-forward "\\[2K\\[0G" nil t)
-    (progn
-      (replace-match "
-")))
-  (toggle-read-only))
-(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+(add-hook 'compilation-filter-hook
+          #'endless/colorize-compilation)
+
 
 ;;
 ; rainbow identifier customizations

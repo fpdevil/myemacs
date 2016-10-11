@@ -1,9 +1,11 @@
+;;=====================================================
 ;;
 ; Haskell settings for emacs
 ; templates used from the below. Thanks to both
 ; https://github.com/serras/emacs-haskell-tutorial/
 ; https://github.com/chrisdone/emacs-haskell-config/
 ;;
+;;=====================================================
 
 (require 'cl)
 (require 'cl-lib)
