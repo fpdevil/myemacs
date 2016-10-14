@@ -1,8 +1,11 @@
+;-------------------------------------------------------------------------------
 ;;
 ; my-package-repos.el
 ;;
+;-------------------------------------------------------------------------------
 ;; Use M-x package-refresh-contents to reload the list of
 ;; packages after adding these for the first time
+;; required standard libraries
 (require 'cl)
 (require 'cl-lib)
 
@@ -11,16 +14,31 @@
 ;                          ("marmalade" . "http://marmalade-repo.org/packages/")
 ;                          ("melpa"     . "http://melpa.milkbox.net/packages/")))
 
+;===============================================================================
+; Package repositories
+;===============================================================================
 (add-to-list 'package-archives
              '("gnu" . "http://elpa.gnu.org/packages/") t)
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t)
 
 
+;; package archive priorities
+; (setq package-archive-priorities
+;       '(("marmalade" . 20)
+;         ("gnu" . 10)
+;         ("melpa" . 0)
+;         ("melpa-stable" . 0)))
+
+
+;; Define custom directories for the packages
+;; packages/elpa will contain the standard packages
+;; modules dir will contain the custom built and lang specific modules
+;; vendor dir will contain 3rd party or unavailable packages
 ;; Define a top-level, vendor and custom files
 (defvar emacs-dir (file-name-directory load-file-name)
   "Top level Emacs dir.")
@@ -38,85 +56,102 @@
 (add-to-list 'load-path pkg-dir)
 (setq package-user-dir (concat pkg-dir "/elpa"))
 
+
 ;;
 ; initialize the packages
 ;;
 (package-initialize)
 
-;;=====================================================
+(when (not package-archive-contents)
+  (package-refresh-contents))
+
+;===============================================================================
 ;;
 ; packages to be installed
 ; defvar is the correct way to declare global variables
 ; setq is supposed to be use just to set variables and
 ; not create them.
 ;;
-;;=====================================================
+;===============================================================================
 (defvar required-packages
   '(;; appearance
     ;; powerline smart mode
     powerline
+    ;; colorful modes (delimiters and color codes)
+    rainbow-delimiters
+    rainbow-mode
+    rainbow-identifiers
     ;; fancy vim airline themes
     airline-themes
     ;; color themes pack
     sublime-themes
-    ;; dark theme
     darkokai-theme
+    moe-theme
+    monokai-theme
+    zenburn-theme
+    material-theme
+    color-theme-sanityinc-tomorrow
+    color-theme-sanityinc-solarized
     ;; package for various icons
     all-the-icons
-    ;; monpkai color theme
-    ; monokai-theme
-    ;; zenburn theme
-    zenburn-theme
-    ;; material theme
-    material-theme
-    ;; essential
+    ;; essential packs
     buffer-move
+    ;; auto completions
     ;; cmopany autocompletion modes
     company
     company-jedi
+    company-distel
     ;; distel-completion is needed for company-distel
     distel-completion-lib
-    company-distel
-    ;; smex
-    ;; colorful modes
-    rainbow-delimiters
-    rainbow-mode
-    rainbow-identifiers
-    ;; for auto completion
+    ;; auto completion for gnu emacs
     auto-complete
+    auto-complete-distel
+    ;; backend that emulates ac-source-dictionary
+    company-dict
+    ;; get major mode's parent modes
+    parent-mode
     ;; IDO mode
     ido
+    ; smex
     ;; utilities
     ;; parenthesis management
     smartparens
+    ;; minor mode for editing parentheses
+    paredit
     ;; language specific
     markdown-mode
-    ;; auctex
+    ; auctex
     ;; virtualenv wrapper for python
     virtualenvwrapper
     ;; python jedi IDE
     jedi
-    ;; python elpy
+    ;; python elpy IDE
     elpy
     ;; python linter
     python-pylint
     ;; python yapf
     py-yapf
+    ;; python virtual environment interface for Emacs
+    pyvenv
     ;; flycheck
     flycheck
+    ;; flycheck colors for highlighting errors
+    flycheck-color-mode-line
     ;; flycheck errors display in tooltip
     flycheck-pos-tip
     ;; show flycheck/flymake errors by tooltip
     flycheck-tip
-    ;; popup
+    ;; show popup for flycheck
     popup
-    ;; flymake on the fly syntax check
+    ;; flymake on the fly syntax checker
     flymake-easy
     ;; flymake handler for syntax-checking Python source code using pyflakes or flake8
     flymake-python-pyflakes
-    ;; linting for haskell
+    ; linting for haskell
     flymake-hlint
-    ;; org-mode
+    ;; show flymake errors in minibuffer
+    flymake-cursor
+    ;; org-mode setup
     org
     org-bullets
     ;; Yasnippets package
@@ -135,13 +170,14 @@
     haskell-snippets
     hindent
     flycheck-haskell
-    ;; haskell-indentation, 2nd try
+    ;; for haskell-indentation, 2nd try
     hi2
     ghc
     ;; complete dev environment for haskell
-    ;intero
-    ;; erlang ide
+    ; intero
+    ;; erlang laguage support
     erlang
+    ; edts
     ;; scala edevelopment with ensime
     ensime
     ;; incremental completion and selection narrowing framework
@@ -154,23 +190,28 @@
   "A list of packages that will be installed if not present when firing Emacs")
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-; Add the above to the load-path
+; Add the above packages to the load-path
 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (unless (file-exists-p save-dir)
   (make-directory save-dir))
-(add-to-list 'load-path vendor-dir)
 (add-to-list 'load-path module-dir)
+(add-to-list 'load-path vendor-dir)
+
 
 ;;
 ; Requires packages in the modules/ directory
-;;
 (mapc 'load (directory-files module-dir nil "^[^#].*el$"))
+; Requires packages in the vendor/ directory
+(mapc 'load (directory-files vendor-dir nil "^[^#].*el$"))
 
 
 
 ;;
-; method to check if all packages are installed
+; function to check if all listed packages are installed
+; return true when the package is not installed
 ;;
 (defun packages-installed-p ()
   (loop for p in required-packages
@@ -192,33 +233,47 @@
 
 (provide 'required-packages)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;
 ; package loading from custom el files
+; currently support for the below
+; haskell
+; erlang
+; python3
+; flycheck
+; paredit
+; rainbow-delimiters
+;
 ;;
-(defvar packages
-    '("haskell-config"
-      "erlang-config")
-    "configuration files which follow the modules/pkg-name.el format"
+(defvar configs
+    '(
+      "haskell-config"
+      "erlang-config"
+      "python-config"
+      "flycheck-colors-config"
+      "rainbow-delims-config"
+      "paredit-config"
+      )
+    "configuration files which follow the modules/pkgname-config.el format"
     )
 
 ;;
-; loop through and load the custom packages
+; loop through and load the configured custom packages
 ;;
-(loop for name in packages
+(loop for name in configs
       do (load (concat (file-name-directory load-file-name)
                        "modules/"
                        name ".el")))
 
 
 ;;
-; packages from custom path
+; load packages from custom path
 ;;
 (defvar custom-load-paths
-  '("structured-haskell-mode/elisp")
-  "Custom load paths that don't follow the normal
-  package-name/module-name.el format.")
-
+  '("erlang/elisp")
+  "custom load paths that do not follow the normal vendor/elisp/module-name.el format"
+  )
 
 ;;
 ; loop through the custom lisp
@@ -227,5 +282,5 @@
       do (add-to-list 'load-path
              (concat (file-name-directory (or load-file-name
                                               (buffer-file-name)))
-                     "packages/"
+                     "vendor/erlang/elisp"
                      location)))

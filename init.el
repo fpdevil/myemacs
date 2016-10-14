@@ -1,8 +1,17 @@
+;;; package --- initialization section for Emacs
+;;;
+;;; name: init.el
+;;; description: initialize the packages
+;;;
+;;; Commentary:
+;;
 ;; This sets up the load path so that we can override it
 ;; reference
 ;; https://hristos.triantafillou.us/init.el/
 ;; http://y.tsutsumi.io/emacs-from-scratch-part-2-package-management.html
 
+;-----------------------------------------------------------------------
+;
 ;; utf-8 encoding
 (set-language-environment 'utf-8)
 (setq locale-coding-system 'utf-8)
@@ -19,18 +28,30 @@
 
 
 ;;
-;------------------------------------------------------
+;-----------------------------------------------------------------------
 ; byte recompiling everything during bootstrap
 ;;
 ;(byte-recompile-directory (expand-file-name "~/Library/Preferences/Aquamacs Emacs/Packages/elpa") 0)
 ;; uncomment below section if needed
 (byte-recompile-directory (expand-file-name "~/.emacs.d/packages/elpa") 0)
-;------------------------------------------------------
+
+;; for debugging
+(setq debug-on-error t)
+;-----------------------------------------------------------------------
 
 
-;;=====================================================
-;;                 require packages
-;;=====================================================
+;;======================================================================
+;;                            require packages
+;;======================================================================
+
+;;
+; company mode
+;;
+(require 'company)
+(require 'company-distel)
+(add-hook 'after-init-hook 'global-company-mode)
+(auto-complete-mode 1)
+
 
 ;;
 ; Diminished modes are minor modes with no modeline display
@@ -38,19 +59,6 @@
 ;;
 (require 'diminish)
 (eval-after-load "whitespace" '(diminish 'whitespace-mode))
-
-
-;;
-; company mode
-;;
-(require 'company)
-(global-company-mode t)
-
-
-;;
-; company mode for jedi
-;;
-(require 'company-jedi)
 
 
 ;;
@@ -73,44 +81,6 @@
 ; for rainbow delimiters
 ;;
 (require 'rainbow-delimiters)
-(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-;; some customizations for the default modes
-;; stolen from https://ogbe.net/emacsconfig.html
-(set-face-attribute 'rainbow-delimiters-depth-1-face nil
-                    :foreground "#78c5d6")
-(set-face-attribute 'rainbow-delimiters-depth-2-face nil
-                    :foreground "#bf62a6")
-(set-face-attribute 'rainbow-delimiters-depth-3-face nil
-                    :foreground "#459ba8")
-(set-face-attribute 'rainbow-delimiters-depth-4-face nil
-                    :foreground "#e868a2")
-(set-face-attribute 'rainbow-delimiters-depth-5-face nil
-                    :foreground "#79c267")
-(set-face-attribute 'rainbow-delimiters-depth-6-face nil
-                    :foreground "#f28c33")
-(set-face-attribute 'rainbow-delimiters-depth-7-face nil
-                    :foreground "#c5d647")
-(set-face-attribute 'rainbow-delimiters-depth-8-face nil
-                    :foreground "#f5d63d")
-(set-face-attribute 'rainbow-delimiters-depth-9-face nil
-                    :foreground "#78c5d6")
-;;
-; fancy minor mode purely eye candy ((()))
-;;
-(setq minor-mode-alist
-  `((rainbow-delimiters-mode " ")
-    (rainbow-delimiters-mode #("(" 0 1 (face rainbow-delimiters-depth-1-face)))
-    (rainbow-delimiters-mode #("(" 0 1 (face rainbow-delimiters-depth-2-face)))
-    (rainbow-delimiters-mode #("(" 0 1 (face rainbow-delimiters-depth-3-face)))
-    (rainbow-delimiters-mode #(")" 0 1 (face rainbow-delimiters-depth-3-face)))
-    (rainbow-delimiters-mode #(")" 0 1 (face rainbow-delimiters-depth-2-face)))
-    (rainbow-delimiters-mode #(")" 0 1 (face rainbow-delimiters-depth-1-face)))
-    ,@(assq-delete-all 'rainbow-delimiters-mode minor-mode-alist)))
-;; fancy mode end
-(add-hook 'python-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'shell-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
-
 
 
 ;;
@@ -140,6 +110,7 @@
 ; auto-completion
 ;;
 (require 'auto-complete)
+(require 'auto-complete-config)
 
 
 ;;
@@ -172,6 +143,12 @@
 ; flymake-easy (helpers for easily building Emacs flymake checkers)
 ;;
 (require 'flymake-easy)
+
+
+;;
+; show flymake errors in minibuffer
+;;
+(require 'flymake-cursor)
 
 
 ;;
@@ -222,11 +199,13 @@
       airline-utf-glyph-linenumber          #xe0a1)
 
 
+
 ;;
 ; setting default theme tp material dark
 ;;
 ; (load-theme 'material t)
 (load-theme 'material-light t)
+;(load-theme 'darkokai t)
 
 
 ;;
@@ -248,7 +227,7 @@
 ; auto-complete configuration
 ;;
 (require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/vendor/auto-complete/dict")
 (ac-config-default)
 (global-auto-complete-mode t)
 ; (setq ac-sources '(ac-source-yasnippet
@@ -258,117 +237,10 @@
 (setq ac-show-menu-immediately-on-auto-complete t)
 
 
-;;
-; python virtualenv wrapper
-;;
-(require 'virtualenvwrapper)
-(venv-initialize-interactive-shells) ;; if you want interactive shell support
-(venv-initialize-eshell) ;; if you want eshell support
-(setq venv-location (expand-file-name "~/.virtualenvs/"))
-
-
-;;
-;;
-; python jedi
-; python development with auto-completion and intelli-sense
-; for running inferior process when loading major mode python
-;;
-(defun run-python-once ()
-  (remove-hook 'python-mode-hook 'run-python-once)
-  (run-python (python-shell-parse-command)))
-
-(add-hook 'python-mode-hook 'run-python-once)
-
-;;
-; jedi ide
-;;
-(require 'jedi)
-
-;; Start auto-complete and jedi for refactoring
-(setq flymake-log-level 3)
-;; Hook up to autocomplete
-; (add-to-list ’ac-sources ’ac-source-jedi-direct)
-(require 'ring)
-(require 'epc)
-(autoload 'jedi:setup "jedi" nil t)
-;; enable python-mode
-(add-hook 'python-mode-hook 'jedi:setup)
-(setq jedi-config:set-python-executable "/usr/local/bin/python3")
-;(setq jedi:setup-keys t)
-(setq jedi:complete-on-dot t)
-; hack to never show in-function call automatically
-(setq jedi:get-in-function-call-delay 300)
-(setq jedi:server-command (list "/usr/local/bin/python3" jedi:server-script))
-(setq jedi:tooltip-method '(pos-tip))
-(jedi-mode 1)
-(setq jedi:environment-root "env")
-; (setq jedi:environment-virtualenv
-;   (append python-environment-virtualenv
-;     '(' "--python" "/usr/local/bin/python3")))
-
-(defun jedi-config:setup-keys ()
-  "Custom keyboard mapping for jedi."
-       (local-set-key (kbd "M-.") 'jedi:goto-definition)
-       (local-set-key (kbd "M-,") 'jedi:goto-definition-pop-marker)
-       (local-set-key (kbd "M-?") 'jedi:show-doc)
-       (local-set-key (kbd "M-/") 'jedi:get-in-function-call))
-(add-hook 'python-mode-hook 'jedi-config:setup-keys)
-
-(setq py-python-command "/usr/local/bin/python3")
-(setq python-shell-interpreter "/usr/local/bin/ipython3")
-;; if extras are needed with ipython3
-;; (setq python-shell-interpreter-args "--pylab")
-(setq python-check-command "/usr/local/bin/pyflakes")
-(setq python-environment-directory "~/.emacs.d/.python-environments")
-
-; load jedi-core
-(require 'jedi-core)
-
-; system path in the lisp
-; set PATH, because we don't load .bashrc
-(setenv
- "PATH" (concat
-   "$HOME/bin:"
-   "/bin:"
-   "/usr/bin:"
-   "/sbin:"
-   "/usr/sbin:"
-   "/usr/local/bin:"
-   "/usr/local/sbin"))
-
-; Set PYTHONPATH, because we don't load .bashrc
-(setenv "PYTHONPATH" "/usr/local/lib/python3.5/site-packages:")
-
-
-;;
-; python linting
-;;
-(require 'python-pylint)
-(load "python-pylint")
-
-
-;;
-; yapf to beautify a Python buffer
-;;
-(require 'py-yapf)
-(add-hook 'python-mode-hook 'py-yapf-enable-on-save)
-
-
-;;
-; elpy
-; Emacs Python Development Environment
-;;
-(require 'elpy)
-(elpy-enable)
-(elpy-use-ipython)
-(setq
-  elpy-rpc-backend "jedi"
-  elpy-rpc-python-command "/usr/local/bin/python3"
-  elpy-rpc-python-path "/usr/local/lib/python3.5/site-packages"
-  flycheck-python-flake8-executable "/usr/local/bin/flake8"
-  python-check-command "/usr/local/bin/pyflakes"
-  python-environment-directory "~/.emacs.d/.python-environments")
-
+; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; ;;                  python support specific
+; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; inside python-config.el
 
 
 ;;
@@ -425,8 +297,17 @@
 
 ;;
 ; haskell setup
+; full configuration inside haskell-config.el
 ;;
 (require 'haskell-mode)
+(require 'hindent)
+
+
+;;
+; erlang setup
+; full configuration inside erlang-config.el
+;;
+(require 'erlang-start)
 
 
 ;;
@@ -473,5 +354,5 @@
 
 
 (provide 'init)
-;;;
-;;;
+
+;;; init.el ends here

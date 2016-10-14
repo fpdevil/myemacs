@@ -1,11 +1,23 @@
-;;=====================================================
+;;===============================================================
+;;; configuration file for haskell mode
+;; Filename: haskell-config.el
+;; Description: A major mode haskell language support in Emacs
+;;
+;;; Commentary:
+;;
+;; elisp code for haskell language support and handling
+;;===============================================================
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ; Haskell settings for emacs
 ; templates used from the below. Thanks to both
 ; https://github.com/serras/emacs-haskell-tutorial/
 ; https://github.com/chrisdone/emacs-haskell-config/
 ;;
-;;=====================================================
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'cl)
 (require 'cl-lib)
@@ -20,6 +32,9 @@
 (require 'haskell-interactive-mode)
 (require 'haskell-process)
 
+;------------------------------------------------------------------------
+
+
 ; Enable Windows-like bindings
 (cua-mode 1)
 
@@ -32,8 +47,10 @@
   (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
   (add-to-list 'exec-path my-cabal-path))
 
+
+;------------------------------------------------------------------------
 ; HASKELL-MODE
-; ------------
+;------------------------------------------------------------------------
 
 ; Choose indentation mode
 ;; Use haskell-mode indentation
@@ -92,6 +109,9 @@
  )
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; standard module completions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq haskell-complete-module-preferred
       '("Data.ByteString"
         "Data.ByteString.Lazy"
@@ -146,15 +166,18 @@
 ; (define-key intero-mode-map [f12] 'intero-devel-reload)
 
 
+;------------------------------------------------------------------------
 ; GHC-MOD
-; -------
+;------------------------------------------------------------------------
 
 (autoload 'ghc-init "ghc" nil t)
 (autoload 'ghc-debug "ghc" nil t)
 (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
 
+
+;------------------------------------------------------------------------
 ; COMPANY-GHC
-; -----------
+;------------------------------------------------------------------------
 
 ; Enable company-mode
 (require 'company)
@@ -168,19 +191,23 @@
 (custom-set-variables '(company-ghc-show-info t))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ; shm
 ; Use structured-haskell-mode
 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'shm)
 (add-hook 'haskell-mode-hook 'structured-haskell-mode)
 ;; customize colors while running shm
 (set-face-background 'shm-current-face "#eee8d5")
 (set-face-background 'shm-quarantine-face "lemonchiffon")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;
+; haskell standard module imports
 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq haskell-import-mapping
       '(("Data.Text" . "import qualified Data.Text as T
 import Data.Text (Text)
@@ -224,3 +251,7 @@ import Data.Vector (Vector)
 (setq haskell-hoogle-command "hoogle")
 
 ;(setq hindent-style "johan-tibell")
+
+
+(provide 'haskell-config)
+; haskel-config ends here
