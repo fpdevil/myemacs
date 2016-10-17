@@ -30,10 +30,10 @@
 ;;
 ;-----------------------------------------------------------------------
 ; byte recompiling everything during bootstrap
+;-----------------------------------------------------------------------
 ;;
-;(byte-recompile-directory (expand-file-name "~/Library/Preferences/Aquamacs Emacs/Packages/elpa") 0)
 ;; uncomment below section if needed
-(byte-recompile-directory (expand-file-name "~/.emacs.d/packages/elpa") 0)
+;(byte-recompile-directory (expand-file-name "~/.emacs.d/packages/elpa") 0)
 
 ;; for debugging
 (setq debug-on-error t)
@@ -182,6 +182,17 @@
 
 
 ;;
+; automatic and manual symbol highlighting for Emacs
+;;
+(require 'highlight-symbol)
+; (global-set-key [(control f3)] 'highlight-symbol)
+; (global-set-key [f3] 'highlight-symbol-next)
+; (global-set-key [(shift f3)] 'highlight-symbol-prev)
+; (global-set-key [(meta f3)] 'highlight-symbol-query-replace)
+
+
+
+;;
 ; vim airline theme for emacs
 ;;
 (require 'airline-themes)
@@ -240,7 +251,8 @@
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; ;;                  python support specific
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; inside python-config.el
+; defined inside python-config.el
+;
 
 
 ;;
@@ -289,7 +301,7 @@
 
 
 ;;
-; scala development
+; ENhanced Scala Interaction Mode for Emacs
 ;;
 (require 'ensime)
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
@@ -350,6 +362,14 @@
 ; show flycheck/flymake errors by tooltip
 ;;
 (require 'flycheck-tip)
+
+
+
+;;
+; multiple cursors for Emacs
+;;
+(require 'multiple-cursors)
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 
 
 

@@ -15,7 +15,7 @@
 ;                          ("melpa"     . "http://melpa.milkbox.net/packages/")))
 
 ;===============================================================================
-; Package repositories
+; Package repositories (gnu, melpa, melpa-stable and marmalade)
 ;===============================================================================
 (add-to-list 'package-archives
              '("gnu" . "http://elpa.gnu.org/packages/") t)
@@ -25,6 +25,7 @@
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+;===============================================================================
 
 
 ;; package archive priorities
@@ -35,11 +36,15 @@
 ;         ("melpa-stable" . 0)))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Define custom directories for the packages
 ;; packages/elpa will contain the standard packages
 ;; modules dir will contain the custom built and lang specific modules
 ;; vendor dir will contain 3rd party or unavailable packages
 ;; Define a top-level, vendor and custom files
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defconst home-dir "~")
 (defvar emacs-dir (file-name-directory load-file-name)
   "Top level Emacs dir.")
 (defvar emacs-dir (file-name-directory "~/.emacs.d")
@@ -56,6 +61,7 @@
 (add-to-list 'load-path pkg-dir)
 (setq package-user-dir (concat pkg-dir "/elpa"))
 
+;===============================================================================
 
 ;;
 ; initialize the packages
@@ -74,7 +80,7 @@
 ;;
 ;===============================================================================
 (defvar required-packages
-  '(;; appearance
+  '(;;; appearance and visual customizations
     ;; powerline smart mode
     powerline
     ;; colorful modes (delimiters and color codes)
@@ -92,11 +98,7 @@
     material-theme
     color-theme-sanityinc-tomorrow
     color-theme-sanityinc-solarized
-    ;; package for various icons
-    all-the-icons
-    ;; essential packs
-    buffer-move
-    ;; auto completions
+    ;;; auto completions ;;;
     ;; cmopany autocompletion modes
     company
     company-jedi
@@ -113,26 +115,15 @@
     ;; IDO mode
     ido
     ; smex
-    ;; utilities
+    ;;; essential utilities
     ;; parenthesis management
     smartparens
     ;; minor mode for editing parentheses
     paredit
-    ;; language specific
+    ;;; documentation and help
+    ;; markdown language support
     markdown-mode
     ; auctex
-    ;; virtualenv wrapper for python
-    virtualenvwrapper
-    ;; python jedi IDE
-    jedi
-    ;; python elpy IDE
-    elpy
-    ;; python linter
-    python-pylint
-    ;; python yapf
-    py-yapf
-    ;; python virtual environment interface for Emacs
-    pyvenv
     ;; flycheck
     flycheck
     ;; flycheck colors for highlighting errors
@@ -154,14 +145,21 @@
     ;; org-mode setup
     org
     org-bullets
-    ;; Yasnippets package
-    yasnippet
-    ;; git integration
+    ;;; git integration ;;;
     magit
-    ;; Diminished modes are minor modes with no modeline display
-    diminish
-    ;; emacs code browser
-    ecb
+    ;;; language and IDE setup
+    ;; virtualenv wrapper for python
+    virtualenvwrapper
+    ;; python jedi IDE
+    jedi
+    ;; python elpy IDE
+    elpy
+    ;; python linter
+    python-pylint
+    ;; python yapf
+    py-yapf
+    ;; python virtual environment interface for Emacs
+    pyvenv
     ;; haskell programming mode
     haskell-mode
     company-ghc
@@ -179,13 +177,29 @@
     erlang
     ; edts
     ;; scala edevelopment with ensime
+    ;; ENhanced Scala Interaction Mode for Emacs
     ensime
+    ;; Yasnippets package
+    yasnippet
+    ;;; important utilities
     ;; incremental completion and selection narrowing framework
     helm
-    ;; map pairs of simultaneously pressed keys to commands
-    key-chord
+    ;;; essential packs ;;;
+    ;; emacs code browser
+    ecb
+    buffer-move
+    ;; automatic and manual symbol highlighting for Emacs
+    highlight-symbol
+    ;; package for various icons
+    all-the-icons
     ;; math input symbols
     xah-math-input
+    ;; map pairs of simultaneously pressed keys to commands
+    key-chord
+    ;; Diminished modes are minor modes with no modeline display
+    diminish
+    ;; multiple cursors for emacs
+    multiple-cursors
   )
   "A list of packages that will be installed if not present when firing Emacs")
 
@@ -199,6 +213,7 @@
   (make-directory save-dir))
 (add-to-list 'load-path module-dir)
 (add-to-list 'load-path vendor-dir)
+
 
 
 ;;
@@ -233,8 +248,8 @@
 
 (provide 'required-packages)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ; package loading from custom el files
 ; currently support for the below
@@ -246,6 +261,7 @@
 ; rainbow-delimiters
 ;
 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar configs
     '(
       "haskell-config"

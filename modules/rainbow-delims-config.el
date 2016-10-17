@@ -35,6 +35,7 @@
                     :foreground "#f5d63d")
 (set-face-attribute 'rainbow-delimiters-depth-9-face nil
                     :foreground "#78c5d6")
+
 ;;
 ; fancy minor mode purely eye candy ((()))
 ;;
@@ -48,6 +49,7 @@
     (rainbow-delimiters-mode #(")" 0 1 (face rainbow-delimiters-depth-1-face)))
     ,@(assq-delete-all 'rainbow-delimiters-mode minor-mode-alist)))
 ;; fancy mode end
+
 (add-hook 'python-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'shell-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)

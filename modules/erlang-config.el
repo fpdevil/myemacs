@@ -1,5 +1,5 @@
 ;;===============================================================
-;;; configuration file for erlang mode
+;;; main configuration file for erlang mode
 ;; Filename: erlang-config.el
 ;; Description: A major mode erlang language support in Emacs
 ;;
@@ -93,7 +93,7 @@ load-path))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ; erlang ide set-up and
-; erlang auto-completion using company distel
+; erlang auto-completion using auto-complete and distel
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'auto-complete)
@@ -114,22 +114,26 @@ load-path))
 
 ; Erlang auto-complete
 (add-to-list 'ac-modes 'erlang-mode)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+; erlang auto completion using company mode and distel
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; (require 'company)
 ; (add-hook 'after-init-hook 'global-company-mode)
 ; (require 'company-distel)
 ; (add-to-list 'company-backends 'company-distel)
 
-; render company's doc-buffer (default <F1> when on a completion-candidate)
-; in a small popup (using popup.el) instead of showing the whole help-buffer.
-(setq company-distel-popup-help t)
-; specify the height of the help popup created by company
-(setq company-distel-popup-height 30)
-; get documentation from internet
-(setq distel-completion-get-doc-from-internet t)
-; Change completion symbols
-(setq distel-completion-valid-syntax "a-zA-Z:_-")
+; ; render company's doc-buffer (default <F1> when on a completion-candidate)
+; ; in a small popup (using popup.el) instead of showing the whole help-buffer.
+; (setq company-distel-popup-help t)
+; ; specify the height of the help popup created by company
+; (setq company-distel-popup-height 30)
+; ; get documentation from internet
+; (setq distel-completion-get-doc-from-internet t)
+; ; Change completion symbols
+; (setq distel-completion-valid-syntax "a-zA-Z:_-")
 
 ;;------------------------------------------------------------------------
 ;;
@@ -159,7 +163,8 @@ load-path))
 (require 'flymake)
 (require 'erlang-flymake)
 (setq flymake-log-level 3)
-(setq erlang-flymake-location "~/.emacs.d/flymake/eflymake")
+(setq erlang-flymake-location (concat emacs-dir "/flymake/eflymake"))
+;(setq erlang-flymake-location "~/.emacs.d/flymake/eflymake")
 
 (defun flymake-erlang-init ()
   (let* ((temp-file (flymake-init-create-temp-buffer-copy

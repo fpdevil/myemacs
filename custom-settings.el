@@ -24,6 +24,7 @@
  '(package-selected-packages
    (quote
     (zenburn-theme xah-math-input virtualenvwrapper sublime-themes smartparens shm rainbow-mode rainbow-identifiers rainbow-delimiters python-pylint py-yapf paredit org-bullets monokai-theme moe-theme material-theme markdown-mode magit key-chord jedi hindent hi2 haskell-snippets flymake-python-pyflakes flymake-hlint flymake-cursor flycheck-tip flycheck-pos-tip flycheck-haskell flycheck-color-mode-line ensime elpy edts ecb diminish darkokai-theme company-jedi company-ghc company-distel company-dict company-cabal color-theme-sanityinc-tomorrow buffer-move auto-complete-distel all-the-icons airline-themes)))
+ '(python-shell-interpreter "ipython3")
  '(shm-auto-insert-bangs t)
  '(shm-auto-insert-skeletons t)
  '(shm-use-hdevtools t)
