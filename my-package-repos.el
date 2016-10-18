@@ -80,126 +80,93 @@
 ;;
 ;===============================================================================
 (defvar required-packages
-  '(;;; appearance and visual customizations
-    ;; powerline smart mode
-    powerline
-    ;; colorful modes (delimiters and color codes)
-    rainbow-delimiters
-    rainbow-mode
-    rainbow-identifiers
-    ;; fancy vim airline themes
-    airline-themes
-    ;; color themes pack
-    sublime-themes
-    darkokai-theme
-    moe-theme
-    monokai-theme
-    zenburn-theme
-    material-theme
-    color-theme-sanityinc-tomorrow
-    color-theme-sanityinc-solarized
+  '(;;; appearance and visual customizations ;;;
+    powerline                           ;; powerline smart mode
+    rainbow-delimiters                  ;; colorful modes (delimiters and color codes)
+    rainbow-mode                        ;; colored identifiers
+    rainbow-identifiers                 ;; colored identifiers
+    airline-themes                      ;; fancy vim airline themes
+    ;;; color themes for emacs ;;;
+    sublime-themes                      ;; sublime themes
+    darkokai-theme                      ;; dark theme based on monokai
+    moe-theme                           ;; group of moe themes
+    monokai-theme                       ;; monokai theme
+    zenburn-theme                       ;; zenburn color theme
+    material-theme                      ;; material themes
+    color-theme-sanityinc-tomorrow      ;; tomorrow themes
+    color-theme-sanityinc-solarized     ;; solarized themes
     ;;; auto completions ;;;
-    ;; cmopany autocompletion modes
-    company
-    company-jedi
-    company-distel
-    ;; distel-completion is needed for company-distel
-    distel-completion-lib
-    ;; auto completion for gnu emacs
-    auto-complete
-    auto-complete-distel
-    ;; backend that emulates ac-source-dictionary
-    company-dict
-    ;; get major mode's parent modes
-    parent-mode
-    ;; IDO mode
-    ido
+    company                             ;; cmopany autocompletion modes
+    company-jedi                        ;; company jedi mode for python
+    company-distel                      ;; company distel mode for erlang
+    distel-completion-lib               ;; distel-completion is needed for company-distel
+    auto-complete                       ;; auto completion for gnu emacs
+    auto-complete-distel                ;; auto completion  distel for erlang
+    company-dict                        ;; backend that emulates ac-source-dictionary
+    ;;; some utilities ;;;
+    parent-mode                         ;; get major mode's parent modes
+    ; ido                               ;; IDO mode
     ; smex
-    ;;; essential utilities
-    ;; parenthesis management
-    smartparens
-    ;; minor mode for editing parentheses
-    paredit
-    ;;; documentation and help
-    ;; markdown language support
-    markdown-mode
-    ; auctex
-    ;; flycheck
-    flycheck
-    ;; flycheck colors for highlighting errors
-    flycheck-color-mode-line
-    ;; flycheck errors display in tooltip
-    flycheck-pos-tip
-    ;; show flycheck/flymake errors by tooltip
-    flycheck-tip
-    ;; show popup for flycheck
-    popup
-    ;; flymake on the fly syntax checker
-    flymake-easy
-    ;; flymake handler for syntax-checking Python source code using pyflakes or flake8
-    flymake-python-pyflakes
-    ; linting for haskell
-    flymake-hlint
-    ;; show flymake errors in minibuffer
-    flymake-cursor
-    ;; org-mode setup
-    org
-    org-bullets
+    ;;; essential utilities ;;;
+    smartparens                         ;; parenthesis management
+    paredit                             ;; minor mode for editing parentheses
+    ;;; documentation and help ;;;
+    markdown-mode                       ;; markdown language support
+    ;; auctex                           ;; AUCTEX and LATEX
+    ;;; syntax checkers
+    flycheck                            ;; flycheck on the fly syntax checker
+    flycheck-color-mode-line            ;; flycheck colors for highlighting errors
+    flycheck-pos-tip                    ;; flycheck errors display in tooltip
+    flycheck-tip                        ;; show flycheck/flymake errors by tooltip
+    popup                               ;; show popup for flycheck
+
+    flymake-easy                        ;; flymake on the fly syntax checker
+    flymake-python-pyflakes             ;; flymake handler for syntax-checking Python source code using pyflakes or flake8
+    flymake-hlint                       ;; linting for haskell
+    flymake-cursor                      ;; show flymake errors in minibuffer
+    ;;; org modes ;;;
+    org                                 ;; org-mode setup
+    org-bullets                         ;; org mode with bullets
     ;;; git integration ;;;
-    magit
-    ;;; language and IDE setup
-    ;; virtualenv wrapper for python
-    virtualenvwrapper
-    ;; python jedi IDE
-    jedi
-    ;; python elpy IDE
-    elpy
-    ;; python linter
-    python-pylint
-    ;; python yapf
-    py-yapf
-    ;; python virtual environment interface for Emacs
-    pyvenv
-    ;; haskell programming mode
-    haskell-mode
-    company-ghc
-    company-cabal
-    shm
-    haskell-snippets
-    hindent
-    flycheck-haskell
-    ;; for haskell-indentation, 2nd try
-    hi2
-    ghc
-    ;; complete dev environment for haskell
-    ; intero
-    ;; erlang laguage support
-    erlang
-    ; edts
-    ;; scala edevelopment with ensime
-    ;; ENhanced Scala Interaction Mode for Emacs
-    ensime
+    magit                               ;; git status
+    ;;; language and IDE setup ;;;
+    virtualenvwrapper                   ;; virtualenv wrapper for python
+    jedi                                ;; python jedi IDE
+    elpy                                ;; python elpy IDE
+    python-pylint                       ;; python linter
+    py-yapf                             ;; python yapf
+    pyvenv                              ;; python virtual environment interface for Emacs
+    ;;; haskell programming modes ;;;
+    haskell-mode                        ;; haskell language support
+    company-ghc                         ;; haskell company autocompletion
+    company-cabal                       ;; cabal company support
+    shm                                 ;; structured haskell mode
+    haskell-snippets                    ;; haskell language snippets
+    hindent                             ;; haskell code indenting
+    flycheck-haskell                    ;; haskell syntax checker
+    hi2                                 ;; for haskell-indentation, 2nd try
+    ghc                                 ;; haskell ghc
+    ; intero                            ;; complete dev environment for haskell
+    ;;; erlang laguage support ;;;
+    erlang                              ;; erlang emacs plugin
+    ; edts                              ;; erlang development ide
+    ;;; scala development with ensime ;;;
+    ensime                              ;; ENhanced Scala Interaction Mode for Emacs
     ;; Yasnippets package
-    yasnippet
-    ;;; important utilities
-    ;; incremental completion and selection narrowing framework
-    helm
+    yasnippet                           ;; yasnippets for supporting languages
+    ;;; important utilities ;;;
+    helm                                ;; incremental completion and selection narrowing framework
     ;;; essential packs ;;;
-    ;; emacs code browser
-    ecb
-    buffer-move
-    ;; automatic and manual symbol highlighting for Emacs
-    highlight-symbol
-    ;; package for various icons
-    all-the-icons
-    ;; math input symbols
-    xah-math-input
-    ;; map pairs of simultaneously pressed keys to commands
-    key-chord
-    ;; Diminished modes are minor modes with no modeline display
-    diminish
-    ;; multiple cursors for emacs
-    multiple-cursors
+    ecb                                 ;; emacs code browser
+    buffer-move                         ;; move buffer
+    ;;; utilities ;;;
+    highlight-symbol                    ;; automatic and manual symbol highlighting for Emacs
+    all-the-icons                       ;; package for showing various icons
+    xah-math-input                      ;; show math input symbols
+    ;;; keyboard mappings ;;;
+    key-chord                           ;; map pairs of simultaneously pressed keys to commands
+    diminish                            ;; Diminished modes are minor modes with no modeline display
+    multiple-cursors                    ;; multiple cursors for emacs
   )
   "A list of packages that will be installed if not present when firing Emacs")
 
@@ -259,6 +226,7 @@
 ; flycheck
 ; paredit
 ; rainbow-delimiters
+; hihlight-symbols
 ;
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -270,6 +238,7 @@
       "flycheck-colors-config"
       "rainbow-delims-config"
       "paredit-config"
+      "highlight-symbol-config"
       )
     "configuration files which follow the modules/pkgname-config.el format"
     )

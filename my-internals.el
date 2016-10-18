@@ -9,8 +9,14 @@
 (setq user-full-name "Sampath Singamsetty"
       user-mail-address "Singamsetty.Sampath@gmail.com")
 
+;; gc setup
+;; Start garbage collection every 100MB to improve Emacs performance
+(setq gc-cons-threshold 100000000)
+
+; parentheses
 (show-paren-mode t)
 
+; recent files
 (recentf-mode 1)
 
 (global-set-key "\M- " 'hippie-expand)
@@ -25,6 +31,9 @@
 
 (put 'upcase-region 'disabled nil)
 
+
+; syntax highlighting everywhere
+(global-font-lock-mode 1)
 
 
 ;;
@@ -165,3 +174,17 @@ This command does the inverse of `fill-region'."
   (run-python (python-shell-parse-command)))
 
 (add-hook 'python-mode-hook 'run-python-once)
+
+
+;;
+; Programming Mode Hooks
+; make sure things like FIXME and TODO are highlighted so they stand out
+;;
+(defun add-watchwords ()
+  "Highlight FIXME, TODO, and NOCOMMIT in code TODO"
+  (font-lock-add-keywords
+   nil '(("\\<\\(TODO\\(?:(.*)\\)?:?\\)\\>"  1 'warning prepend)
+         ("\\<\\(FIXME\\(?:(.*)\\)?:?\\)\\>" 1 'error prepend)
+         ("\\<\\(NOCOMMIT\\(?:(.*)\\)?:?\\)\\>"  1 'error prepend))))
+
+(add-hook 'prog-mode-hook #'add-watchwords)

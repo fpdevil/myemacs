@@ -22,6 +22,12 @@
         (shell-command hook))))
 
 
+(defun byte-recompile-init-files ()
+  "Recompile all of the startup files"
+  (interactive)
+  (byte-recompile-directory "~/.emacs.d/packages" 0))
+
+
 ;; add hooks
 (add-hook 'kill-buffer-hook 'my-command-buffer-kill-hook)
 (add-hook 'after-save-hook 'my-command-buffer-run-hook)

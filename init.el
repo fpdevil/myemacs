@@ -10,14 +10,22 @@
 ;; https://hristos.triantafillou.us/init.el/
 ;; http://y.tsutsumi.io/emacs-from-scratch-part-2-package-management.html
 
-;-----------------------------------------------------------------------
-;
-;; utf-8 encoding
-(set-language-environment 'utf-8)
-(setq locale-coding-system 'utf-8)
+;;----------------------------------------------------------------------
+;;
+; utf-8 encoding
+;;
+(set-language-environment   'utf-8)
+(setq locale-coding-system  'utf-8)
+(prefer-coding-system       'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+
 
 ;(package-initialize)
 
+;; system is mac
 (defconst *is-a-mac* (eq system-type 'darwin))
 
 
@@ -34,9 +42,17 @@
 ;;
 ;; uncomment below section if needed
 ;(byte-recompile-directory (expand-file-name "~/.emacs.d/packages/elpa") 0)
+;
+; custom function defined inside my-methods
 
+
+
+;; Finalizers
 ;; for debugging
 (setq debug-on-error t)
+; (setq debug-on-error nil)
+; (setq debug-on-quit nil)
+
 ;-----------------------------------------------------------------------
 
 
@@ -51,6 +67,8 @@
 (require 'company-distel)
 (add-hook 'after-init-hook 'global-company-mode)
 (auto-complete-mode 1)
+; no delay for company suggestions
+(setq company-idle-delay 0)
 
 
 ;;
@@ -183,8 +201,9 @@
 
 ;;
 ; automatic and manual symbol highlighting for Emacs
+; load from highlight-symbol-config.el
 ;;
-(require 'highlight-symbol)
+;(require 'highlight-symbol)
 ; (global-set-key [(control f3)] 'highlight-symbol)
 ; (global-set-key [f3] 'highlight-symbol-next)
 ; (global-set-key [(shift f3)] 'highlight-symbol-prev)
@@ -268,17 +287,6 @@
 (sequence "|" "✘ CANCELED(c)")))
 
 
-;;
-; ido settings
-; Interactively Do Things
-;;
-(require 'ido)
-(ido-mode t)
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
-(setq ido-max-prospects 50)
-(setq ido-max-window-height 0.25)
-
 
 ;;
 ; buffer mode
@@ -344,19 +352,6 @@
 (key-chord-define-global "fm" 'helm-mini)
 
 
-;;
-; Complete interactive development environment for Haskell
-;;
-;(require 'intero)
-;;
-
-
-;;
-; erlang ide set-up and
-; erlang auto-completion using company distel
-;;
-
-
 
 ;;
 ; show flycheck/flymake errors by tooltip
@@ -370,6 +365,32 @@
 ;;
 (require 'multiple-cursors)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; ido disabled in favour of helm
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; ido settings
+; Interactively Do Things
+; using helm now
+;;
+; (require 'ido)
+; (ido-mode t)
+; (setq ido-enable-flex-matching t)
+; (setq ido-everywhere t)
+; (setq ido-max-prospects 50)
+; (setq ido-max-window-height 0.25)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; intero disabled in favour of other haskell packages
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+; Complete interactive development environment for Haskell
+;;
+;(require 'intero)
+;;
 
 
 

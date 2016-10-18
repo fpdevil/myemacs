@@ -5,7 +5,7 @@
 ;;
 ;;; Commentary:
 ;;
-;; elisp code for handling flycheck errors in colors 
+;; elisp code for handling flycheck errors in colors
 ;;===============================================================
 
 
@@ -20,7 +20,12 @@
 (require 'flycheck-color-mode-line)
 (eval-after-load "flycheck"
   '(progn
-     (setq flycheck-highlighting-mode nil)
+     ;(setq flycheck-highlighting-mode nil)
+     (setq flycheck-highlighting-mode 'symbols)
+     ;; enable flycheck globally
+     (add-hook 'after-init-hook 'global-flycheck-mode)
+     ;; indicate syntax errors/warnings in the left-fringe.
+     (setq flycheck-indication-mode 'left-fringe)
      (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
      (set-face-background 'flycheck-error "red")
      (set-face-foreground 'flycheck-error "black")

@@ -76,6 +76,25 @@
 (add-hook 'python-mode-hook 'jedi-config:setup-keys)
 
 
+;;
+; company backend for Python jedi
+;;
+(defun my-python-hooks()
+    (eval-after-load "company"
+        '(progn
+            (unless (member 'company-jedi (car company-backends))
+                (setq comp-back (car company-backends))
+                (push 'company-jedi comp-back)
+                (setq company-backends (list comp-back)))
+            )))
+(add-hook 'python-mode-hook 'my-python-hooks)
+;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; shell interpreter
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;(setq py-python-command "/usr/local/bin/python3")
 ;(setq python-shell-interpreter "/usr/local/bin/ipython3")
 (setq python-shell-interpreter "ipython3"
@@ -125,10 +144,12 @@
 (add-hook 'python-mode-hook 'py-yapf-enable-on-save)
 
 
+;;===========================================================================
 ;;
 ; elpy
 ; Emacs Python Development Environment
 ;;
+;;===========================================================================
 (require 'elpy)
 (elpy-enable)
 (elpy-use-ipython)
@@ -141,6 +162,7 @@
   python-environment-directory "~/.emacs.d/.python-environments")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (provide 'python-config)
 ;;; python-config ends here

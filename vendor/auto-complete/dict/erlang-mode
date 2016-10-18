@@ -4,7 +4,6 @@ catch
 case
 compile
 cond
-connect
 end
 false
 fun
@@ -14,6 +13,10 @@ let
 of
 query
 receive
+recv
+tcp
+tcp_closed
+tcp_error
 try
 when
 and
@@ -60,6 +63,8 @@ record
 reference
 tuple
 abs
+accept
+active
 adler32
 adler32_combine
 alive
@@ -74,7 +79,9 @@ bit_size
 bitstring_to_list
 byte_size
 check_process_code
+close
 cmd
+connect
 contact_binary
 crc32
 crc32_combine
@@ -84,6 +91,8 @@ delete_module
 disconnect_node
 element
 erase
+erl_scan
+error_logger
 exit
 export
 export_all
@@ -140,6 +149,7 @@ make_ref
 module
 module_loaded
 monitor_node
+new_bindings
 node
 node_link
 node_unlink
@@ -163,6 +173,7 @@ put
 register
 registered
 reuseaddr
+reverse
 round
 self
 setelement
@@ -174,6 +185,7 @@ spawn_monitor
 spawn_opt
 split_binary
 statistics
+string
 sub_string
 term_to_binary
 time
@@ -192,6 +204,8 @@ bump_reductions
 cancel_timer
 demonitor
 display
+error_info
+error_msg
 find_executable
 fun_info
 fun_to_list
@@ -199,9 +213,11 @@ function_exported
 get_cookie
 get_stacktrace
 hash
+info_msg
 integer_to_list
 is_builtin
 list_to_integer
+listen
 loaded
 localtime
 localtime_to_universaltime
@@ -216,6 +232,7 @@ min
 monitor
 monitor_node
 packet
+peername
 phash
 phash2
 port_call
@@ -246,4 +263,5 @@ undefined
 universaltime
 universaltime_to_localtime
 version
+warning_msg
 yield
