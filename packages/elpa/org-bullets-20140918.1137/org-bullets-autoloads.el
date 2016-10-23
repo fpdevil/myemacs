@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "org-bullets" "org-bullets.el" (22525 10518
+;;;### (autoloads nil "org-bullets" "org-bullets.el" (22536 14319
 ;;;;;;  0 0))
 ;;; Generated autoloads from org-bullets.el
 

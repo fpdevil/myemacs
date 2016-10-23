@@ -62,14 +62,28 @@
 (when (fboundp 'electric-indent-mode)
   (electric-indent-mode -1))
 
-
+;;
+; keybinding stuff
+;;
 (global-set-key (kbd "<C-S-up>")     'windmove-up)
 (global-set-key (kbd "<C-S-down>")   'windmove-down)
 (global-set-key (kbd "<C-S-left>")   'windmove-left)
 (global-set-key (kbd "<C-S-right>")  'windmove-right)
 
+; (global-set-key (kbd "RET") 'newline-and-indent)
+; (global-set-key (kbd "C-;") 'comment-or-uncomment-region)
+; (global-set-key (kbd "M-/") 'hippie-expand)
+; (global-set-key (kbd "C-+") 'text-scale-increase)
+; (global-set-key (kbd "C--") 'text-scale-decrease)
+; (global-set-key (kbd "C-c C-k") 'compile)
+; (global-set-key (kbd "C-x g") 'magit-status)
+
 ;; set default font
-(set-default-font "Monaco for Powerline")
+;(set-default-font "Monaco for Powerline")
+(set-face-bold-p 'bold nil)
+(set-face-attribute 'default nil :family "Monaco for Powerline"
+                                 :height 120
+                                 :weight 'ultra-light)
 
 (defun timestamp ()
   (interactive)

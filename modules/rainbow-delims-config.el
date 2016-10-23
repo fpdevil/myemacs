@@ -51,6 +51,8 @@
 ;; fancy mode end
 
 (add-hook 'python-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'haskell-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'erlang-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'shell-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
 

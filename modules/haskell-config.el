@@ -1,4 +1,4 @@
-;;===============================================================
+;;; package --- haskell configuration
 ;;; configuration file for haskell mode
 ;; Filename: haskell-config.el
 ;; Description: A major mode haskell language support in Emacs
@@ -12,8 +12,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-; Haskell settings for emacs
-; templates used from the below. Thanks to both
+; Haskell settings for Emacs
+; templates used from the below.  Thanks to both
 ; https://github.com/serras/emacs-haskell-tutorial/
 ; https://github.com/chrisdone/emacs-haskell-config/
 ;;
@@ -33,7 +33,7 @@
 (require 'haskell-process)
 
 ;------------------------------------------------------------------------
-
+;;; Code:
 
 ; Enable Windows-like bindings
 (cua-mode 1)
@@ -254,4 +254,4 @@ import Data.Vector (Vector)
 
 
 (provide 'haskell-config)
-; haskel-config ends here
+;;; haskel-config.el ends here

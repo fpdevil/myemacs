@@ -1,18 +1,24 @@
-;-------------------------------------------------------------------------------
-;;
-; my-package-repos.el
+;;; package --- package respository information for Emacs
+;;;
+;;; name: my-package-repos.el
+;;; description: This file contains all the packages to be laoded and installed
+;;;              by Emacs during startup. Any new package required by the apps
+;;;              or any custom settings needs to be specified here so that they
+;;;              can be installed and loaded.
+;;;
+;;; Commentary:
+;;;              Modules loading for Emacs
 ;;
 ;-------------------------------------------------------------------------------
 ;; Use M-x package-refresh-contents to reload the list of
 ;; packages after adding these for the first time
-;; required standard libraries
+;; required default standard libraries
 (require 'cl)
 (require 'cl-lib)
-
 (require 'package)
-; (setq package-archives '(("gnu"       . "http://elpa.gnu.org/packages/")
-;                          ("marmalade" . "http://marmalade-repo.org/packages/")
-;                          ("melpa"     . "http://melpa.milkbox.net/packages/")))
+;-------------------------------------------------------------------------------
+
+;;; Code:
 
 ;===============================================================================
 ; Package repositories (gnu, melpa, melpa-stable and marmalade)
@@ -54,9 +60,9 @@
 (defvar module-dir (expand-file-name "modules" emacs-dir)
   "Personal stuff.")
 (defvar save-dir (expand-file-name "cache" emacs-dir)
-  "Common directory for automatically generated save/history/etc. files.")
+  "Common directory for automatically generated save/history/files/etc.")
 (defvar pkg-dir (expand-file-name "packages" emacs-dir)
-    "Package installation directory for all emacs packages.")
+    "Package installation directory for all Emacs packages.")
 
 (add-to-list 'load-path pkg-dir)
 (setq package-user-dir (concat pkg-dir "/elpa"))
@@ -67,18 +73,17 @@
 ; initialize the packages
 ;;
 (package-initialize)
-
 (when (not package-archive-contents)
   (package-refresh-contents))
 
-;===============================================================================
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ; packages to be installed
 ; defvar is the correct way to declare global variables
 ; setq is supposed to be use just to set variables and
 ; not create them.
 ;;
-;===============================================================================
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar required-packages
   '(;;; appearance and visual customizations ;;;
     powerline                           ;; powerline smart mode
@@ -87,6 +92,7 @@
     rainbow-identifiers                 ;; colored identifiers
     airline-themes                      ;; fancy vim airline themes
     ;;; color themes for emacs ;;;
+    color-theme                         ;; install color themes
     sublime-themes                      ;; sublime themes
     darkokai-theme                      ;; dark theme based on monokai
     moe-theme                           ;; group of moe themes
@@ -95,6 +101,8 @@
     material-theme                      ;; material themes
     color-theme-sanityinc-tomorrow      ;; tomorrow themes
     color-theme-sanityinc-solarized     ;; solarized themes
+    colorsarenice-theme                 ;; a colorful color theme
+    kooten-theme                        ;; a dark color theme by kootenpv
     ;;; auto completions ;;;
     company                             ;; cmopany autocompletion modes
     company-jedi                        ;; company jedi mode for python
@@ -103,6 +111,7 @@
     auto-complete                       ;; auto completion for gnu emacs
     auto-complete-distel                ;; auto completion  distel for erlang
     company-dict                        ;; backend that emulates ac-source-dictionary
+    company-quickhelp                   ;; documentation popup for company
     ;;; some utilities ;;;
     parent-mode                         ;; get major mode's parent modes
     ; ido                               ;; IDO mode
@@ -168,7 +177,7 @@
     diminish                            ;; Diminished modes are minor modes with no modeline display
     multiple-cursors                    ;; multiple cursors for emacs
   )
-  "A list of packages that will be installed if not present when firing Emacs")
+  "A list of packages that will be installed if not present when firing Emacs.")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -192,13 +201,17 @@
 
 
 ;;
-; function to check if all listed packages are installed
-; return true when the package is not installed
+; function to check if all listed packages are installed. return true when
+; package is not installed. When Emacs boots, check to make sure all the
+; packages defined in required-packages are installed. If not ELPA kicks in.
 ;;
 (defun packages-installed-p ()
-  (loop for p in required-packages
-        when (not (package-installed-p p)) do (return nil)
+  "Load each package specified in the required-packages section."
+  (loop for pkg in required-packages
+        when (not (package-installed-p pkg)) do (return nil)
             finally (return t)))
+
+
 
 ;;
 ; if not all packages are installed, check one by one and install the missing ones.
@@ -227,6 +240,7 @@
 ; paredit
 ; rainbow-delimiters
 ; hihlight-symbols
+; fringe
 ;
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -239,8 +253,9 @@
       "rainbow-delims-config"
       "paredit-config"
       "highlight-symbol-config"
+      "fringe-config"
       )
-    "configuration files which follow the modules/pkgname-config.el format"
+    "Configuration files which follow the modules/pkgname-config.el format."
     )
 
 ;;
@@ -257,7 +272,7 @@
 ;;
 (defvar custom-load-paths
   '("erlang/elisp")
-  "custom load paths that do not follow the normal vendor/elisp/module-name.el format"
+  "Custom load paths that do not follow the normal vendor/elisp/module-name.el format."
   )
 
 ;;
@@ -269,3 +284,6 @@
                                               (buffer-file-name)))
                      "vendor/erlang/elisp"
                      location)))
+
+
+;;; my-package-repos.el ends here

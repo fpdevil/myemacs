@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "highlight-indentation" "highlight-indentation.el"
-;;;;;;  (22530 45200 0 0))
+;;;;;;  (22536 14164 0 0))
 ;;; Generated autoloads from highlight-indentation.el
 
 (autoload 'highlight-indentation-mode "highlight-indentation" "\
@@ -24,11 +24,6 @@ Hilight Indentation minor mode displays a vertical bar
 corresponding to the indentation of the current line
 
 \(fn &optional ARG)" t nil)
-
-;;;***
-
-;;;### (autoloads nil nil ("highlight-indentation-pkg.el") (22530
-;;;;;;  45199 0 0))
 
 ;;;***
 

@@ -17,7 +17,7 @@
 
 (highlight-symbol-nav-mode)
 
-(add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
+;(add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
 (add-hook 'org-mode-hook (lambda () (highlight-symbol-mode)))
 
 (setq highlight-symbol-idle-delay 0.2

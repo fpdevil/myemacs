@@ -4,21 +4,20 @@
 ;;; description: python configuration for emacs
 ;;;
 ;;; Commentary:
-;;  cpython language support for Emacs
-;-----------------------------------------------------------------------
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                  below all are python support specific
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'cl)
-(require 'cl-lib)
-
+;;             python language support for Emacs
+;--------------------------------------------------------------------
 
 ;;
-; company mode for jedi
+; load the required packages
+;;
+(require 'cl)
+(require 'cl-lib)
+;;
+; load company mode for jedi
 ;;
 (require 'company-jedi)
 
+;;; Code:
 
 ;;
 ; python virtualenv wrapper
@@ -35,17 +34,20 @@
 ; for running inferior process when loading major mode python
 ;;
 (defun run-python-once ()
+  "Python specific hook settings."
   (remove-hook 'python-mode-hook 'run-python-once)
   (run-python (python-shell-parse-command)))
 
 (add-hook 'python-mode-hook 'run-python-once)
 
 ;;
-; jedi ide
+; python jedi ide
 ;;
 (require 'jedi)
 
-;; Start auto-complete and jedi for refactoring
+;;
+; Start auto-complete and jedi for refactoring
+;;
 (setq flymake-log-level 3)
 ;; Hook up to autocomplete
 ; (add-to-list ’ac-sources ’ac-source-jedi-direct)
@@ -88,21 +90,28 @@
                 (setq company-backends (list comp-back)))
             )))
 (add-hook 'python-mode-hook 'my-python-hooks)
-;;
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ; shell interpreter
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;(setq py-python-command "/usr/local/bin/python3")
-;(setq python-shell-interpreter "/usr/local/bin/ipython3")
+; (setq py-python-command "/usr/local/bin/python3")
+; (setq python-shell-interpreter "/usr/local/bin/ipython3")
 (setq python-shell-interpreter "ipython3"
       ;; if extras are needed with ipython3
       ; (setq python-shell-interpreter-args "--pylab")
       python-shell-interpreter-args "-i"
+      ;; additional shell options added
+      python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+      python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+      python-shell-completion-setup-code "from IPython.core.completerlib import module_completion"
+      python-shell-completion-module-string-code  "';'.join(module_completion('''%s'''))\n"
+      python-shell-completion-string-code "';'.join(get_ipython().Completer.all_completions('''%s'''))\n"
+      ;; python command
       py-python-command "/usr/local/bin/python3")
-;; below for handling the args-out-of-range error
+;; below for handling the args-out-of-range error in buffer
 (setenv "IPY_TEST_SIMPLE_PROMPT" "1")
 (setq python-check-command "/usr/local/bin/pyflakes")
 (setq python-environment-directory "~/.emacs.d/.python-environments")
@@ -110,12 +119,15 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 
-;
-; load jedi-core
+;;
+; load python jedi-core
+;;
 (require 'jedi-core)
 
+;;
 ; system path in the lisp
 ; set PATH, because we don't load .bashrc
+;;
 (setenv
  "PATH" (concat
    "$HOME/bin:"
@@ -126,7 +138,9 @@
    "/usr/local/bin:"
    "/usr/local/sbin"))
 
+;;
 ; Set PYTHONPATH, because we don't load .bashrc
+;;
 (setenv "PYTHONPATH" "/usr/local/lib/python3.5/site-packages:")
 
 
@@ -144,12 +158,12 @@
 (add-hook 'python-mode-hook 'py-yapf-enable-on-save)
 
 
-;;===========================================================================
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ; elpy
 ; Emacs Python Development Environment
 ;;
-;;===========================================================================
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'elpy)
 (elpy-enable)
 (elpy-use-ipython)
@@ -160,6 +174,14 @@
   flycheck-python-flake8-executable "/usr/local/bin/flake8"
   python-check-command "/usr/local/bin/pyflakes"
   python-environment-directory "~/.emacs.d/.python-environments")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;
+; enable eldoc
+;;
+(eldoc-mode t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

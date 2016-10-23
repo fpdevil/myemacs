@@ -11,6 +11,8 @@
 ;; http://y.tsutsumi.io/emacs-from-scratch-part-2-package-management.html
 
 ;;----------------------------------------------------------------------
+;;; Code:
+
 ;;
 ; utf-8 encoding
 ;;
@@ -41,7 +43,7 @@
 ;-----------------------------------------------------------------------
 ;;
 ;; uncomment below section if needed
-;(byte-recompile-directory (expand-file-name "~/.emacs.d/packages/elpa") 0)
+; (byte-recompile-directory (expand-file-name "~/.emacs.d/packages/elpa") 0)
 ;
 ; custom function defined inside my-methods
 
@@ -60,6 +62,16 @@
 ;;                            require packages
 ;;======================================================================
 
+
+;;
+; setting default theme to required one
+;;
+; (load-theme 'material t)
+(load-theme 'material-light t)
+; (load-theme 'darkokai t)
+; (load-theme 'mccarthy t)
+
+
 ;;
 ; company mode
 ;;
@@ -69,6 +81,13 @@
 (auto-complete-mode 1)
 ; no delay for company suggestions
 (setq company-idle-delay 0)
+
+
+;;
+; documentation popup for company
+;;
+(require 'company-quickhelp)
+(company-quickhelp-mode 1)
 
 
 ;;
@@ -152,8 +171,8 @@
   '(mode-enabled save new-line idle-change))
 ;(add-hook 'prog-mode-hook (lambda () (flycheck-mode)))
 ;; Improved Haskell support for Flycheck
-(eval-after-load 'flycheck
-  '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
+;; (eval-after-load 'flycheck
+;;   '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
 
 
 
@@ -227,15 +246,6 @@
       airline-utf-glyph-branch              #xe0a0
       airline-utf-glyph-readonly            #xe0a2
       airline-utf-glyph-linenumber          #xe0a1)
-
-
-
-;;
-; setting default theme tp material dark
-;;
-; (load-theme 'material t)
-(load-theme 'material-light t)
-;(load-theme 'darkokai t)
 
 
 ;;

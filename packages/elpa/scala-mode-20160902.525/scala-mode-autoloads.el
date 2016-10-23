@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "scala-mode" "scala-mode.el" (22525 10547 0
+;;;### (autoloads nil "scala-mode" "scala-mode.el" (22536 14326 0
 ;;;;;;  0))
 ;;; Generated autoloads from scala-mode.el
 
@@ -20,7 +20,7 @@ Go to the start of the real code in the file: object, class or trait.
 (autoload 'scala-mode "scala-mode" "\
 Major mode for editing scala code.
 
-When started, runs `scala-mode-hook'. 
+When started, runs `scala-mode-hook'.
 
 \\{scala-mode-map}
 
@@ -36,7 +36,7 @@ When started, runs `scala-mode-hook'.
 ;;;;;;  "scala-mode-imenu.el" "scala-mode-indent.el" "scala-mode-lib.el"
 ;;;;;;  "scala-mode-map.el" "scala-mode-paragraph.el" "scala-mode-pkg.el"
 ;;;;;;  "scala-mode-prettify-symbols.el" "scala-mode-syntax.el")
-;;;;;;  (22525 10547 0 0))
+;;;;;;  (22536 14326 0 0))
 
 ;;;***
 
