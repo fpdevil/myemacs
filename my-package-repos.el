@@ -24,13 +24,14 @@
 ; Package repositories (gnu, melpa, melpa-stable and marmalade)
 ;===============================================================================
 (add-to-list 'package-archives
-             '("gnu" . "http://elpa.gnu.org/packages/") t)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+             '("gnu" . "http://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/"))
+
 ;===============================================================================
 
 
@@ -73,8 +74,11 @@
 ; initialize the packages
 ;;
 (package-initialize)
+;; make sure to have downloaded archive description.
 (when (not package-archive-contents)
   (package-refresh-contents))
+(package-install-selected-packages)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -122,13 +126,14 @@
     ;;; documentation and help ;;;
     markdown-mode                       ;; markdown language support
     ;; auctex                           ;; AUCTEX and LATEX
-    ;;; syntax checkers
+    ;;; syntax checkers  ;;;
+    ;;; flycheck family  ;;;
     flycheck                            ;; flycheck on the fly syntax checker
     flycheck-color-mode-line            ;; flycheck colors for highlighting errors
     flycheck-pos-tip                    ;; flycheck errors display in tooltip
     flycheck-tip                        ;; show flycheck/flymake errors by tooltip
     popup                               ;; show popup for flycheck
-
+    ;;; flymake family   ;;;
     flymake-easy                        ;; flymake on the fly syntax checker
     flymake-python-pyflakes             ;; flymake handler for syntax-checking Python source code using pyflakes or flake8
     flymake-hlint                       ;; linting for haskell
@@ -148,6 +153,7 @@
     ;;; haskell programming modes ;;;
     haskell-mode                        ;; haskell language support
     company-ghc                         ;; haskell company autocompletion
+    company-ghci                        ;; a company backend for haskell
     company-cabal                       ;; cabal company support
     shm                                 ;; structured haskell mode
     haskell-snippets                    ;; haskell language snippets
@@ -161,14 +167,14 @@
     ; edts                              ;; erlang development ide
     ;;; scala development with ensime ;;;
     ensime                              ;; ENhanced Scala Interaction Mode for Emacs
-    ;; Yasnippets package
+    ;; Yasnippets package   ;;;
     yasnippet                           ;; yasnippets for supporting languages
     ;;; important utilities ;;;
     helm                                ;; incremental completion and selection narrowing framework
     ;;; essential packs ;;;
     ecb                                 ;; emacs code browser
     buffer-move                         ;; move buffer
-    ;;; utilities ;;;
+    ;;; utilities       ;;;
     highlight-symbol                    ;; automatic and manual symbol highlighting for Emacs
     all-the-icons                       ;; package for showing various icons
     xah-math-input                      ;; show math input symbols
@@ -199,7 +205,7 @@
 (mapc 'load (directory-files vendor-dir nil "^[^#].*el$"))
 
 
-
+;;-------------------------------------------------------------------------
 ;;
 ; function to check if all listed packages are installed. return true when
 ; package is not installed. When Emacs boots, check to make sure all the
@@ -212,7 +218,6 @@
             finally (return t)))
 
 
-
 ;;
 ; if not all packages are installed, check one by one and install the missing ones.
 ;;
@@ -222,12 +227,12 @@
   (package-refresh-contents)
   (message "%s" " done.")
   ; install the missing packages
-  (dolist (p required-packages)
-    (when (not (package-installed-p p))
-      (package-install p))))
+  (dolist (pkg required-packages)
+    (when (not (package-installed-p pkg))
+      (package-install pkg))))
+
 
 (provide 'required-packages)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

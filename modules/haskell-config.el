@@ -153,8 +153,10 @@
   '(define-key haskell-cabal-mode-map (kbd "C-c C-n C-o") 'haskell-compile))
 
 
-
-;; intero
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; intero (not used, so commented)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; (defun haskell-process-cabal-build-and-restart ()
 ;   "Build and restart the Cabal project."
 ;   (interactive)
@@ -166,19 +168,20 @@
 ; (define-key intero-mode-map [f12] 'intero-devel-reload)
 
 
-;------------------------------------------------------------------------
-; GHC-MOD
-;------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; ghc-mod
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (autoload 'ghc-init "ghc" nil t)
 (autoload 'ghc-debug "ghc" nil t)
 (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
 
 
-;------------------------------------------------------------------------
-; COMPANY-GHC
-;------------------------------------------------------------------------
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; company-ghc
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Enable company-mode
 (require 'company)
 ; Use company in Haskell buffers
@@ -192,10 +195,21 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; company-ghci
+; company-ghci is a company backend that provides completions for the
+; haskell programming language by talking to a ghci process
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'company-ghci)
+(push 'company-ghci company-backends)
+(add-hook 'haskell-mode-hook 'company-mode)
+;;; To get completions in the REPL
+(add-hook 'haskell-interactive-mode-hook 'company-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-; shm
-; Use structured-haskell-mode
-;;
+; shm (Use structured-haskell-mode)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'shm)
 (add-hook 'haskell-mode-hook 'structured-haskell-mode)

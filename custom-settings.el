@@ -23,7 +23,7 @@
  '(inferior-haskell-find-haddock nil)
  '(package-selected-packages
    (quote
-    (company-quickhelp kooten-theme zenburn-theme xah-math-input virtualenvwrapper sublime-themes smartparens shm rainbow-mode rainbow-identifiers rainbow-delimiters python-pylint py-yapf paredit org-bullets multiple-cursors monokai-theme moe-theme material-theme markdown-mode magit key-chord jedi hindent highlight-symbol hi2 helm haskell-snippets flymake-python-pyflakes flymake-hlint flymake-cursor flycheck-tip flycheck-pos-tip flycheck-haskell flycheck-color-mode-line erlang ensime elpy ecb diminish darkokai-theme company-jedi company-ghc company-distel company-dict company-cabal colorsarenice-theme color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized color-theme buffer-move auto-complete-distel all-the-icons airline-themes)))
+    (rainbow-delimiters elpy python-mode py-yapf python-pylint jedi virtualenvwrapper company-jedi highlight-symbol shm company-ghci company hi2 ghc hindent flycheck-color-mode-line flycheck auto-complete-distel auto-complete erlang)))
  '(shm-auto-insert-bangs t)
  '(shm-auto-insert-skeletons t)
  '(shm-use-hdevtools t)
