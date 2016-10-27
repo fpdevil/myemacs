@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "colorsarenice-common" "colorsarenice-common.el"
-;;;;;;  (22541 34609 0 0))
+;;;;;;  (22545 25197 0 0))
 ;;; Generated autoloads from colorsarenice-common.el
 
 (when load-file-name (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
@@ -12,7 +12,7 @@
 ;;;***
 
 ;;;### (autoloads nil nil ("colorsarenice-dark-theme.el" "colorsarenice-light-theme.el"
-;;;;;;  "colorsarenice-theme-pkg.el") (22541 34609 0 0))
+;;;;;;  "colorsarenice-theme-pkg.el") (22545 25197 0 0))
 
 ;;;***
 

@@ -8,6 +8,7 @@
 ;--------------------------------------------------------------------
 
 ;;; Code:
+;;;
 (setq indicate-buffer-boundaries 'right
       visual-line-fringe-indicators '(left-curly-arrow nil)
       left-fringe-width 8)

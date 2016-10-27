@@ -4,19 +4,25 @@
 (global-set-key (kbd "<menu>") 'nil)
 
 ;;********************************************************
-;; some customizations
+;;                 some customizations
 ;;********************************************************
 (setq user-full-name "Sampath Singamsetty"
       user-mail-address "Singamsetty.Sampath@gmail.com")
 
-;; gc setup
-;; Start garbage collection every 100MB to improve Emacs performance
+;;
+; garbage collection setup for aquamacs
+; Start garbage collection every 100MB to improve Emacs performance
+;;
 (setq gc-cons-threshold 100000000)
 
+;;
 ; parentheses
+;;
 (show-paren-mode t)
 
-; recent files
+;;
+; recent files list
+;;
 (recentf-mode 1)
 
 (global-set-key "\M- " 'hippie-expand)
@@ -31,8 +37,9 @@
 
 (put 'upcase-region 'disabled nil)
 
-
+;;
 ; syntax highlighting everywhere
+;;
 (global-font-lock-mode 1)
 
 
@@ -63,7 +70,7 @@
   (electric-indent-mode -1))
 
 ;;
-; keybinding stuff
+; custom keybinding stuff
 ;;
 (global-set-key (kbd "<C-S-up>")     'windmove-up)
 (global-set-key (kbd "<C-S-down>")   'windmove-down)
@@ -78,13 +85,17 @@
 ; (global-set-key (kbd "C-c C-k") 'compile)
 ; (global-set-key (kbd "C-x g") 'magit-status)
 
-;; set default font
-;(set-default-font "Monaco for Powerline")
+;;
+; set default font for aquamacs
+;;
 (set-face-bold-p 'bold nil)
 (set-face-attribute 'default nil :family "Monaco for Powerline"
                                  :height 120
                                  :weight 'ultra-light)
 
+;;
+; defeault timestamp format
+;;
 (defun timestamp ()
   (interactive)
   (insert (format-time-string "%d.%m.%Y, %H:%M")))
@@ -120,6 +131,9 @@ This command does the inverse of `fill-region'."
   (let ((fill-column 90002000))
     (fill-region start end)))
 
+;;
+; for latex
+;;
 ; (setq LaTeX-math-menu-unicode t)
 ; (add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
 ; (require 'reftex)
@@ -138,12 +152,6 @@ This command does the inverse of `fill-region'."
 ;;
 ; colorize the output of the compilation mode.
 ;;
-; (require 'ansi-color)
-; (defun colorize-compilation-buffer ()
-;   (let ((inhibit-read-only t))
-;     (ansi-color-apply-on-region (point-min) (point-max))))
-; (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
-
 (require 'ansi-color)
 (defun endless/colorize-compilation ()
   "Colorize from `compilation-filter-start' to `point'."
@@ -202,3 +210,8 @@ This command does the inverse of `fill-region'."
          ("\\<\\(NOCOMMIT\\(?:(.*)\\)?:?\\)\\>"  1 'error prepend))))
 
 (add-hook 'prog-mode-hook #'add-watchwords)
+
+
+(provide 'my-internals)
+
+;;; my-internals.el ends here

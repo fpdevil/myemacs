@@ -4,35 +4,48 @@
 ;;; description: python configuration for emacs
 ;;;
 ;;; Commentary:
-;;             python language support for Emacs
-;--------------------------------------------------------------------
+;;;            A full featured python ide and language support for Aquamacs
+;----------------------------------------------------------------------------
+
 
 ;;
 ; load the required packages
 ;;
 (require 'cl)
 (require 'cl-lib)
-;;
-; load company mode for jedi
-;;
-(require 'company-jedi)
 
+;;
+; load all the syntax specific packages
+;;
+(require 'jedi)                 ; a Python auto-completion for Emacs
+(require 'company-jedi)         ; company-mode completion back-end for Python JEDI
+(require 'jedi-core)            ; Common code of jedi.el and company-jedi.el
+(require 'ring)                 ; browse the kill ring
+(require 'epc)                  ; RPC stack for the Emacs Lisp
+(require 'elpy)                 ; Emacs Python Development Environment
+(require 'python-pylint)        ; minor mode for running pylint
+(require 'py-yapf)              ; Use yapf to beautify a Python buffer
+(require 'virtualenvwrapper)    ; python virtualenv wrapper
+
+;;;
 ;;; Code:
+;;;
+
 
 ;;
-; python virtualenv wrapper
+; virtual env setup
 ;;
-(require 'virtualenvwrapper)
 (venv-initialize-interactive-shells) ;; if you want interactive shell support
 (venv-initialize-eshell) ;; if you want eshell support
 (setq venv-location (expand-file-name "~/.virtualenvs/"))
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-; python jedi
+; python jedi setup
 ; python development with auto-completion and intelli-sense
 ; for running inferior process when loading major mode python
 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun run-python-once ()
   "Python specific hook settings."
   (remove-hook 'python-mode-hook 'run-python-once)
@@ -40,19 +53,12 @@
 
 (add-hook 'python-mode-hook 'run-python-once)
 
-;;
-; python jedi ide
-;;
-(require 'jedi)
+;; set flymake log level
+(setq flymake-log-level 3)
 
 ;;
-; Start auto-complete and jedi for refactoring
-;;
-(setq flymake-log-level 3)
-;; Hook up to autocomplete
+; Hook up to autocomplete
 ; (add-to-list ’ac-sources ’ac-source-jedi-direct)
-(require 'ring)
-(require 'epc)
 (autoload 'jedi:setup "jedi" nil t)
 ;; enable python-mode
 (add-hook 'python-mode-hook 'jedi:setup)
@@ -77,9 +83,8 @@
        (local-set-key (kbd "M-/") 'jedi:get-in-function-call))
 (add-hook 'python-mode-hook 'jedi-config:setup-keys)
 
-
 ;;
-; company backend for Python jedi
+; company backend setup for Python jedi
 ;;
 (defun my-python-hooks()
     (eval-after-load "company"
@@ -91,14 +96,9 @@
             )))
 (add-hook 'python-mode-hook 'my-python-hooks)
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-; shell interpreter
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; (setq py-python-command "/usr/local/bin/python3")
-; (setq python-shell-interpreter "/usr/local/bin/ipython3")
+;;=============================;;
+;;  python3 shell interpreter  ;;
+;;=============================;;
 (setq python-shell-interpreter "ipython3"
       ;; if extras are needed with ipython3
       ; (setq python-shell-interpreter-args "--pylab")
@@ -109,20 +109,14 @@
       python-shell-completion-setup-code "from IPython.core.completerlib import module_completion"
       python-shell-completion-module-string-code  "';'.join(module_completion('''%s'''))\n"
       python-shell-completion-string-code "';'.join(get_ipython().Completer.all_completions('''%s'''))\n"
-      ;; python command
+      ;; python3 command
       py-python-command "/usr/local/bin/python3")
-;; below for handling the args-out-of-range error in buffer
+;; below line specified for handling the args-out-of-range error in buffer
 (setenv "IPY_TEST_SIMPLE_PROMPT" "1")
 (setq python-check-command "/usr/local/bin/pyflakes")
 (setq python-environment-directory "~/.emacs.d/.python-environments")
 ;; handling whitespaces in python mode
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-
-;;
-; load python jedi-core
-;;
-(require 'jedi-core)
 
 ;;
 ; system path in the lisp
@@ -143,28 +137,16 @@
 ;;
 (setenv "PYTHONPATH" "/usr/local/lib/python3.5/site-packages:")
 
-
-;;
-; python linting
-;;
-(require 'python-pylint)
-(load "python-pylint")
-
-
-;;
-; yapf to beautify a Python buffer
-;;
-(require 'py-yapf)
-(add-hook 'python-mode-hook 'py-yapf-enable-on-save)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ; elpy
 ; Emacs Python Development Environment
+;
+; elpy mode can be disabled or commented out if running 2 completion(s)
+; simultaneously is considered an overkill and right now the jedi setup
+; has been working more than satisfactorily... but leaving for now
 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'elpy)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (elpy-enable)
 (elpy-use-ipython)
 (setq
@@ -174,10 +156,66 @@
   flycheck-python-flake8-executable "/usr/local/bin/flake8"
   python-check-command "/usr/local/bin/pyflakes"
   python-environment-directory "~/.emacs.d/.python-environments")
-
+;;
+;; Note
+;; elpy auto-completion can be manually triggerred using M-Tab
+;; M-TAB (elpy-company-backend) as per the below documentation
+;; https://elpy.readthedocs.io/en/latest/ide.html#completion
+;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+; python linting
+; using flycheck with pylint
+; http://liuluheng.github.io/wiki/public_html/Python/flycheck-pylint-emacs-with-python.html
+;;
+(defun flycheck-python-setup ()
+  "Flycheck python lint support."
+  (flycheck-mode))
+(add-hook 'python-mode-hook #'flycheck-python-setup)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+; pylint integration through flymake
+; Configure flymake for Python
+;;
+(when (load "flymake" t)
+  (defun flymake-pylint-init ()
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
+      (list "epylint" (list local-file))))
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.py\\'" flymake-pylint-init)))
+
+;; Set as a minor mode for Python
+(add-hook 'python-mode-hook '(lambda () (flymake-mode)))
+
+;;
+; To avoid having to mouse hover for the error message, these functions make
+; flymake error messages appear in the minibuffer
+;;
+(defun show-fly-err-at-point ()
+  "If the cursor is sitting on a flymake error, display the message in the minibuffer."
+  (require 'cl)
+  (interactive)
+  (let ((line-no (line-number-at-pos)))
+    (dolist (elem flymake-err-info)
+      (if (eq (car elem) line-no)
+      (let ((err (car (second elem))))
+        (message "%s" (flymake-ler-text err)))))))
+
+(add-hook 'post-command-hook 'show-fly-err-at-point)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+; yapf mode for beautifying a python buffer
+;;
+(add-hook 'python-mode-hook 'py-yapf-enable-on-save)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ; enable eldoc
 ;;

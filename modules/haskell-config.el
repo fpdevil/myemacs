@@ -2,6 +2,7 @@
 ;;; configuration file for haskell mode
 ;; Filename: haskell-config.el
 ;; Description: A major mode haskell language support in Emacs
+;;              http://haskell.github.io/haskell-mode/manual/latest/index.html#Top
 ;;
 ;;; Commentary:
 ;;
@@ -100,8 +101,8 @@
  '(shm-use-presentation-mode t)
  '(shm-auto-insert-skeletons t)
  '(shm-auto-insert-bangs t)
- '(haskell-process-show-debug-tips nil)
- '(haskell-process-suggest-hoogle-imports nil)
+ '(haskell-process-show-debug-tips t)
+ '(haskell-process-suggest-hoogle-imports t)
  '(haskell-process-suggest-haskell-docs-imports t)
  ; using chris-done style for code indenting
  '(hindent-style "chris-done")
@@ -140,7 +141,9 @@
   (define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
   (define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
   (define-key haskell-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
+  (define-key haskell-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
   (define-key haskell-mode-map (kbd "C-c c") 'haskell-process-cabal)))
+
 (eval-after-load 'haskell-cabal '(progn
   (define-key haskell-cabal-mode-map (kbd "C-c C-n C-z") 'haskell-interactive-switch)
   (define-key haskell-cabal-mode-map (kbd "C-c C-n C-k") 'haskell-interactive-mode-clear)
