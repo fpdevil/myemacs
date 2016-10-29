@@ -1,19 +1,18 @@
-;;===============================================================
-;;; configuration file for rainbow delimiters
-;; Filename: rainbow-delims-config.el
-;; Description: A fancy mode for colored pairing of parenthesis
-;;
+;;; package --- rainbow-delims-config
+;;;
 ;;; Commentary:
-;;
-;; elisp code for rainbow delimiter handling
-;;===============================================================
+;;; Filename: rainbow-delims-config.el
+;;; Description: fancy stuff, configuration file for rainbow delimiters
+;;;              a fancy mode for colored pairing of parenthesis
+;============================================================================
 
-
 ;;
-; fancy stuff
-; for rainbow delimiters
+; load the required libraries
 ;;
 (require 'rainbow-delimiters)
+
+;;; Code:
+
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 ;; some customizations for the default modes
 ;; stolen from https://ogbe.net/emacsconfig.html
@@ -57,6 +56,5 @@
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
 
 (provide 'rainbow-delims-config)
-
 
 ;;; rainbow-delims-config ends here

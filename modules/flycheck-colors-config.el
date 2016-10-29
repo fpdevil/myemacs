@@ -1,12 +1,12 @@
 ;;; package  --- flycheck-colors-config.el
-;
-;;; configuration file for flycheck colors
-;; Filename: flycheck-colors-config.el
-;; Description: A minor mode for handling the errors in mode line
-;;
+;;;
 ;;; Commentary:
-;;
-;; elisp code for handling flycheck errors in colors
+;;;
+;;; Filename: flycheck-colors-config.el
+;;; Description: configuration file for flycheck colors.
+;;;              A minor mode for handling the errors in mode line
+;;;
+;;; elisp code for handling flycheck errors in colors
 ;;===============================================================
 
 (require 'flycheck)
@@ -37,9 +37,7 @@
 			 '(:inherit flycheck-fringe-error
 				    :foreground "red" :weight normal))))
 
-(provide 'flycheck-colors-config)
-
-
+;-------------------------------------------------------------------------------
 ; (require 'flycheck)
 ; (add-hook 'find-file-hook
 ;           (lambda ()
@@ -78,12 +76,12 @@
 ;      (set-face-foreground 'flycheck-color-mode-line-error-face nil)
 ;      (set-face-foreground 'flycheck-color-mode-line-warning-face nil)
 ;      (set-face-foreground 'flycheck-color-mode-line-info-face nil)))
+;-------------------------------------------------------------------------------
 
-; ;;; Haskell specific
+;;; Improved Haskell support for Flycheck
+(require 'flycheck-haskell)
+(eval-after-load 'flycheck
+  '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
 
-; (require 'flycheck-haskell)
-; (eval-after-load 'flycheck
-;   '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
-
-; (provide 'flycheck-colors-config)
-;;; flycheck-colors-config ends here
+(provide 'flycheck-colors-config)
+;;; flycheck-colors-config.el ends here

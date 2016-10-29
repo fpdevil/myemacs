@@ -24,29 +24,28 @@
 (set-keyboard-coding-system 'utf-8)
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-
-;(package-initialize)
-
-;; system is mac
+;;
+; system is mac
+;;
 (defconst *is-a-mac* (eq system-type 'darwin))
 
 
+;;
+; adding the lisp files to path
+;;
 (add-to-list 'load-path "~/.emacs.d")
 (setq custom-file "~/.emacs.d/custom-settings.el")
 (load custom-file)
 (load "~/.emacs.d/my-package-repos.el")
 
 
-;;
 ;-----------------------------------------------------------------------
 ; byte recompiling everything during bootstrap
 ;-----------------------------------------------------------------------
-;;
 ;; uncomment below section if needed
 ; (byte-recompile-directory (expand-file-name "~/.emacs.d/packages/elpa") 0)
 ;
-; custom function defined inside my-methods
-
+; a custom function is defined inside my-methods
 
 
 ;; Finalizers
@@ -55,16 +54,12 @@
 ; (setq debug-on-error nil)
 ; (setq debug-on-quit nil)
 
-;-----------------------------------------------------------------------
-
-
 ;;======================================================================
 ;;                            require packages
 ;;======================================================================
 
-
 ;;
-; setting default theme to required one
+; setting default theme to the required one
 ;;
 ; (load-theme 'material t)
 (load-theme 'material-light t)
@@ -73,7 +68,7 @@
 
 
 ;;
-; company mode
+; company mode (for company based completions)
 ;;
 (require 'company)
 (require 'company-distel)
@@ -114,7 +109,7 @@
 
 
 ;;
-; fancy stuff
+; fancy (but usefull) stuff
 ; for rainbow delimiters
 ;;
 (require 'rainbow-delimiters)
@@ -132,7 +127,6 @@
       'rainbow-identifiers-cie-l*a*b*-choose-face)
 (setq rainbow-identifiers-cie-l*a*b*-lightness 45)
 (setq rainbow-identifiers-cie-l*a*b*-saturation 45)
-
 
 
 ;;
@@ -156,8 +150,6 @@
 (require 'smartparens)
 (smartparens-global-mode t)
 (show-smartparens-global-mode t)
-; (show-smartparens-global-mode +1)
-; (smartparens-global-mode 1)
 
 
 ;;
@@ -169,11 +161,6 @@
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (setq flycheck-check-syntax-automatically
   '(mode-enabled save new-line idle-change))
-;(add-hook 'prog-mode-hook (lambda () (flycheck-mode)))
-;; Improved Haskell support for Flycheck
-;; (eval-after-load 'flycheck
-;;   '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
-
 
 
 ;;
@@ -223,11 +210,6 @@
 ; load from highlight-symbol-config.el
 ;;
 ;(require 'highlight-symbol)
-; (global-set-key [(control f3)] 'highlight-symbol)
-; (global-set-key [f3] 'highlight-symbol-next)
-; (global-set-key [(shift f3)] 'highlight-symbol-prev)
-; (global-set-key [(meta f3)] 'highlight-symbol-query-replace)
-
 
 
 ;;
@@ -260,7 +242,6 @@
     (setq yas-dont-activate t)))
 (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets/")
 (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets/yasnippet-snippets")
-; (yas/load-directory "~/.emacs.d/snippets"))
 
 
 ;;
@@ -297,7 +278,6 @@
 (sequence "|" "✘ CANCELED(c)")))
 
 
-
 ;;
 ; buffer mode
 ;;
@@ -330,7 +310,6 @@
 ; full configuration inside haskell-config.el
 ;;
 (require 'haskell-mode)
-(require 'hindent)
 
 
 ;;
@@ -348,7 +327,6 @@
 ;(use fm instead of C-x b to list buffers)
 
 
-
 ;;
 ; helm
 ; Emacs incremental completion and selection narrowing framework
@@ -362,12 +340,10 @@
 (key-chord-define-global "fm" 'helm-mini)
 
 
-
 ;;
 ; show flycheck/flymake errors by tooltip
 ;;
 (require 'flycheck-tip)
-
 
 
 ;;
@@ -375,7 +351,6 @@
 ;;
 (require 'multiple-cursors)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

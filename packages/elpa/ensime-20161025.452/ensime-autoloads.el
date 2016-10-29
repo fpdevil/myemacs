@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ensime" "ensime.el" (22545 25216 0 0))
+;;;### (autoloads nil "ensime" "ensime.el" (22548 51191 0 0))
 ;;; Generated autoloads from ensime.el
 
 (autoload 'ensime "ensime" "\
@@ -19,7 +19,7 @@ Read config file for settings. Then connect to an existing ENSIME server.
 ;;;***
 
 ;;;### (autoloads nil "ensime-auto-complete" "ensime-auto-complete.el"
-;;;;;;  (22545 25216 0 0))
+;;;;;;  (22548 51191 0 0))
 ;;; Generated autoloads from ensime-auto-complete.el
 
 (autoload 'ensime-ac-enable "ensime-auto-complete" "\
@@ -29,8 +29,8 @@ Read config file for settings. Then connect to an existing ENSIME server.
 
 ;;;***
 
-;;;### (autoloads nil "ensime-company" "ensime-company.el" (22545
-;;;;;;  25216 0 0))
+;;;### (autoloads nil "ensime-company" "ensime-company.el" (22548
+;;;;;;  51191 0 0))
 ;;; Generated autoloads from ensime-company.el
 
 (autoload 'ensime-company-enable "ensime-company" "\
@@ -40,7 +40,7 @@ Read config file for settings. Then connect to an existing ENSIME server.
 
 ;;;***
 
-;;;### (autoloads nil "ensime-mode" "ensime-mode.el" (22545 25216
+;;;### (autoloads nil "ensime-mode" "ensime-mode.el" (22548 51191
 ;;;;;;  0 0))
 ;;; Generated autoloads from ensime-mode.el
 
@@ -63,7 +63,7 @@ ENSIME: The ENhanced Scala Interaction Mode for Emacs (minor-mode).
 ;;;;;;  "ensime-popup.el" "ensime-refactor.el" "ensime-sbt.el" "ensime-search.el"
 ;;;;;;  "ensime-semantic-highlight.el" "ensime-stacktrace.el" "ensime-startup.el"
 ;;;;;;  "ensime-ui.el" "ensime-undo.el" "ensime-util.el" "ensime-vars.el")
-;;;;;;  (22545 25216 0 0))
+;;;;;;  (22548 51191 0 0))
 
 ;;;***
 

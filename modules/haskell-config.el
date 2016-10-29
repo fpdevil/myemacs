@@ -1,87 +1,106 @@
 ;;; package --- haskell configuration
+;;;
+;;; Commentary:
+;;;
 ;;; configuration file for haskell mode
-;; Filename: haskell-config.el
-;; Description: A major mode haskell language support in Emacs
+;;; Filename: haskell-config.el
+;;; Description: A major mode haskell language support in Emacs
 ;;              http://haskell.github.io/haskell-mode/manual/latest/index.html#Top
 ;;
-;;; Commentary:
-;;
 ;; elisp code for haskell language support and handling
-;;===============================================================
+;;===========================================================================
 
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ; Haskell settings for Emacs
 ; templates used from the below.  Thanks to both
 ; https://github.com/serras/emacs-haskell-tutorial/
 ; https://github.com/chrisdone/emacs-haskell-config/
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;
+; load the required libraries
+;;
 (require 'cl)
 (require 'cl-lib)
-(require 'haskell-mode)
-;(require 'haskell-mode-autoloads)
-(require 'hindent)
-(require 'haskell-font-lock)
-;(require 'intero)
-(require 'ghc)
-;(require 'haskell-doc)
-(require 'inf-haskell)
-(require 'haskell-interactive-mode)
-(require 'haskell-process)
 
-;------------------------------------------------------------------------
+;;
+; load necessary libraries for haskell and company
+;;
+(require 'haskell-mode)               ; haskell editing mode for Emacs
+(require 'hindent)                    ; indentation for haskell program
+(require 'haskell-font-lock)          ; font lock mode for haskell
+(require 'ghc)                        ; sub mode for haskell mode
+(require 'inf-haskell)                ; haskell inferior mode
+(require 'haskell-interactive-mode)   ; haskell ghci support
+(require 'haskell-process)            ; haskell ghci repl support
+(require 'hi2)                        ; indentation module for haskell mode
+(require 'company)                    ; modular text completion framework
+(require 'company-ghci)               ; company backend which uses the current ghci process
+(require 'shm)                        ; structured haskell mode
+; (require 'intero)                   ; complete development mode for haskell
+
+;============================================================================
+;
 ;;; Code:
 
 ; Enable Windows-like bindings
 (cua-mode 1)
 
-; Set up haskell environment
-(setenv "PATH" (concat "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:~/Library/Haskell/bin"
-    (getenv "PATH")))
-(add-to-list 'exec-path "~/Library/Haskell/bin")
-; Make Emacs look in Cabal directory for binaries
-(let ((my-cabal-path (expand-file-name "~/Library/Haskell/bin")))
+;;
+; Set up PATH for the haskell and cabal environment
+;;
+(setenv "PATH" (concat "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:"
+               (getenv "HOME") "/Library/Haskell/bin"
+               (getenv "PATH")))
+
+(add-to-list 'exec-path (concat (getenv "HOME") "~/Library/Haskell/bin"))
+
+; Make Emacs look in to the Cabal directory for binaries
+(let ((my-cabal-path (expand-file-name (concat (getenv "HOME") "/Library/Haskell/bin"))))
   (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
   (add-to-list 'exec-path my-cabal-path))
 
+;----------------------------------------------------------------------------
+;;                 emacs haskell-mode configuration setup                  ;;
+;----------------------------------------------------------------------------
 
-;------------------------------------------------------------------------
-; HASKELL-MODE
-;------------------------------------------------------------------------
-
-; Choose indentation mode
-;; Use haskell-mode indentation
+;;
+; Choose the indentation mode
+; Use haskell-mode indentation
+;;
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 (add-hook 'haskell-mode-hook 'haskell-auto-insert-module-template)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'haskell-decl-scan-mode)
 
 
-
-;; auto-complete-mode so can interact with inferior haskell and popup completion
-;; turn on when needed.
+;;
+; auto-complete-mode so can interact with inferior haskell and popup completion
+; turn on when needed.
+;;
 (add-hook 'haskell-mode-hook (lambda () (auto-complete-mode 1)))
 
 ;;
 ; Use hi2
 ;;
-(require 'hi2)
 (add-hook 'haskell-mode-hook 'turn-on-hi2)
 
-;; haskell syntax checking, indentation and snippets
+;;
+; haskell syntax checking, indentation and snippets
+;;
 (add-hook 'haskell-mode-hook 'yas-minor-mode)
 (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 
-
+;;
 ; Add F8 key combination for going to imports block
+;;
 (eval-after-load 'haskell-mode
   '(define-key haskell-mode-map [f8] 'haskell-navigate-imports))
 
+;; set variables needed for customization
 (custom-set-variables
  ; Set up hasktags (part 2)
  '(haskell-tags-on-save nil)
@@ -89,9 +108,8 @@
  '(haskell-process-log t)
  '(haskell-process-suggest-remove-import-lines t)
  '(haskell-process-auto-import-loaded-modules t)
- ; Set interpreter to be "cabal repl"
+ ; set interpreter to be "cabal repl" or ghci
  ;'(haskell-process-type 'cabal-repl)
- ; set interpreter to be ghci
  '(haskell-process-type 'ghci)
  ; haskell font-lock
  '(haskell-font-lock-symbols t)
@@ -111,7 +129,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; standard module completions
+; standard haskell module completions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq haskell-complete-module-preferred
       '("Data.ByteString"
@@ -125,7 +143,6 @@
         "Data.Text"
         "Data.Ord"))
 
-
 (setq haskell-session-default-modules
       '("Control.Monad.Reader"
         "Data.Text"
@@ -134,7 +151,9 @@
 (setq haskell-interactive-mode-eval-mode 'haskell-mode)
 (setq haskell-process-generate-tags nil)
 
+;;
 ; Add key combinations for interactive haskell-mode
+;;
 (eval-after-load 'haskell-mode '(progn
   (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
   (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
@@ -152,13 +171,97 @@
 
 (eval-after-load 'haskell-mode
   '(define-key haskell-mode-map (kbd "C-c C-o") 'haskell-compile))
+
 (eval-after-load 'haskell-cabal
   '(define-key haskell-cabal-mode-map (kbd "C-c C-n C-o") 'haskell-compile))
 
+;;
+; ghc-mod configuration
+;;
+(autoload 'ghc-init "ghc" nil t)
+(autoload 'ghc-debug "ghc" nil t)
+(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+
+
+;;
+; company-ghc configuration
+;;
+; enable company-mode for auto-completion
+; Use company in Haskell buffers
+; (add-hook 'haskell-mode-hook 'company-mode)
+; Use company in all buffers
+(add-hook 'after-init-hook 'global-company-mode)
+
+(add-to-list 'company-backends 'company-ghc)
+(custom-set-variables '(company-ghc-show-info t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;
-; intero (not used, so commented)
+; company-ghci
+; company-ghci is a company backend that provides completions for the
+; haskell programming language by talking to a ghci process
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(push 'company-ghci company-backends)
+(add-hook 'haskell-mode-hook 'company-mode)
+;;; To get completions in the REPL
+(add-hook 'haskell-interactive-mode-hook 'company-mode)
+
+;;
+; shm (structured-haskell-mode) configuration
+;;
+(add-hook 'haskell-mode-hook 'structured-haskell-mode)
+;; customize colors while running shm
+(set-face-background 'shm-current-face "#eee8d5")
+(set-face-background 'shm-quarantine-face "lemonchiffon")
+
+;;
+; haskell standard module imports
+;;
+(setq haskell-import-mapping
+      '(("Data.Text" . "import qualified Data.Text as T
+                        import Data.Text (Text)
+                       ")
+        ("Data.Text.Lazy" . "import qualified Data.Text.Lazy as LT
+                            ")
+        ("Data.ByteString" . "import qualified Data.ByteString as S
+                              import Data.ByteString (ByteString)
+                             ")
+        ("Data.ByteString.Char8" . "import qualified Data.ByteString.Char8 as S8
+                                    import Data.ByteString (ByteString)
+                                   ")
+        ("Data.ByteString.Lazy" . "import qualified Data.ByteString.Lazy as L
+                                  ")
+        ("Data.ByteString.Lazy.Char8" . "import qualified Data.ByteString.Lazy.Char8 as L8
+                                        ")
+        ("Data.Map" . "import qualified Data.Map.Strict as M
+                      import Data.Map.Strict (Map)
+                      ")
+        ("Data.Map.Strict" . "import qualified Data.Map.Strict as M
+                              import Data.Map.Strict (Map)
+                             ")
+        ("Data.Set" . "import qualified Data.Set as S
+                       import Data.Set (Set)
+                      ")
+        ("Data.Vector" . "import qualified Data.Vector as V
+                          import Data.Vector (Vector)
+                         ")
+        ("Data.Vector.Storable" . "import qualified Data.Vector.Storable as SV
+                                   import Data.Vector (Vector)
+                                  ")
+        ("Data.Conduit.List" . "import qualified Data.Conduit.List as CL
+                               ")
+        ("Data.Conduit.Binary" . "import qualified Data.Conduit.Binary as CB
+                                 ")
+    ))
+
+;; custom set variables
+(setq haskell-language-extensions '())
+(setq haskell-process-type 'ghci)
+(setq haskell-process-path-ghci "/usr/local/bin/ghci")
+(setq haskell-process-use-ghci t)
+(setq haskell-hoogle-command (concat (getenv "HOME") "/Library/Haskell/bin/hoogle"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; intero (not used, so commented)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; (defun haskell-process-cabal-build-and-restart ()
 ;   "Build and restart the Cabal project."
@@ -169,106 +272,9 @@
 ; ;; key map
 ; (define-key intero-mode-map (kbd "C-`") 'flycheck-list-errors)
 ; (define-key intero-mode-map [f12] 'intero-devel-reload)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;
-; ghc-mod
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(autoload 'ghc-init "ghc" nil t)
-(autoload 'ghc-debug "ghc" nil t)
-(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;
-; company-ghc
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Enable company-mode
-(require 'company)
-; Use company in Haskell buffers
-; (add-hook 'haskell-mode-hook 'company-mode)
-; Use company in all buffers
-(add-hook 'after-init-hook 'global-company-mode)
-
-
-(add-to-list 'company-backends 'company-ghc)
-(custom-set-variables '(company-ghc-show-info t))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;
-; company-ghci
-; company-ghci is a company backend that provides completions for the
-; haskell programming language by talking to a ghci process
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'company-ghci)
-(push 'company-ghci company-backends)
-(add-hook 'haskell-mode-hook 'company-mode)
-;;; To get completions in the REPL
-(add-hook 'haskell-interactive-mode-hook 'company-mode)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-; shm (Use structured-haskell-mode)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'shm)
-(add-hook 'haskell-mode-hook 'structured-haskell-mode)
-;; customize colors while running shm
-(set-face-background 'shm-current-face "#eee8d5")
-(set-face-background 'shm-quarantine-face "lemonchiffon")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-; haskell standard module imports
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq haskell-import-mapping
-      '(("Data.Text" . "import qualified Data.Text as T
-import Data.Text (Text)
-")
-        ("Data.Text.Lazy" . "import qualified Data.Text.Lazy as LT
-")
-        ("Data.ByteString" . "import qualified Data.ByteString as S
-import Data.ByteString (ByteString)
-")
-        ("Data.ByteString.Char8" . "import qualified Data.ByteString.Char8 as S8
-import Data.ByteString (ByteString)
-")
-        ("Data.ByteString.Lazy" . "import qualified Data.ByteString.Lazy as L
-")
-        ("Data.ByteString.Lazy.Char8" . "import qualified Data.ByteString.Lazy.Char8 as L8
-")
-        ("Data.Map" . "import qualified Data.Map.Strict as M
-import Data.Map.Strict (Map)
-")
-        ("Data.Map.Strict" . "import qualified Data.Map.Strict as M
-import Data.Map.Strict (Map)
-")
-        ("Data.Set" . "import qualified Data.Set as S
-import Data.Set (Set)
-")
-        ("Data.Vector" . "import qualified Data.Vector as V
-import Data.Vector (Vector)
-")
-        ("Data.Vector.Storable" . "import qualified Data.Vector.Storable as SV
-import Data.Vector (Vector)
-")
-        ("Data.Conduit.List" . "import qualified Data.Conduit.List as CL
-")
-        ("Data.Conduit.Binary" . "import qualified Data.Conduit.Binary as CB
-")))
-
-(setq haskell-language-extensions '())
-(setq haskell-process-type 'ghci)
-(setq haskell-process-path-ghci "/usr/local/bin/ghci")
-(setq haskell-process-use-ghci t)
-(setq haskell-hoogle-command "hoogle")
-
-;(setq hindent-style "johan-tibell")
+;============================================================================
 
 
 (provide 'haskell-config)
-;;; haskel-config.el ends here
+
+;;; haskell-config.el ends here

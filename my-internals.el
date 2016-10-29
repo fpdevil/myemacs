@@ -1,6 +1,9 @@
-; ~/.emacs.d/my-internals.el
-
-
+;;; package --- customized settings
+;;;
+;;; Filename: ~/.emacs.d/my-internals.el
+;;; Commentary:
+;
+;;; Code:
 (global-set-key (kbd "<menu>") 'nil)
 
 ;;********************************************************
@@ -97,11 +100,12 @@
 ; defeault timestamp format
 ;;
 (defun timestamp ()
+  "Latest timestamp."
   (interactive)
   (insert (format-time-string "%d.%m.%Y, %H:%M")))
 
 (defun my-count-words-region (posBegin posEnd)
-  "Print number of words and chars in region."
+  "POSBEGIN POSEND Print number of words and chars in region."
   (interactive "r")
   (message "Counting …")
   (save-excursion
@@ -125,7 +129,7 @@ This command does the inverse of `fill-paragraph'."
 
 
 (defun unfill-region (start end)
-  "Replace newline chars in region by single spaces.
+  "START END Replace newline chars in region by single spaces.
 This command does the inverse of `fill-region'."
   (interactive "r")
   (let ((fill-column 90002000))
@@ -168,7 +172,7 @@ This command does the inverse of `fill-region'."
 ; customized filter: don't mark *all* identifiers
 ;;
 (defun rainbow-identifiers-filter (beg end)
-  "Only highlight standalone words or those following 'this.' or 'self.'"
+  "BEG END Only highlight standalone words or those following 'this.' or 'self.'."
   (let ((curr-char (char-after beg))
         (prev-char (char-before beg))
         (prev-self (buffer-substring-no-properties
@@ -189,21 +193,11 @@ This command does the inverse of `fill-region'."
 (add-hook 'rainbow-identifiers-filter-functions 'rainbow-identifiers-filter)
 
 ;;
-; for python process in inferior mode run
-;;
-(defun run-python-once ()
-  (remove-hook 'python-mode-hook 'run-python-once)
-  (run-python (python-shell-parse-command)))
-
-(add-hook 'python-mode-hook 'run-python-once)
-
-
-;;
 ; Programming Mode Hooks
 ; make sure things like FIXME and TODO are highlighted so they stand out
 ;;
 (defun add-watchwords ()
-  "Highlight FIXME, TODO, and NOCOMMIT in code TODO"
+  "Highlight FIXME, TODO, and NOCOMMIT in code TODO."
   (font-lock-add-keywords
    nil '(("\\<\\(TODO\\(?:(.*)\\)?:?\\)\\>"  1 'warning prepend)
          ("\\<\\(FIXME\\(?:(.*)\\)?:?\\)\\>" 1 'error prepend)

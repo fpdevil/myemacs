@@ -11,9 +11,9 @@
  '(haskell-font-lock-symbols t)
  '(haskell-process-auto-import-loaded-modules t)
  '(haskell-process-log t)
- '(haskell-process-show-debug-tips nil)
+ '(haskell-process-show-debug-tips t)
  '(haskell-process-suggest-haskell-docs-imports t)
- '(haskell-process-suggest-hoogle-imports nil)
+ '(haskell-process-suggest-hoogle-imports t)
  '(haskell-process-suggest-remove-import-lines t)
  '(haskell-process-type (quote ghci))
  '(haskell-process-use-presentation-mode t)
@@ -23,7 +23,7 @@
  '(inferior-haskell-find-haddock nil)
  '(package-selected-packages
    (quote
-    (rainbow-delimiters elpy python-mode py-yapf python-pylint jedi virtualenvwrapper company-jedi highlight-symbol shm company-ghci company hi2 ghc hindent flycheck-color-mode-line flycheck auto-complete-distel auto-complete erlang)))
+    (multiple-cursors diminish key-chord xah-math-input all-the-icons highlight-symbol buffer-move ecb helm ensime erlang hi2 flycheck-haskell hindent haskell-snippets shm company-cabal company-ghci company-ghc haskell-mode py-yapf python-pylint elpy jedi virtualenvwrapper magit org-bullets flymake-cursor flymake-hlint flymake-python-pyflakes flymake-easy flycheck-tip flycheck-pos-tip flycheck-color-mode-line flycheck markdown-mode paredit smartparens company-quickhelp company-dict auto-complete-distel auto-complete company-distel company-jedi company kooten-theme colorsarenice-theme color-theme-sanityinc-solarized color-theme-sanityinc-tomorrow material-theme zenburn-theme monokai-theme moe-theme darkokai-theme sublime-themes color-theme airline-themes rainbow-identifiers rainbow-mode rainbow-delimiters powerline)))
  '(shm-auto-insert-bangs t)
  '(shm-auto-insert-skeletons t)
  '(shm-use-hdevtools t)

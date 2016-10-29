@@ -1,14 +1,13 @@
 ;;; package --- package respository information for Emacs
 ;;;
-;;; name: my-package-repos.el
-;;; description: This file contains all the packages to be laoded and installed
-;;;              by Emacs during startup. Any new package required by the apps
+;;; Commentary:
+;;;              Modules loading for Emacs
+;;; Filename: my-package-repos.el
+;;; Description: This file contains all the packages to be laoded and installed
+;;;              by Emacs during startup.  Any new package required by the apps
 ;;;              or any custom settings needs to be specified here so that they
 ;;;              can be installed and loaded.
 ;;;
-;;; Commentary:
-;;;              Modules loading for Emacs
-;;
 ;-------------------------------------------------------------------------------
 ;; Use M-x package-refresh-contents to reload the list of
 ;; packages after adding these for the first time
@@ -34,8 +33,10 @@
 
 ;===============================================================================
 
-
-;; package archive priorities
+;;
+; incase if package archive priorities needs to be specified
+; the below section may be used; for now just commented
+;;
 ; (setq package-archive-priorities
 ;       '(("marmalade" . 20)
 ;         ("gnu" . 10)
@@ -45,7 +46,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Define custom directories for the packages
-;; packages/elpa will contain the standard packages
+;; packages/elpa will contain the standard packages installed by Emacs
 ;; modules dir will contain the custom built and lang specific modules
 ;; vendor dir will contain 3rd party or unavailable packages
 ;; Define a top-level, vendor and custom files
@@ -63,7 +64,7 @@
 (defvar save-dir (expand-file-name "cache" emacs-dir)
   "Common directory for automatically generated save/history/files/etc.")
 (defvar pkg-dir (expand-file-name "packages" emacs-dir)
-    "Package installation directory for all Emacs packages.")
+  "Package installation directory for all Emacs packages.")
 
 (add-to-list 'load-path pkg-dir)
 (setq package-user-dir (concat pkg-dir "/elpa"))
@@ -74,20 +75,18 @@
 ; initialize the packages
 ;;
 (package-initialize)
-;; make sure to have downloaded archive description.
+; make sure to have downloaded the archive description.
 (when (not package-archive-contents)
   (package-refresh-contents))
 (package-install-selected-packages)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-; packages to be installed
+;===============================================================================
+; packages to be installed during Emacs bootstrap.
 ; defvar is the correct way to declare global variables
 ; setq is supposed to be use just to set variables and
 ; not create them.
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;===============================================================================
 (defvar required-packages
   '(;;; appearance and visual customizations ;;;
     powerline                           ;; powerline smart mode
@@ -187,9 +186,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-; Add the above packages to the load-path
-;;
+; Now add the above packages to the load-path
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (unless (file-exists-p save-dir)
   (make-directory save-dir))
@@ -197,20 +194,24 @@
 (add-to-list 'load-path vendor-dir)
 
 
-
 ;;
-; Requires packages in the modules/ directory
-(mapc 'load (directory-files module-dir nil "^[^#].*el$"))
-; Requires packages in the vendor/ directory
+; Load the requires packages in the vendor/ directory
+;;
 (mapc 'load (directory-files vendor-dir nil "^[^#].*el$"))
-
-
-;;-------------------------------------------------------------------------
 ;;
+; Load the requires packages in the modules/ directory
+; modules contain custom init files which can be loaded
+; after all the packages are installed, hence commented
+;;
+;(mapc 'load (directory-files module-dir nil "^[^#].*el$"))
+
+
+
+;===============================================================================
 ; function to check if all listed packages are installed. return true when
 ; package is not installed. When Emacs boots, check to make sure all the
 ; packages defined in required-packages are installed. If not ELPA kicks in.
-;;
+;===============================================================================
 (defun packages-installed-p ()
   "Load each package specified in the required-packages section."
   (loop for pkg in required-packages
@@ -235,7 +236,6 @@
 (provide 'required-packages)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ; package loading from custom el files
 ; currently support for the below
 ; haskell
@@ -247,7 +247,6 @@
 ; hihlight-symbols
 ; fringe
 ;
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar configs
     '(

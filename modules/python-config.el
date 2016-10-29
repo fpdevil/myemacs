@@ -1,12 +1,10 @@
 ;;; package --- customize python configuration for Emacs
 ;;;
-;;; name: python-config.el
-;;; description: python configuration for emacs
-;;;
 ;;; Commentary:
-;;;            A full featured python ide and language support for Aquamacs
+;;; Filename: python-config.el
+;;; Description: Python configuration for Emacs
+;;;              A full featured python ide and language support for Aquamacs
 ;----------------------------------------------------------------------------
-
 
 ;;
 ; load the required packages
@@ -15,7 +13,7 @@
 (require 'cl-lib)
 
 ;;
-; load all the syntax specific packages
+; load all the syntax specific packages needed for python3
 ;;
 (require 'jedi)                 ; a Python auto-completion for Emacs
 (require 'company-jedi)         ; company-mode completion back-end for Python JEDI
@@ -31,7 +29,6 @@
 ;;; Code:
 ;;;
 
-
 ;;
 ; virtual env setup
 ;;
@@ -40,11 +37,9 @@
 (setq venv-location (expand-file-name "~/.virtualenvs/"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-; python jedi setup
-; python development with auto-completion and intelli-sense
-; for running inferior process when loading major mode python
-;;
+;; python jedi setup
+;; python development with auto-completion and intelli-sense
+;; for running inferior process when loading major mode python
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun run-python-once ()
   "Python specific hook settings."
@@ -96,9 +91,9 @@
             )))
 (add-hook 'python-mode-hook 'my-python-hooks)
 
-;;=============================;;
-;;  python3 shell interpreter  ;;
-;;=============================;;
+;============================================================================
+;;  python3 shell interpreter
+;============================================================================
 (setq python-shell-interpreter "ipython3"
       ;; if extras are needed with ipython3
       ; (setq python-shell-interpreter-args "--pylab")
@@ -133,19 +128,17 @@
    "/usr/local/sbin"))
 
 ;;
-; Set PYTHONPATH, because we don't load .bashrc
+; set PYTHONPATH, because we don't load from .bashrc
 ;;
 (setenv "PYTHONPATH" "/usr/local/lib/python3.5/site-packages:")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ; elpy
 ; Emacs Python Development Environment
-;
+;;
 ; elpy mode can be disabled or commented out if running 2 completion(s)
 ; simultaneously is considered an overkill and right now the jedi setup
 ; has been working more than satisfactorily... but leaving for now
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (elpy-enable)
 (elpy-use-ipython)

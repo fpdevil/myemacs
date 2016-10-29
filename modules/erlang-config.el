@@ -1,28 +1,27 @@
-;;===============================================================
-;;; main configuration file for erlang mode
-;; Filename: erlang-config.el
-;; Description: A major mode erlang language support in Emacs
-;;
+;;; package --- erlang configuration settings
+;;;
 ;;; Commentary:
-;;
-;; elisp code for erlang language support and handling
-;;===============================================================
+;;; Filename: erlang-config.el
+;;; Description: A major mode erlang language support in Emacs
+;;;
+;;; elisp code for erlang language support and handling
+;;=======================================================================
 
 
+;------------------------------------------------------------------------
+;; erlang settings for Emacs
+;------------------------------------------------------------------------
+
 ;;
-; erlang settings for Emacs
-;;
-;;------------------------------------------------------------------------
-;;
-; standard libraries
+; load standard libraries
 ;;
 (require 'cl)
 (require 'cl-lib)
 (require 'imenu)
-;;------------------------------------------------------------------------
-
-
+;------------------------------------------------------------------------
+;
 ;;; Code:
+;
 (add-to-list 'auto-mode-alist '("\\.erl?$" . erlang-mode))
 (add-to-list 'auto-mode-alist '("\\.hrl?$" . erlang-mode))
 
@@ -33,10 +32,41 @@
 (setq load-path (cons "/opt/erlang/r19.0/lib/tools-*/emacs"
 load-path))
 (setq erlang-root-dir "/opt/erlang/r19.0")
+;; below conditional code is needed for proper elang load
+(if
+    (not (boundp 'erlang-root-dir))
+    (message "Skipping erlang-mode: erlang-root-dir not defined")
+  (progn
+    (set 'erlang-bin (concat erlang-root-dir "/bin/"))
+    (set 'erlang-lib (concat erlang-root-dir "/lib/"))
+    (if
+        (not (boundp 'erlang-mode-path))
+        (set 'erlang-mode-path
+             (concat
+              erlang-lib
+              (file-name-completion "tools-" erlang-lib)
+              "emacs/erlang.el")))
+    (if
+        (and
+         (file-readable-p erlang-mode-path)
+         (file-readable-p erlang-bin))
+        (progn
+          (message "Setting up erlang-mode")
+          (set 'exec-path (cons erlang-bin exec-path))
+          (set 'load-path (cons
+                           (concat
+                            erlang-lib
+                            (file-name-completion "tools-" erlang-lib)
+                            "emacs")
+                           load-path))
+          (set 'load-path (cons (file-name-directory erlang-mode-path) load-path))
+          (require 'erlang-start))
+      (message "Skipping erlang-mode: %s and/or %s not readable"
+erlang-bin erlang-mode-path))))
+
 (setq erlang-man-root-dir "/opt/erlang/r19.0/man")
 (setq exec-path (cons "/opt/erlang/r19.0/bin" exec-path))
 (require 'erlang-start)
-
 
 
 ;;
@@ -52,7 +82,7 @@ load-path))
 (setq load-path (append load-path (list distel-dir)))))
 (require 'distel)
 (distel-setup)
-;;------------------------------------------------------------------------
+;------------------------------------------------------------------------
 
 ;; prevent annoying hang-on-compile
 (defvar inferior-erlang-prompt-timeout t)
@@ -68,10 +98,10 @@ load-path))
 (add-hook 'erlang-mode-hook 'imenu-erlang-mode-hook)
 
 
-;;------------------------------------------------------------------------
+;------------------------------------------------------------------------
 ;; ref http://bob.ippoli.to/archives/2007/03/16/distel-and-erlang-mode-for-emacs-on-mac-os-x/
 ;; tell distel to default to that node
-;;------------------------------------------------------------------------
+;------------------------------------------------------------------------
 ; (setq erl-nodename-cache
 ;       (make-symbol
 ;        (concat
@@ -84,6 +114,7 @@ load-path))
 
 ;; short host name, like `hostname -s`, remote shell likes this better
 (defun short-host-name ()
+  "Hostname parsing."
   (string-match "[^\.]+" system-name)
   (substring system-name (match-beginning 0) (match-end 0)))
 
@@ -91,10 +122,8 @@ load-path))
 (setq erl-nodename-cache (intern (concat "emacs" "@" (short-host-name))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-; erlang ide set-up and
-; erlang auto-completion using auto-complete and distel
-;;
+;; erlang ide set-up and
+;; erlang auto-completion using auto-complete and distel
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'auto-complete)
 (require 'auto-complete-config)
@@ -116,9 +145,7 @@ load-path))
 (add-to-list 'ac-modes 'erlang-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-; erlang auto completion using company mode and distel
-;;
+;; erlang auto completion using company mode and distel
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; (require 'company)
 ; (add-hook 'after-init-hook 'global-company-mode)
@@ -135,7 +162,7 @@ load-path))
 ; ; Change completion symbols
 ; (setq distel-completion-valid-syntax "a-zA-Z:_-")
 
-;;------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ; A number of the erlang-extended-mode key bindings are useful in the shell too
 ;;
@@ -148,17 +175,8 @@ load-path))
     )
   "Additional keys to bind when in Erlang shell.")
 
-
-; (add-hook 'erlang-shell-mode-hook
-;           (lambda ()
-;             ;; add some Distel bindings to the Erlang shell
-;             (dolist (spec distel-shell-keys)
-;               (define-key erlang-shell-mode-map (car spec) (cadr spec)))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-; on the fly source code checking through flymake
-;;
+;; on the fly source code checking through flymake
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'flymake)
 (require 'erlang-flymake)
@@ -167,6 +185,7 @@ load-path))
 ;(setq erlang-flymake-location "~/.emacs.d/flymake/eflymake")
 
 (defun flymake-erlang-init ()
+  "Erlang flymake compilation settings."
   (let* ((temp-file (flymake-init-create-temp-buffer-copy
        'flymake-create-temp-inplace))
   (local-file (file-relative-name temp-file
@@ -176,6 +195,7 @@ load-path))
   (if (not (file-exists-p eflymake-loc))
         (error "Please set erlang-flymake-location to an actual location")
   (list escript-exe(list eflymake-loc local-file)))))
+
 ;;
 ; enable flymake globally
 ;;
@@ -183,7 +203,8 @@ load-path))
 ;; enabling only erlang-mode
 (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-erlang-init))
 (defun flymake-erlang-mode-hook ()
-        (flymake-mode 1))
+  "Set erlang flymake mode."
+  (flymake-mode 1))
 (add-hook 'erlang-mode-hook 'flymake-erlang-mode-hook)
 
 
