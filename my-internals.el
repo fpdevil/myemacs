@@ -92,9 +92,17 @@
 ; set default font for aquamacs
 ;;
 (set-face-bold-p 'bold nil)
-(set-face-attribute 'default nil :family "Monaco for Powerline"
+(set-face-attribute 'default nil :family "Monaco"
+		                 :width 'normal
                                  :height 120
-                                 :weight 'ultra-light)
+                                 :weight 'ultralight)
+; (set-face-attribute 'default nil :family "Monaco for Powerline"
+;                                  :height 120
+;                                  :weight 'ultra-light)
+; (set-face-attribute 'default nil :family "Source Code Pro for Powerline"
+;                                  :height 125
+;                                  :weight 'normal)
+
 
 ;;
 ; defeault timestamp format

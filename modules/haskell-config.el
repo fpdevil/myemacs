@@ -8,7 +8,7 @@
 ;;              http://haskell.github.io/haskell-mode/manual/latest/index.html#Top
 ;;
 ;; elisp code for haskell language support and handling
-;;===========================================================================
+;;;==========================================================================
 
 
 
@@ -41,7 +41,7 @@
 (require 'shm)                        ; structured haskell mode
 ; (require 'intero)                   ; complete development mode for haskell
 
-;============================================================================
+;;===========================================================================
 ;
 ;;; Code:
 
@@ -62,9 +62,9 @@
   (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
   (add-to-list 'exec-path my-cabal-path))
 
-;----------------------------------------------------------------------------
+;;---------------------------------------------------------------------------
 ;;                 emacs haskell-mode configuration setup                  ;;
-;----------------------------------------------------------------------------
+;;---------------------------------------------------------------------------
 
 ;;
 ; Choose the indentation mode
@@ -272,7 +272,7 @@
 ; ;; key map
 ; (define-key intero-mode-map (kbd "C-`") 'flycheck-list-errors)
 ; (define-key intero-mode-map [f12] 'intero-devel-reload)
-;============================================================================
+;;===========================================================================
 
 
 (provide 'haskell-config)

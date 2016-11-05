@@ -4,7 +4,7 @@
 ;;; Filename: rainbow-delims-config.el
 ;;; Description: fancy stuff, configuration file for rainbow delimiters
 ;;;              a fancy mode for colored pairing of parenthesis
-;============================================================================
+;;;==========================================================================
 
 ;;
 ; load the required libraries

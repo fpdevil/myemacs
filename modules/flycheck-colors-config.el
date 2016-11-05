@@ -7,9 +7,10 @@
 ;;;              A minor mode for handling the errors in mode line
 ;;;
 ;;; elisp code for handling flycheck errors in colors
-;;===============================================================
+;;;==============================================================
 
 (require 'flycheck)
+(require 'helm-flycheck)
 
 ;;; Code:
 
@@ -26,6 +27,8 @@
      (setq flycheck-highlighting-mode 'symbols)
      ;; enable flycheck globally
      (add-hook 'after-init-hook 'global-flycheck-mode)
+     ;; helm based flycheck
+     (define-key flycheck-mode-map (kbd "C-c ! h") 'helm-flycheck)
      ;; indicate syntax errors/warnings in the left-fringe.
      (setq flycheck-indication-mode 'left-fringe)
      (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
@@ -37,7 +40,8 @@
 			 '(:inherit flycheck-fringe-error
 				    :foreground "red" :weight normal))))
 
-;-------------------------------------------------------------------------------
+
+;;------------------------------------------------------------------------------
 ; (require 'flycheck)
 ; (add-hook 'find-file-hook
 ;           (lambda ()
@@ -76,7 +80,7 @@
 ;      (set-face-foreground 'flycheck-color-mode-line-error-face nil)
 ;      (set-face-foreground 'flycheck-color-mode-line-warning-face nil)
 ;      (set-face-foreground 'flycheck-color-mode-line-info-face nil)))
-;-------------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 
 ;;; Improved Haskell support for Flycheck
 (require 'flycheck-haskell)

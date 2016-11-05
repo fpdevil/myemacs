@@ -109,7 +109,7 @@
 ;; below line specified for handling the args-out-of-range error in buffer
 (setenv "IPY_TEST_SIMPLE_PROMPT" "1")
 (setq python-check-command "/usr/local/bin/pyflakes")
-(setq python-environment-directory "~/.emacs.d/.python-environments")
+(setq python-environment-directory (concat (getenv "HOME") "/.emacs.d/.python-environments"))
 ;; handling whitespaces in python mode
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 

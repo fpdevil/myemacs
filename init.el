@@ -18,11 +18,11 @@
 ;;
 (set-language-environment   'utf-8)
 (setq locale-coding-system  'utf-8)
-(prefer-coding-system       'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+(prefer-coding-system       'utf-8)
 
 ;;
 ; system is mac
@@ -55,27 +55,30 @@
 ; (setq debug-on-quit nil)
 
 ;;======================================================================
-;;                            require packages
+;;                           require packages                         ;;
 ;;======================================================================
 
 ;;
-; setting default theme to the required one
+; setting default color theme to the required one
 ;;
-; (load-theme 'material t)
-(load-theme 'material-light t)
-; (load-theme 'darkokai t)
-; (load-theme 'mccarthy t)
+; (load-theme 'material t)        ;; material dark theme
+(load-theme 'material-light t)   ;; material light theme
+;; for solarized themes
+;(require 'color-theme-sanityinc-solarized)
+;(color-theme-sanityinc-solarized-light)
 
 
 ;;
 ; company mode (for company based completions)
 ;;
 (require 'company)
-(require 'company-distel)
-(add-hook 'after-init-hook 'global-company-mode)
-(auto-complete-mode 1)
+(setq company-tooltip-align-annotations t)
+(setq company-selection-wrap-around t)
+(setq company-tooltip-flip-when-above t)
 ; no delay for company suggestions
 (setq company-idle-delay 0)
+(add-hook 'after-init-hook 'global-company-mode)
+(auto-complete-mode 1)
 
 
 ;;
@@ -200,19 +203,6 @@
 
 
 ;;
-; utility package to collect various Icon Fonts and propertize them within Emacs
-;;
-(require 'all-the-icons)
-
-
-;;
-; automatic and manual symbol highlighting for Emacs
-; load from highlight-symbol-config.el
-;;
-;(require 'highlight-symbol)
-
-
-;;
 ; vim airline theme for emacs
 ;;
 (require 'airline-themes)
@@ -258,9 +248,9 @@
 (setq ac-show-menu-immediately-on-auto-complete t)
 
 
-; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; ;;                  python support specific
-; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                   python support specific                                ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; defined inside python-config.el
 ;
 
@@ -296,6 +286,25 @@
 (setq ecb-new-ecb-frame nil)
 (setq ecb-tip-of-the-day nil)
 (setq ecb-windows-width 13)
+
+
+;;
+; a tree plugin like NerdTree for Vim
+;;
+(require 'neotree)
+(setq neo-theme (if window-system 'icons 'arrow))
+
+
+;;
+; utility package to collect various Icon Fonts and propertize them within Emacs
+;;
+;(require 'all-the-icons)
+
+
+;;
+; show icons for modes
+;;
+;(mode-icons-mode)
 
 
 ;;
@@ -354,7 +363,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; ido disabled in favour of helm
+;;   ido disabled in favour of helm                                   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; ido settings
 ; Interactively Do Things
@@ -369,7 +378,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; intero disabled in favour of other haskell packages
+;; intero disabled in favour of other haskell packages                ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ; Complete interactive development environment for Haskell

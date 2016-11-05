@@ -5,7 +5,7 @@
 
 ;;;### (autoloads nil nil ("moe-dark-theme.el" "moe-light-theme.el"
 ;;;;;;  "moe-theme-pkg.el" "moe-theme-switcher.el" "moe-theme.el")
-;;;;;;  (22548 51244 0 0))
+;;;;;;  (22558 2023 0 0))
 
 ;;;***
 
