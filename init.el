@@ -89,7 +89,17 @@
 
 
 ;;
+; identify unnecessary whitespace is in all programming modes
+; whitespace-cleanup command for clearing trailing whitespaces
+;;
+(require 'whitespace)
+(setq-default show-trailing-whitespace t)
+(set-default 'indent-tabs-mode nil)
+
+
+;;
 ; Diminished modes are minor modes with no modeline display
+; hide a minor mode that you know are always enabled using this
 ; http://www.eskimo.com/~seldon/diminish.el
 ;;
 (require 'diminish)
@@ -277,6 +287,7 @@
 (global-set-key (kbd "<S-s-left>")   'buf-move-left)
 (global-set-key (kbd "<S-s-right>")  'buf-move-right)
 
+
 ;;
 ; ecb (emacs code browser)
 ;;
@@ -287,18 +298,6 @@
 (setq ecb-tip-of-the-day nil)
 (setq ecb-windows-width 13)
 
-
-;;
-; a tree plugin like NerdTree for Vim
-;;
-(require 'neotree)
-(setq neo-theme (if window-system 'icons 'arrow))
-
-
-;;
-; utility package to collect various Icon Fonts and propertize them within Emacs
-;;
-;(require 'all-the-icons)
 
 
 ;;
@@ -333,6 +332,7 @@
 ;;
 (require 'key-chord)
 (key-chord-define-global "fm" 'list-buffers)
+(key-chord-define-global "fm"   'helm-mini)
 ;(use fm instead of C-x b to list buffers)
 
 
@@ -340,13 +340,8 @@
 ; helm
 ; Emacs incremental completion and selection narrowing framework
 ;;
-(require 'helm-config)
-(helm-mode 1)
-; listing files
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-; listing opened buffers
-(global-set-key (kbd "C-x b") 'helm-mini)
-(key-chord-define-global "fm" 'helm-mini)
+;(require 'helm-config)
+
 
 
 ;;

@@ -23,7 +23,7 @@
  '(inferior-haskell-find-haddock nil)
  '(package-selected-packages
    (quote
-    (multiple-cursors diminish key-chord xah-math-input highlight-symbol neotree buffer-move ecb helm ensime erlang hi2 flycheck-haskell hindent haskell-snippets shm company-cabal company-ghci company-ghc haskell-mode py-yapf python-pylint elpy jedi virtualenvwrapper magit org-bullets flymake-cursor flymake-hlint flymake-python-pyflakes flymake-easy helm-flycheck flycheck-tip flycheck-pos-tip flycheck-color-mode-line flycheck markdown-mode paredit smartparens company-quickhelp company-dict auto-complete-distel auto-complete company-distel company-jedi company kooten-theme color-theme-sanityinc-solarized color-theme-sanityinc-tomorrow material-theme zenburn-theme monokai-theme moe-theme darkokai-theme sublime-themes color-theme airline-themes rainbow-identifiers rainbow-mode rainbow-delimiters powerline)))
+    (all-the-icons zenburn-theme xah-math-input virtualenvwrapper sublime-themes smartparens shm rainbow-mode rainbow-identifiers rainbow-delimiters python-pylint py-yapf paredit org-bullets neotree multiple-cursors monokai-theme moe-theme material-theme markdown-mode magit kooten-theme key-chord jedi hindent highlight-symbol hi2 helm-flycheck helm haskell-snippets flymake-python-pyflakes flymake-hlint flymake-cursor flycheck-tip flycheck-pos-tip flycheck-haskell flycheck-color-mode-line erlang ensime elpy ecb diminish darkokai-theme company-quickhelp company-jedi company-ghci company-ghc company-distel company-dict company-cabal color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized color-theme buffer-move auto-complete-distel airline-themes)))
  '(shm-auto-insert-bangs t)
  '(shm-auto-insert-skeletons t)
  '(shm-use-hdevtools t)
@@ -33,4 +33,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(neo-banner-face ((t :inherit shadow)))
+ '(neo-button-face ((t :inherit dired-directory)))
+ '(neo-dir-link-face ((t :inherit dired-directory)))
+ '(neo-expand-btn-face ((t :inherit button)))
+ '(neo-file-link-face ((t :inherit default)))
+ '(neo-header-face ((t :inherit shadow)))
+ '(neo-root-dir-face ((t :inherit link-visited :underline nil))))

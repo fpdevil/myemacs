@@ -170,6 +170,7 @@
     yasnippet                                   ;; yasnippets for supporting languages
     ;;;;; important utilities                   ;;;;;
     helm                                        ;; incremental completion and selection narrowing framework
+    helm-core                                   ;; development files for Helm
     ;;;;; essential packs                       ;;;;;
     ecb                                         ;; emacs code browser
     buffer-move                                 ;; move buffer
@@ -179,7 +180,7 @@
     xah-math-input                              ;; show math input symbols
     ;;;;; icon displays.                        ;;;;;
     ;mode-icons                                 ;; show icons for modes
-    ;all-the-icons                              ;; package for showing various icons
+    all-the-icons                               ;; package for showing various icons
     ;;;;; keyboard mappings                     ;;;;;
     key-chord                                   ;; map pairs of simultaneously pressed keys to commands
     diminish                                    ;; Diminished modes are minor modes with no modeline display
@@ -241,6 +242,7 @@
 ;;
 ;; package loading from custom el files
 ;; currently support for the below
+;; helm
 ;; haskell
 ;; erlang
 ;; python3
@@ -249,10 +251,12 @@
 ;; rainbow-delimiters
 ;; hihlight-symbols
 ;; fringe
+;; neotree
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar configs
     '(
+      "helm-settings-config"
       "haskell-config"
       "erlang-config"
       "python-config"
@@ -261,6 +265,7 @@
       "paredit-config"
       "highlight-symbol-config"
       "fringe-config"
+      "neotree-config"
       )
     "Configuration files which follow the modules/pkgname-config.el format."
     )
