@@ -1,16 +1,22 @@
 ;;; package --- initialization section for Emacs
 ;;;
+;;;    ___ _ __ ___   __ _  ___ ___
+;;;   / _ \ '_ ` _ \ / _` |/ __/ __|
+;;;  |  __/ | | | | | (_| | (__\__ \
+;;; (_)___|_| |_| |_|\__,_|\___|___/
+;;;
+;;;
 ;;; name: init.el
 ;;; description: initialize the packages
 ;;;
 ;;; Commentary:
 ;;
 ;; This sets up the load path so that we can override it
-;; reference
+;; reference(s)
 ;; https://hristos.triantafillou.us/init.el/
 ;; http://y.tsutsumi.io/emacs-from-scratch-part-2-package-management.html
-
-;;----------------------------------------------------------------------
+;;
+;;-------------------------------------------------------------------------
 ;;; Code:
 
 ;;
@@ -25,13 +31,13 @@
 (prefer-coding-system       'utf-8)
 
 ;;
-; system is mac
+; system is mac os x
 ;;
 (defconst *is-a-mac* (eq system-type 'darwin))
 
 
 ;;
-; adding the lisp files to path
+; adding the required lisp files and libraries to path
 ;;
 (add-to-list 'load-path "~/.emacs.d")
 (setq custom-file "~/.emacs.d/custom-settings.el")
@@ -39,9 +45,9 @@
 (load "~/.emacs.d/my-package-repos.el")
 
 
-;-----------------------------------------------------------------------
-; byte recompiling everything during bootstrap
-;-----------------------------------------------------------------------
+;;-------------------------------------------------------------------------
+;; byte recompiling everything during bootstrap                          ;;
+;;-------------------------------------------------------------------------
 ;; uncomment below section if needed
 ; (byte-recompile-directory (expand-file-name "~/.emacs.d/packages/elpa") 0)
 ;
@@ -54,13 +60,13 @@
 ; (setq debug-on-error nil)
 ; (setq debug-on-quit nil)
 
-;;======================================================================
-;;                           require packages                         ;;
-;;======================================================================
+;;===========================================================================
+;;                              require packages                           ;;
+;;===========================================================================
 
-;;
-; setting default color theme to the required one
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;          setting default color theme to the required one                 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; (load-theme 'material t)        ;; material dark theme
 (load-theme 'material-light t)   ;; material light theme
 ;; for solarized themes
@@ -68,70 +74,82 @@
 ;(color-theme-sanityinc-solarized-light)
 
 
-;;
-; company mode (for company based completions)
-;;
-(require 'company)
-(setq company-tooltip-align-annotations t)
-(setq company-selection-wrap-around t)
-(setq company-tooltip-flip-when-above t)
-; no delay for company suggestions
-(setq company-idle-delay 0)
-(add-hook 'after-init-hook 'global-company-mode)
-(auto-complete-mode 1)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;            company mode (for company based completions)                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; (require 'company)
+; ; use company-mode in all buffers
+; (add-hook 'after-init-hook 'global-company-mode)
+; (setq company-auto-complete t)
+; (setq company-minimum-prefix-length 2)
+; (setq company-tooltip-align-annotations t)
+; (setq company-selection-wrap-around t)
+; ; invert navigation direction if completion popup-isearch-match
+; ; is displayed on top (happens near the bottom of windows)
+; (setq company-tooltip-flip-when-above t)
+; ; no delay for company suggestions
+; (setq company-idle-delay 0)
+; (auto-complete-mode 1)
+; ; helm interface for company-mode
+; (eval-after-load 'company
+;   '(progn
+;      (define-key company-mode-map (kbd "C-:") 'helm-company)
+;      (define-key company-active-map (kbd "C-:") 'helm-company)))
 
 
-;;
-; documentation popup for company
-;;
-(require 'company-quickhelp)
-(company-quickhelp-mode 1)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                  documentation popup for company                         ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; (require 'company-quickhelp)
+; (company-quickhelp-mode 1)
 
 
-;;
-; identify unnecessary whitespace is in all programming modes
-; whitespace-cleanup command for clearing trailing whitespaces
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; identify unnecessary whitespace is in all programming modes              ;;
+;; whitespace-cleanup command for clearing trailing whitespaces             ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'whitespace)
 (setq-default show-trailing-whitespace t)
 (set-default 'indent-tabs-mode nil)
 
 
-;;
-; Diminished modes are minor modes with no modeline display
-; hide a minor mode that you know are always enabled using this
-; http://www.eskimo.com/~seldon/diminish.el
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Diminished modes are minor modes with no modeline display                ;;
+;; hide a minor mode that you know are always enabled using this            ;;
+;; http://www.eskimo.com/~seldon/diminish.el                                ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'diminish)
 (eval-after-load "whitespace" '(diminish 'whitespace-mode))
 
 
-;;
-; markdown mode
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; markdown mode                                                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'markdown-mode)
 (setq auto-mode-alist
               (cons '("\\.mdml$" . markdown-mode) auto-mode-alist))
 
 
-;;
-; magit (gut integration)
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; magit (gut integration)                                                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'magit)
-(define-key global-map (kbd "C-c m") 'magit-status)
+(eval-after-load 'magit
+  (progn '(global-set-key (kbd "C-x g") 'magit-status)))
+;(define-key global-map (kbd "C-c m") 'magit-status)
 
 
-;;
-; fancy (but usefull) stuff
-; for rainbow delimiters
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; fancy (but usefull) stuff                                                ;;
+;; for rainbow delimiters                                                   ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'rainbow-delimiters)
 
 
-;;
-; fancy stuff
-; for rainbow identifiers
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; fancy stuff                                                              ;;
+;; for rainbow identifiers                                                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'rainbow-identifiers)
 (add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
 ;; rainbow identifier customizations
@@ -142,79 +160,69 @@
 (setq rainbow-identifiers-cie-l*a*b*-saturation 45)
 
 
-;;
-; fancy stuff
-; rainbow mode
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; fancy stuff                                                              ;;
+;; rainbow mode                                                             ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'rainbow-mode)
 (add-hook 'prog-mode-hook 'rainbow-mode)
 
 
-;;
-; auto-completion
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; auto-completion                                                          ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'auto-complete)
 (require 'auto-complete-config)
 
 
-;;
-; smart parenthesis matching
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; smart parenthesis matching                                               ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'smartparens)
 (smartparens-global-mode t)
 (show-smartparens-global-mode t)
 
 
-;;
-; syntax checking for GNU Emacs - http://www.flycheck.org/
-;;
-(require 'flycheck)
-(with-eval-after-load 'flycheck
-  (flycheck-pos-tip-mode))
-(add-hook 'after-init-hook #'global-flycheck-mode)
-(setq flycheck-check-syntax-automatically
-  '(mode-enabled save new-line idle-change))
-
-
-;;
-; flymake-easy (helpers for easily building Emacs flymake checkers)
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flymake-easy (helpers for easily building Emacs flymake checkers)        ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'flymake-easy)
 
 
-;;
-; show flymake errors in minibuffer
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; show flymake errors in minibuffer                                        ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'flymake-cursor)
 
 
-;;
-; flymake handler for checking Haskell source code with hlint.
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flymake handler for checking Haskell source code with hlint.             ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'flymake-hlint) ;; not needed if installed via package
 (add-hook 'haskell-mode-hook 'flymake-hlint-load)
 
 
-;;
-; flymake handler for syntax-checking Python source code using pyflakes or flake8
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flymake handler for syntax-checking Python source code using             ;;
+;; pyflakes or flake8                                                       ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'flymake-python-pyflakes)
 ;; (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
 ;; using flake8
 (setq flymake-python-pyflakes-executable "/usr/local/bin/flake8")
 
 
-;;
-; fancy modeline
-; powerline
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; fancy modeline                                                           ;;
+;; powerline                                                                ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'powerline)
 (powerline-default-theme)
 
 
-;;
-; vim airline theme for emacs
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; vim airline theme for emacs                                              ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'airline-themes)
 ;(load-theme 'airline-light)
 (load-theme 'airline-papercolor)
@@ -230,11 +238,11 @@
       airline-utf-glyph-linenumber          #xe0a1)
 
 
-;;
-; yasnippets configuration
-; this will install and activate it everywhere.
-; your snippets are stored in ~/.emacs.d/snippets.
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; yasnippets configuration                                                 ;;
+;; this will install and activate it everywhere.                            ;;
+;; your snippets are stored in ~/.emacs.d/snippets.                         ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'yasnippet)
 (yas-global-mode 1)
 (yas-load-directory "~/.emacs.d/snippets")
@@ -244,9 +252,9 @@
 (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets/yasnippet-snippets")
 
 
-;;
-; auto-complete configuration
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; auto-complete configuration                                              ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/vendor/auto-complete/dict")
 (ac-config-default)
@@ -259,16 +267,16 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                   python support specific                                ;;
+;;                   * python support specific *                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; defined inside python-config.el
 ;
 
 
-;;
-; org bullets for markdown
-; use org-bullets-mode for utf8 symbols as org bullets
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; org bullets for markdown                                                 ;;
+;; use org-bullets-mode for utf8 symbols as org bullets                     ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'org-bullets)
 (setq org-bullets-bullet-list
         '("◉" "◎" "⚫" "○" "►" "◇"))
@@ -278,9 +286,9 @@
 (sequence "|" "✘ CANCELED(c)")))
 
 
-;;
-; buffer mode
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; buffer mode                                                              ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'buffer-move)
 (global-set-key (kbd "<S-s-up>")     'buf-move-up)
 (global-set-key (kbd "<S-s-down>")   'buf-move-down)
@@ -288,9 +296,9 @@
 (global-set-key (kbd "<S-s-right>")  'buf-move-right)
 
 
-;;
-; ecb (emacs code browser)
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ecb (emacs code browser)                                                 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'ecb)
 (setq ecb-auto-activate nil)
 (setq ecb-layout-name "left13")
@@ -300,66 +308,58 @@
 
 
 
-;;
-; show icons for modes
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; show icons for modes (display icons in the mode line)                    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;(mode-icons-mode)
 
 
-;;
-; ENhanced Scala Interaction Mode for Emacs
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ENhanced Scala Interaction Mode for Emacs (for scala development)        ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'ensime)
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
 
-;;
-; haskell setup
-; full configuration inside haskell-config.el
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; * haskell setup *                                                        ;;
+;; full configuration inside haskell-config.el                              ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'haskell-mode)
 
 
-;;
-; erlang setup
-; full configuration inside erlang-config.el
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; * erlang setup *                                                         ;;
+;; full configuration inside erlang-config.el                               ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'erlang-start)
 
 
-;;
-; Map pairs of simultaneously pressed keys to commands
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Map pairs of simultaneously pressed keys to commands                     ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'key-chord)
 (key-chord-define-global "fm" 'list-buffers)
 (key-chord-define-global "fm"   'helm-mini)
 ;(use fm instead of C-x b to list buffers)
 
 
-;;
-; helm
-; Emacs incremental completion and selection narrowing framework
-;;
-;(require 'helm-config)
-
-
-
-;;
-; show flycheck/flymake errors by tooltip
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; show flycheck/flymake errors by tooltip                                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'flycheck-tip)
 
 
-;;
-; multiple cursors for Emacs
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; multiple cursors for Emacs                                               ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'multiple-cursors)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;   ido disabled in favour of helm                                   ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   ido disabled in favour of helm                                         ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; ido settings
 ; Interactively Do Things
 ; using helm now
@@ -372,9 +372,9 @@
 ; (setq ido-max-window-height 0.25)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; intero disabled in favour of other haskell packages                ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; * intero disabled in favour of other haskell packages *                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ; Complete interactive development environment for Haskell
 ;;

@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil nil ("parent-mode.el") (22558 2030 0 0))
+;;;### (autoloads nil nil ("parent-mode.el") (22568 58105 0 0))
 
 ;;;***
 

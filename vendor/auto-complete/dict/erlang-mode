@@ -53,6 +53,7 @@ bitstring
 boolean
 function
 inet
+inets
 integer
 list
 lists
@@ -70,6 +71,7 @@ add_element
 adler32
 adler32_combine
 alive
+application
 apply
 atom_to_binary
 atom_to_list
@@ -100,6 +102,7 @@ delete_module
 dets
 disconnect_node
 duplicate
+duplicate_bag
 element
 erase
 erlang
@@ -109,6 +112,7 @@ ets
 exit
 export
 export_all
+first
 flatlength
 flatmap
 flatten
@@ -137,6 +141,8 @@ gunzip
 gzip
 halt
 hd
+http
+httpc
 integer_to_list
 internal_bif
 iolist_size
@@ -190,6 +196,7 @@ module_loaded
 monitor_node
 new
 new_bindings
+next
 node
 node_link
 node_unlink
@@ -215,6 +222,7 @@ purge_module
 put
 register
 registered
+request
 reuseaddr
 reverse
 right
@@ -231,6 +239,7 @@ spawn_monitor
 spawn_opt
 split_binary
 statistics
+stop
 string
 sub_string
 term_to_binary
@@ -250,6 +259,7 @@ unlink
 unregister
 whereis
 append_element
+bag
 behaviour_info
 bump_reductions
 call
@@ -290,6 +300,7 @@ min
 monitor
 monitor_node
 multi_call
+ordered_set
 orddict
 packet
 peername
@@ -308,6 +319,7 @@ send
 send_after
 send_nosuspend
 set_cookie
+start
 start_timer
 suspend_process
 system_flag

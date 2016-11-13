@@ -18,13 +18,11 @@
 ; https://github.com/serras/emacs-haskell-tutorial/
 ; https://github.com/chrisdone/emacs-haskell-config/
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;
 ; load the required libraries
 ;;
 (require 'cl)
 (require 'cl-lib)
-
 ;;
 ; load necessary libraries for haskell and company
 ;;
@@ -41,34 +39,37 @@
 (require 'shm)                        ; structured haskell mode
 ; (require 'intero)                   ; complete development mode for haskell
 
-;;===========================================================================
 ;
 ;;; Code:
-
+;
+;;===========================================================================
 ; Enable Windows-like bindings
 (cua-mode 1)
 
 ;;
 ; Set up PATH for the haskell and cabal environment
 ;;
-(setenv "PATH" (concat "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:"
-               (getenv "HOME") "/Library/Haskell/bin"
-               (getenv "PATH")))
-
-(add-to-list 'exec-path (concat (getenv "HOME") "~/Library/Haskell/bin"))
-
-; Make Emacs look in to the Cabal directory for binaries
+;
+; (setenv "PATH" (concat "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:"
+;                (getenv "HOME") "/Library/Haskell/bin"
+;                (getenv "PATH")))
+; (add-to-list 'exec-path (concat (getenv "HOME") "~/Library/Haskell/bin"))
+;
+; Make Emacs look in to the Cabal directory for installed binaries
+; and set the same into the classpath for ready access
+;
 (let ((my-cabal-path (expand-file-name (concat (getenv "HOME") "/Library/Haskell/bin"))))
-  (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
+  ; set the cabal path and put into classpath
+  (setenv "PATH" (concat "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:"
+                 my-cabal-path ":"
+                 (getenv "PATH")))
   (add-to-list 'exec-path my-cabal-path))
 
-;;---------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                 emacs haskell-mode configuration setup                  ;;
-;;---------------------------------------------------------------------------
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-; Choose the indentation mode
-; Use haskell-mode indentation
+; Choose the indentation mode (using haskell-mode indentation)
 ;;
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 (add-hook 'haskell-mode-hook 'haskell-auto-insert-module-template)
@@ -100,7 +101,9 @@
 (eval-after-load 'haskell-mode
   '(define-key haskell-mode-map [f8] 'haskell-navigate-imports))
 
-;; set variables needed for customization
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; set variables needed for customization
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (custom-set-variables
  ; Set up hasktags (part 2)
  '(haskell-tags-on-save nil)
@@ -151,9 +154,9 @@
 (setq haskell-interactive-mode-eval-mode 'haskell-mode)
 (setq haskell-process-generate-tags nil)
 
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Add key combinations for interactive haskell-mode
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (eval-after-load 'haskell-mode '(progn
   (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
   (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
@@ -175,47 +178,47 @@
 (eval-after-load 'haskell-cabal
   '(define-key haskell-cabal-mode-map (kbd "C-c C-n C-o") 'haskell-compile))
 
-;;
-; ghc-mod configuration
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; ghc-mod configuration (initializer for ghc-mod)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (autoload 'ghc-init "ghc" nil t)
 (autoload 'ghc-debug "ghc" nil t)
 (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+; using a refactor tool along
+; (autoload 'hare-init "hare" nil t)
+; (add-hook 'haskell-mode-hook (lambda () (ghc-init) (hare-init)))
 
 
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; company-ghc configuration
-;;
 ; enable company-mode for auto-completion
-; Use company in Haskell buffers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; (add-hook 'haskell-mode-hook 'company-mode)
-; Use company in all buffers
-(add-hook 'after-init-hook 'global-company-mode)
-
+; (add-hook 'after-init-hook 'global-company-mode) ; Use company in all buffers
 (add-to-list 'company-backends 'company-ghc)
 (custom-set-variables '(company-ghc-show-info t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; company-ghci
+; company-ghci configuration
 ; company-ghci is a company backend that provides completions for the
 ; haskell programming language by talking to a ghci process
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (push 'company-ghci company-backends)
 (add-hook 'haskell-mode-hook 'company-mode)
-;;; To get completions in the REPL
+;;; To get auto completions in the ghci REPL
 (add-hook 'haskell-interactive-mode-hook 'company-mode)
 
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; shm (structured-haskell-mode) configuration
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'haskell-mode-hook 'structured-haskell-mode)
 ;; customize colors while running shm
 (set-face-background 'shm-current-face "#eee8d5")
 (set-face-background 'shm-quarantine-face "lemonchiffon")
 
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; haskell standard module imports
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq haskell-import-mapping
       '(("Data.Text" . "import qualified Data.Text as T
                         import Data.Text (Text)
@@ -233,7 +236,7 @@
         ("Data.ByteString.Lazy.Char8" . "import qualified Data.ByteString.Lazy.Char8 as L8
                                         ")
         ("Data.Map" . "import qualified Data.Map.Strict as M
-                      import Data.Map.Strict (Map)
+                       import Data.Map.Strict (Map)
                       ")
         ("Data.Map.Strict" . "import qualified Data.Map.Strict as M
                               import Data.Map.Strict (Map)
@@ -251,9 +254,11 @@
                                ")
         ("Data.Conduit.Binary" . "import qualified Data.Conduit.Binary as CB
                                  ")
-    ))
+))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; custom set variables
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq haskell-language-extensions '())
 (setq haskell-process-type 'ghci)
 (setq haskell-process-path-ghci "/usr/local/bin/ghci")
@@ -267,12 +272,12 @@
 ;   "Build and restart the Cabal project."
 ;   (interactive)
 ;   (intero-devel-reload))
-
+;
 ; (add-hook 'haskell-mode-hook 'intero-mode)
 ; ;; key map
 ; (define-key intero-mode-map (kbd "C-`") 'flycheck-list-errors)
 ; (define-key intero-mode-map [f12] 'intero-devel-reload)
-;;===========================================================================
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 (provide 'haskell-config)

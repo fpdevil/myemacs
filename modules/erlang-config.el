@@ -90,7 +90,7 @@ erlang-bin erlang-mode-path))))
 
 ;; when starting an Erlang shell in Emacs, default in the node name
 ;; default node name to emacs@localhost
-(setq inferior-erlang-machine-options '("-sname" "emacs"))
+;(setq inferior-erlang-machine-options '("-sname" "emacs"))
 
 ;; add Erlang functions to an imenu menu
 (defun imenu-erlang-mode-hook()
@@ -102,24 +102,31 @@ erlang-bin erlang-mode-path))))
 ;; ref http://bob.ippoli.to/archives/2007/03/16/distel-and-erlang-mode-for-emacs-on-mac-os-x/
 ;; tell distel to default to that node
 ;------------------------------------------------------------------------
-; (setq erl-nodename-cache
-;       (make-symbol
-;        (concat
-;         "emacs@"
-;         ;; Mac OS X uses "name.local" instead of "name", this should work
-;         ;; pretty much anywhere without having to muck with NetInfo
-;         ;; ... but I only tested it on Mac OS X.
-;         (car (split-string (shell-command-to-string "hostname"))))))
+(setq erl-nodename-cache
+      (make-symbol
+       (concat
+        "emacs@"
+        ;; Mac OS X uses "name.local" instead of "name", this should work
+        ;; pretty much anywhere without having to muck with NetInfo
+        ;; ... but I only tested it on Mac OS X.
+        (car (split-string (shell-command-to-string "hostname"))))))
 
 
 ;; short host name, like `hostname -s`, remote shell likes this better
-(defun short-host-name ()
-  "Hostname parsing."
-  (string-match "[^\.]+" system-name)
-  (substring system-name (match-beginning 0) (match-end 0)))
-
+; (defun short-host-name()
+;   "Hostname parsing."
+;   (string-match "[^\.]+" system-name)
+;   (substring system-name (match-beginning 0) (match-end 0)))
 ;; set default nodename for distel (= also for erlang-shell-remote)
-(setq erl-nodename-cache (intern (concat "emacs" "@" (short-host-name))))
+;(setq erl-nodename-cache (intern (concat "emacs" "@" (short-host-name))))
+
+
+(add-hook 'erlang-shell-mode-hook
+  (lambda ()
+    ;; add some Distel bindings to the Erlang shell
+    (dolist (spec distel-shell-keys)
+    (define-key erlang-shell-mode-map (car spec) (cadr spec)))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; erlang ide set-up and
@@ -144,28 +151,30 @@ erlang-bin erlang-mode-path))))
 ; Erlang auto-complete
 (add-to-list 'ac-modes 'erlang-mode)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; erlang auto completion using company mode and distel
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; (require 'company)
-; (add-hook 'after-init-hook 'global-company-mode)
-; (require 'company-distel)
-; (add-to-list 'company-backends 'company-distel)
+(require 'company)
+(require 'company-distel)
+(add-hook 'after-init-hook 'global-company-mode)
+(with-eval-after-load 'company
+  (add-to-list 'company-backends 'company-distel))
 
-; ; render company's doc-buffer (default <F1> when on a completion-candidate)
-; ; in a small popup (using popup.el) instead of showing the whole help-buffer.
-; (setq company-distel-popup-help t)
-; ; specify the height of the help popup created by company
-; (setq company-distel-popup-height 30)
-; ; get documentation from internet
-; (setq distel-completion-get-doc-from-internet t)
-; ; Change completion symbols
-; (setq distel-completion-valid-syntax "a-zA-Z:_-")
+; render company's doc-buffer (default <F1> when on a completion-candidate)
+; in a small popup (using popup.el) instead of showing the whole help-buffer.
+(setq company-distel-popup-help t)
+; specify the height of the help popup created by company
+(setq company-distel-popup-height 30)
+; get documentation from internet
+(setq distel-completion-get-doc-from-internet t)
+; Change completion symbols
+(setq distel-completion-valid-syntax "a-zA-Z:_-")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-; A number of the erlang-extended-mode key bindings are useful in the shell too
-;;
+;; A number of the erlang-extended-mode key bindings are useful in the
+;; shell too
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defconst distel-shell-keys
   '(("\C-\M-i"   erl-complete)
     ("\M-?"      erl-complete)
@@ -196,9 +205,9 @@ erlang-bin erlang-mode-path))))
         (error "Please set erlang-flymake-location to an actual location")
   (list escript-exe(list eflymake-loc local-file)))))
 
-;;
-; enable flymake globally
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; enable flymake globally
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; (add-hook 'find-file-hook 'flymake-find-file-hook)
 ;; enabling only erlang-mode
 (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-erlang-init))

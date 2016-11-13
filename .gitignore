@@ -1,3 +1,6 @@
+./SessionDesktop.el
+./custom-settings.el
 *.elc
+.DS_Store
 .*
 !/.gitignore

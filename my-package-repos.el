@@ -32,6 +32,8 @@
              '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives
+             '("org" . "http://orgmode.org/elpa/") t)
 ;;==============================================================================
 ;;
 ; incase if package archive priorities needs to be specified
@@ -114,6 +116,7 @@
     auto-complete-distel                        ;; auto completion  distel for erlang
     company-dict                                ;; backend that emulates ac-source-dictionary
     company-quickhelp                           ;; documentation popup for company
+    helm-company                                ;; helm interface for company-mode
     ;;;;; some utilities                        ;;;;;
     parent-mode                                 ;; get major mode's parent modes
     ; ido                                       ;; IDO mode
@@ -215,7 +218,7 @@
 ;; package is not installed. When Emacs boots, check to make sure all the     ;;
 ;; packages defined in required-packages are installed. If not ELPA kicks in. ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun packages-installed-p ()
+(defun packages-installed-p()
   "Load each package specified in the required-packages section."
   (loop for pkg in required-packages
         when (not (package-installed-p pkg)) do (return nil)
@@ -233,6 +236,7 @@
   ; install the missing packages
   (dolist (pkg required-packages)
     (when (not (package-installed-p pkg))
+      (message "package: %s" pkg)
       (package-install pkg))))
 
 
@@ -242,6 +246,8 @@
 ;;
 ;; package loading from custom el files
 ;; currently support for the below
+;; company
+;; company-quickhelp
 ;; helm
 ;; haskell
 ;; erlang
@@ -256,11 +262,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar configs
     '(
+      "company-config"
       "helm-settings-config"
       "haskell-config"
       "erlang-config"
       "python-config"
-      "flycheck-colors-config"
+      "flycheck-config"
       "rainbow-delims-config"
       "paredit-config"
       "highlight-symbol-config"
@@ -283,7 +290,9 @@
 ;;;; load packages from custom path                                         ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar custom-load-paths
-  '("erlang/elisp")
+  '("erlang/elisp"  ;; erlang
+    "xslide-0.2.2"  ;; xslt
+    )
   "Custom load paths that do not follow the normal vendor/elisp/module-name.el format."
   )
 
