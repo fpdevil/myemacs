@@ -7,8 +7,12 @@
 ;;;              by Emacs during startup.  Any new package required by the apps
 ;;;              or any custom settings needs to be specified here so that they
 ;;;              can be installed and loaded.
+;;; Updated    : 14 Nov 2016
 ;;;
-;;;-----------------------------------------------------------------------------
+;;; Code:
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;
 ;; Use M-x package-refresh-contents to reload the list of
 ;; packages after adding these for the first time
@@ -17,9 +21,7 @@
 (require 'cl)
 (require 'cl-lib)
 (require 'package)
-;;;-----------------------------------------------------------------------------
 
-;;; Code:
 
 ;;==============================================================================
 ;;;;     Package repositories (gnu, melpa, melpa-stable and marmalade)      ;;;;
@@ -84,7 +86,7 @@
 
 
 ;;==============================================================================
-;; packages to be installed during Emacs bootstrap.                           ;;
+;; new or missing packages to be installed during Emacs bootstrap.            ;;
 ;; defvar is the correct way to declare global variables                      ;;
 ;; setq is supposed to be use just to set variables and not create them.      ;;
 ;;==============================================================================
@@ -107,7 +109,7 @@
     color-theme-sanityinc-solarized             ;; solarized themes
     ;colorsarenice-theme                        ;; a colorful color theme
     kooten-theme                                ;; a dark color theme by kootenpv
-    ;;;;; auto completions                      ;;;;;
+    ;;;;; auto completions frameworks           ;;;;;
     company                                     ;; cmopany autocompletion modes
     company-jedi                                ;; company jedi mode for python
     company-distel                              ;; company distel mode for erlang
@@ -127,7 +129,7 @@
     ;;;;; documentation and help                ;;;;;
     markdown-mode                               ;; markdown language support
     ; auctex                                    ;; AUCTEX and LATEX
-    ;;;;; syntax checkers                       ;;;;;
+    ;;;;; on the fly syntax checkers            ;;;;;
     ;;;;; flycheck family                       ;;;;;
     flycheck                                    ;; flycheck on the fly syntax checker
     flycheck-color-mode-line                    ;; flycheck colors for highlighting errors
@@ -166,28 +168,32 @@
     ; intero                                    ;; complete dev environment for haskell
     ;;;;; erlang laguage support                ;;;;;
     erlang                                      ;; erlang emacs plugin
+    ivy-erlang-complete                         ;; context sensitive completion for erlang
     ; edts                                      ;; erlang development ide
     ;;;;; scala development with ensime         ;;;;;
     ensime                                      ;; ENhanced Scala Interaction Mode for Emacs
     ;;;; Yasnippets package                     ;;;;;
     yasnippet                                   ;; yasnippets for supporting languages
-    ;;;;; important utilities                   ;;;;;
+    ;;;;; important and useful utilities        ;;;;;
     helm                                        ;; incremental completion and selection narrowing framework
     helm-core                                   ;; development files for Helm
-    ;;;;; essential packs                       ;;;;;
+    ;;;;; essential packs and tools             ;;;;;
     ecb                                         ;; emacs code browser
     buffer-move                                 ;; move buffer
     neotree                                     ;; a tree plugin like NerdTree for Vim
-    ;;;;; utilities                             ;;;;;
+    ;;;;; essential utilities                   ;;;;;
     highlight-symbol                            ;; automatic and manual symbol highlighting for Emacs
     xah-math-input                              ;; show math input symbols
     ;;;;; icon displays.                        ;;;;;
-    ;mode-icons                                 ;; show icons for modes
+    ; mode-icons                                ;; show icons for modes
     all-the-icons                               ;; package for showing various icons
-    ;;;;; keyboard mappings                     ;;;;;
+    ;;;;; editing and keyboard mappings         ;;;;;
     key-chord                                   ;; map pairs of simultaneously pressed keys to commands
     diminish                                    ;; Diminished modes are minor modes with no modeline display
     multiple-cursors                            ;; multiple cursors for emacs
+    iedit                                       ;; edit multiple regions simultaneously in a buffer or a region
+    ;;;;; web app and java script               ;;;;;
+    web-mode                                    ;; major-mode for editing web templates
   )
   "A list of packages that will be installed if not present when firing Emacs.")
 
@@ -245,7 +251,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; package loading from custom el files
-;; currently support for the below
+;; currently supported for the below
+;;
 ;; company
 ;; company-quickhelp
 ;; helm
@@ -278,7 +285,7 @@
     )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; loop through and load the configured custom packages                   ;;;;
+;;;; loop through each and load the configured custom packages              ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (loop for name in configs
       do (load (concat (file-name-directory load-file-name)
@@ -290,8 +297,8 @@
 ;;;; load packages from custom path                                         ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar custom-load-paths
-  '("erlang/elisp"  ;; erlang
-    "xslide-0.2.2"  ;; xslt
+  '("erlang/elisp"  ;; erlang lisp
+    "xslide"  ;; xslt customizations
     )
   "Custom load paths that do not follow the normal vendor/elisp/module-name.el format."
   )
@@ -303,8 +310,10 @@
       do (add-to-list 'load-path
              (concat (file-name-directory (or load-file-name
                                               (buffer-file-name)))
-                     "vendor/erlang/elisp"
+                     "vendor/"
                      location)))
 
+
+(provide 'my-package-repos.el)
 
 ;;; my-package-repos.el ends here

@@ -1,11 +1,11 @@
 ;;; package --- my-methods.el
 ;;;
 ;;; Commentary:
-;;; Filename: my-methods.el
+;;; Filename   : my-methods.el
 ;;; Description: any custom methods are defined here
 ;;;
 ;;; Code:
-;;
+;;; Updated    : 14 Nov 2016
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq my-command-buffer-hooks (make-hash-table))
 

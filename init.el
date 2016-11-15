@@ -5,19 +5,18 @@
 ;;;  |  __/ | | | | | (_| | (__\__ \
 ;;; (_)___|_| |_| |_|\__,_|\___|___/
 ;;;
-;;;
-;;; name: init.el
-;;; description: initialize the packages
-;;;
 ;;; Commentary:
-;;
+;;;
+;;; filename   : init.el
+;;; description: initialize the necessary packages
+;;;
 ;; This sets up the load path so that we can override it
 ;; reference(s)
 ;; https://hristos.triantafillou.us/init.el/
-;; http://y.tsutsumi.io/emacs-from-scratch-part-2-package-management.html
+;; Updated    : 14 Nov 2016
 ;;
-;;-------------------------------------------------------------------------
 ;;; Code:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;
 ; utf-8 encoding
@@ -45,24 +44,25 @@
 (load "~/.emacs.d/my-package-repos.el")
 
 
-;;-------------------------------------------------------------------------
-;; byte recompiling everything during bootstrap                          ;;
-;;-------------------------------------------------------------------------
+;;--------------------------------------------------------------------------;;
+;; byte recompiling everything during bootstrap                             ;;
+;;--------------------------------------------------------------------------;;
 ;; uncomment below section if needed
 ; (byte-recompile-directory (expand-file-name "~/.emacs.d/packages/elpa") 0)
 ;
 ; a custom function is defined inside my-methods
 
-
-;; Finalizers
-;; for debugging
+;;
+; Finalizers
+; for debugging
+;;
 (setq debug-on-error t)
 ; (setq debug-on-error nil)
 ; (setq debug-on-quit nil)
 
-;;===========================================================================
-;;                              require packages                           ;;
-;;===========================================================================
+;;==========================================================================;;
+;;            specify all the require packages and settings                 ;;
+;;==========================================================================;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;          setting default color theme to the required one                 ;;
@@ -72,37 +72,6 @@
 ;; for solarized themes
 ;(require 'color-theme-sanityinc-solarized)
 ;(color-theme-sanityinc-solarized-light)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;            company mode (for company based completions)                  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; (require 'company)
-; ; use company-mode in all buffers
-; (add-hook 'after-init-hook 'global-company-mode)
-; (setq company-auto-complete t)
-; (setq company-minimum-prefix-length 2)
-; (setq company-tooltip-align-annotations t)
-; (setq company-selection-wrap-around t)
-; ; invert navigation direction if completion popup-isearch-match
-; ; is displayed on top (happens near the bottom of windows)
-; (setq company-tooltip-flip-when-above t)
-; ; no delay for company suggestions
-; (setq company-idle-delay 0)
-; (auto-complete-mode 1)
-; ; helm interface for company-mode
-; (eval-after-load 'company
-;   '(progn
-;      (define-key company-mode-map (kbd "C-:") 'helm-company)
-;      (define-key company-active-map (kbd "C-:") 'helm-company)))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                  documentation popup for company                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; (require 'company-quickhelp)
-; (company-quickhelp-mode 1)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; identify unnecessary whitespace is in all programming modes              ;;
@@ -131,7 +100,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; magit (gut integration)                                                  ;;
+;; magit (git integration)                                                  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'magit)
 (eval-after-load 'magit
@@ -140,20 +109,20 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fancy (but usefull) stuff                                                ;;
+;; fancy (but useful) stuff                                                 ;;
 ;; for rainbow delimiters                                                   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'rainbow-delimiters)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fancy stuff                                                              ;;
+;; fancy (but useful) stuff                                                 ;;
 ;; for rainbow identifiers                                                  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'rainbow-identifiers)
 (add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
 ;; rainbow identifier customizations
-;; Use a wider set of colors
+;; use a wider set of colors
 (setq rainbow-identifiers-choose-face-function
       'rainbow-identifiers-cie-l*a*b*-choose-face)
 (setq rainbow-identifiers-cie-l*a*b*-lightness 45)
@@ -169,10 +138,18 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; auto-completion                                                          ;;
+;; auto-completion (where company is not available)                         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'auto-complete)
 (require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories (concat (getenv "HOME") "/.emacs.d/vendor/auto-complete/dict"))
+(ac-config-default)
+(global-auto-complete-mode t)
+; (setq ac-sources '(ac-source-yasnippet
+;                    ac-source-abbrev
+;                    ac-source-words-in-same-mode-buffers))
+;; show the menu
+(setq ac-show-menu-immediately-on-auto-complete t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -208,7 +185,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'flymake-python-pyflakes)
 ;; (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
-;; using flake8
+;; using flake8 for flycheck
 (setq flymake-python-pyflakes-executable "/usr/local/bin/flake8")
 
 
@@ -221,12 +198,12 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; vim airline theme for emacs                                              ;;
+;; vim airline theme for emacs modeline customized display                  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'airline-themes)
-;(load-theme 'airline-light)
-(load-theme 'airline-papercolor)
-; setting powerline fonts
+;(load-theme 'airline-light)     ; load airline light theme
+(load-theme 'airline-papercolor) ; load papercolor theme
+; setting powerline fonts for glyphs
 (setq powerline-utf-8-separator-left        #xe0b0
       powerline-utf-8-separator-right       #xe0b2
       airline-utf-glyph-separator-left      #xe0b0
@@ -250,27 +227,6 @@
     (setq yas-dont-activate t)))
 (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets/")
 (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets/yasnippet-snippets")
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; auto-complete configuration                                              ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/vendor/auto-complete/dict")
-(ac-config-default)
-(global-auto-complete-mode t)
-; (setq ac-sources '(ac-source-yasnippet
-;                    ac-source-abbrev
-;                    ac-source-words-in-same-mode-buffers))
-;; show the menu
-(setq ac-show-menu-immediately-on-auto-complete t)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                   * python support specific *                            ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; defined inside python-config.el
-;
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -307,13 +263,6 @@
 (setq ecb-windows-width 13)
 
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; show icons for modes (display icons in the mode line)                    ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;(mode-icons-mode)
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ENhanced Scala Interaction Mode for Emacs (for scala development)        ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -322,32 +271,12 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; * haskell setup *                                                        ;;
-;; full configuration inside haskell-config.el                              ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'haskell-mode)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; * erlang setup *                                                         ;;
-;; full configuration inside erlang-config.el                               ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'erlang-start)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Map pairs of simultaneously pressed keys to commands                     ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'key-chord)
 (key-chord-define-global "fm" 'list-buffers)
-(key-chord-define-global "fm"   'helm-mini)
+(key-chord-define-global "fm" 'helm-mini)
 ;(use fm instead of C-x b to list buffers)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; show flycheck/flymake errors by tooltip                                  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'flycheck-tip)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -355,6 +284,24 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'multiple-cursors)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; edit multiple regions simultaneously in a buffer or a region             ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'iedit)
+(setq iedit-unmatched-lines-invisible-default t)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; an autonomous emacs major-mode for editing web templates                 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -370,17 +317,7 @@
 ; (setq ido-everywhere t)
 ; (setq ido-max-prospects 50)
 ; (setq ido-max-window-height 0.25)
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; * intero disabled in favour of other haskell packages *                  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-; Complete interactive development environment for Haskell
-;;
-;(require 'intero)
-;;
-
 
 
 (provide 'init)

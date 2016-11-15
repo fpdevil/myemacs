@@ -5,30 +5,39 @@
 ;;; Description: A major mode erlang language support in Emacs
 ;;;
 ;;; elisp code for erlang language support and handling
-;;=======================================================================
+;;===========================================================================
 
 
-;------------------------------------------------------------------------
-;; erlang settings for Emacs
-;------------------------------------------------------------------------
+;---------------------------------------------------------------------------;
+;; erlang settings for Emacs                                                ;
+;---------------------------------------------------------------------------;
 
 ;;
-; load standard libraries
+; load the standard and erlang specific libraries
 ;;
 (require 'cl)
 (require 'cl-lib)
 (require 'imenu)
-;------------------------------------------------------------------------
-;
+(require 'ivy-erlang-complete)
+;============================================================================
+; start defining the emacs bindings for erlang
 ;;; Code:
-;
+;;===========================================================================
 (add-to-list 'auto-mode-alist '("\\.erl?$" . erlang-mode))
 (add-to-list 'auto-mode-alist '("\\.hrl?$" . erlang-mode))
 
 
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; context sensitive completion for erlang without connecting to erlang nodes
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'erlang-mode-hook #'ivy-erlang-complete-init)
+;; automatic update completion data after save
+(add-hook 'after-save-hook #'ivy-erlang-complete-reparse)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; erlang path setup
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq load-path (cons "/opt/erlang/r19.0/lib/tools-*/emacs"
 load-path))
 (setq erlang-root-dir "/opt/erlang/r19.0")
@@ -68,28 +77,27 @@ erlang-bin erlang-mode-path))))
 (setq exec-path (cons "/opt/erlang/r19.0/bin" exec-path))
 (require 'erlang-start)
 
-
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; distel setup
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; (add-to-list 'load-path "/opt/erlang/r19.0/distel/elisp")
 ; (require 'distel)
 ; (distel-setup)
-
 (let ((distel-dir "/opt/erlang/r19.0/distel/elisp"))
     (unless (member distel-dir load-path)
 ;; Add distel-dir to the end of load-path
 (setq load-path (append load-path (list distel-dir)))))
 (require 'distel)
 (distel-setup)
-;------------------------------------------------------------------------
-
-;; prevent annoying hang-on-compile
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+; prevent annoying hang-on-compile
+;;
 (defvar inferior-erlang-prompt-timeout t)
-
-
-;; when starting an Erlang shell in Emacs, default in the node name
-;; default node name to emacs@localhost
+;;
+; while starting an Erlang shell in Emacs, default in the node name
+; default node name to emacs@localhost
+;;
 ;(setq inferior-erlang-machine-options '("-sname" "emacs"))
 
 ;; add Erlang functions to an imenu menu
@@ -98,10 +106,10 @@ erlang-bin erlang-mode-path))))
 (add-hook 'erlang-mode-hook 'imenu-erlang-mode-hook)
 
 
-;------------------------------------------------------------------------
+;----------------------------------------------------------------------------
 ;; ref http://bob.ippoli.to/archives/2007/03/16/distel-and-erlang-mode-for-emacs-on-mac-os-x/
 ;; tell distel to default to that node
-;------------------------------------------------------------------------
+;----------------------------------------------------------------------------
 (setq erl-nodename-cache
       (make-symbol
        (concat
@@ -204,10 +212,9 @@ erlang-bin erlang-mode-path))))
   (if (not (file-exists-p eflymake-loc))
         (error "Please set erlang-flymake-location to an actual location")
   (list escript-exe(list eflymake-loc local-file)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; enable flymake globally
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+; enable flymake globally
+;;
 ; (add-hook 'find-file-hook 'flymake-find-file-hook)
 ;; enabling only erlang-mode
 (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-erlang-init))
@@ -215,6 +222,7 @@ erlang-bin erlang-mode-path))))
   "Set erlang flymake mode."
   (flymake-mode 1))
 (add-hook 'erlang-mode-hook 'flymake-erlang-mode-hook)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 (provide 'erlang-config)

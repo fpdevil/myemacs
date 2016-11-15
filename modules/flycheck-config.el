@@ -1,6 +1,6 @@
 ;;; package  --- flycheck-config.el
 ;;;
-;;; Commentary :
+;;; Commentary:
 ;;;
 ;;; Filename.  : flycheck-config.el
 ;;; Description: configuration file for flycheck errors and colors.
@@ -13,6 +13,7 @@
 (require 'flycheck)                   ;; flycheck lib
 (require 'helm-flycheck)              ;; flycheck helm integration
 (require 'flycheck-color-mode-line)   ;; flycheck color mode line
+(require 'flycheck-tip)               ;; show flycheck/flymake errors indent tooltip
 (require 'flycheck-pos-tip)           ;; flycheck errors display in tooltip
 (require 'flycheck-haskell)           ;; Improved Haskell support for Flycheck
 
@@ -93,6 +94,7 @@
 ; for pos-tip
 (with-eval-after-load 'flycheck
   '(flycheck-pos-tip-mode))
+(setq flycheck-pos-tip-mode t)
 ; for haskell
 (eval-after-load 'flycheck
   '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
