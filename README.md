@@ -1,6 +1,6 @@
-# My emacs settings
+# .emacs settings for Aquamacs
 
-My personal emacs configuration.
+My personal emacs configuration for Aquamacs on Mac Sierra.
 
 #### installation
 
@@ -10,8 +10,8 @@ Clone the repository
 
 - Move the file `dotemacs` to the home folder and rename it as `.emacs`
 
-- Main languages supported as `python3` through `jedi` and `haskell` through the `haskell-mode`
-Additional customization options through `helm`
+- Main languages supported are `python3` through `jedi` and `haskell` through the `haskell-mode`
+Additional customization options available through `helm`
 
 
 #### Customized settings

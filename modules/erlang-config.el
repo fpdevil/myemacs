@@ -160,6 +160,13 @@ erlang-bin erlang-mode-path))))
 (add-to-list 'ac-modes 'erlang-mode)
 
 
+;;
+; auto-complete-mode so can interact with inferior erlang and
+; popup completion turn on when needed.
+;;
+(add-hook 'erlang-mode-hook (lambda () (auto-complete-mode 1)))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; erlang auto completion using company mode and distel
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

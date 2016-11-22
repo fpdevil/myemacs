@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "kooten-theme" "kooten-theme.el" (22570 23202
+;;;### (autoloads nil "kooten-theme" "kooten-theme.el" (22578 11804
 ;;;;;;  0 0))
 ;;; Generated autoloads from kooten-theme.el
 

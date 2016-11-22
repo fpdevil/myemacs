@@ -3,7 +3,7 @@
 ;;;    ___ _ __ ___   __ _  ___ ___
 ;;;   / _ \ '_ ` _ \ / _` |/ __/ __|
 ;;;  |  __/ | | | | | (_| | (__\__ \
-;;; (_)___|_| |_| |_|\__,_|\___|___/
+;;;   \___|_| |_| |_|\__,_|\___|___/
 ;;;
 ;;; Commentary:
 ;;;
@@ -13,7 +13,7 @@
 ;; This sets up the load path so that we can override it
 ;; reference(s)
 ;; https://hristos.triantafillou.us/init.el/
-;; Updated    : 14 Nov 2016
+;; Updated    : 20 Nov 2016
 ;;
 ;;; Code:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -38,10 +38,11 @@
 ;;
 ; adding the required lisp files and libraries to path
 ;;
-(add-to-list 'load-path "~/.emacs.d")
-(setq custom-file "~/.emacs.d/custom-settings.el")
+(add-to-list 'load-path (concat (getenv "HOME") "/.emacs.d"))
+(setq custom-file (concat (getenv "HOME") "/.emacs.d/custom-settings.el"))
 (load custom-file)
-(load "~/.emacs.d/my-package-repos.el")
+(load (concat (getenv "HOME") "/.emacs.d/my-package-repos.el"))
+
 
 
 ;;--------------------------------------------------------------------------;;
@@ -51,7 +52,7 @@
 ; (byte-recompile-directory (expand-file-name "~/.emacs.d/packages/elpa") 0)
 ;
 ; a custom function is defined inside my-methods
-
+;;--------------------------------------------------------------------------;;
 ;;
 ; Finalizers
 ; for debugging
@@ -60,18 +61,47 @@
 ; (setq debug-on-error nil)
 ; (setq debug-on-quit nil)
 
+
 ;;==========================================================================;;
 ;;            specify all the require packages and settings                 ;;
 ;;==========================================================================;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; fancy modeline                                                           ;;
+;; powerline                                                                ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'powerline)
+(powerline-default-theme)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;          setting default color theme to the required one                 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; (load-theme 'material t)        ;; material dark theme
-(load-theme 'material-light t)   ;; material light theme
-;; for solarized themes
-;(require 'color-theme-sanityinc-solarized)
-;(color-theme-sanityinc-solarized-light)
+(require 'color-theme)
+(setq color-theme-is-global t)
+(color-theme-initialize)
+(add-hook 'after-init-hook
+      (lambda ()
+        ; (load-theme 'cyberpunk t)                     ;; cyberpunk theme
+        ; (load-theme 'material t)                      ;; material dark theme
+        ; (load-theme 'material-light t)                ;; material light theme
+        ; (load-theme 'dracula t)                       ;; dracula dark theme
+        (load-theme 'mccarthy)                          ;; from sublime-themes
+        ;;
+        ;; below for moe-theme ;;
+        ; (require 'moe-theme)
+        ; ; show highlighted buffer-id as decoration
+        ; (setq moe-theme-highlight-buffer-id t)
+        ; ; choose a color for mode-line
+        ; (moe-theme-set-color 'cyan)
+        ; (moe-light)                                     ;; moe-light or moe-dark
+        ;;
+        )
+      )
+;(require 'color-theme-sanityinc-solarized)             ;; solarized thene
+;(color-theme-sanityinc-solarized-light)                ;; solarized light
+;; wait until startup initialization is complete
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; identify unnecessary whitespace is in all programming modes              ;;
@@ -138,63 +168,11 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; auto-completion (where company is not available)                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'auto-complete)
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories (concat (getenv "HOME") "/.emacs.d/vendor/auto-complete/dict"))
-(ac-config-default)
-(global-auto-complete-mode t)
-; (setq ac-sources '(ac-source-yasnippet
-;                    ac-source-abbrev
-;                    ac-source-words-in-same-mode-buffers))
-;; show the menu
-(setq ac-show-menu-immediately-on-auto-complete t)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; smart parenthesis matching                                               ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'smartparens)
 (smartparens-global-mode t)
 (show-smartparens-global-mode t)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; flymake-easy (helpers for easily building Emacs flymake checkers)        ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'flymake-easy)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; show flymake errors in minibuffer                                        ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'flymake-cursor)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; flymake handler for checking Haskell source code with hlint.             ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'flymake-hlint) ;; not needed if installed via package
-(add-hook 'haskell-mode-hook 'flymake-hlint-load)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; flymake handler for syntax-checking Python source code using             ;;
-;; pyflakes or flake8                                                       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'flymake-python-pyflakes)
-;; (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
-;; using flake8 for flycheck
-(setq flymake-python-pyflakes-executable "/usr/local/bin/flake8")
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fancy modeline                                                           ;;
-;; powerline                                                                ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'powerline)
-(powerline-default-theme)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -216,17 +194,57 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flymake-easy (helpers for easily building Emacs flymake checkers)        ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'flymake-easy)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; show flymake errors in minibuffer                                        ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'flymake-cursor)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; yasnippets configuration                                                 ;;
 ;; this will install and activate it everywhere.                            ;;
 ;; your snippets are stored in ~/.emacs.d/snippets.                         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'yasnippet)
 (yas-global-mode 1)
-(yas-load-directory "~/.emacs.d/snippets")
+(yas-load-directory (concat (getenv "HOME") "/.emacs.d/snippets"))
 (add-hook 'term-mode-hook (lambda()
     (setq yas-dont-activate t)))
-(add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets/")
-(add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets/yasnippet-snippets")
+(add-to-list 'yas-snippet-dirs (concat (getenv "HOME") "/.emacs.d/snippets/"))
+(add-to-list 'yas-snippet-dirs (concat (getenv "HOME") "/.emacs.d/snippets/yasnippet-snippets"))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; auto-completion (where company is not available)                         ;;
+;; setting up autocomplete after yasnippet to avoid duplciate tab bindings  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'auto-complete)
+(when (require 'auto-complete-config nil 'noerror)
+  (add-to-list 'ac-dictionary-directories
+    (concat (getenv "HOME") "/.emacs.d/vendor/auto-complete/dict"))
+  (setq ac-comphist-file
+    (concat (getenv "HOME") "/.emacs.d/ac-comphist.dat"))
+  (ac-config-default)
+  )
+(setq ac-delay 0.0)
+(setq ac-quick-help-delay 0.5)
+; to enable auto-complete globally
+; (global-auto-complete-mode t)
+; (setq ac-sources '(ac-source-yasnippet
+;                    ac-source-abbrev
+;                    ac-source-words-in-same-mode-buffers))
+;; show the menu
+(setq ac-show-menu-immediately-on-auto-complete t)
+
+;; for disabling auto-complete mode for a mode
+; (defadvice auto-complete-mode (around disable-auto-complete-for-progname)
+;   (unless (eq major-mode 'progname-mode) ad-do-it))
+; (ad-activate 'auto-complete-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -301,7 +319,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-
+(setq web-mode-enable-css-colorization t)
+(setq web-mode-code-indent-offset 2)
+(setq web-mode-markup-indent-offset 2)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "ivy-erlang-complete" "ivy-erlang-complete.el"
-;;;;;;  (22570 23242 0 0))
+;;;;;;  (22578 11852 0 0))
 ;;; Generated autoloads from ivy-erlang-complete.el
 
 (autoload 'ivy-erlang-complete-autosetup-project-root "ivy-erlang-complete" "\
@@ -59,7 +59,7 @@ Find erlang references.
 
 ;;;***
 
-;;;### (autoloads nil nil ("ivy-erlang-complete-pkg.el") (22570 23242
+;;;### (autoloads nil nil ("ivy-erlang-complete-pkg.el") (22578 11852
 ;;;;;;  0 0))
 
 ;;;***

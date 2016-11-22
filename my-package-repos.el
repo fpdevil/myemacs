@@ -12,7 +12,6 @@
 ;;; Code:
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;
 ;; Use M-x package-refresh-contents to reload the list of
 ;; packages after adding these for the first time
@@ -37,6 +36,7 @@
 (add-to-list 'package-archives
              '("org" . "http://orgmode.org/elpa/") t)
 ;;==============================================================================
+
 ;;
 ; incase if package archive priorities needs to be specified
 ; the below section may be used; for now just commented
@@ -46,7 +46,7 @@
 ;         ("gnu" . 10)
 ;         ("melpa" . 0)
 ;         ("melpa-stable" . 0)))
-
+;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Define custom directories for the packages                                 ;;
@@ -58,7 +58,7 @@
 (defconst home-dir "~")
 (defvar emacs-dir (file-name-directory load-file-name)
   "Top level Emacs dir.")
-(defvar emacs-dir (file-name-directory "~/.emacs.d")
+(defvar emacs-dir (file-name-directory (concat (getenv "HOME") "/.emacs.d"))
   "Top level Emacs dir.")
 (defvar vendor-dir (expand-file-name "vendor" emacs-dir)
   "Packages not yet available in ELPA.")
@@ -71,12 +71,13 @@
 
 (add-to-list 'load-path pkg-dir)
 (setq package-user-dir (concat pkg-dir "/elpa"))
-;
-;; end of custom directory declaration.
+;;------------------------------------------------------------------------------
+;;                 end of custom directory declaration.                       ;;
 ;;------------------------------------------------------------------------------
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; initialize all the packages                                            ;;;;
+;;;; initialize all the defined packages                                    ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (package-initialize)
 ; make sure to have downloaded the archive description.
@@ -101,28 +102,33 @@
     color-theme                                 ;; install color themes
     sublime-themes                              ;; sublime themes
     darkokai-theme                              ;; dark theme based on monokai
+    dracula-theme                               ;; dracula dark theme
     moe-theme                                   ;; group of moe themes
     monokai-theme                               ;; monokai theme
     zenburn-theme                               ;; zenburn color theme
     material-theme                              ;; material themes
     color-theme-sanityinc-tomorrow              ;; tomorrow themes
     color-theme-sanityinc-solarized             ;; solarized themes
+    cyberpunk-theme                             ;; cyberpunk theme for emacs
     ;colorsarenice-theme                        ;; a colorful color theme
     kooten-theme                                ;; a dark color theme by kootenpv
-    ;;;;; auto completions frameworks           ;;;;;
+    ;;;;; company auto completions frameworks   ;;;;;
     company                                     ;; cmopany autocompletion modes
+    ;;;;; company backends for completion       ;;;;;
     company-jedi                                ;; company jedi mode for python
     company-distel                              ;; company distel mode for erlang
     distel-completion-lib                       ;; distel-completion is needed for company-distel
-    auto-complete                               ;; auto completion for gnu emacs
-    auto-complete-distel                        ;; auto completion  distel for erlang
     company-dict                                ;; backend that emulates ac-source-dictionary
     company-quickhelp                           ;; documentation popup for company
     helm-company                                ;; helm interface for company-mode
+    company-math                                ;; backend for for math unicode symbols and latex tags
+    ;;;;; auto-complete family                  ;;;;;
+    auto-complete                               ;; auto completion for gnu emacs
+    auto-complete-distel                        ;; auto completion distel for erlang
     ;;;;; some utilities                        ;;;;;
     parent-mode                                 ;; get major mode's parent modes
     ; ido                                       ;; IDO mode
-    ; smex
+    ; smex                                      ;; M-x interface with Ido-style fuzzy matching
     ;;;;; essential utilities                   ;;;;;
     smartparens                                 ;; parenthesis management
     paredit                                     ;; minor mode for editing parentheses
@@ -172,6 +178,13 @@
     ; edts                                      ;; erlang development ide
     ;;;;; scala development with ensime         ;;;;;
     ensime                                      ;; ENhanced Scala Interaction Mode for Emacs
+    ;;;;; go development support                ;;;;;
+    go-mode                                     ;; major mode for go programming
+    go-eldoc                                    ;; eldoc for go-mode
+    go-autocomplete                             ;; auto completion backend for go
+    golint                                      ;; lint for go source
+    ;;;;; javascript/json support               ;;;;;
+    json-mode                                   ;; major mode for json editing
     ;;;; Yasnippets package                     ;;;;;
     yasnippet                                   ;; yasnippets for supporting languages
     ;;;;; important and useful utilities        ;;;;;
@@ -194,6 +207,8 @@
     iedit                                       ;; edit multiple regions simultaneously in a buffer or a region
     ;;;;; web app and java script               ;;;;;
     web-mode                                    ;; major-mode for editing web templates
+    ;;;;; text and file utilities               ;;;;;
+    popwin                                      ;; popup window manager
   )
   "A list of packages that will be installed if not present when firing Emacs.")
 
@@ -265,6 +280,8 @@
 ;; hihlight-symbols
 ;; fringe
 ;; neotree
+;; go
+;; popwin
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar configs
@@ -280,6 +297,8 @@
       "highlight-symbol-config"
       "fringe-config"
       "neotree-config"
+      "go-config"
+      "popwin-config"
       )
     "Configuration files which follow the modules/pkgname-config.el format."
     )
@@ -298,7 +317,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar custom-load-paths
   '("erlang/elisp"  ;; erlang lisp
-    "xslide"  ;; xslt customizations
+    "xslide"        ;; xslt customizations
     )
   "Custom load paths that do not follow the normal vendor/elisp/module-name.el format."
   )

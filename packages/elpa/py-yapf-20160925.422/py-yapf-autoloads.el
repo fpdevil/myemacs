@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "py-yapf" "py-yapf.el" (22570 23230 0 0))
+;;;### (autoloads nil "py-yapf" "py-yapf.el" (22578 11839 0 0))
 ;;; Generated autoloads from py-yapf.el
 
 (autoload 'py-yapf-buffer "py-yapf" "\

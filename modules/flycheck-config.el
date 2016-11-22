@@ -19,6 +19,9 @@
 
 ;;; Code:
 
+;;
+; setting up customized flycheck
+;;
 (add-hook 'find-file-hook
           (lambda ()
             (when (not (equal 'emacs-lisp-mode major-mode))
@@ -37,6 +40,7 @@
      ;; indicate syntax errors/warnings in the left-fringe.
      (setq flycheck-indication-mode 'left-fringe)
      (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
+     ;; for a cusomized display of error message
      (set-face-background 'flycheck-error "#E5E8E8")
      (set-face-foreground 'flycheck-error "#00796B")
      (set-face-background 'flycheck-warning "#E5E8E8")

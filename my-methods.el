@@ -32,7 +32,7 @@
 (defun byte-recompile-init-files ()
   "Recompile all of the startup files."
   (interactive)
-  (byte-recompile-directory "~/.emacs.d/packages" 0))
+  (byte-recompile-directory (concat (getenv "HOME") "/.emacs.d/packages") 0))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
