@@ -44,14 +44,15 @@
 (load (concat (getenv "HOME") "/.emacs.d/my-package-repos.el"))
 
 
-
 ;;--------------------------------------------------------------------------;;
 ;; byte recompiling everything during bootstrap                             ;;
+;; a custom function is defined inside my-methods                           ;;
+;; uncomment below section if needed                                        ;;
 ;;--------------------------------------------------------------------------;;
-;; uncomment below section if needed
-; (byte-recompile-directory (expand-file-name "~/.emacs.d/packages/elpa") 0)
-;
-; a custom function is defined inside my-methods
+; (byte-recompile-directory
+;   (expand-file-name (concat (getenv "HOME") "/.emacs.d/packages/elpa/")) 0)
+
+
 ;;--------------------------------------------------------------------------;;
 ;;
 ; Finalizers
@@ -66,12 +67,22 @@
 ;;            specify all the require packages and settings                 ;;
 ;;==========================================================================;;
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Diminished modes are minor modes with no modeline display                ;;
+;; hide a minor mode that you know are always enabled using this            ;;
+;; http://www.eskimo.com/~seldon/diminish.el                                ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'diminish)
+(eval-after-load "whitespace" '(diminish 'whitespace-mode))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; fancy modeline                                                           ;;
 ;; powerline                                                                ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'powerline)
-(powerline-default-theme)
+;(require 'powerline)
+;(powerline-default-theme)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -82,13 +93,16 @@
 (color-theme-initialize)
 (add-hook 'after-init-hook
       (lambda ()
-        ; (load-theme 'cyberpunk t)                     ;; cyberpunk theme
-        ; (load-theme 'material t)                      ;; material dark theme
-        ; (load-theme 'material-light t)                ;; material light theme
-        ; (load-theme 'dracula t)                       ;; dracula dark theme
-        (load-theme 'mccarthy)                          ;; from sublime-themes
+        ; (load-theme 'sanityinc-solarized-light)         ;; solarized light theme
+        ; (load-theme 'cyberpunk t)                       ;; cyberpunk theme
+        ; (load-theme 'material t)                        ;; material dark theme
+        ; (load-theme 'material-light t)                  ;; material light theme
+        ; (load-theme 'dracula t)                         ;; dracula dark theme
+        (load-theme 'mccarthy)                          ;; mccarthy from sublime-themes
+        ; (load-theme 'apropospriate-dark t)              ;; apropospriate dark theme
+        ; (load-theme 'apropospriate-light t)             ;; apropospriate light theme
         ;;
-        ;; below for moe-theme ;;
+        ;; -- below for moe-theme -- ;;
         ; (require 'moe-theme)
         ; ; show highlighted buffer-id as decoration
         ; (setq moe-theme-highlight-buffer-id t)
@@ -98,9 +112,27 @@
         ;;
         )
       )
-;(require 'color-theme-sanityinc-solarized)             ;; solarized thene
-;(color-theme-sanityinc-solarized-light)                ;; solarized light
 ;; wait until startup initialization is complete
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; vim airline theme for emacs modeline customized display                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'airline-themes)
+; setting powerline fonts for glyphs
+(setq powerline-utf-8-separator-left        #xe0b0
+      powerline-utf-8-separator-right       #xe0b2
+      airline-utf-glyph-separator-left      #xe0b0
+      airline-utf-glyph-separator-right     #xe0b2
+      airline-utf-glyph-subseparator-left   #xe0b1
+      airline-utf-glyph-subseparator-right  #xe0b3
+      airline-utf-glyph-branch              #xe0a0
+      airline-utf-glyph-readonly            #xe0a2
+      airline-utf-glyph-linenumber          #xe0a1)
+;(load-theme 'airline-light)                ; load airline light theme
+(load-theme 'airline-papercolor)            ; load papercolor theme
+;(load-theme 'airline-base16-shell-dark)    ; load airline-base16-shell-dark theme
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -113,16 +145,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Diminished modes are minor modes with no modeline display                ;;
-;; hide a minor mode that you know are always enabled using this            ;;
-;; http://www.eskimo.com/~seldon/diminish.el                                ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'diminish)
-(eval-after-load "whitespace" '(diminish 'whitespace-mode))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; markdown mode                                                            ;;
+;; editing files in markdown mode                                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'markdown-mode)
 (setq auto-mode-alist
@@ -130,12 +153,12 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; magit (git integration)                                                  ;;
+;; magit (git integration - now using git-gutter)                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'magit)
-(eval-after-load 'magit
-  (progn '(global-set-key (kbd "C-x g") 'magit-status)))
-;(define-key global-map (kbd "C-c m") 'magit-status)
+; (require 'magit)
+; (eval-after-load 'magit
+;   (progn '(global-set-key (kbd "C-x g") 'magit-status)))
+; (define-key global-map (kbd "C-c m") 'magit-status)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -160,10 +183,11 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fancy stuff                                                              ;;
-;; rainbow mode                                                             ;;
+;; fancy stuff, rainbow mode                                                ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'rainbow-mode)
+(add-hook 'css-mode-hook (lambda () (rainbow-mode 1)))
+(add-hook 'html-mode-hook (lambda () (rainbow-mode 1)))
 (add-hook 'prog-mode-hook 'rainbow-mode)
 
 
@@ -173,24 +197,6 @@
 (require 'smartparens)
 (smartparens-global-mode t)
 (show-smartparens-global-mode t)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; vim airline theme for emacs modeline customized display                  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'airline-themes)
-;(load-theme 'airline-light)     ; load airline light theme
-(load-theme 'airline-papercolor) ; load papercolor theme
-; setting powerline fonts for glyphs
-(setq powerline-utf-8-separator-left        #xe0b0
-      powerline-utf-8-separator-right       #xe0b2
-      airline-utf-glyph-separator-left      #xe0b0
-      airline-utf-glyph-separator-right     #xe0b2
-      airline-utf-glyph-subseparator-left   #xe0b1
-      airline-utf-glyph-subseparator-right  #xe0b3
-      airline-utf-glyph-branch              #xe0a0
-      airline-utf-glyph-readonly            #xe0a2
-      airline-utf-glyph-linenumber          #xe0a1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -206,61 +212,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; yasnippets configuration                                                 ;;
-;; this will install and activate it everywhere.                            ;;
-;; your snippets are stored in ~/.emacs.d/snippets.                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'yasnippet)
-(yas-global-mode 1)
-(yas-load-directory (concat (getenv "HOME") "/.emacs.d/snippets"))
-(add-hook 'term-mode-hook (lambda()
-    (setq yas-dont-activate t)))
-(add-to-list 'yas-snippet-dirs (concat (getenv "HOME") "/.emacs.d/snippets/"))
-(add-to-list 'yas-snippet-dirs (concat (getenv "HOME") "/.emacs.d/snippets/yasnippet-snippets"))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; auto-completion (where company is not available)                         ;;
-;; setting up autocomplete after yasnippet to avoid duplciate tab bindings  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'auto-complete)
-(when (require 'auto-complete-config nil 'noerror)
-  (add-to-list 'ac-dictionary-directories
-    (concat (getenv "HOME") "/.emacs.d/vendor/auto-complete/dict"))
-  (setq ac-comphist-file
-    (concat (getenv "HOME") "/.emacs.d/ac-comphist.dat"))
-  (ac-config-default)
-  )
-(setq ac-delay 0.0)
-(setq ac-quick-help-delay 0.5)
-; to enable auto-complete globally
-; (global-auto-complete-mode t)
-; (setq ac-sources '(ac-source-yasnippet
-;                    ac-source-abbrev
-;                    ac-source-words-in-same-mode-buffers))
-;; show the menu
-(setq ac-show-menu-immediately-on-auto-complete t)
-
-;; for disabling auto-complete mode for a mode
-; (defadvice auto-complete-mode (around disable-auto-complete-for-progname)
-;   (unless (eq major-mode 'progname-mode) ad-do-it))
-; (ad-activate 'auto-complete-mode)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; org bullets for markdown                                                 ;;
-;; use org-bullets-mode for utf8 symbols as org bullets                     ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'org-bullets)
-(setq org-bullets-bullet-list
-        '("◉" "◎" "⚫" "○" "►" "◇"))
-(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-(setq org-todo-keywords '((sequence "☛ TODO(t)" "|" "✔ DONE(d)")
-(sequence "⚑ WAITING(w)" "|")
-(sequence "|" "✘ CANCELED(c)")))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; buffer mode                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'buffer-move)
@@ -268,24 +219,6 @@
 (global-set-key (kbd "<S-s-down>")   'buf-move-down)
 (global-set-key (kbd "<S-s-left>")   'buf-move-left)
 (global-set-key (kbd "<S-s-right>")  'buf-move-right)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ecb (emacs code browser)                                                 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'ecb)
-(setq ecb-auto-activate nil)
-(setq ecb-layout-name "left13")
-(setq ecb-new-ecb-frame nil)
-(setq ecb-tip-of-the-day nil)
-(setq ecb-windows-width 13)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ENhanced Scala Interaction Mode for Emacs (for scala development)        ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'ensime)
-(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -298,16 +231,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; multiple cursors for Emacs                                               ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'multiple-cursors)
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; edit multiple regions simultaneously in a buffer or a region             ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'iedit)
@@ -315,13 +238,10 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; an autonomous emacs major-mode for editing web templates                 ;;
+;; Emacs package that displays available keybindings in popup               ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-(setq web-mode-enable-css-colorization t)
-(setq web-mode-code-indent-offset 2)
-(setq web-mode-markup-indent-offset 2)
+(require 'which-key)
+(which-key-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

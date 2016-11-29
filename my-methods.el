@@ -15,12 +15,14 @@
     (puthash (buffer-file-name) c my-command-buffer-hooks))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (defun my-command-buffer-kill-hook ()
   "Remove a key from <command-buffer-hooks> if it exists."
   (remhash (buffer-file-name) my-command-buffer-hooks))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (defun my-command-buffer-run-hook ()
   "Run a command if it exists in the hook."
   (let ((hook (gethash (buffer-file-name) my-command-buffer-hooks)))
@@ -29,6 +31,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; byte compile all the .el files
 (defun byte-recompile-init-files ()
   "Recompile all of the startup files."
   (interactive)
@@ -57,12 +60,35 @@
 (insert (format "%s" system-name))
 )
 
-;; Get current system type
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; get current system type
 (defun insert-system-type()
 (interactive)
 "Get current system type"
 (insert (format "%s" system-type))
 )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; get face information at a position
+(defun get-faces (pos)
+  "Get the font faces at POS."
+  (remq nil
+        (list
+         (get-char-property pos 'read-face-name)
+         (get-char-property pos 'face)
+         (plist-get (text-properties-at pos) 'face))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; print the face found at the current point
+;; M-x what-face
+(defun what-face (pos)
+  (interactive "d")
+  (let ((face (or (get-char-property (point) 'read-face-name)
+                  (get-char-property (point) 'face))))
+    (if face (message "Face: %s" face) (message "No face at %d" pos))))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;

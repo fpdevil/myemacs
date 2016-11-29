@@ -113,16 +113,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; set default font for aquamacs                                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq mac-allow-anti-aliasing t)                           ;; anti-aliasing
 (set-face-attribute 'default nil :family "Monaco"
             		                 :width 'normal
                                  :height 120
-                                 :weight 'ultralight)
-(set-face-bold-p 'bold nil)             ;; disable bold fonts
-(setq mac-allow-anti-aliasing t)        ;; anti-aliasing
+                                 :weight 'ultra-light)
+(set-face-bold 'bold nil)                                  ;; disable bold fonts
+;(set-face-bold-p 'bold nil)                               ;; disable bold fonts
+
+
 ;;
 ; (set-face-attribute 'default nil :family "Monaco for Powerline"
 ;                                  :height 120
-;                                  :weight 'ultra-light)
+;                                  :weight 'ultralight)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -131,7 +134,7 @@
 (defun timestamp ()
   "Latest timestamp."
   (interactive)
-  (insert (format-time-string "%d.%m.%Y, %H:%M")))
+  (insert (format-time-string "%d.%m.%Y, %H:%M:%S")))
 
 (defun my-count-words-region (posBegin posEnd)
   "POSBEGIN POSEND Print number of words and chars in region."
@@ -248,6 +251,14 @@ This command does the inverse of `fill-region'."
       '(("Asia/India" "India")
         ("America/Chicago" "Chicago")
         ("America/Los_Angeles" "Los Angeles")))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; change the starup message in the echo area                              ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun display-startup-echo-area-message ()
+  "Startup echo message."
+  (message "Let the hacking begin!"))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

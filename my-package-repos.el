@@ -1,13 +1,23 @@
 ;;; package --- package respository information for Emacs
 ;;;
+;;;           ######## ##     ##    ###     ######   ######
+;;;           ##       ###   ###   ## ##   ##    ## ##    ##
+;;;           ##       #### ####  ##   ##  ##       ##
+;;;           ######   ## ### ## ##     ## ##        ######
+;;;           ##       ##     ## ######### ##             ##
+;;;           ##       ##     ## ##     ## ##    ## ##    ##
+;;;           ######## ##     ## ##     ##  ######   ######
+;;;
 ;;; Commentary:
-;;;              All required modules loading by Emacs
+;;;              All the required packages and modules loading by Emacs
 ;;; Filename   : my-package-repos.el
 ;;; Description: This file contains all the packages to be laoded and installed
 ;;;              by Emacs during startup.  Any new package required by the apps
 ;;;              or any custom settings needs to be specified here so that they
-;;;              can be installed and loaded.
-;;; Updated    : 14 Nov 2016
+;;;              can be installed and loaded.  By default the package.el access
+;;;              to only the default ELPA repository.  So added additional repos
+;;;
+;;; Updated    : 22 Nov 2016
 ;;;
 ;;; Code:
 ;;;
@@ -22,9 +32,9 @@
 (require 'package)
 
 
-;;==============================================================================
+;;============================================================================;;
 ;;;;     Package repositories (gnu, melpa, melpa-stable and marmalade)      ;;;;
-;;==============================================================================
+;;============================================================================;;
 (add-to-list 'package-archives
              '("gnu" . "http://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives
@@ -35,7 +45,7 @@
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives
              '("org" . "http://orgmode.org/elpa/") t)
-;;==============================================================================
+;;============================================================================;;
 
 ;;
 ; incase if package archive priorities needs to be specified
@@ -71,9 +81,9 @@
 
 (add-to-list 'load-path pkg-dir)
 (setq package-user-dir (concat pkg-dir "/elpa"))
-;;------------------------------------------------------------------------------
+;;----------------------------------------------------------------------------;;
 ;;                 end of custom directory declaration.                       ;;
-;;------------------------------------------------------------------------------
+;;----------------------------------------------------------------------------;;
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -86,14 +96,15 @@
 (package-install-selected-packages)
 
 
-;;==============================================================================
+;;============================================================================;;
 ;; new or missing packages to be installed during Emacs bootstrap.            ;;
 ;; defvar is the correct way to declare global variables                      ;;
 ;; setq is supposed to be use just to set variables and not create them.      ;;
-;;==============================================================================
+;;============================================================================;;
 (defvar required-packages
   '(;;;;; appearance and visual customizations  ;;;;;
     powerline                                   ;; powerline smart mode
+    delight                                     ;; customize mode names on modeline
     rainbow-delimiters                          ;; colorful modes (delimiters and color codes)
     rainbow-mode                                ;; colored identifiers
     rainbow-identifiers                         ;; colored identifiers
@@ -110,8 +121,7 @@
     color-theme-sanityinc-tomorrow              ;; tomorrow themes
     color-theme-sanityinc-solarized             ;; solarized themes
     cyberpunk-theme                             ;; cyberpunk theme for emacs
-    ;colorsarenice-theme                        ;; a colorful color theme
-    kooten-theme                                ;; a dark color theme by kootenpv
+    apropospriate-theme                         ;; low-contrast light & dark theme set for Emacs
     ;;;;; company auto completions frameworks   ;;;;;
     company                                     ;; cmopany autocompletion modes
     ;;;;; company backends for completion       ;;;;;
@@ -125,6 +135,7 @@
     ;;;;; auto-complete family                  ;;;;;
     auto-complete                               ;; auto completion for gnu emacs
     auto-complete-distel                        ;; auto completion distel for erlang
+    ac-haskell-process                          ;; haskell completion source for Emacs auto-complete
     ;;;;; some utilities                        ;;;;;
     parent-mode                                 ;; get major mode's parent modes
     ; ido                                       ;; IDO mode
@@ -152,7 +163,8 @@
     org                                         ;; org-mode setup
     org-bullets                                 ;; org mode with bullets
     ;;;;; git integration                       ;;;;;
-    magit                                       ;; git status
+    ;magit                                      ;; git status
+    git-gutter                                  ;; Emacs port of GitGutter
     ;;;;; language and IDE setup                ;;;;;
     virtualenvwrapper                           ;; virtualenv wrapper for python
     jedi                                        ;; python jedi IDE
@@ -186,7 +198,8 @@
     ;;;;; javascript/json support               ;;;;;
     json-mode                                   ;; major mode for json editing
     ;;;; Yasnippets package                     ;;;;;
-    yasnippet                                   ;; yasnippets for supporting languages
+    yasnippet                                   ;; Yet another snippet extension
+    helm-c-yasnippet                            ;; Helm source for yasnippet
     ;;;;; important and useful utilities        ;;;;;
     helm                                        ;; incremental completion and selection narrowing framework
     helm-core                                   ;; development files for Helm
@@ -209,6 +222,10 @@
     web-mode                                    ;; major-mode for editing web templates
     ;;;;; text and file utilities               ;;;;;
     popwin                                      ;; popup window manager
+    ;;;;; miscellaneous utilities               ;;;;;
+    wttrin                                      ;; weather information from wttr.in
+    esup                                        ;; emacs startup profiler
+    which-key                                   ;; displays available keybindings in popup
   )
   "A list of packages that will be installed if not present when firing Emacs.")
 
@@ -270,35 +287,55 @@
 ;;
 ;; company
 ;; company-quickhelp
-;; helm
+;; auto-complete
 ;; haskell
 ;; erlang
 ;; python3
+;; scala
+;; go
+;; web
+;; delight
 ;; flycheck
+;; helm
 ;; paredit
 ;; rainbow-delimiters
 ;; hihlight-symbols
 ;; fringe
 ;; neotree
-;; go
 ;; popwin
+;; ecb
+;; org bullets
+;; multiple-cursors
+;; yasnippets
+;; gitgutter-config
+;; weather info
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar configs
     '(
       "company-config"
-      "helm-settings-config"
+      "ac-complete-config"
       "haskell-config"
       "erlang-config"
       "python-config"
+      "scala-config"
+      "go-config"
+      "web-config"
+      "delight-config"
       "flycheck-config"
+      "helm-settings-config"
       "rainbow-delims-config"
       "paredit-config"
       "highlight-symbol-config"
       "fringe-config"
       "neotree-config"
-      "go-config"
       "popwin-config"
+      "ecb-config"
+      "org-config"
+      "multiple-cursors-config"
+      "yasnippets-config"
+      "gitgutter-config"
+      "weather-config"
       )
     "Configuration files which follow the modules/pkgname-config.el format."
     )

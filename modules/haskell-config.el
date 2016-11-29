@@ -82,11 +82,27 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; auto-complete-mode so can interact with inferior haskell                ;;
-;; and popup completion turn on when needed.                               ;;
+;; auto-complete-mode for interacting with inferior haskell mode and popup ;;
+;; completion turn on when needed; haskell completion source for the       ;;
+;; necessary auto-complete is provided by ac-haskell-process               ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq ac-delay 1.0) ; reducing auto-complete value to not conflict with company
-(add-hook 'haskell-mode-hook (lambda () (auto-complete-mode 1)))
+(add-hook 'haskell-mode-hook
+          (lambda () (auto-complete-mode 1)))
+;;
+; haskell completion source for Emacs auto-complete package
+; https://github.com/purcell/ac-haskell-process
+;;
+(require 'ac-haskell-process)
+(add-hook 'interactive-haskell-mode-hook 'ac-haskell-process-setup)
+(add-hook 'haskell-interactive-mode-hook 'ac-haskell-process-setup)
+(eval-after-load "auto-complete"
+  '(add-to-list 'ac-modes 'haskell-interactive-mode))
+;;
+; using ac-haskell-process-popup-doc to pop up documentation for the symbol at point
+;;
+(eval-after-load 'haskell-mode
+  '(define-key haskell-mode-map (kbd "C-c C-d") 'ac-haskell-process-popup-doc))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -236,9 +252,12 @@
 ;; shm (structured-haskell-mode) configuration                             ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'haskell-mode-hook 'structured-haskell-mode)
-;; customize colors while running shm
-(set-face-background 'shm-current-face "#eee8d5")
-(set-face-background 'shm-quarantine-face "lemonchiffon")
+;; ** customize colors while running shm (good colors for solarized) **
+;(set-face-background 'shm-current-face "#eee8d5")
+;(set-face-background 'shm-quarantine-face "lemonchiffon")
+;; ** disabling the faces **
+(set-face-background 'shm-current-face nil)
+(set-face-background 'shm-quarantine-face nil)
 
 
 

@@ -4,8 +4,8 @@
 ;;; Filename: rainbow-delims-config.el
 ;;; Description: fancy stuff, configuration file for rainbow delimiters
 ;;;              a fancy mode for colored pairing of parenthesis
+;;;              colors can be picked from http://colours.neilorangepeel.com/
 ;;;==========================================================================
-
 ;;
 ; load the required libraries
 ;;
@@ -13,6 +13,9 @@
 
 ;;; Code:
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; rainbow delimiters custom colors                                       ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 ;; some customizations for the default modes
 ;; stolen from https://ogbe.net/emacsconfig.html
@@ -34,6 +37,8 @@
                     :foreground "#f5d63d")
 (set-face-attribute 'rainbow-delimiters-depth-9-face nil
                     :foreground "#78c5d6")
+(set-face-attribute 'rainbow-delimiters-unmatched-face nil
+                    :foreground "#800000")
 
 ;;
 ; fancy minor mode purely eye candy ((()))
@@ -57,4 +62,4 @@
 
 (provide 'rainbow-delims-config)
 
-;;; rainbow-delims-config ends here
+;;; rainbow-delims-config.el ends here

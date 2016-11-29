@@ -40,6 +40,7 @@
 ;; Left and right arrows for truncated lines
 ;(define-fringe-bitmap 'right-arrow (vector 0 16 4 1 4 16 0 0) 8 8 'center)
 ;(define-fringe-bitmap 'left-arrow (vector 0 8 32 128 32 8 0 0) 8 8 'center)
-(provide 'conf-fringe)
+
+(provide 'fringe-config)
 
 ;;; fringe-config.el ends here

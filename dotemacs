@@ -3,19 +3,20 @@
 ;
 ;;; Commentary:
 ;
-;; updated on 22 Oct 2016
+;; Updated Wed Nov 23 21:49:03 2016
+;;
 ;; ~/.emacs
 ;; ensure that my-internals loads at the end, after
 ;; everything else has loaded
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;Code.
-
+;;; Code:
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
+
 (package-initialize)
 
 (load "~/.emacs.d/init.el")

@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil nil ("go-autocomplete.el") (22578 11858 0 0))
+;;;### (autoloads nil nil ("go-autocomplete.el") (22588 53467 0 0))
 
 ;;;***
 
