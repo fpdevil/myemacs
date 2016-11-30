@@ -2,7 +2,7 @@
 ;;;
 ;;; Commentary:
 ;;;
-;;; Filename   : ac-complete-config
+;;; Filename   : ac-complete-config.el
 ;;; Description: Modular in-buffer completion framework for Emacs
 ;;;              Auto-Complete is a text completion framework for Emacs.
 ;;;
@@ -21,12 +21,16 @@
   (add-to-list 'ac-dictionary-directories
     (concat (getenv "HOME") "/.emacs.d/vendor/auto-complete/dict"))
   (setq ac-comphist-file
-    (concat (getenv "HOME") "/.emacs.d/ac-comphist.dat"))
+    (concat (getenv "HOME") "/.emacs.d/cache/ac-comphist.dat"))
   (ac-config-default)
   )
-(setq ac-auto-show-menu t)
-(setq ac-delay 0.3)
-(setq ac-quick-help-delay 0.5)
+
+(setq ac-auto-show-menu t
+      ac-delay 0.4
+      ac-quick-help-delay 0.5
+      ac-use-fuzzy t
+      ac-fuzzy-enable t
+      ac-dwim t)
 ; to enable auto-complete globally
 ; (global-auto-complete-mode t)
 ; (setq ac-sources '(ac-source-yasnippet
@@ -35,7 +39,8 @@
 ;; show the menu
 (setq ac-show-menu-immediately-on-auto-complete t)
 
-;; for disabling auto-complete mode for a mode
+;;
+;; for disabling auto-complete mode for a specific mode
 ; (defadvice auto-complete-mode (around disable-auto-complete-for-progname)
 ;   (unless (eq major-mode 'progname-mode) ad-do-it))
 ; (ad-activate 'auto-complete-mode)

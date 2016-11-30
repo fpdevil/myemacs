@@ -1,43 +1,35 @@
 ;;; package --- erlang configuration settings
 ;;;
 ;;; Commentary:
+;;;
 ;;; Filename: erlang-config.el
 ;;; Description: A major mode erlang language support in Emacs
 ;;;
 ;;; elisp code for erlang language support and handling
 ;;===========================================================================
-
-
-;---------------------------------------------------------------------------;
-;; erlang settings for Emacs                                                ;
-;---------------------------------------------------------------------------;
-
-;;
-; load the standard and erlang specific libraries
-;;
+;;; load the standard and erlang specific libraries
 (require 'cl)
 (require 'cl-lib)
 (require 'imenu)
 (require 'ivy-erlang-complete)
-;============================================================================
-; start defining the emacs bindings for erlang
+;;;
 ;;; Code:
-;;===========================================================================
+;;;
+; start defining the emacs bindings for erlang
 (add-to-list 'auto-mode-alist '("\\.erl?$" . erlang-mode))
 (add-to-list 'auto-mode-alist '("\\.hrl?$" . erlang-mode))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; context sensitive completion for erlang without connecting to erlang nodes
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; context sensitive completion for erlang without connecting to erlang nodes    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'erlang-mode-hook #'ivy-erlang-complete-init)
 ;; automatic update completion data after save
 (add-hook 'after-save-hook #'ivy-erlang-complete-reparse)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; erlang path setup
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; erlang binaries path setup                                                    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq load-path (cons "/opt/erlang/r19.0/lib/tools-*/emacs"
 load-path))
 (setq erlang-root-dir "/opt/erlang/r19.0")
@@ -77,9 +69,9 @@ erlang-bin erlang-mode-path))))
 (setq exec-path (cons "/opt/erlang/r19.0/bin" exec-path))
 (require 'erlang-start)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; distel setup
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; distel setup for erlang code auto-completion                                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; (add-to-list 'load-path "/opt/erlang/r19.0/distel/elisp")
 ; (require 'distel)
 ; (distel-setup)
@@ -89,7 +81,7 @@ erlang-bin erlang-mode-path))))
 (setq load-path (append load-path (list distel-dir)))))
 (require 'distel)
 (distel-setup)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ; prevent annoying hang-on-compile
 ;;
@@ -106,10 +98,9 @@ erlang-bin erlang-mode-path))))
 (add-hook 'erlang-mode-hook 'imenu-erlang-mode-hook)
 
 
-;----------------------------------------------------------------------------
-;; ref http://bob.ippoli.to/archives/2007/03/16/distel-and-erlang-mode-for-emacs-on-mac-os-x/
-;; tell distel to default to that node
-;----------------------------------------------------------------------------
+;----------------------------------------------------------------------------------
+;; tell distel to default to that node                                           ;;
+;----------------------------------------------------------------------------------
 (setq erl-nodename-cache
       (make-symbol
        (concat
@@ -136,10 +127,9 @@ erlang-bin erlang-mode-path))))
     (define-key erlang-shell-mode-map (car spec) (cadr spec)))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; erlang ide set-up and
-;; erlang auto-completion using auto-complete and distel
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; erlang ide set-up and erlang auto-completion using auto-complete and distel   ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'auto-complete)
 (require 'auto-complete-config)
 (require 'auto-complete-distel)
@@ -167,9 +157,9 @@ erlang-bin erlang-mode-path))))
 (add-hook 'erlang-mode-hook (lambda () (auto-complete-mode 1)))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; erlang auto completion using company mode and distel
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; erlang auto completion using company mode and distel                          ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'company)
 (require 'company-distel)
 (add-hook 'after-init-hook 'global-company-mode)
@@ -186,10 +176,9 @@ erlang-bin erlang-mode-path))))
 ; Change completion symbols
 (setq distel-completion-valid-syntax "a-zA-Z:_-")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; A number of the erlang-extended-mode key bindings are useful in the
-;; shell too
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; A number of the erlang-extended-mode key bindings are useful in the shell too ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defconst distel-shell-keys
   '(("\C-\M-i"   erl-complete)
     ("\M-?"      erl-complete)
@@ -199,9 +188,9 @@ erlang-bin erlang-mode-path))))
     )
   "Additional keys to bind when in Erlang shell.")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; on the fly source code checking through flymake
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; on the fly source code checking through flymake                               ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'flymake)
 (require 'erlang-flymake)
 (setq flymake-log-level 3)
@@ -229,7 +218,7 @@ erlang-bin erlang-mode-path))))
   "Set erlang flymake mode."
   (flymake-mode 1))
 (add-hook 'erlang-mode-hook 'flymake-erlang-mode-hook)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 (provide 'erlang-config)

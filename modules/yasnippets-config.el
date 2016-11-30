@@ -6,12 +6,12 @@
 ;;; Description: yasnippet collection(s)
 ;;;
 ;;; elisp code for customizing the yasnippets settings
-;;;==========================================================================
+;;;===========================================================================
 (require 'yasnippet)                    ;; yasnippet
 (require 'helm-c-yasnippet)             ;; helm source for yasnippet
-;
+;;;
 ;;; Code:
-;
+;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; yasnippets configuration                                                 ;;
 ;; this will install and activate it everywhere.                            ;;

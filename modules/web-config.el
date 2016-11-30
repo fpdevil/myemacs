@@ -2,17 +2,17 @@
 ;;;
 ;;; Commentary:
 ;;;
-;;; Filename.  : web-config.el
+;;; Filename   : web-config.el
 ;;; Description: Emacs configuration for Web development support
 ;;;              contains plugins and settings for json, javascript
 ;;;              html and css support using web-mode
 ;;;
 ;;; elisp code for customizing the web/html development settings
-;;;==============================================================
-(require 'web-mode)
-;
+;;;===========================================================================
+(require 'web-mode)                 ; for all web/html/js related work
+;;;
 ;;; Code:
-;
+;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; an autonomous emacs major-mode for editing web templates                 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

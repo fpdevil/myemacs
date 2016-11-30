@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil nil ("epc-pkg.el" "epc.el" "epcs.el") (22588
-;;;;;;  53427 0 0))
+;;;### (autoloads nil nil ("epc-pkg.el" "epc.el" "epcs.el") (22590
+;;;;;;  11403 0 0))
 
 ;;;***
 

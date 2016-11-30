@@ -9,25 +9,25 @@
 ;;
 ;; elisp code for haskell language support and handling
 ;;;==========================================================================
-
-
-
+;;;
+;;; Code:
+;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;; Haskell settings for Emacs ;;;;;;;;;;;;;;;;;;;;;;;;;;
-; templates used from the below.  Thanks to both
-; https://github.com/serras/emacs-haskell-tutorial/
-; https://github.com/chrisdone/emacs-haskell-config/
-; -------        references         -------
-; http://www.mew.org/~kazu/proj/ghc-mod/en/
-; http://haskell.github.io/haskell-mode/manual/latest/
+;; templates used from the below links.  Thanks to both                    ;;
+;; https://github.com/serras/emacs-haskell-tutorial/                       ;;
+;; https://github.com/chrisdone/emacs-haskell-config/                      ;;
+;; -----------------------        references       ------------------------;;
+;; http://www.mew.org/~kazu/proj/ghc-mod/en/                               ;;
+;; http://haskell.github.io/haskell-mode/manual/latest/                    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-; load the required libraries
+; load all the pre-requisite libraries
 ;;
 (require 'cl)
 (require 'cl-lib)
 ;;
-; load necessary libraries for haskell and company (auto completion)
+; load necessary libraries for haskell and company (for auto completion)
 ;;
 (require 'haskell-mode)               ; haskell editing mode for Emacs
 (require 'hindent)                    ; indentation for haskell program
@@ -42,17 +42,12 @@
 (require 'company-ghci)               ; company backend which uses the current ghci process
 (require 'shm)                        ; structured haskell mode
 ; (require 'intero)                   ; complete development mode for haskell
-;;===========================================================================
-;;; Code:
-;;===========================================================================
-; Enable Windows-like bindings
-(cua-mode 1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Set up the required PATH for the haskell and cabal environment        ;;;
+;;; set up the required $PATH for the haskell and cabal environment       ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;
+;;
 ; (setenv "PATH" (concat "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:"
 ;                (getenv "HOME") "/Library/Haskell/bin"
 ;                (getenv "PATH")))
@@ -60,6 +55,7 @@
 ;
 ; Make Emacs look in to the Cabal directory for installed binaries
 ; and set the same into the classpath for ready access
+;;
 ;;
 (let ((my-cabal-path (expand-file-name (concat (getenv "HOME") "/Library/Haskell/bin"))))
   ; setup the cabal path and put into classpath
@@ -79,6 +75,21 @@
 (add-hook 'haskell-mode-hook 'haskell-auto-insert-module-template)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'haskell-decl-scan-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; hoogle executable for documentation                                     ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar hoogle-url-base "http://haskell.org/hoogle/?q="
+  "The base for the URL that will be used for web Hoogle lookups.")
+(defvar hoogle-local-command  (concat (getenv "HOME") "/Library/Haskell/bin/hoogle")
+  "The name of the executable used for hoogle not found in $PATH (using `executable-find'), then a web lookup is used.")
+(defvar hoogle-always-use-web nil
+  "Set to non-nil to always use web lookups.")
+(defvar hoogle-history nil
+  "The history of what you've hoogled for.")
+(defvar hoogle-result-count 15
+  "How many results should be shown (when running locally.")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -105,8 +116,9 @@
   '(define-key haskell-mode-map (kbd "C-c C-d") 'ac-haskell-process-popup-doc))
 
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use hi2 for haskell indentation                                         ;;
+;; use hi2 for haskell indentation                                         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'haskell-mode-hook 'turn-on-hi2)
 
@@ -120,14 +132,14 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Add F8 key combination for going to imports block                       ;;
+;; add F8 key combination for going to imports block                       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (eval-after-load 'haskell-mode
   '(define-key haskell-mode-map [f8] 'haskell-navigate-imports))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; set variables needed for customization                                  ;;
+;; set or unset variables needed for customization                         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (custom-set-variables
  ; Set up hasktags (part 2)
@@ -260,13 +272,11 @@
 (set-face-background 'shm-quarantine-face nil)
 
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; flymake handler for checking Haskell source code with hlint.             ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'flymake-hlint) ;; not needed if installed via package
 (add-hook 'haskell-mode-hook 'flymake-hlint-load)
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

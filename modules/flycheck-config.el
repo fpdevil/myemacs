@@ -8,20 +8,19 @@
 ;;;              a minor mode for handling the errors in mode line
 ;;;
 ;;; syntax checking for GNU Emacs - http://www.flycheck.org/
-;;;==============================================================
-
+;;;===========================================================================
 (require 'flycheck)                   ;; flycheck lib
 (require 'helm-flycheck)              ;; flycheck helm integration
 (require 'flycheck-color-mode-line)   ;; flycheck color mode line
 (require 'flycheck-tip)               ;; show flycheck/flymake errors indent tooltip
 (require 'flycheck-pos-tip)           ;; flycheck errors display in tooltip
 (require 'flycheck-haskell)           ;; Improved Haskell support for Flycheck
-
+;;;
 ;;; Code:
-
-;;
-; setting up customized flycheck
-;;
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; setting up customized flycheck                                           ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'find-file-hook
           (lambda ()
             (when (not (equal 'emacs-lisp-mode major-mode))

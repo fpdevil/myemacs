@@ -27,20 +27,20 @@
 ;;
 ; company options and backends
 ;;
-(setq company-auto-complete t)
-(setq company-minimum-prefix-length 2)
-(setq company-tooltip-align-annotations t)
-(setq company-selection-wrap-around t)
-(setq company-show-numbers t)
-(setq company-dabbrev-downcase 0)
-; invert navigation direction if completion popup-isearch-match
-; is displayed on top (happens near the bottom of windows)
-(setq company-tooltip-flip-when-above t)
-;; additional options
-(setq company-tooltip-limit 20)                      ; bigger popup window
-(setq company-idle-delay 0.3)                        ; decrease delay before autocompletion popup shows
-(setq company-echo-delay 0)                          ; remove annoying blinking
-(setq company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
+(setq company-auto-complete t
+      company-minimum-prefix-length 2
+      company-tooltip-align-annotations t
+      company-selection-wrap-around t
+      company-show-numbers t
+      company-dabbrev-downcase 0
+      ; invert navigation direction if completion popup-isearch-match
+      ; is displayed on top (happens near the bottom of windows)
+      company-tooltip-flip-when-above t
+      ;; additional options
+      company-tooltip-limit 20                       ; bigger popup window
+      company-idle-delay 0.2                         ; decrease delay before autocompletion popup shows
+      company-echo-delay 0                           ; remove annoying blinking
+      company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
 ;;
 (auto-complete-mode 1)
 

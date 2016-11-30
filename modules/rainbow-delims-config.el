@@ -5,16 +5,13 @@
 ;;; Description: fancy stuff, configuration file for rainbow delimiters
 ;;;              a fancy mode for colored pairing of parenthesis
 ;;;              colors can be picked from http://colours.neilorangepeel.com/
-;;;==========================================================================
-;;
-; load the required libraries
-;;
-(require 'rainbow-delimiters)
-
+;;;===========================================================================
+(require 'rainbow-delimiters)      ; rainbow delimiters package
+;;;
 ;;; Code:
-
+;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; rainbow delimiters custom colors                                       ;;;
+;;; rainbow delimiters custom color codes                                  ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 ;; some customizations for the default modes

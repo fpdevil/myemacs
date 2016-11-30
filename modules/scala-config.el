@@ -2,16 +2,16 @@
 ;;;
 ;;; Commentary:
 ;;;
-;;; Filename.  : scala-config.el
+;;; Filename   : scala-config.el
 ;;; Description: Emacs configuration for Scala with Ensime
 ;;;              ENhanced Scala Interaction Mode for Emacs
 ;;;
 ;;; elisp code for customizing the scala development settings
-;;;==============================================================
-(require 'ensime)
-;
+;;;===========================================================================
+(require 'ensime)             ; ensime loads scala-mode2 internally
+;;;
 ;;; Code:
-;
+;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ENhanced Scala Interaction Mode for Emacs (for scala development)        ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

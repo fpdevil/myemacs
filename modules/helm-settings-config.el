@@ -8,13 +8,14 @@
 ;;;              A major/minor mode for helm based help utilities
 ;;;
 ;;; elisp code for customizing the helm settings
-;;;==============================================================
+;;;===========================================================================
 (require 'helm-config)
-
+;;;
 ;;; Code:
+;;;
 
 ;;
-; global mapping
+; global kbd mapping
 ;;
 (global-set-key (kbd "M-x")     'helm-M-x)
 (global-set-key (kbd "C-x r b") 'helm-filtered-bookmarks)

@@ -17,7 +17,7 @@
 ;;;              can be installed and loaded.  By default the package.el access
 ;;;              to only the default ELPA repository.  So added additional repos
 ;;;
-;;; Updated    : 22 Nov 2016
+;;; Updated    : 29 Nov 2016
 ;;;
 ;;; Code:
 ;;;
@@ -87,7 +87,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; initialize all the defined packages                                    ;;;;
+;;;;;;;;;;           initialize all the defined packages              ;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (package-initialize)
 ; make sure to have downloaded the archive description.
@@ -122,6 +122,7 @@
     color-theme-sanityinc-solarized             ;; solarized themes
     cyberpunk-theme                             ;; cyberpunk theme for emacs
     apropospriate-theme                         ;; low-contrast light & dark theme set for Emacs
+    zerodark-theme                              ;; dark medium-contrast theme
     ;;;;; company auto completions frameworks   ;;;;;
     company                                     ;; cmopany autocompletion modes
     ;;;;; company backends for completion       ;;;;;
@@ -297,7 +298,9 @@
 ;; delight
 ;; flycheck
 ;; helm
+;; smartparens
 ;; paredit
+;; rainbow-mode
 ;; rainbow-delimiters
 ;; hihlight-symbols
 ;; fringe
@@ -309,6 +312,7 @@
 ;; yasnippets
 ;; gitgutter-config
 ;; weather info
+;; which-key
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar configs
@@ -324,7 +328,9 @@
       "delight-config"
       "flycheck-config"
       "helm-settings-config"
+      "rbow-config"
       "rainbow-delims-config"
+      "smartparens-config"
       "paredit-config"
       "highlight-symbol-config"
       "fringe-config"
@@ -336,6 +342,7 @@
       "yasnippets-config"
       "gitgutter-config"
       "weather-config"
+      "whichkey-config"
       )
     "Configuration files which follow the modules/pkgname-config.el format."
     )

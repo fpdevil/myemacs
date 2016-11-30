@@ -1,12 +1,14 @@
 ;;; package --- customize python configuration for Emacs
 ;;;
 ;;; Commentary:
-;;; Filename: python-config.el
+;;;            Python 3 support
+;;;
+;;; Filename   : python-config.el
 ;;; Description: Python configuration for Emacs
 ;;;              A full featured python ide and language support for Aquamacs
-;----------------------------------------------------------------------------
+;;;===========================================================================
 ;;
-; load the required packages
+; load all the pre-requisites first
 ;;
 (require 'cl)
 (require 'cl-lib)
@@ -22,12 +24,9 @@
 (require 'python-pylint)        ; minor mode for running pylint
 (require 'py-yapf)              ; Use yapf to beautify a Python buffer
 (require 'virtualenvwrapper)    ; python virtualenv wrapper
-
 ;;;
 ;;; Code:
 ;;;
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; python default shell completion disable                                  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -301,4 +300,5 @@
 
 
 (provide 'python-config)
-;;; python-config ends here
+
+;;; python-config.el ends here

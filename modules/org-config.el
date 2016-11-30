@@ -10,9 +10,9 @@
 ;; elisp code for org support and handling
 ;;;==========================================================================
 (require 'org-bullets)
-;
+;;;
 ;;; Code:
-;
+;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; org bullets for markdown                                                 ;;
 ;; use org-bullets-mode for utf8 symbols as org bullets                     ;;

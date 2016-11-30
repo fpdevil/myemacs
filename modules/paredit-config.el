@@ -1,17 +1,19 @@
-;;===============================================================
-;;; configuration file for paredit-module
-;; Filename: paredit-config.el
-;; Description: A minor mode for auto pairing the parenthesis
-;;
+;;; package  --- paredit-config.el
+;;;
 ;;; Commentary:
-;;
-;; elisp code for parentheses handling
+;;;            configuration file for paredit-module
+;;;
+;;; Filename: paredit-config.el
+;;; Description: A minor mode for auto pairing the parenthesis
+;;;
+;;; elisp code for parentheses handling
 ;;===============================================================
-
-
 (require 'paredit)
-
+;;;
+;;; Code:
+;;;
 (defun enable-paredit ()
+  "Function for enabling the paredit globally."
   (paredit-mode 1))
 
 (defvar lisp-mode-hooks
@@ -24,6 +26,7 @@
   (add-hook h 'enable-paredit))
 
 (defun erlang-paredit ()
+  "Paredit for Erlang major mode."
   (progn
     (define-key erlang-mode-map [?\(] 'paredit-open-parenthesis)
     (define-key erlang-mode-map [?\[] 'paredit-open-square)
@@ -40,4 +43,5 @@
         (erlang-paredit)))
 
 (provide 'paredit-config)
-;;; paredit-config ends here
+
+;;; paredit-config.el ends here

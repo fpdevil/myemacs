@@ -1,25 +1,26 @@
-;;; package --- initialization section for Emacs
+;;; package --- Aquamacs initialization file
 ;;;
 ;;;    ___ _ __ ___   __ _  ___ ___
 ;;;   / _ \ '_ ` _ \ / _` |/ __/ __|
 ;;;  |  __/ | | | | | (_| | (__\__ \
 ;;;   \___|_| |_| |_|\__,_|\___|___/
 ;;;
+;;; Author    : Sampath Singamsetty <Singansetty.Sampath@gmail.com>
+;;; URL       : https://github.com/singamsetty/myemacs
 ;;; Commentary:
 ;;;
 ;;; filename   : init.el
-;;; description: initialize the necessary packages
+;;; description: initialization file for loading the necessary packages
 ;;;
 ;; This sets up the load path so that we can override it
-;; reference(s)
-;; https://hristos.triantafillou.us/init.el/
-;; Updated    : 20 Nov 2016
-;;
+;; Updated    : 29 Nov 2016
+;;;===========================================================================
+;;;
 ;;; Code:
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
 
 ;;
-; utf-8 encoding
+; utf-8 character set encoding
 ;;
 (set-language-environment   'utf-8)
 (setq locale-coding-system  'utf-8)
@@ -30,7 +31,7 @@
 (prefer-coding-system       'utf-8)
 
 ;;
-; system is mac os x
+; if system is mac os x
 ;;
 (defconst *is-a-mac* (eq system-type 'darwin))
 
@@ -43,7 +44,6 @@
 (load custom-file)
 (load (concat (getenv "HOME") "/.emacs.d/my-package-repos.el"))
 
-
 ;;--------------------------------------------------------------------------;;
 ;; byte recompiling everything during bootstrap                             ;;
 ;; a custom function is defined inside my-methods                           ;;
@@ -51,7 +51,6 @@
 ;;--------------------------------------------------------------------------;;
 ; (byte-recompile-directory
 ;   (expand-file-name (concat (getenv "HOME") "/.emacs.d/packages/elpa/")) 0)
-
 
 ;;--------------------------------------------------------------------------;;
 ;;
@@ -62,11 +61,9 @@
 ; (setq debug-on-error nil)
 ; (setq debug-on-quit nil)
 
-
 ;;==========================================================================;;
 ;;            specify all the require packages and settings                 ;;
 ;;==========================================================================;;
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Diminished modes are minor modes with no modeline display                ;;
@@ -76,14 +73,12 @@
 (require 'diminish)
 (eval-after-load "whitespace" '(diminish 'whitespace-mode))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; fancy modeline                                                           ;;
 ;; powerline                                                                ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;(require 'powerline)
 ;(powerline-default-theme)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;          setting default color theme to the required one                 ;;
@@ -114,7 +109,6 @@
       )
 ;; wait until startup initialization is complete
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; vim airline theme for emacs modeline customized display                  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -133,8 +127,6 @@
 (load-theme 'airline-papercolor)            ; load papercolor theme
 ;(load-theme 'airline-base16-shell-dark)    ; load airline-base16-shell-dark theme
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; identify unnecessary whitespace is in all programming modes              ;;
 ;; whitespace-cleanup command for clearing trailing whitespaces             ;;
@@ -143,14 +135,12 @@
 (setq-default show-trailing-whitespace t)
 (set-default 'indent-tabs-mode nil)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; editing files in markdown mode                                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'markdown-mode)
 (setq auto-mode-alist
               (cons '("\\.mdml$" . markdown-mode) auto-mode-alist))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; magit (git integration - now using git-gutter)                           ;;
@@ -160,13 +150,11 @@
 ;   (progn '(global-set-key (kbd "C-x g") 'magit-status)))
 ; (define-key global-map (kbd "C-c m") 'magit-status)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; fancy (but useful) stuff                                                 ;;
 ;; for rainbow delimiters                                                   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'rainbow-delimiters)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; fancy (but useful) stuff                                                 ;;
@@ -181,35 +169,15 @@
 (setq rainbow-identifiers-cie-l*a*b*-lightness 45)
 (setq rainbow-identifiers-cie-l*a*b*-saturation 45)
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fancy stuff, rainbow mode                                                ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'rainbow-mode)
-(add-hook 'css-mode-hook (lambda () (rainbow-mode 1)))
-(add-hook 'html-mode-hook (lambda () (rainbow-mode 1)))
-(add-hook 'prog-mode-hook 'rainbow-mode)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; smart parenthesis matching                                               ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'smartparens)
-(smartparens-global-mode t)
-(show-smartparens-global-mode t)
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; flymake-easy (helpers for easily building Emacs flymake checkers)        ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'flymake-easy)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; show flymake errors in minibuffer                                        ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'flymake-cursor)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; buffer mode                                                              ;;
@@ -220,7 +188,6 @@
 (global-set-key (kbd "<S-s-left>")   'buf-move-left)
 (global-set-key (kbd "<S-s-right>")  'buf-move-right)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Map pairs of simultaneously pressed keys to commands                     ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -229,20 +196,11 @@
 (key-chord-define-global "fm" 'helm-mini)
 ;(use fm instead of C-x b to list buffers)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; edit multiple regions simultaneously in a buffer or a region             ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'iedit)
 (setq iedit-unmatched-lines-invisible-default t)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Emacs package that displays available keybindings in popup               ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'which-key)
-(which-key-mode)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;   ido disabled in favour of helm                                         ;;
@@ -258,7 +216,6 @@
 ; (setq ido-max-prospects 50)
 ; (setq ido-max-window-height 0.25)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (provide 'init)
 

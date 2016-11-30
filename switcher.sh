@@ -1,10 +1,12 @@
 #!/bin/bash
 # shell script for switching between Aquamacs and Spacemacs
-# the script should be in the users home directory
+# the script should be run from the users home directory
+#
 # Aquamacs configuration file is aquamacs
 #          configuration directory is aquamacs.d
 # Spacemacs configuration file is spacemacs
 #           configuration directory is spacemacs.d
+#
 # the script is executed with an option A or S for
 # switching to either Aquamacs or Spacemacs by creating
 # softlinks to appropriate files and directories

@@ -2,17 +2,17 @@
 ;;;
 ;;; Commentary:
 ;;;
-;;; Filename.  : gitgutter-config.el
+;;; Filename   : gitgutter-config.el
 ;;; Description: Emacs port of GitGutter which is Sublime Text Plugin
 ;;;              configuration file for custom settings.
 ;;;              https://github.com/syohex/emacs-git-gutter
 ;;;
 ;;; elisp code for customizing the git-gutter settings
-;;;==============================================================
+;;;==========================================================================
 (require 'git-gutter)
-;
+;;;
 ;;; Code:
-;
+;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Emacs port of GitGutter (git integration)                                ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,6 +1,6 @@
 ;;; package  --- multiple-cursors-config.el
 ;;;
-;;; Commentary :
+;;; Commentary:
 ;;;
 ;;; Filename   : multiple-cursorss-config
 ;;; Description: Multiple cursors for editing in Emacs

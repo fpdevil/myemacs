@@ -1,12 +1,12 @@
 ;;; package --- customize fringe configuration for Emacs
 ;;;
-;;; name: frnge-config.el
+;;; Filename   : frnge-config.el
 ;;; description: fringe display configuration for emacs
 ;;;
 ;;; Commentary:
 ;;             fringe customization
 ;;-------------------------------------------------------------------
-
+;;;
 ;;; Code:
 ;;;
 (setq indicate-buffer-boundaries 'right

@@ -1,6 +1,7 @@
 ;;; package --- ecb configuration settings
 ;;;
 ;;; Commentary:
+;;;
 ;;; Filename   : ecb-config.el
 ;;; Description: Emacs Code Browser
 ;;;
