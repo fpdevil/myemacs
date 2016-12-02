@@ -13,7 +13,7 @@
 ;;; description: initialization file for loading the necessary packages
 ;;;
 ;; This sets up the load path so that we can override it
-;; Updated    : 29 Nov 2016
+;; Updated    : 01 Dec 2016
 ;;;===========================================================================
 ;;;
 ;;; Code:
@@ -38,11 +38,12 @@
 
 ;;
 ; adding the required lisp files and libraries to path
+; custom-settings.el will store any custom settings made on Emacs
 ;;
 (add-to-list 'load-path (concat (getenv "HOME") "/.emacs.d"))
 (setq custom-file (concat (getenv "HOME") "/.emacs.d/custom-settings.el"))
 (load custom-file)
-(load (concat (getenv "HOME") "/.emacs.d/my-package-repos.el"))
+(load (concat (getenv "HOME") "/.emacs.d/aqua-package-repos.el"))
 
 ;;--------------------------------------------------------------------------;;
 ;; byte recompiling everything during bootstrap                             ;;
@@ -91,13 +92,13 @@
         ; (load-theme 'sanityinc-solarized-light)         ;; solarized light theme
         ; (load-theme 'cyberpunk t)                       ;; cyberpunk theme
         ; (load-theme 'material t)                        ;; material dark theme
-        ; (load-theme 'material-light t)                  ;; material light theme
+        (load-theme 'material-light t)                  ;; material light theme
         ; (load-theme 'dracula t)                         ;; dracula dark theme
-        (load-theme 'mccarthy)                          ;; mccarthy from sublime-themes
+        ; (load-theme 'mccarthy)                          ;; mccarthy from sublime-themes
         ; (load-theme 'apropospriate-dark t)              ;; apropospriate dark theme
         ; (load-theme 'apropospriate-light t)             ;; apropospriate light theme
         ;;
-        ;; -- below for moe-theme -- ;;
+        ;; -- below for activating moe-theme -- ;;
         ; (require 'moe-theme)
         ; ; show highlighted buffer-id as decoration
         ; (setq moe-theme-highlight-buffer-id t)
@@ -129,7 +130,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; identify unnecessary whitespace is in all programming modes              ;;
-;; whitespace-cleanup command for clearing trailing whitespaces             ;;
+;; whitespace-cleanup command for clearing trailing white spaces            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'whitespace)
 (setq-default show-trailing-whitespace t)
@@ -175,7 +176,7 @@
 (require 'flymake-easy)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; show flymake errors in minibuffer                                        ;;
+;; show flymake errors in mini buffer                                       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'flymake-cursor)
 

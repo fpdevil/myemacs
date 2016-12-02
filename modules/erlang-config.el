@@ -30,9 +30,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; erlang binaries path setup                                                    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq load-path (cons "/opt/erlang/r19.0/lib/tools-*/emacs"
+(setq load-path (cons "/usr/local/Cellar/erlang/19.1/lib/erlang/lib/tools-*/emacs"
 load-path))
-(setq erlang-root-dir "/opt/erlang/r19.0")
+(setq erlang-root-dir "/usr/local/Cellar/erlang/19.1")
 ;; below conditional code is needed for proper elang load
 (if
     (not (boundp 'erlang-root-dir))
@@ -65,8 +65,8 @@ load-path))
       (message "Skipping erlang-mode: %s and/or %s not readable"
 erlang-bin erlang-mode-path))))
 
-(setq erlang-man-root-dir "/opt/erlang/r19.0/man")
-(setq exec-path (cons "/opt/erlang/r19.0/bin" exec-path))
+(setq erlang-man-root-dir "/usr/local/Cellar/erlang/19.1/man")
+(setq exec-path (cons "/usr/local/Cellar/erlang/19.1/bin" exec-path))
 (require 'erlang-start)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -75,7 +75,7 @@ erlang-bin erlang-mode-path))))
 ; (add-to-list 'load-path "/opt/erlang/r19.0/distel/elisp")
 ; (require 'distel)
 ; (distel-setup)
-(let ((distel-dir "/opt/erlang/r19.0/distel/elisp"))
+(let ((distel-dir "/opt/erlang/distel/elisp"))
     (unless (member distel-dir load-path)
 ;; Add distel-dir to the end of load-path
 (setq load-path (append load-path (list distel-dir)))))

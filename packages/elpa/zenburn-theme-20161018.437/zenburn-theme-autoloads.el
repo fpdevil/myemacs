@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "zenburn-theme" "zenburn-theme.el" (22590 11393
+;;;### (autoloads nil "zenburn-theme" "zenburn-theme.el" (22593 49102
 ;;;;;;  0 0))
 ;;; Generated autoloads from zenburn-theme.el
 
