@@ -7,7 +7,7 @@
 ;;;
 ;;; elisp code for erlang language support and handling
 ;;===========================================================================
-;;; load the standard and erlang specific libraries
+;;; first load the standard and erlang specific libraries
 (require 'cl)
 (require 'cl-lib)
 (require 'imenu)
@@ -16,8 +16,30 @@
 ;;; Code:
 ;;;
 ; start defining the emacs bindings for erlang
-(add-to-list 'auto-mode-alist '("\\.erl?$" . erlang-mode))
-(add-to-list 'auto-mode-alist '("\\.hrl?$" . erlang-mode))
+(add-to-list 'auto-mode-alist '("\\.erl?$"        . erlang-mode))
+(add-to-list 'auto-mode-alist '("\\.hrl?$"        . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.app\\'"     . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*app\\.src\\'"  . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.config\\'"  . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.rel\\'"     . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.script\\'"  . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.escript\\'" . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.es\\'"      . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.xrl\\'"     . erlang-mode))
+(add-to-list 'auto-mode-alist '(".*\\.yrl\\'"     . erlang-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; erlang compilation options                                                    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; add include directory to default compile path.
+(defvar erlang-compile-extra-opts
+  '(bin_opt_info debug_info (i . "../include") 
+                            (i . "../deps") 
+                            (i . "../../") 
+                            (i . "../../../deps")))
+
+; define where put beam files.
+(setq erlang-compile-outdir "../ebin")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; context sensitive completion for erlang without connecting to erlang nodes    ;;
@@ -25,10 +47,55 @@
 (add-hook 'erlang-mode-hook #'ivy-erlang-complete-init)
 ;; automatic update completion data after save
 (add-hook 'after-save-hook #'ivy-erlang-complete-reparse)
+;;
+(setq flycheck-erlang-include-path '("../include" "../deps"))
+
+(defun fix-erlang-project-includes (project-root)
+  "Find erlang include paths for PROJECT-ROOT with project deps."
+  (setq-local flycheck-erlang-include-path
+              (append
+               (s-split
+                "\n"
+                (shell-command-to-string
+                 (concat "find "
+                         project-root
+                         "/*"
+                         " -type d -name include"))
+                t)
+               (list project-root
+                     (concat project-root "/include")
+                     (concat project-root "/deps")
+                     default-directory
+                     (concat
+                      (locate-dominating-file
+                       default-directory
+                       "src") "include")
+                     (concat
+                      (locate-dominating-file
+                       default-directory
+                       "src") "deps")))))
+
+(defun fix-erlang-project-code-path (project-root)
+  "Find erlang include paths for PROJECT-ROOT with project deps."
+  (let ((code-path
+           (split-string (shell-command-to-string
+                        (concat "find " project-root " -type d -name ebin")))
+         ))
+    (setq-local flycheck-erlang-library-path code-path)))
+
+(require 'ivy-erlang-complete)
+(defun my-erlang-hook ()
+  "Setup for erlang."
+  (let ((project-root (ivy-erlang-complete-autosetup-project-root)))
+      (fix-erlang-project-code-path project-root)
+      (fix-erlang-project-includes project-root))
+  (ivy-erlang-complete-init))
+(add-hook 'erlang-mode-hook #'my-erlang-hook)
+(add-hook 'after-save-hook #'ivy-erlang-complete-reparse)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; erlang binaries path setup                                                    ;;
+;;;; erlang binaries path setup                                                ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq load-path (cons "/usr/local/Cellar/erlang/19.1/lib/erlang/lib/tools-*/emacs"
 load-path))
@@ -70,7 +137,7 @@ erlang-bin erlang-mode-path))))
 (require 'erlang-start)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; distel setup for erlang code auto-completion                                  ;;
+;;;; distel setup for erlang code auto-completion                              ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; (add-to-list 'load-path "/opt/erlang/r19.0/distel/elisp")
 ; (require 'distel)
@@ -87,10 +154,13 @@ erlang-bin erlang-mode-path))))
 ;;
 (defvar inferior-erlang-prompt-timeout t)
 ;;
+; define name and cookie for internally loaded erlang shell.
 ; while starting an Erlang shell in Emacs, default in the node name
 ; default node name to emacs@localhost
 ;;
 ;(setq inferior-erlang-machine-options '("-sname" "emacs"))
+(setq inferior-erlang-machine-options
+	  '("-name" "emacs@127.0.0.1" "-setcookie" "emacs"))
 
 ;; add Erlang functions to an imenu menu
 (defun imenu-erlang-mode-hook()
@@ -195,7 +265,9 @@ erlang-bin erlang-mode-path))))
 (require 'erlang-flymake)
 (setq flymake-log-level 3)
 (setq erlang-flymake-location (concat emacs-dir "/flymake/eflymake"))
-;(setq erlang-flymake-location "~/.emacs.d/flymake/eflymake")
+
+(defun flymake-syntaxerl ()
+ (flymake-compile-script-path "/opt/erlang/syntaxerl"))
 
 (defun flymake-erlang-init ()
   "Erlang flymake compilation settings."
@@ -208,6 +280,7 @@ erlang-bin erlang-mode-path))))
   (if (not (file-exists-p eflymake-loc))
         (error "Please set erlang-flymake-location to an actual location")
   (list escript-exe(list eflymake-loc local-file)))))
+
 ;;
 ; enable flymake globally
 ;;
@@ -218,8 +291,25 @@ erlang-bin erlang-mode-path))))
   "Set erlang flymake mode."
   (flymake-mode 1))
 (add-hook 'erlang-mode-hook 'flymake-erlang-mode-hook)
+
+
+; https://github.com/ten0s/syntaxerl
+; see /usr/local/lib/erlang/lib/tools-<Ver>/emacs/erlang-flymake.erl
+(defun erlang-flymake-only-on-save ()
+  "Trigger flymake only when the buffer is saved (disables syntax
+check on newline and when there are no changes)."
+  (interactive)
+  ;; There doesn't seem to be a way of disabling this; set to the
+  ;; largest int available as a workaround (most-positive-fixnum
+  ;; equates to 8.5 years on my machine, so it ought to be enough ;-) )
+  (setq flymake-no-changes-timeout most-positive-fixnum)
+  (setq flymake-start-syntax-check-on-newline nil))
+
+(erlang-flymake-only-on-save)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+(add-hook 'erlang-mode-hook 'erlang-font-lock-level-3)
 
 (provide 'erlang-config)
 ;;; erlang-config.el ends here

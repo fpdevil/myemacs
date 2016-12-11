@@ -3,11 +3,57 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(aquamacs-customization-version-id 0 t)
+ '(aquamacs-additional-fontsets
+   (quote
+    (("apple" "monaco*" "medium" "r" "normal" 9 "monaco")
+     ("apple" "monaco*" "medium" "r" "normal" 10 "monaco")
+     ("apple" "monaco*" "medium" "r" "normal" 11 "monaco")
+     ("apple" "monaco*" "medium" "r" "normal" 12 "monaco")
+     ("apple" "monaco*" "medium" "r" "normal" 13 "monaco")
+     ("apple" "monaco*" "medium" "r" "normal" 14 "monaco")
+     ("apple" "monaco*" "medium" "r" "normal" 16 "monaco")
+     ("apple" "monaco*" "medium" "r" "normal" 18 "monaco")
+     ("apple" "lucida grande*" "medium" "r" "normal" 9 "lucida")
+     ("apple" "lucida grande*" "medium" "r" "normal" 10 "lucida")
+     ("apple" "lucida grande*" "medium" "r" "normal" 11 "lucida")
+     ("apple" "lucida grande*" "medium" "r" "normal" 12 "lucida")
+     ("apple" "lucida grande*" "medium" "r" "normal" 13 "lucida")
+     ("apple" "lucida grande*" "medium" "r" "normal" 14 "lucida")
+     ("apple" "lucida grande*" "medium" "r" "normal" 16 "lucida")
+     ("apple" "lucida grande*" "medium" "r" "normal" 18 "lucida")
+     ("apple" "lucida sans typewrite*" "medium" "r" "normal" 9 "lucida_typewriter")
+     ("apple" "lucida sans typewrite*" "medium" "r" "normal" 10 "lucida_typewriter")
+     ("apple" "lucida sans typewrite*" "medium" "r" "normal" 12 "lucida_typewriter")
+     ("apple" "lucida sans typewrite*" "medium" "r" "normal" 14 "lucida_typewriter")
+     ("apple" "lucida console*" "medium" "r" nil 11 "lucida_console")
+     (nil "courier*" "medium" "r" nil 11 "courier")
+     (nil "courier*" "medium" "r" nil 13 "courier")
+     (nil "bitstream vera sans mono" "medium" "r" "normal" 10 "vera_mono")
+     (nil "bitstream vera sans mono" "medium" "r" "normal" 12 "vera_mono")
+     (nil "bitstream vera sans mono" "medium" "r" "normal" 14 "vera_mono"))) t)
+ '(aquamacs-customization-version-id 308 t)
+ '(aquamacs-tool-bar-user-customization nil t)
  '(company-ghc-show-info t)
  '(custom-safe-themes
    (quote
-    ("9b1c580339183a8661a84f5864a6c363260c80136bd20ac9f00d7e1d662e936a" default)))
+    ("3cd28471e80be3bd2657ca3f03fbb2884ab669662271794360866ab60b6cb6e6" "251348dcb797a6ea63bbfe3be4951728e085ac08eee83def071e4d2e3211acc3" default)))
+ '(default-frame-alist
+    (quote
+     ((tool-bar-lines . 1)
+      (menu-bar-lines . 1)
+      (foreground-color . "Black")
+      (background-color . "White")
+      (cursor-type . box)
+      (cursor-color . "Red")
+      (vertical-scroll-bars . right)
+      (internal-border-width . 0)
+      (fringe)
+      (left-fringe . 4)
+      (right-fringe . 0))))
+ '(git-gutter:added-sign "☀")
+ '(git-gutter:deleted-sign "☂")
+ '(git-gutter:modified-sign "☁")
+ '(git-gutter:window-width 2)
  '(haskell-font-lock-symbols t)
  '(haskell-process-auto-import-loaded-modules t)
  '(haskell-process-log t)
@@ -21,13 +67,14 @@
  '(haskell-tags-on-save nil)
  '(hindent-style "chris-done")
  '(inferior-haskell-find-haddock nil)
- '(package-selected-packages
-   (quote
-    (ac-alchemist zerodark-theme zenburn-theme xah-math-input wttrin which-key web-mode virtualenvwrapper sublime-themes smartparens shm rainbow-mode rainbow-identifiers rainbow-delimiters python-pylint py-yapf popwin paredit org-bullets neotree multiple-cursors monokai-theme moe-theme material-theme markdown-mode key-chord json-mode jedi ivy-erlang-complete iedit hindent highlight-symbol hi2 helm-flycheck helm-company helm-c-yasnippet haskell-snippets golint go-eldoc go-autocomplete git-gutter flymake-python-pyflakes flymake-hlint flymake-cursor flycheck-tip flycheck-pos-tip flycheck-mix flycheck-haskell flycheck-elixir flycheck-color-mode-line esup ensime elpy elixir-yasnippets ecb dracula-theme diminish delight darkokai-theme cyberpunk-theme company-quickhelp company-math company-jedi company-ghci company-ghc company-distel company-dict company-cabal color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized color-theme buffer-move auto-complete-distel apropospriate-theme alchemist airline-themes ac-haskell-process)))
+ '(ns-tool-bar-display-mode (quote both) t)
+ '(ns-tool-bar-size-mode (quote regular) t)
+ '(one-buffer-one-frame-mode t nil (aquamacs-frame-setup))
  '(shm-auto-insert-bangs t)
  '(shm-auto-insert-skeletons t)
  '(shm-use-hdevtools t)
- '(shm-use-presentation-mode t))
+ '(shm-use-presentation-mode t)
+ '(visual-line-mode nil t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

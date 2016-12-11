@@ -92,19 +92,20 @@
         ; (load-theme 'sanityinc-solarized-light)         ;; solarized light theme
         ; (load-theme 'cyberpunk t)                       ;; cyberpunk theme
         ; (load-theme 'material t)                        ;; material dark theme
-        (load-theme 'material-light t)                  ;; material light theme
+        ; (load-theme 'material-light t)                  ;; material light theme
         ; (load-theme 'dracula t)                         ;; dracula dark theme
-        ; (load-theme 'mccarthy)                          ;; mccarthy from sublime-themes
+        (load-theme 'mccarthy)                          ;; mccarthy from sublime-themes
         ; (load-theme 'apropospriate-dark t)              ;; apropospriate dark theme
         ; (load-theme 'apropospriate-light t)             ;; apropospriate light theme
+        ; (load-theme 'flatui t)                          ;; flat color theme
         ;;
         ;; -- below for activating moe-theme -- ;;
-        ; (require 'moe-theme)
-        ; ; show highlighted buffer-id as decoration
-        ; (setq moe-theme-highlight-buffer-id t)
-        ; ; choose a color for mode-line
-        ; (moe-theme-set-color 'cyan)
-        ; (moe-light)                                     ;; moe-light or moe-dark
+        ;(require 'moe-theme)
+        ;; show highlighted buffer-id as decoration
+        ;(setq moe-theme-highlight-buffer-id t)
+        ;; choose a color for mode-line
+        ;(moe-theme-set-color 'cyan)
+        ;(moe-light)                                     ;; moe-light or moe-dark
         ;;
         )
       )
@@ -125,8 +126,10 @@
       airline-utf-glyph-readonly            #xe0a2
       airline-utf-glyph-linenumber          #xe0a1)
 ;(load-theme 'airline-light)                ; load airline light theme
-(load-theme 'airline-papercolor)            ; load papercolor theme
+;(load-theme 'airline-papercolor)           ; load papercolor theme
 ;(load-theme 'airline-base16-shell-dark)    ; load airline-base16-shell-dark theme
+;(load-theme 'airline-molokai)              ; load airline molokai light theme
+(load-theme 'airline-cool)                  ; load luna theme
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; identify unnecessary whitespace is in all programming modes              ;;

@@ -37,15 +37,15 @@
 ;;;;     Package repositories (gnu, melpa, melpa-stable and marmalade)      ;;;;
 ;;============================================================================;;
 (add-to-list 'package-archives
-             '("gnu" . "http://elpa.gnu.org/packages/"))
+             '("gnu"          . "http://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa"        . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+             '("marmalade"    . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives
-             '("org" . "http://orgmode.org/elpa/") t)
+             '("org"          . "http://orgmode.org/elpa/") t)
 ;;============================================================================;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -103,14 +103,14 @@
 ;;;; setq is supposed to be use just to set variables and not create them.  ;;;;
 ;;============================================================================;;
 (defvar required-packages
-  '(;;;;; appearance and visual customizations  ;;;;;
+  '(;;;;;; appearance and visual customizations ;;;;;;
     powerline                                   ;; powerline smart mode
     delight                                     ;; customize mode names on modeline
     rainbow-delimiters                          ;; colorful modes (delimiters and color codes)
     rainbow-mode                                ;; colored identifiers
     rainbow-identifiers                         ;; colored identifiers
     airline-themes                              ;; fancy vim airline themes
-    ;;;;; color themes for emacs                ;;;;;
+    ;;;;;;  color themes for emacs              ;;;;;;
     color-theme                                 ;; install color themes
     sublime-themes                              ;; sublime themes
     darkokai-theme                              ;; dark theme based on monokai
@@ -124,9 +124,10 @@
     cyberpunk-theme                             ;; cyberpunk theme for emacs
     apropospriate-theme                         ;; low-contrast light & dark theme set for Emacs
     zerodark-theme                              ;; dark medium-contrast theme
-    ;;;;; company auto completions frameworks   ;;;;;
+    flatui-theme                                ;; color theme based on flat colors
+    ;;;;;; company auto completions frameworks  ;;;;;;
     company                                     ;; cmopany autocompletion modes
-    ;;;;; company backends for completion       ;;;;;
+    ;;;;;; company backends for completion      ;;;;;;
     company-jedi                                ;; company jedi mode for python
     company-distel                              ;; company distel mode for erlang
     distel-completion-lib                       ;; distel-completion is needed for company-distel
@@ -134,22 +135,27 @@
     company-quickhelp                           ;; documentation popup for company
     helm-company                                ;; helm interface for company-mode
     company-math                                ;; backend for for math unicode symbols and latex tags
-    ;;;;; auto-complete family                  ;;;;;
+    company-flx                                 ;; Flx fuzzy matching for company
+    company-irony                               ;; completion backend for irony-mode
+    company-irony-c-headers                     ;; backend for C/C++ header files with irony-mode
+    ;;;;;; auto-complete family                 ;;;;;;
     auto-complete                               ;; auto completion for gnu emacs
     auto-complete-distel                        ;; auto completion distel for erlang
     ac-haskell-process                          ;; haskell completion source for Emacs auto-complete
-    ;;;;; some utilities                        ;;;;;
+    auto-complete-nxml                          ;; auto-completion on nXml mode
+    ac-cider                                    ;; clojure completion source
+    ;;;;;; some utilities                       ;;;;;;
     parent-mode                                 ;; get major mode's parent modes
     ; ido                                       ;; IDO mode
     ; smex                                      ;; M-x interface with Ido-style fuzzy matching
-    ;;;;; essential utilities                   ;;;;;
+    ;;;;;; essential utilities                  ;;;;;;
     smartparens                                 ;; parenthesis management
     paredit                                     ;; minor mode for editing parentheses
-    ;;;;; documentation and help                ;;;;;
+    ;;;;;; documentation and help               ;;;;;;
     markdown-mode                               ;; markdown language support
     ; auctex                                    ;; AUCTEX and LATEX
-    ;;;;; on the fly syntax checkers            ;;;;;
-    ;;;;; flycheck family                       ;;;;;
+    ;;;;;; on the fly syntax checkers           ;;;;;;
+    ;;;;;; flycheck family                      ;;;;;;
     flycheck                                    ;; flycheck on the fly syntax checker
     flycheck-color-mode-line                    ;; flycheck colors for highlighting errors
     flycheck-pos-tip                            ;; flycheck errors display in tooltip
@@ -158,27 +164,29 @@
     flycheck-haskell                            ;; haskell syntax checker
     flycheck-elixir                             ;; flycheck checker for elixir files
     flycheck-mix                                ;; flycheck elixir mix support
+    flycheck-clojure                            ;; flycheck clojure support
     popup                                       ;; show popup for flycheck
-    ;;;;; flymake family                        ;;;;;
+    flycheck-irony                              ;; flycheck c/c++ support via Irony
+    ;;;;;; flymake family                       ;;;;;;
     flymake-easy                                ;; flymake on the fly syntax checker
     flymake-python-pyflakes                     ;; flymake handler for syntax-checking Python source code using pyflakes or flake8
     flymake-hlint                               ;; linting for haskell language
     flymake-cursor                              ;; show flymake errors in mini buffer
-    ;;;;; org modes                             ;;;;;
+    ;;;;;; org modes                            ;;;;;;
     org                                         ;; org-mode setup
     org-bullets                                 ;; org mode with bullets
-    ;;;;; git integration                       ;;;;;
+    ;;;;;; git integration                      ;;;;;;
     ;magit                                      ;; git status
     git-gutter                                  ;; Emacs port of GitGutter
-    ;;;;; ***** language and IDE setup *****    ;;;;;
-    ;;;;; python 3 programming modes            ;;;;;
+    ;;;;;; language and IDE setup               ;;;;;;
+    ;;;;;; python 3 programming modes           ;;;;;;
     virtualenvwrapper                           ;; virtualenv wrapper for python
     jedi                                        ;; python jedi IDE
     elpy                                        ;; python elpy IDE
     python-pylint                               ;; python linter
     py-yapf                                     ;; python yapf
     pyvenv                                      ;; python virtual environment interface for Emacs
-    ;;;;; haskell programming modes             ;;;;;
+    ;;;;;; haskell programming modes            ;;;;;;
     haskell-mode                                ;; haskell language support
     company-ghc                                 ;; haskell company auto-completion
     company-ghci                                ;; a company backend for haskell
@@ -189,53 +197,74 @@
     hi2                                         ;; for haskell-indentation, 2nd try
     ghc                                         ;; haskell ghc
     ; intero                                    ;; complete dev environment for haskell
-    ;;;;; erlang laguage support                ;;;;;
+    ;;;;;; erlang laguage support               ;;;;;;
     erlang                                      ;; erlang emacs plugin
     ivy-erlang-complete                         ;; context sensitive completion for erlang
     ; edts                                      ;; erlang development ide
-    ;;;;; elixir language                       ;;;;;
+    ;;;;;; elixir language                      ;;;;;;
     elixir-mode                                 ;; major mode for editing elixir files
     alchemist                                   ;; elixir tooling integration into Emacs
     ac-alchemist                                ;; auto-complete source for alchemist
-    ;;;;; scala development with ensime         ;;;;;
+    ;;;;;; scala development with ensime        ;;;;;;
     ensime                                      ;; ENhanced Scala Interaction Mode for Emacs
-    ;;;;; go development support                ;;;;;
+    ;;;;;; go development support               ;;;;;;
     go-mode                                     ;; major mode for go programming
     go-eldoc                                    ;; eldoc for go-mode
     go-autocomplete                             ;; auto completion backend for go
     golint                                      ;; lint for go source
-    ;;;;; javascript/json support               ;;;;;
-    json-mode                                   ;; major mode for json editing
-    ;;;; Yasnippets package                     ;;;;;
+    ;;;;;; c/c++ language support               ;;;;;;
+    irony                                       ;; a c/c++ minor mode for Emacs powered by libclang
+    irony-eldoc                                 ;; eldoc support in irony-mode
+    ;;;;;; yasnippets package                   ;;;;;;
     yasnippet                                   ;; Yet another snippet extension
     helm-c-yasnippet                            ;; Helm source for yasnippet
     elixir-yasnippets                           ;; yasnippets for elixir
-    ;;;;; important and useful utilities        ;;;;;
+    clojure-snippets                            ;; snippets for clojure
+    ;;;;;; important and useful utilities       ;;;;;;
     helm                                        ;; incremental completion and selection narrowing framework
     helm-core                                   ;; development files for Helm
-    ;;;;; essential packs and tools             ;;;;;
+    ;;;;;; essential packs and tools            ;;;;;;
     ecb                                         ;; emacs code browser
     buffer-move                                 ;; move buffer
     neotree                                     ;; a tree plugin like NerdTree for Vim
-    ;;;;; essential utilities                   ;;;;;
+    ;;;;;; essential utilities                  ;;;;;;
     highlight-symbol                            ;; automatic and manual symbol highlighting for Emacs
     xah-math-input                              ;; show math input symbols
-    ;;;;; icon displays.                        ;;;;;
+    ;;;;;; icon displays                        ;;;;;;
     ; mode-icons                                ;; show icons for modes
     all-the-icons                               ;; package for showing various icons
-    ;;;;; editing and keyboard mappings         ;;;;;
+    ;;;;;; editing and keyboard mappings        ;;;;;;
     key-chord                                   ;; map pairs of simultaneously pressed keys to commands
     diminish                                    ;; diminished modes are minor modes with no modeline display
     multiple-cursors                            ;; multiple cursors for emacs
     iedit                                       ;; edit multiple regions simultaneously in a buffer or a region
-    ;;;;; web app and java script               ;;;;;
+    ;;;;;; web app(s), java script and json     ;;;;;;
     web-mode                                    ;; major-mode for editing web templates
-    ;;;;; text and file utilities               ;;;;;
+    js2-refactor                                ;; javascript refactoring library
+    tern                                        ;; JavaScript code analyzer
+    tern-auto-complete                          ;; js tooling auto-complete
+    js2-mode                                    ;; Improved JavaScript editing mode
+    ac-js2                                      ;; Javascript auto-completion
+    json-mode                                   ;; major mode for json editing
+    ;;;;;; text and file utilities              ;;;;;;
     popwin                                      ;; popup window manager
-    ;;;;; miscellaneous utilities               ;;;;;
+    ;;;;;; miscellaneous utilities              ;;;;;;
     wttrin                                      ;; weather information from wttr.in
-    esup                                        ;; emacs startup profiler
+    esup                                        ;; emacs startup profiler (https://github.com/jschaf/esup)
     which-key                                   ;; displays available keybindings in popup
+    discover-my-major                           ;; key bindings and their meaning for the current Emacs major mode
+    ;;;;;; vim emulation                        ;;;;;;
+    evil                                        ;; Extensible Vi layer for Emacs.
+    undo-tree                                   ;; Treat undo history as a tree (evil dependency)
+    goto-chg                                    ;; goto last change (evil dependency)
+    evil-leader                                 ;; let there be <leader>
+    evil-surround                               ;; emulate surround.vim from Vim
+    ;;;;;; clojure programming modes            ;;;;;;
+    clojure-mode                                ;; Emacs support for clojure
+    clojure-mode-extra-font-locking             ;; Extra font-locking for Clojure mode
+    helm-cider                                  ;; helm interface for cider
+    helm-clojuredocs                            ;; searching for help in clojurdocs.org with helm
+    cider                                       ;; Clojure Interactive Development Environment that Rocks
   )
   "A list of packages that will be installed if not present when firing Emacs.")
 
@@ -305,7 +334,9 @@
 ;; scala
 ;; elixir
 ;; go
+;; c/c++
 ;; web
+;; clojure
 ;; delight
 ;; flycheck
 ;; helm
@@ -324,6 +355,9 @@
 ;; gitgutter-config
 ;; weather info
 ;; which-key
+;; evil
+;; xslt
+;; xml using nxml
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar configs
@@ -336,6 +370,7 @@
       "scala-config"
       "elixir-config"
       "go-config"
+      "cpp-config"
       "web-config"
       "delight-config"
       "flycheck-config"
@@ -355,6 +390,10 @@
       "gitgutter-config"
       "weather-config"
       "whichkey-config"
+      "evil-config"
+      "xslt-process-config"
+      "nxml-config"
+      "clojure-config"
       )
     "Configuration files which follow the modules/pkgname-config.el format."
     )
@@ -374,8 +413,9 @@
 ;;;; contains packages not in elpa/melpa/marmalade/gnu/org                  ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar custom-load-paths
-  '("erlang/elisp"  ;; erlang lisp modules
-    "xslide"        ;; xml and xslt syntax, customizations
+  '("erlang/elisp"          ;; erlang lisp modules
+    ; "xslide"              ;; xml and xslt syntax, customizations
+    "xslt-process/lisp"     ;; xslt processor ide
     )
   "Custom load paths that do not follow the normal vendor/elisp/module-name.el format."
   )

@@ -26,8 +26,8 @@
   )
 
 (setq ac-auto-show-menu t
-      ac-delay 0.4
-      ac-quick-help-delay 0.5
+      ac-delay 0.6
+      ac-quick-help-delay 0.9
       ac-use-fuzzy t
       ac-fuzzy-enable t
       ac-dwim t)

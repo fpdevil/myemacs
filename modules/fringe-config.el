@@ -9,6 +9,10 @@
 ;;;
 ;;; Code:
 ;;;
+
+;; make the left fringe 4 pixels wide and the right disappear
+(fringe-mode '(4 . 0))
+
 (setq indicate-buffer-boundaries 'right
       visual-line-fringe-indicators '(left-curly-arrow nil)
       left-fringe-width 8)

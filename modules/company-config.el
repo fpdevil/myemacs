@@ -13,7 +13,6 @@
 (require 'company-quickhelp)        ;; documentation popup for company
 (require 'company-dict)             ;; ac-source-dictionary to company-mode
 (require 'company-math)             ;; back-ends for for math unicode symbols and latex tags
-
 ;;
 ;;; Code:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -46,6 +45,13 @@
 
 
 ;;
+; adds fuzzy matching to company
+;;
+(with-eval-after-load 'company
+  (company-flx-mode +1))
+
+
+;;
 ; look for dictionary files
 ;;
 (setq company-dict-dir (concat user-emacs-directory "dict/"))
@@ -58,6 +64,10 @@
     '((company-yasnippet
        ; company-ispell
        company-elisp
+       company-clang
+       company-nxml
+       company-gtags
+       company-cmake
        company-files
        company-keywords
        company-capf

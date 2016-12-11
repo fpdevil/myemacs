@@ -66,6 +66,7 @@
 ;; syntax highlighting everywhere                                          ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-font-lock-mode 1)
+(setq font-lock-maximum-decoration t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -81,17 +82,30 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Saving Emacs Sessions                                                   ;;
+;; file backup and saving Emacs sessions                                   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq desktop-save nil) ;; save without asking
 ;(setq desktop-restore-eager 10)
+(defvar backup-directory (concat (getenv "HOME") "/.emacs.d/.backup"))
+;; create the directory if does not exist already
+(if (not (file-exists-p backup-directory))
+    (make-directory backup-directory t))
+;; custom settings for auto save
+(setq make-backup-files t                                    ;; backup file first time its saved
+      backup-directory-alist '((".*" . ,backup-directory))   ;; save backups under .backups
+      backup-by-copying t                                    ;; copy current file to backup directory
+      version-control t                                      ;; version numbers for backup files
+      delete-old-versions t                                  ;; delete obsolete versions
+      kept-old-versions 3                                    ;; old version to keep (default 3)
+      kept-new-versions 5                                    ;; new versions to keep (default 2)
+      auto-save-default t                                    ;; enable auto-save for all buffers
+      auto-save-timeout 20                                   ;; idle-time before auto-save triggers (default 30)
+      auto-save-interval 200)                                ;; number of key strokes between auto-save (default 300)
 
-;;
-; (defalias 'list-buffers 'ibuffer)
 
-;;
-; electric pair mode
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; electric pair mode (currently disabled)                                 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; (electric-pair-mode 1)
 ; (defvar markdown-electric-pairs '((?* . ?*)) "Electric pairs for markdown-mode.")
 ; (defun markdown-add-electric-pairs ()
@@ -125,6 +139,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; set default font for aquamacs                                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(aquamacs-autoface-mode 0)
 (setq mac-allow-anti-aliasing t)                           ;; anti-aliasing
 (set-face-attribute 'default nil :family "Monaco"
             		                 :width 'normal
@@ -235,7 +250,6 @@ This command does the inverse of `fill-region'."
         font-lock-variable-name-face
         font-lock-function-name-face))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; set the filter                                                          ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -280,7 +294,7 @@ This command does the inverse of `fill-region'."
 ; (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 ; (add-hook 'org-mode-hook 'flyspell-mode)
 ; (add-hook 'markdown-mode-hook 'flyspell-mode)
-; (setq-default ispell-program-name "/usr/local/bin/ispell")
+; (setq-default ispell-program-name "/usr/local/bin/aspell")
 
 
 (provide 'aqua-internals)
