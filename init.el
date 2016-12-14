@@ -1,4 +1,5 @@
 ;;; package --- Aquamacs initialization file
+;;; -*- coding: utf-8 -*-
 ;;;
 ;;;    ___ _ __ ___   __ _  ___ ___
 ;;;   / _ \ '_ ` _ \ / _` |/ __/ __|
@@ -36,24 +37,25 @@
 (defconst *is-a-mac* (eq system-type 'darwin))
 
 
-;;
-; adding the required lisp files and libraries to path
-; custom-settings.el will store any custom settings made on Emacs
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; adding the required lisp files and libraries to the path for loading   ;;;
+;;; custom-settings.el will store any custom settings made on Emacs        ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'load-path (concat (getenv "HOME") "/.emacs.d"))
 (setq custom-file (concat (getenv "HOME") "/.emacs.d/custom-settings.el"))
 (load custom-file)
 (load (concat (getenv "HOME") "/.emacs.d/aqua-package-repos.el"))
 
-;;--------------------------------------------------------------------------;;
-;; byte recompiling everything during bootstrap                             ;;
-;; a custom function is defined inside my-methods                           ;;
-;; uncomment below section if needed                                        ;;
-;;--------------------------------------------------------------------------;;
+
+;;;------------------------------------------------------------------------;;;
+;;; byte recompiling everything during bootstrap                           ;;;
+;;; a custom function is defined inside my-methods                         ;;;
+;;; uncomment below section if needed                                      ;;;
+;;;------------------------------------------------------------------------;;;
 ; (byte-recompile-directory
 ;   (expand-file-name (concat (getenv "HOME") "/.emacs.d/packages/elpa/")) 0)
 
-;;--------------------------------------------------------------------------;;
+;;;------------------------------------------------------------------------;;;
 ;;
 ; Finalizers
 ; for debugging
@@ -62,42 +64,42 @@
 ; (setq debug-on-error nil)
 ; (setq debug-on-quit nil)
 
-;;==========================================================================;;
-;;            specify all the require packages and settings                 ;;
-;;==========================================================================;;
+;;;========================================================================;;;
+;;;  specify all the require packages and settings to be loaded initially  ;;;
+;;;========================================================================;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Diminished modes are minor modes with no modeline display                ;;
-;; hide a minor mode that you know are always enabled using this            ;;
-;; http://www.eskimo.com/~seldon/diminish.el                                ;;
+;;; Diminished modes are minor modes with no modeline display              ;;;
+;;; hide a minor mode that you know are always enabled using this          ;;;
+;;; http://www.eskimo.com/~seldon/diminish.el                              ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'diminish)
 (eval-after-load "whitespace" '(diminish 'whitespace-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fancy modeline                                                           ;;
-;; powerline                                                                ;;
+;;; fancy modeline                                                         ;;;
+;;; powerline                                                              ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;(require 'powerline)
 ;(powerline-default-theme)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;          setting default color theme to the required one                 ;;
+;;;          setting default color theme to the required one               ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'color-theme)
 (setq color-theme-is-global t)
 (color-theme-initialize)
 (add-hook 'after-init-hook
       (lambda ()
-        ; (load-theme 'sanityinc-solarized-light)         ;; solarized light theme
-        ; (load-theme 'cyberpunk t)                       ;; cyberpunk theme
-        ; (load-theme 'material t)                        ;; material dark theme
-        ; (load-theme 'material-light t)                  ;; material light theme
-        ; (load-theme 'dracula t)                         ;; dracula dark theme
+        ;(load-theme 'sanityinc-solarized-light)         ;; solarized light theme
+        ;(load-theme 'cyberpunk t)                       ;; cyberpunk theme
+        ;(load-theme 'material t)                        ;; material dark theme
+        ;(load-theme 'material-light t)                  ;; material light theme
+        ;(load-theme 'dracula t)                         ;; dracula dark theme
         (load-theme 'mccarthy)                          ;; mccarthy from sublime-themes
-        ; (load-theme 'apropospriate-dark t)              ;; apropospriate dark theme
-        ; (load-theme 'apropospriate-light t)             ;; apropospriate light theme
-        ; (load-theme 'flatui t)                          ;; flat color theme
+        ;(load-theme 'apropospriate-dark t)              ;; apropospriate dark theme
+        ;(load-theme 'apropospriate-light t)             ;; apropospriate light theme
+        ;(load-theme 'flatui t)                          ;; flat color theme
         ;;
         ;; -- below for activating moe-theme -- ;;
         ;(require 'moe-theme)
@@ -112,7 +114,7 @@
 ;; wait until startup initialization is complete
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; vim airline theme for emacs modeline customized display                  ;;
+;;; vim airline theme for emacs modeline customized display                ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'airline-themes)
 ; setting powerline fonts for glyphs
@@ -125,29 +127,34 @@
       airline-utf-glyph-branch              #xe0a0
       airline-utf-glyph-readonly            #xe0a2
       airline-utf-glyph-linenumber          #xe0a1)
-;(load-theme 'airline-light)                ; load airline light theme
+;;
+; change the airline themes as required from the below
+;;
+(load-theme 'airline-light)                ; load airline light theme
 ;(load-theme 'airline-papercolor)           ; load papercolor theme
 ;(load-theme 'airline-base16-shell-dark)    ; load airline-base16-shell-dark theme
+;(load-theme 'airline-base16-gui-dark)      ; load airline-base16-gui dark theme
 ;(load-theme 'airline-molokai)              ; load airline molokai light theme
-(load-theme 'airline-cool)                  ; load luna theme
+;(load-theme 'airline-cool)                 ; load cool theme
+;(load-theme 'airline-solarized-gui)        ; solarized gui theme
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; identify unnecessary whitespace is in all programming modes              ;;
-;; whitespace-cleanup command for clearing trailing white spaces            ;;
+;;; identify unnecessary whitespace is in all programming modes            ;;;
+;;; whitespace-cleanup command for clearing trailing white spaces          ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'whitespace)
 (setq-default show-trailing-whitespace t)
 (set-default 'indent-tabs-mode nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; editing files in markdown mode                                           ;;
+;;; editing files in markdown mode                                         ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'markdown-mode)
 (setq auto-mode-alist
               (cons '("\\.mdml$" . markdown-mode) auto-mode-alist))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; magit (git integration - now using git-gutter)                           ;;
+;;; magit (git integration - now using git-gutter)                         ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; (require 'magit)
 ; (eval-after-load 'magit
@@ -155,36 +162,17 @@
 ; (define-key global-map (kbd "C-c m") 'magit-status)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fancy (but useful) stuff                                                 ;;
-;; for rainbow delimiters                                                   ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'rainbow-delimiters)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fancy (but useful) stuff                                                 ;;
-;; for rainbow identifiers                                                  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'rainbow-identifiers)
-(add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
-;; rainbow identifier customizations
-;; use a wider set of colors
-(setq rainbow-identifiers-choose-face-function
-      'rainbow-identifiers-cie-l*a*b*-choose-face)
-(setq rainbow-identifiers-cie-l*a*b*-lightness 45)
-(setq rainbow-identifiers-cie-l*a*b*-saturation 45)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; flymake-easy (helpers for easily building Emacs flymake checkers)        ;;
+;;; flymake-easy (helpers for easily building Emacs flymake checkers)      ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'flymake-easy)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; show flymake errors in mini buffer                                       ;;
+;;; show flymake errors in mini buffer                                     ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'flymake-cursor)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; buffer mode                                                              ;;
+;;; buffer mode                                                            ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'buffer-move)
 (global-set-key (kbd "<S-s-up>")     'buf-move-up)
@@ -193,7 +181,7 @@
 (global-set-key (kbd "<S-s-right>")  'buf-move-right)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Map pairs of simultaneously pressed keys to commands                     ;;
+;;; Map pairs of simultaneously pressed keys to commands                   ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'key-chord)
 (key-chord-define-global "fm" 'list-buffers)
@@ -201,13 +189,13 @@
 ;(use fm instead of C-x b to list buffers)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; edit multiple regions simultaneously in a buffer or a region             ;;
+;;; edit multiple regions simultaneously in a buffer or a region           ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'iedit)
 (setq iedit-unmatched-lines-invisible-default t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;   ido disabled in favour of helm                                         ;;
+;;;   ido disabled in favour of helm                                       ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; ido settings
 ; Interactively Do Things

@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "irony-eldoc" "irony-eldoc.el" (22605 36620
+;;;### (autoloads nil "irony-eldoc" "irony-eldoc.el" (22609 39415
 ;;;;;;  0 0))
 ;;; Generated autoloads from irony-eldoc.el
 

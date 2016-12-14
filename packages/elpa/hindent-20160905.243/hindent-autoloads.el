@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "hindent" "hindent.el" (22604 44187 0 0))
+;;;### (autoloads nil "hindent" "hindent.el" (22609 39400 0 0))
 ;;; Generated autoloads from hindent.el
 
 (autoload 'hindent-mode "hindent" "\

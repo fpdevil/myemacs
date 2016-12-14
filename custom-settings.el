@@ -3,53 +3,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(aquamacs-additional-fontsets
-   (quote
-    (("apple" "monaco*" "medium" "r" "normal" 9 "monaco")
-     ("apple" "monaco*" "medium" "r" "normal" 10 "monaco")
-     ("apple" "monaco*" "medium" "r" "normal" 11 "monaco")
-     ("apple" "monaco*" "medium" "r" "normal" 12 "monaco")
-     ("apple" "monaco*" "medium" "r" "normal" 13 "monaco")
-     ("apple" "monaco*" "medium" "r" "normal" 14 "monaco")
-     ("apple" "monaco*" "medium" "r" "normal" 16 "monaco")
-     ("apple" "monaco*" "medium" "r" "normal" 18 "monaco")
-     ("apple" "lucida grande*" "medium" "r" "normal" 9 "lucida")
-     ("apple" "lucida grande*" "medium" "r" "normal" 10 "lucida")
-     ("apple" "lucida grande*" "medium" "r" "normal" 11 "lucida")
-     ("apple" "lucida grande*" "medium" "r" "normal" 12 "lucida")
-     ("apple" "lucida grande*" "medium" "r" "normal" 13 "lucida")
-     ("apple" "lucida grande*" "medium" "r" "normal" 14 "lucida")
-     ("apple" "lucida grande*" "medium" "r" "normal" 16 "lucida")
-     ("apple" "lucida grande*" "medium" "r" "normal" 18 "lucida")
-     ("apple" "lucida sans typewrite*" "medium" "r" "normal" 9 "lucida_typewriter")
-     ("apple" "lucida sans typewrite*" "medium" "r" "normal" 10 "lucida_typewriter")
-     ("apple" "lucida sans typewrite*" "medium" "r" "normal" 12 "lucida_typewriter")
-     ("apple" "lucida sans typewrite*" "medium" "r" "normal" 14 "lucida_typewriter")
-     ("apple" "lucida console*" "medium" "r" nil 11 "lucida_console")
-     (nil "courier*" "medium" "r" nil 11 "courier")
-     (nil "courier*" "medium" "r" nil 13 "courier")
-     (nil "bitstream vera sans mono" "medium" "r" "normal" 10 "vera_mono")
-     (nil "bitstream vera sans mono" "medium" "r" "normal" 12 "vera_mono")
-     (nil "bitstream vera sans mono" "medium" "r" "normal" 14 "vera_mono"))) t)
- '(aquamacs-customization-version-id 308 t)
- '(aquamacs-tool-bar-user-customization nil t)
+ '(aquamacs-customization-version-id 0 t)
  '(company-ghc-show-info t)
  '(custom-safe-themes
    (quote
-    ("3cd28471e80be3bd2657ca3f03fbb2884ab669662271794360866ab60b6cb6e6" "251348dcb797a6ea63bbfe3be4951728e085ac08eee83def071e4d2e3211acc3" default)))
- '(default-frame-alist
-    (quote
-     ((tool-bar-lines . 1)
-      (menu-bar-lines . 1)
-      (foreground-color . "Black")
-      (background-color . "White")
-      (cursor-type . box)
-      (cursor-color . "Red")
-      (vertical-scroll-bars . right)
-      (internal-border-width . 0)
-      (fringe)
-      (left-fringe . 4)
-      (right-fringe . 0))))
+    ("3cd28471e80be3bd2657ca3f03fbb2884ab669662271794360866ab60b6cb6e6" "962dacd99e5a99801ca7257f25be7be0cebc333ad07be97efd6ff59755e6148f" default)))
  '(git-gutter:added-sign "☀")
  '(git-gutter:deleted-sign "☂")
  '(git-gutter:modified-sign "☁")
@@ -67,14 +25,13 @@
  '(haskell-tags-on-save nil)
  '(hindent-style "chris-done")
  '(inferior-haskell-find-haddock nil)
- '(ns-tool-bar-display-mode (quote both) t)
- '(ns-tool-bar-size-mode (quote regular) t)
- '(one-buffer-one-frame-mode t nil (aquamacs-frame-setup))
+ '(package-selected-packages
+   (quote
+    (helm-clojuredocs helm-cider clojure-mode-extra-font-locking evil-surround evil-leader evil sunshine discover-my-major which-key esup wttrin popwin json-mode ac-js2 tern-auto-complete tern js2-refactor web-mode iedit multiple-cursors diminish key-chord xah-math-input highlight-symbol neotree buffer-move ecb clojure-snippets elixir-yasnippets helm-c-yasnippet irony-eldoc golint go-autocomplete go-eldoc go-mode ensime ac-alchemist alchemist ivy-erlang-complete erlang hi2 hindent haskell-snippets shm company-cabal company-ghci company-ghc py-yapf python-pylint elpy jedi virtualenvwrapper git-gutter org-bullets google-c-style flymake-cursor flymake-hlint flymake-python-pyflakes flymake-easy flycheck-irony flycheck-clojure flycheck-mix flycheck-elixir flycheck-haskell helm-flycheck flycheck-tip flycheck-pos-tip flycheck-color-mode-line markdown-mode paredit smartparens auto-complete-c-headers auto-complete-clang ac-cider auto-complete-nxml ac-haskell-process auto-complete-distel auto-complete company-c-headers company-irony-c-headers company-irony company-flx company-math helm-company company-quickhelp company-dict company-distel company-jedi company flatui-theme zerodark-theme apropospriate-theme cyberpunk-theme color-theme-sanityinc-solarized color-theme-sanityinc-tomorrow material-theme zenburn-theme monokai-theme moe-theme dracula-theme darkokai-theme sublime-themes color-theme airline-themes rainbow-identifiers rainbow-mode rainbow-delimiters delight powerline)))
  '(shm-auto-insert-bangs t)
  '(shm-auto-insert-skeletons t)
  '(shm-use-hdevtools t)
- '(shm-use-presentation-mode t)
- '(visual-line-mode nil t))
+ '(shm-use-presentation-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

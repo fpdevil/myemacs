@@ -1,4 +1,5 @@
 ;;; package  --- web-config.el
+;;; -*- coding: utf-8 -*-
 ;;;
 ;;; Commentary:
 ;;;

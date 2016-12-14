@@ -1,4 +1,5 @@
 ;;; package --- rainbow-delims-config
+;;; -*- coding: utf-8 -*-
 ;;;
 ;;; Commentary:
 ;;; Filename: rainbow-delims-config.el
@@ -12,6 +13,7 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rainbow delimiters custom color codes                                  ;;;
+;;; fancy (but useful) stuff for rainbow delimiters                        ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 ;; some customizations for the default modes

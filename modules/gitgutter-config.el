@@ -1,4 +1,5 @@
 ;;; package  --- gitgutter-config.el
+;;; -*- coding: utf-8 -*-
 ;;;
 ;;; Commentary:
 ;;;

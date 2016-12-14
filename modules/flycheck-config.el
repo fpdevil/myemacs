@@ -1,4 +1,5 @@
 ;;; package  --- flycheck-config.el
+;;; -*- coding: utf-8 -*-
 ;;;
 ;;; Commentary:
 ;;;

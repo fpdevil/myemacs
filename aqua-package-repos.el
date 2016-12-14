@@ -1,4 +1,5 @@
 ;;; package --- aqua-package-repos.el package respository information for Emacs
+;;; -*- coding: utf-8 -*-
 ;;;
 ;;;           ######## ##     ##    ###     ######   ######
 ;;;           ##       ###   ###   ## ##   ##    ## ##    ##
@@ -138,12 +139,15 @@
     company-flx                                 ;; Flx fuzzy matching for company
     company-irony                               ;; completion backend for irony-mode
     company-irony-c-headers                     ;; backend for C/C++ header files with irony-mode
+    company-c-headers                           ;; auto-completion for C/C++ headers using Company
     ;;;;;; auto-complete family                 ;;;;;;
     auto-complete                               ;; auto completion for gnu emacs
     auto-complete-distel                        ;; auto completion distel for erlang
     ac-haskell-process                          ;; haskell completion source for Emacs auto-complete
     auto-complete-nxml                          ;; auto-completion on nXml mode
     ac-cider                                    ;; clojure completion source
+    auto-complete-clang                         ;; auto complete source for clang
+    auto-complete-c-headers                     ;; auto-complete source for C/C++ header files
     ;;;;;; some utilities                       ;;;;;;
     parent-mode                                 ;; get major mode's parent modes
     ; ido                                       ;; IDO mode
@@ -172,6 +176,8 @@
     flymake-python-pyflakes                     ;; flymake handler for syntax-checking Python source code using pyflakes or flake8
     flymake-hlint                               ;; linting for haskell language
     flymake-cursor                              ;; show flymake errors in mini buffer
+    ;;;;;; styling and formatting               ;;;;;;
+    google-c-style                              ;; google's c/c++ style for c-mode
     ;;;;;; org modes                            ;;;;;;
     org                                         ;; org-mode setup
     org-bullets                                 ;; org mode with bullets
@@ -223,6 +229,7 @@
     ;;;;;; important and useful utilities       ;;;;;;
     helm                                        ;; incremental completion and selection narrowing framework
     helm-core                                   ;; development files for Helm
+    ;helm-gtags                                 ;; gnu global helm interface
     ;;;;;; essential packs and tools            ;;;;;;
     ecb                                         ;; emacs code browser
     buffer-move                                 ;; move buffer
@@ -253,6 +260,7 @@
     esup                                        ;; emacs startup profiler (https://github.com/jschaf/esup)
     which-key                                   ;; displays available keybindings in popup
     discover-my-major                           ;; key bindings and their meaning for the current Emacs major mode
+    sunshine                                    ;; weather and forecast information
     ;;;;;; vim emulation                        ;;;;;;
     evil                                        ;; Extensible Vi layer for Emacs.
     undo-tree                                   ;; Treat undo history as a tree (evil dependency)
@@ -343,6 +351,7 @@
 ;; smartparens
 ;; paredit
 ;; rainbow-mode
+;; rainbow identifiers
 ;; rainbow-delimiters
 ;; hihlight-symbols
 ;; fringe
@@ -376,6 +385,7 @@
       "flycheck-config"
       "helm-settings-config"
       "rbow-config"
+      "rbow-identifiers-config"
       "rainbow-delims-config"
       "smartparens-config"
       "paredit-config"

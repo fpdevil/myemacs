@@ -1,0 +1,336 @@
+;; Object semanticdb-project-database-file
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "semanticdb-project-database-file"
+  :tables
+  (list
+    (semanticdb-table "semanticdb-table"
+      :major-mode c++-mode
+      :tags 
+        '( ("cstdlib" include (:system-flag t) nil [1406 1424])
+            ("cstdio" include (:system-flag t) nil [1425 1442])
+            ("iostream" include (:system-flag t) nil [1443 1462])
+            ("algorithm" include (:system-flag t) nil [1463 1483])
+            ("opencv2/opencv.hpp" include (:system-flag t) nil [1484 1513])
+            ("std" using (:type ("std" type
+                 (:prototype t
+                  :type "namespace")
+                  nil nil)) nil [1515 1535])
+            ("cv" using (:type ("cv" type
+                 (:prototype t
+                  :type "namespace")
+                  nil nil)) nil [1536 1555])
+            ("windowOriginal" variable
+               (:pointer 1
+                :constant-flag t
+                :default-value "\"Captured preview\""
+                :type "char")
+                nil [1557 1606])
+            ("FOCUS_STEP" variable
+               (:constant-flag t
+                :default-value "1024"
+                :type "int")
+                nil [1607 1635])
+            ("MAX_FOCUS_STEP" variable
+               (:constant-flag t
+                :default-value "32767"
+                :type "int")
+                nil [1636 1669])
+            ("FOCUS_DIRECTION_INFTY" variable
+               (:constant-flag t
+                :default-value "1"
+                :type "int")
+                nil [1670 1706])
+            ("DEFAULT_BREAK_LIMIT" variable
+               (:constant-flag t
+                :default-value "5"
+                :type "int")
+                nil [1707 1741])
+            ("DEFAULT_OUTPUT_FPS" variable
+               (:constant-flag t
+                :default-value "20"
+                :type "int")
+                nil [1742 1776])
+            ("epsylon" variable
+               (:constant-flag t
+                :default-value "0.0005"
+                :type "double")
+                nil [1777 1807])
+            ("GlobalArgs" variable (:type ("Args_t" type
+                 (:prototype t
+                  :type "struct")
+                  nil nil)) nil [1837 2003])
+            ("Args_t" type
+               (:members 
+                  ( ("deviceName" variable (:type ("string" type (:type "class") nil nil)) (reparse-symbol classsubparts) [1857 1875])
+                    ("output" variable (:type ("string" type (:type "class") nil nil)) (reparse-symbol classsubparts) [1880 1894])
+                    ("fps" variable (:type "int") (reparse-symbol classsubparts) [1899 1907])
+                    ("minimumFocusStep" variable (:type "int") (reparse-symbol classsubparts) [1912 1933])
+                    ("breakLimit" variable (:type "int") (reparse-symbol classsubparts) [1938 1953])
+                    ("measure" variable (:type "bool") (reparse-symbol classsubparts) [1958 1971])
+                    ("verbose" variable (:type "bool") (reparse-symbol classsubparts) [1976 1989]))                  
+                :type "struct")
+                nil [1837 2003])
+            ("FocusState" type
+               (:members 
+                  ( ("step" variable (:type "int") (reparse-symbol classsubparts) [2029 2038])
+                    ("direction" variable (:type "int") (reparse-symbol classsubparts) [2043 2057])
+                    ("minFocusStep" variable (:type "int") (reparse-symbol classsubparts) [2062 2079])
+                    ("lastDirectionChange" variable (:type "int") (reparse-symbol classsubparts) [2084 2108])
+                    ("stepToLastMax" variable (:type "int") (reparse-symbol classsubparts) [2113 2131])
+                    ("rate" variable (:type "double") (reparse-symbol classsubparts) [2136 2148])
+                    ("rateMax" variable (:type "double") (reparse-symbol classsubparts) [2153 2168]))                  
+                :type "struct")
+                nil [2005 2171])
+            ("<<" function
+               (:operator-flag t
+                :typemodifiers ("static")
+                :arguments 
+                  ( ("os" variable
+                       (:reference 1
+                        :type ("ostream" type (:type "class") nil nil))
+                        (reparse-symbol arg-sub-list) [2201 2214])
+                    ("state" variable
+                       (:reference 1
+                        :type ("FocusState" type (:type "class") nil nil))
+                        (reparse-symbol arg-sub-list) [2215 2234]))                  
+                :type ("ostream" type (:type "class") nil nil))
+                nil [2173 2453])
+            ("createInitialState" function
+               (:typemodifiers ("static")
+                :type ("FocusState" type (:type "class") nil nil))
+                nil [2455 2746])
+            ("focusDriveEnd" function
+               (:typemodifiers ("static")
+                :arguments 
+                  ( ("cap" variable
+                       (:reference 1
+                        :type ("VideoCapture" type (:type "class") nil nil))
+                        (reparse-symbol arg-sub-list) [2774 2793])
+                    ("direction" variable (:type "int") (reparse-symbol arg-sub-list) [2794 2808]))                  
+                :type "void")
+                nil [2748 2894])
+            ("findMinFocusStep" function
+               (:typemodifiers ("static")
+                :arguments 
+                  ( ("cap" variable
+                       (:reference 1
+                        :type ("VideoCapture" type (:type "class") nil nil))
+                        (reparse-symbol arg-sub-list) [3024 3043])
+                    ("startWith" variable (:type "unsigned int") (reparse-symbol arg-sub-list) [3044 3067])
+                    ("direction" variable (:type "int") (reparse-symbol arg-sub-list) [3076 3090]))                  
+                :type "int")
+                nil [2996 3742])
+            ("rateFrame" function
+               (:typemodifiers ("static")
+                :arguments 
+                  ( ("frame" variable
+                       (:reference 1
+                        :type ("Mat" type (:type "class") nil nil))
+                        (reparse-symbol arg-sub-list) [3817 3829]))                  
+                :type "double")
+                nil [3793 4255])
+            ("correctFocus" function
+               (:typemodifiers ("static")
+                :arguments 
+                  ( ("lastSucceeded" variable (:type "bool") (reparse-symbol arg-sub-list) [4281 4300])
+                    ("state" variable
+                       (:reference 1
+                        :type ("FocusState" type (:type "class") nil nil))
+                        (reparse-symbol arg-sub-list) [4301 4320])
+                    ("rate" variable (:type "double") (reparse-symbol arg-sub-list) [4321 4333]))                  
+                :type "int")
+                nil [4257 6138])
+            ("showHelp" function
+               (:typemodifiers ("static")
+                :arguments 
+                  ( ("pName" variable
+                       (:pointer 1
+                        :constant-flag t
+                        :type "char")
+                        (reparse-symbol arg-sub-list) [6161 6180])
+                    ("welcomeMsg" variable (:type "bool") (reparse-symbol arg-sub-list) [6181 6197]))                  
+                :type "void")
+                nil [6140 7942])
+            ("parseArguments" function
+               (:typemodifiers ("static")
+                :arguments 
+                  ( ("argc" variable (:type "int") (reparse-symbol arg-sub-list) [7971 7980])
+                    ("argv" variable
+                       (:pointer 2
+                        :type "char")
+                        (reparse-symbol arg-sub-list) [7981 7994]))                  
+                :type "bool")
+                nil [7944 9000])
+            ("main" function
+               (:arguments 
+                  ( ("argc" variable (:type "int") (reparse-symbol arg-sub-list) [9011 9020])
+                    ("argv" variable
+                       (:pointer 2
+                        :type "char")
+                        (reparse-symbol arg-sub-list) [9021 9034]))                  
+                :type "int")
+                nil [9002 13935]))          
+      :file "autofocus.cpp"
+      :pointmax 13936
+      :fsize 13935
+      :lastmodtime '(22608 13900 0 0)
+      :unmatched-syntax nil)
+    (semanticdb-table "semanticdb-table"
+      :major-mode c++-mode
+      :tags 
+        '( ("signal.h" include (:system-flag t) nil [1010 1029])
+            ("opencv2/photo.hpp" include nil nil [1030 1058])
+            ("opencv2/imgproc.hpp" include nil nil [1059 1089])
+            ("opencv2/imgcodecs.hpp" include nil nil [1090 1122])
+            ("opencv2/highgui.hpp" include nil nil [1123 1153])
+            ("opencv2/core.hpp" include nil nil [1154 1181])
+            ("iostream" include (:system-flag t) nil [1182 1201])
+            ("stdlib.h" include (:system-flag t) nil [1202 1221])
+            ("std" using (:type ("std" type
+                 (:prototype t
+                  :type "namespace")
+                  nil nil)) nil [1223 1243])
+            ("cv" using (:type ("cv" type
+                 (:prototype t
+                  :type "namespace")
+                  nil nil)) nil [1244 1263])
+            ("img0" variable (:type ("Mat" type (:type "class") nil nil)) nil [1265 1319])
+            ("img1" variable (:type ("Mat" type (:type "class") nil nil)) nil [1265 1319])
+            ("img2" variable (:type ("Mat" type (:type "class") nil nil)) nil [1265 1319])
+            ("res" variable (:type ("Mat" type (:type "class") nil nil)) nil [1265 1319])
+            ("res1" variable (:type ("Mat" type (:type "class") nil nil)) nil [1265 1319])
+            ("final" variable (:type ("Mat" type (:type "class") nil nil)) nil [1265 1319])
+            ("final1" variable (:type ("Mat" type (:type "class") nil nil)) nil [1265 1319])
+            ("blend" variable (:type ("Mat" type (:type "class") nil nil)) nil [1265 1319])
+            ("point" variable (:type ("Point" type (:type "class") nil nil)) nil [1321 1333])
+            ("drag" variable
+               (:default-value "0"
+                :type "int")
+                nil [1334 1347])
+            ("destx" variable (:type "int") nil [1348 1365])
+            ("desty" variable (:type "int") nil [1348 1365])
+            ("numpts" variable
+               (:default-value "100"
+                :type "int")
+                nil [1367 1384])
+            ("pts" variable
+               (:pointer 1
+                :default-value "new Point[100]"
+                :type ("Point" type (:type "class") nil nil))
+                nil [1385 1413])
+            ("pts2" variable
+               (:pointer 1
+                :default-value "new Point[100]"
+                :type ("Point" type (:type "class") nil nil))
+                nil [1414 1443])
+            ("pts_diff" variable
+               (:pointer 1
+                :default-value "new Point[100]"
+                :type ("Point" type (:type "class") nil nil))
+                nil [1444 1477])
+            ("var" variable
+               (:default-value "0"
+                :type "int")
+                nil [1479 1491])
+            ("flag" variable
+               (:default-value "0"
+                :type "int")
+                nil [1492 1527])
+            ("flag1" variable
+               (:default-value "0"
+                :type "int")
+                nil [1492 1527])
+            ("flag4" variable
+               (:default-value "0"
+                :type "int")
+                nil [1492 1527])
+            ("minx" variable (:type "int") nil [1529 1568])
+            ("miny" variable (:type "int") nil [1529 1568])
+            ("maxx" variable (:type "int") nil [1529 1568])
+            ("maxy" variable (:type "int") nil [1529 1568])
+            ("lenx" variable (:type "int") nil [1529 1568])
+            ("leny" variable (:type "int") nil [1529 1568])
+            ("minxd" variable (:type "int") nil [1569 1614])
+            ("minyd" variable (:type "int") nil [1569 1614])
+            ("maxxd" variable (:type "int") nil [1569 1614])
+            ("maxyd" variable (:type "int") nil [1569 1614])
+            ("lenxd" variable (:type "int") nil [1569 1614])
+            ("lenyd" variable (:type "int") nil [1569 1614])
+            ("channel" variable (:type "int") nil [1616 1646])
+            ("num" variable (:type "int") nil [1616 1646])
+            ("kernel_size" variable (:type "int") nil [1616 1646])
+            ("alpha" variable (:type "float") nil [1648 1665])
+            ("beta" variable (:type "float") nil [1648 1665])
+            ("red" variable (:type "float") nil [1667 1690])
+            ("green" variable (:type "float") nil [1667 1690])
+            ("blue" variable (:type "float") nil [1667 1690])
+            ("low_t" variable (:type "float") nil [1692 1712])
+            ("high_t" variable (:type "float") nil [1692 1712])
+            ("source" function
+               (:prototype-flag t
+                :arguments 
+                  ( ("" variable (:type "int") (reparse-symbol arg-sub-list) [1726 1730])
+                    ("" variable (:type "int") (reparse-symbol arg-sub-list) [1731 1735])
+                    ("" variable (:type "int") (reparse-symbol arg-sub-list) [1736 1740])
+                    ("" variable (:type "int") (reparse-symbol arg-sub-list) [1741 1745])
+                    ("" variable
+                       (:pointer 1
+                        :type "void")
+                        (reparse-symbol arg-sub-list) [1746 1752]))                  
+                :type "void")
+                nil [1714 1753])
+            ("destination" function
+               (:prototype-flag t
+                :arguments 
+                  ( ("" variable (:type "int") (reparse-symbol arg-sub-list) [1771 1775])
+                    ("" variable (:type "int") (reparse-symbol arg-sub-list) [1776 1780])
+                    ("" variable (:type "int") (reparse-symbol arg-sub-list) [1781 1785])
+                    ("" variable (:type "int") (reparse-symbol arg-sub-list) [1786 1790])
+                    ("" variable
+                       (:pointer 1
+                        :type "void")
+                        (reparse-symbol arg-sub-list) [1791 1797]))                  
+                :type "void")
+                nil [1754 1798])
+            ("checkfile" function
+               (:prototype-flag t
+                :arguments 
+                  ( ("" variable
+                       (:pointer 1
+                        :type "char")
+                        (reparse-symbol arg-sub-list) [1814 1820]))                  
+                :type "void")
+                nil [1799 1821])
+            ("source" function
+               (:arguments 
+                  ( ("event" variable (:type "int") (reparse-symbol arg-sub-list) [1835 1845])
+                    ("x" variable (:type "int") (reparse-symbol arg-sub-list) [1846 1852])
+                    ("y" variable (:type "int") (reparse-symbol arg-sub-list) [1853 1859])
+                    ("" variable (:type "int") (reparse-symbol arg-sub-list) [1860 1864])
+                    ("" variable
+                       (:pointer 1
+                        :type "void")
+                        (reparse-symbol arg-sub-list) [1865 1871]))                  
+                :type "void")
+                nil [1823 4600])
+            ("destination" function
+               (:arguments 
+                  ( ("event" variable (:type "int") (reparse-symbol arg-sub-list) [4619 4629])
+                    ("x" variable (:type "int") (reparse-symbol arg-sub-list) [4630 4636])
+                    ("y" variable (:type "int") (reparse-symbol arg-sub-list) [4637 4643])
+                    ("" variable (:type "int") (reparse-symbol arg-sub-list) [4644 4648])
+                    ("" variable
+                       (:pointer 1
+                        :type "void")
+                        (reparse-symbol arg-sub-list) [4649 4655]))                  
+                :type "void")
+                nil [4602 6878])
+            ("main" function (:type "int") nil [6880 14494]))          
+      :file "cloning_gui.cpp"
+      :pointmax 14495
+      :fsize 14494
+      :lastmodtime '(22608 13900 0 0)
+      :unmatched-syntax nil))
+  :file "!opt!cv!opencv!samples!cpp!semantic.cache"
+  :semantic-tag-version "2.0"
+  :semanticdb-version "2.2")

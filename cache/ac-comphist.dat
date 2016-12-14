@@ -1,18 +1,42 @@
-((("operation" .
-   [0 0 1 0 0 0 0 0 0])
-  ("binOp" .
-   [0 0 0 1 0])
-  ("binary" .
-   [1 0 0 0 0 0])
-  ("CalcState" .
-   [0 0 0 1 0 0 0 0 0])
-  ("Double" .
+((("make-backup-file-name-function" .
+   [0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("m" .
+   [1])
+  ("(const cv::String &winname, InputArray mat)" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("imshow" .
+   [0 0 0 1 0 0])
+  ("WINDOW_AUTOSIZE" .
+   [0 0 0 1 0 0 0 0 0 0 0 0 0 0 0])
+  ("(const cv::String &winname)" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1])
+  ("namedWindow" .
+   [0 0 0 0 0 1 0 0 0 0 0])
+  ("(basic_ostream<_CharT, _Traits> &__os)" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1])
+  ("endl" .
+   [2 0 0 1])
+  ("std" .
+   [1 0 0])
+  ("CV_LOAD_IMAGE_COLOR" .
+   [0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("argv" .
+   [0 0 0 1])
+  ("(const cv::String &filename)" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1])
+  ("imread" .
+   [0 0 1 0 0 0])
+  ("image" .
+   [2 0 1 0 0])
+  ("Mat" .
+   [1 0 0])
+  ("return" .
    [0 0 0 0 1 0])
-  ("push" .
-   [3 0 0 0])
-  ("Calculate" .
-   [1 0 1 0 0 0 0 0 0])
-  ("Calculation" .
-   [0 0 0 1 0 0 0 0 0 0 0])
-  ("airline-luna" .
-   [1 0 0 0 0 0 0 0 0 0 0 0])))
+  ("cout" .
+   [1 0 0 1])
+  ("co" .
+   [1 0])
+  ("argc" .
+   [1 0 0 0])
+  ("main" .
+   [0 0 1 0])))

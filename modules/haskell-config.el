@@ -1,4 +1,5 @@
 ;;; package --- haskell configuration
+;;; -*- coding: utf-8 -*-
 ;;;
 ;;; Commentary:
 ;;;

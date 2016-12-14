@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "xah-math-input" "xah-math-input.el" (22604
-;;;;;;  44213 0 0))
+;;;### (autoloads nil "xah-math-input" "xah-math-input.el" (22609
+;;;;;;  39428 0 0))
 ;;; Generated autoloads from xah-math-input.el
 
 (defvar global-xah-math-input-mode nil "\

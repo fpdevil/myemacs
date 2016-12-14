@@ -4,7 +4,9 @@
 ;;;
 ;;; filename.  : ~/.emacs.d/aqua-internals.el
 ;;; description: contains general Emacs customizations and custom functions
-;;;              which cannot be placed anywhere
+;;;              which cannot be placed anywhere. Any customized settings
+;;;              for the emacs (aquamacs) or any packages or internal(s) may
+;;;              be placed here and the same will be loaded during bootstrap
 ;;;
 ;;; Code:
 ;;;
@@ -86,22 +88,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq desktop-save nil) ;; save without asking
 ;(setq desktop-restore-eager 10)
-(defvar backup-directory (concat (getenv "HOME") "/.emacs.d/.backup"))
-;; create the directory if does not exist already
-(if (not (file-exists-p backup-directory))
-    (make-directory backup-directory t))
-;; custom settings for auto save
-(setq make-backup-files t                                    ;; backup file first time its saved
-      backup-directory-alist '((".*" . ,backup-directory))   ;; save backups under .backups
-      backup-by-copying t                                    ;; copy current file to backup directory
-      version-control t                                      ;; version numbers for backup files
-      delete-old-versions t                                  ;; delete obsolete versions
-      kept-old-versions 3                                    ;; old version to keep (default 3)
-      kept-new-versions 5                                    ;; new versions to keep (default 2)
-      auto-save-default t                                    ;; enable auto-save for all buffers
-      auto-save-timeout 20                                   ;; idle-time before auto-save triggers (default 30)
-      auto-save-interval 200)                                ;; number of key strokes between auto-save (default 300)
 
+;; store all backup and autosave files in the tmp dir
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; electric pair mode (currently disabled)                                 ;;
@@ -224,36 +216,6 @@ This command does the inverse of `fill-region'."
 
 (add-hook 'compilation-filter-hook
           #'endless/colorize-compilation)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; rainbow identifier customizations                                       ;;
-;; customized filter: don't mark *all* identifiers                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun rainbow-identifiers-filter (beg end)
-  "BEG END Only highlight standalone words or those following 'this.' or 'self.'."
-  (let ((curr-char (char-after beg))
-        (prev-char (char-before beg))
-        (prev-self (buffer-substring-no-properties
-                    (max (point-min) (- beg 5)) beg)))
-    (and (not (member curr-char
-                    '(?0 ?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9 ??)))
-         (or (not (equal prev-char ?\.))
-             (equal prev-self "self.")
-             (equal prev-self "this.")))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; filter: don't mark identifiers inside comments or strings               ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq rainbow-identifiers-faces-to-override
-      '(font-lock-type-face
-        font-lock-variable-name-face
-        font-lock-function-name-face))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; set the filter                                                          ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-hook 'rainbow-identifiers-filter-functions 'rainbow-identifiers-filter)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

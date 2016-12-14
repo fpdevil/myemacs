@@ -1,4 +1,5 @@
 ;;; package  --- neotree-config.el
+;;; -*- coding: utf-8 -*-
 ;;;
 ;;; Commentary:
 ;;;

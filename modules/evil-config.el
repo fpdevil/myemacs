@@ -6,7 +6,7 @@
 ;;; Description: Emacs Vim Emulation Mode or evil
 ;;;
 ;;; elisp code for customizing the evil
-;;; undo-tree: undo (C-/) behaves just like normal editor. To redo, C-_. 
+;;; undo-tree: undo (C-/) behaves just like normal editor.  To redo, C-_
 ;;; To open the undo tree, C-x u
 ;;===========================================================================
 (require 'evil)
@@ -39,7 +39,7 @@
 (add-hook 'evil-jumps-post-jump-hook #'recenter)
 
 ;;
-; evil operations
+; evil operations for various vim states
 ;;
 (evil-put-property 'evil-state-properties 'normal   :tag " NORMAL ")
 (evil-put-property 'evil-state-properties 'insert   :tag " INSERT ")
@@ -71,6 +71,18 @@
 
 ;; enable evil-leader globally
 (global-evil-leader-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; enable search in the vim style                                         ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'occur-mode-hook
+          (lambda ()
+            (evil-add-hjkl-bindings occur-mode-map 'emacs
+              (kbd "/") 'evil-search-forward
+              (kbd "n") 'evil-search-next
+              (kbd "N") 'evil-search-previous)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; function for toggling the emacs evil states using M-u                  ;;;
