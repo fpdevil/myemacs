@@ -7,7 +7,7 @@
  '(company-ghc-show-info t)
  '(custom-safe-themes
    (quote
-    ("3cd28471e80be3bd2657ca3f03fbb2884ab669662271794360866ab60b6cb6e6" "962dacd99e5a99801ca7257f25be7be0cebc333ad07be97efd6ff59755e6148f" default)))
+    ("251348dcb797a6ea63bbfe3be4951728e085ac08eee83def071e4d2e3211acc3" default)))
  '(git-gutter:added-sign "☀")
  '(git-gutter:deleted-sign "☂")
  '(git-gutter:modified-sign "☁")
@@ -25,9 +25,6 @@
  '(haskell-tags-on-save nil)
  '(hindent-style "chris-done")
  '(inferior-haskell-find-haddock nil)
- '(package-selected-packages
-   (quote
-    (helm-clojuredocs helm-cider clojure-mode-extra-font-locking evil-surround evil-leader evil sunshine discover-my-major which-key esup wttrin popwin json-mode ac-js2 tern-auto-complete tern js2-refactor web-mode iedit multiple-cursors diminish key-chord xah-math-input highlight-symbol neotree buffer-move ecb clojure-snippets elixir-yasnippets helm-c-yasnippet irony-eldoc golint go-autocomplete go-eldoc go-mode ensime ac-alchemist alchemist ivy-erlang-complete erlang hi2 hindent haskell-snippets shm company-cabal company-ghci company-ghc py-yapf python-pylint elpy jedi virtualenvwrapper git-gutter org-bullets google-c-style flymake-cursor flymake-hlint flymake-python-pyflakes flymake-easy flycheck-irony flycheck-clojure flycheck-mix flycheck-elixir flycheck-haskell helm-flycheck flycheck-tip flycheck-pos-tip flycheck-color-mode-line markdown-mode paredit smartparens auto-complete-c-headers auto-complete-clang ac-cider auto-complete-nxml ac-haskell-process auto-complete-distel auto-complete company-c-headers company-irony-c-headers company-irony company-flx company-math helm-company company-quickhelp company-dict company-distel company-jedi company flatui-theme zerodark-theme apropospriate-theme cyberpunk-theme color-theme-sanityinc-solarized color-theme-sanityinc-tomorrow material-theme zenburn-theme monokai-theme moe-theme dracula-theme darkokai-theme sublime-themes color-theme airline-themes rainbow-identifiers rainbow-mode rainbow-delimiters delight powerline)))
  '(shm-auto-insert-bangs t)
  '(shm-auto-insert-skeletons t)
  '(shm-use-hdevtools t)

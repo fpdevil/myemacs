@@ -37,6 +37,8 @@
 (require 'inf-haskell)                ; haskell inferior mode
 (require 'haskell-interactive-mode)   ; haskell ghci support
 (require 'haskell-process)            ; haskell ghci repl support
+(require 'flymake-hlint)              ; flymake handler for checking Haskell source with hlint
+(require 'flymake-easy)               ; Helpers for easily building Emacs flymake checkers
 (require 'hi2)                        ; indentation module for haskell mode
 (require 'company)                    ; modular text completion framework
 (require 'company-ghc)                ; company backend haskell-mode via ghc-mod
@@ -276,8 +278,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; flymake handler for checking Haskell source code with hlint.             ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'flymake-hlint) ;; not needed if installed via package
 (add-hook 'haskell-mode-hook 'flymake-hlint-load)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flcheck handler for checking Haskell source code with hlint.             ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq flycheck-haskell-hlint-executable
+  (concat (getenv "HOME") "/Library/Haskell/bin/hlint"))
+(add-hook 'haskell-mode-hook
+          '(lambda ()
+             (setq flycheck-checker 'haskell-hlint)
+             (setq flycheck-disabled-checkers '(haskell-ghc))
+             (flycheck-mode 1)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

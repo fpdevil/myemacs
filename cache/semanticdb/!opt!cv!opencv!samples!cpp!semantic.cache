@@ -329,6 +329,105 @@
       :file "cloning_gui.cpp"
       :pointmax 14495
       :fsize 14494
+      :lastmodtime '(22609 63918 0 0)
+      :unmatched-syntax nil)
+    (semanticdb-table "semanticdb-table"
+      :major-mode c++-mode
+      :tags 
+        '( ("stdio.h" include (:system-flag t) nil [1 19])
+            ("iostream" include (:system-flag t) nil [20 39])
+            ("opencv2/imgproc/imgproc.hpp" include (:system-flag t) nil [40 78])
+            ("opencv2/highgui/highgui.hpp" include (:system-flag t) nil [79 117])
+            ("opencv2/core/utility.hpp" include (:system-flag t) nil [118 153])
+            ("cv" using (:type ("cv" type
+                 (:prototype t
+                  :type "namespace")
+                  nil nil)) nil [155 174])
+            ("std" using (:type ("std" type
+                 (:prototype t
+                  :type "namespace")
+                  nil nil)) nil [241 261])
+            ("help" function
+               (:typemodifiers ("static")
+                :type "void")
+                nil [263 599])
+            ("DEMO_MIXED_API_USE" variable (:constant-flag t) nil [663 681])
+            ("opencv2/highgui/highgui_c.h" include (:system-flag t) nil [711 751])
+            ("opencv2/imgcodecs/imgcodecs_c.h" include (:system-flag t) nil [752 796])
+            ("main" function
+               (:arguments 
+                  ( ("argc" variable (:type "int") (reparse-symbol arg-sub-list) [815 824])
+                    ("argv" variable
+                       (:pointer 2
+                        :type "char")
+                        (reparse-symbol arg-sub-list) [825 838]))                  
+                :type "int")
+                nil [805 5449]))          
+      :file "image.cpp"
+      :pointmax 5450
+      :fsize 5449
+      :lastmodtime '(22608 14215 0 0)
+      :unmatched-syntax nil
+      :lexical-table 
+        '(("DEMO_MIXED_API_USE" . ((number "1" 682 . 683)))
+          )
+)
+    (semanticdb-table "semanticdb-table"
+      :major-mode c++-mode
+      :tags 
+        '( ("opencv2/core/utility.hpp" include (:system-flag t) nil [1 36])
+            ("opencv2/imgproc.hpp" include nil nil [37 67])
+            ("opencv2/imgcodecs.hpp" include nil nil [68 100])
+            ("opencv2/highgui.hpp" include nil nil [101 131])
+            ("iostream" include (:system-flag t) nil [132 151])
+            ("cv" using (:type ("cv" type
+                 (:prototype t
+                  :type "namespace")
+                  nil nil)) nil [153 172])
+            ("std" using (:type ("std" type
+                 (:prototype t
+                  :type "namespace")
+                  nil nil)) nil [173 193])
+            ("img" variable (:type ("Mat" type (:type "class") nil nil)) nil [195 203])
+            ("threshval" variable
+               (:default-value "100"
+                :type "int")
+                nil [204 224])
+            ("on_trackbar" function
+               (:typemodifiers ("static")
+                :arguments 
+                  ( ("" variable (:type "int") (reparse-symbol arg-sub-list) [250 254])
+                    ("" variable
+                       (:pointer 1
+                        :type "void")
+                        (reparse-symbol arg-sub-list) [255 261]))                  
+                :type "void")
+                nil [226 959])
+            ("help" function
+               (:typemodifiers ("static")
+                :type "void")
+                nil [961 1380])
+            ("keys" variable
+               (:pointer 1
+                :constant-flag t
+                :default-value "{
+    \"{help h||}{@image|../data/stuff.jpg|image for converting to a grayscale}\"
+}"
+                :type "char")
+                nil [1382 1484])
+            ("main" function
+               (:arguments 
+                  ( ("argc" variable (:type "int") (reparse-symbol arg-sub-list) [1496 1505])
+                    ("argv" variable
+                       (:pointer 2
+                        :constant-flag t
+                        :type "char")
+                        (reparse-symbol arg-sub-list) [1506 1525]))                  
+                :type "int")
+                nil [1486 2124]))          
+      :file "connected_components.cpp"
+      :pointmax 2125
+      :fsize 2124
       :lastmodtime '(22608 13900 0 0)
       :unmatched-syntax nil))
   :file "!opt!cv!opencv!samples!cpp!semantic.cache"

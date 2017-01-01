@@ -36,6 +36,9 @@
 (global-set-key (kbd "M-y")     'helm-show-kill-ring)       ; kill-ring
 ;(key-chord-define-global "fm"   'helm-mini)
 
+;(require 'helm-describe-modes)      ; Helm interface to Emacs’s describe-mode
+;(global-set-key [remap describe-mode] #'helm-describe-modes)
+
 ;;
 ; enable modes
 ;;

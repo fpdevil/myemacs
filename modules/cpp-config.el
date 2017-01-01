@@ -90,7 +90,7 @@
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include
-/usr/local/Cellar/opencv3/HEAD-6328076_4/include
+/usr/local/Cellar/opencv3/HEAD-7dd3723_4/include
 /usr/local/include
 /usr/include
 ")
@@ -108,7 +108,7 @@
   ;; execute command `gcc -xc++ -E -v -` to find the header driectories
   (add-to-list 'achead:include-directories '"/usr/local/Cellar/gcc/6.2.0/include/c++/6.2.0")
   (add-to-list 'achead:include-directories '"/usr/include/c++/4.2.1")
-  (add-to-list 'achead:include-directories '"/usr/local/Cellar/opencv3/HEAD-6328076_4/include")
+  (add-to-list 'achead:include-directories '"/usr/local/Cellar/opencv3/HEAD-7dd3723_4/include")
   (add-to-list 'achead:include-directories '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include")
   (add-to-list 'achead:include-directories '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include")
   (add-to-list 'achead:include-directories '"/usr/local/include")
@@ -120,9 +120,14 @@
 (add-hook 'c-mode-hook 'my:ac-c-header-init)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; set LD_LIBRARY_PATH                                                    ;;;
+;;; set LD_LIBRARY_PATH / DYLD_LIBRARY_PATH (for mac)                      ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setenv "LD_LIBRARY_PATH" "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/")
+;(setenv "LD_LIBRARY_PATH" "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/")
+(setenv "DYLD_LIBRARY_PATH"
+  (concat "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/"
+          ":"
+          "/usr/local/Cellar/opencv3/HEAD-7dd3723_4/lib/"))
+
 
 (defun my:ac-cc-mode-setup ()
   "AutoComplete CC Mode."
@@ -134,17 +139,18 @@
 ;; for company completion                                                   ;;
 ;; c++ header completion for standard libraries                             ;;
 ;;--------------------------------------------------------------------------;;
-;(add-to-list 'company-c-headers-path-system "/usr/include/c++/4.2.1/")
+(add-to-list 'company-c-headers-path-system "/usr/local/Cellar/opencv3/HEAD-7dd3723_4/include")
 (defun my:company-c-headers-init()
   ;;(setq company-idle-delay nil)
   (add-to-list 'company-backends 'company-c-headers)
+  (add-to-list 'ac-sources 'ac-source-c-headers)
   (mapcar (lambda (item) (add-to-list 'company-c-headers-path-system item))
           '("/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"
             "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include"
             "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"
             "/usr/local/Cellar/gcc/6.2.0/include/c++/6.2.0"
             "/usr/include/c++/4.2.1"
-            "/usr/local/Cellar/opencv3/HEAD-6328076_4/include"
+            "/usr/local/Cellar/opencv3/HEAD-7dd3723_4/include"
             "/usr/local/include"
             "/usr/include"
            )
@@ -160,12 +166,23 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'cc-mode)
 (require 'semantic)
+(add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
 ;; location for the semanticdb
 (setq semanticdb-default-save-directory (concat (getenv "HOME") "/.emacs.d/cache/semanticdb"))
 (global-semanticdb-minor-mode 1)
 (global-semantic-idle-scheduler-mode 1)
 (global-semantic-idle-summary-mode 1)
 (global-semantic-stickyfunc-mode 1)
+(global-semantic-highlight-func-mode t)
+(global-semantic-idle-completions-mode nil) ;; use company/ac
+(global-semantic-decoration-mode t)
+(global-semantic-show-unmatched-syntax-mode t)
+
+
+;; By default, Semantic automatically includes some default system include
+;; paths such as /usr/include, /usr/local/include. Specify additional ones
+(semantic-add-system-include "/usr/local/Cellar/opencv3/HEAD-7dd3723_4/include" 'c++-mode)
+
 
 (semantic-mode 1)
 
@@ -178,6 +195,17 @@
   (add-to-list 'ac-sources 'ac-source-semantic)
   )
 (add-hook 'c-mode-common-hook 'my:add-semantic-to-autocomplate)
+
+
+;; flymake
+(defun my:flymake-google-init()
+  (require 'flymake-google-cpplint)
+  (custom-set-variables
+   '(flymake-google-cpplint-command "/usr/local/bin/cpplint"))
+  (flymake-google-cpplint-load))
+(add-hook 'c-mode-hook 'my:flymake-google-init)
+(add-hook 'c++-mode-hook 'my:flymake-google-init)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; google-c-style mode                                                    ;;;

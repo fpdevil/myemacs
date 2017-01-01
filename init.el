@@ -96,9 +96,8 @@
         ;(load-theme 'material t)                        ;; material dark theme
         ;(load-theme 'material-light t)                  ;; material light theme
         ;(load-theme 'dracula t)                         ;; dracula dark theme
-        (load-theme 'mccarthy)                          ;; mccarthy from sublime-themes
-        ;(load-theme 'apropospriate-dark t)              ;; apropospriate dark theme
-        ;(load-theme 'apropospriate-light t)             ;; apropospriate light theme
+        ;(load-theme 'mccarthy)                          ;; mccarthy from sublime-themes
+        ;(load-theme 'majapahit-light t)                 ;; majapahit light theme
         ;(load-theme 'flatui t)                          ;; flat color theme
         ;;
         ;; -- below for activating moe-theme -- ;;
@@ -130,12 +129,12 @@
 ;;
 ; change the airline themes as required from the below
 ;;
-(load-theme 'airline-light)                ; load airline light theme
+;(load-theme 'airline-light)                ; load airline light theme
 ;(load-theme 'airline-papercolor)           ; load papercolor theme
 ;(load-theme 'airline-base16-shell-dark)    ; load airline-base16-shell-dark theme
 ;(load-theme 'airline-base16-gui-dark)      ; load airline-base16-gui dark theme
 ;(load-theme 'airline-molokai)              ; load airline molokai light theme
-;(load-theme 'airline-cool)                 ; load cool theme
+(load-theme 'airline-cool)                 ; load cool theme
 ;(load-theme 'airline-solarized-gui)        ; solarized gui theme
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

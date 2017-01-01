@@ -15,7 +15,9 @@
 ;;;
 ;;; Code:
 ;;;
-; start defining the emacs bindings for erlang
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; start defining the emacs bindings for erlang                                ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'auto-mode-alist '("\\.erl?$"        . erlang-mode))
 (add-to-list 'auto-mode-alist '("\\.hrl?$"        . erlang-mode))
 (add-to-list 'auto-mode-alist '(".*\\.app\\'"     . erlang-mode))
@@ -29,13 +31,13 @@
 (add-to-list 'auto-mode-alist '(".*\\.yrl\\'"     . erlang-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; erlang compilation options                                                    ;;
+;;; erlang compilation options                                                  ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; add include directory to default compile path.
 (defvar erlang-compile-extra-opts
-  '(bin_opt_info debug_info (i . "../include") 
-                            (i . "../deps") 
-                            (i . "../../") 
+  '(bin_opt_info debug_info (i . "../include")
+                            (i . "../deps")
+                            (i . "../../")
                             (i . "../../../deps")))
 
 ; define where put beam files.
@@ -97,9 +99,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; erlang binaries path setup                                                ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq load-path (cons "/usr/local/Cellar/erlang/19.1/lib/erlang/lib/tools-*/emacs"
+(setq load-path (cons "/usr/local/opt/erlang/lib/erlang/lib/tools-*/emacs"
 load-path))
-(setq erlang-root-dir "/usr/local/Cellar/erlang/19.1")
+(setq erlang-root-dir "/usr/local/opt/erlang/lib/erlang")
 ;; below conditional code is needed for proper elang load
 (if
     (not (boundp 'erlang-root-dir))
@@ -132,54 +134,81 @@ load-path))
       (message "Skipping erlang-mode: %s and/or %s not readable"
 erlang-bin erlang-mode-path))))
 
-(setq erlang-man-root-dir "/usr/local/Cellar/erlang/19.1/man")
-(setq exec-path (cons "/usr/local/Cellar/erlang/19.1/bin" exec-path))
+(setq erlang-man-root-dir "/usr/local/opt/erlang/lib/erlang/man")
+(setq exec-path (cons "/usr/local/opt/erlang/lib/erlang/bin" exec-path))
 (require 'erlang-start)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; distel setup for erlang code auto-completion                              ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; (add-to-list 'load-path "/opt/erlang/r19.0/distel/elisp")
-; (require 'distel)
-; (distel-setup)
 (let ((distel-dir "/opt/erlang/distel/elisp"))
     (unless (member distel-dir load-path)
-;; Add distel-dir to the end of load-path
-(setq load-path (append load-path (list distel-dir)))))
-(require 'distel)
-(distel-setup)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+      ;; add distel-dir to the end of load-path
+      (setq load-path (append load-path (list distel-dir)))))
+
 ; prevent annoying hang-on-compile
-;;
 (defvar inferior-erlang-prompt-timeout t)
-;;
+
+; {{{
+; distel-node
+; distel node connection launch with (^C-^D-n)
+(when (locate-library "distel")
+  (require 'distel)
+  (distel-setup)
+  ;; (add-hook 'erlang-mode-hook 'distel-erlang-mode-hook)
+  (add-hook 'erlang-mode-hook
+            '(lambda ()
+               (unless erl-nodename-cache
+                 (distel-load-shell))))
+
+  (defun distel-load-shell ()
+    "Load/reload the erlang shell connection to a distel node"
+    (interactive)
+    ;; Set default distel node name
+    (setq erl-nodename-cache 'distel@localhost)
+    (setq distel-modeline-node "distel")
+    (force-mode-line-update)
+    ;; Start up an inferior erlang with node name `distel'
+    (let ((file-buffer (current-buffer))
+          (file-window (selected-window)))
+      (setq inferior-erlang-machine-options '("-name" "distel@localhost"))
+      (switch-to-buffer-other-window file-buffer)
+      (inferior-erlang)
+      (select-window file-window)
+      (switch-to-buffer file-buffer))))
+; }}}
+
+;----------------------------------------------------------------------------------
+;; tell distel to default to that node name                                      ;;
+;----------------------------------------------------------------------------------
+; {{{
 ; define name and cookie for internally loaded erlang shell.
 ; while starting an Erlang shell in Emacs, default in the node name
 ; default node name to emacs@localhost
 ;;
 ;(setq inferior-erlang-machine-options '("-sname" "emacs"))
-(setq inferior-erlang-machine-options
-	  '("-name" "emacs@127.0.0.1" "-setcookie" "emacs"))
+; (setq inferior-erlang-machine-options
+; 	  '("-name" "emacs@127.0.0.1" "-setcookie" "emacs"))
+; }}}
 
+;; -- uncomment this is needed and comment out distel-node section
+;(require 'distel)
+;(distel-setup)
+;(setq inferior-erlang-machine-options '("-name" "emacs@localhost"))
 ;; add Erlang functions to an imenu menu
-(defun imenu-erlang-mode-hook()
-    (imenu-add-to-menubar "imenu"))
-(add-hook 'erlang-mode-hook 'imenu-erlang-mode-hook)
+;(setq erl-nodename-cache (intern (concat "emacs" "@" "localhost")))
+;; --
 
-
-;----------------------------------------------------------------------------------
-;; tell distel to default to that node                                           ;;
-;----------------------------------------------------------------------------------
-(setq erl-nodename-cache
-      (make-symbol
-       (concat
-        "emacs@"
-        ;; Mac OS X uses "name.local" instead of "name", this should work
-        ;; pretty much anywhere without having to muck with NetInfo
-        ;; ... but I only tested it on Mac OS X.
-        (car (split-string (shell-command-to-string "hostname"))))))
-
+; {{{
+;; changed hostname to apple instead of apple.local so below is not needed
+; (setq erl-nodename-cache
+;       (make-symbol
+;        (concat
+;         "emacs@"
+;         ;; Mac OS X uses "name.local" instead of "name", this should work
+;         ;; pretty much anywhere without having to muck with NetInfo
+;         ;; ... but I only tested it on Mac OS X.
+;         (car (split-string (shell-command-to-string "hostname"))))))
 
 ;; short host name, like `hostname -s`, remote shell likes this better
 ; (defun short-host-name()
@@ -188,7 +217,12 @@ erlang-bin erlang-mode-path))))
 ;   (substring system-name (match-beginning 0) (match-end 0)))
 ;; set default nodename for distel (= also for erlang-shell-remote)
 ;(setq erl-nodename-cache (intern (concat "emacs" "@" (short-host-name))))
+; }}}
 
+;; for imenu
+(defun imenu-erlang-mode-hook()
+    (imenu-add-to-menubar "imenu"))
+(add-hook 'erlang-mode-hook 'imenu-erlang-mode-hook)
 
 (add-hook 'erlang-shell-mode-hook
   (lambda ()
@@ -196,12 +230,11 @@ erlang-bin erlang-mode-path))))
     (dolist (spec distel-shell-keys)
     (define-key erlang-shell-mode-map (car spec) (cadr spec)))))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; erlang ide set-up and erlang auto-completion using auto-complete and distel   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'auto-complete)
-(require 'auto-complete-config)
+;(require 'auto-complete)
+;(require 'auto-complete-config)
 (require 'auto-complete-distel)
 (ac-config-default)
 (add-to-list 'ac-sources 'auto-complete-distel)
@@ -219,13 +252,11 @@ erlang-bin erlang-mode-path))))
 ; Erlang auto-complete
 (add-to-list 'ac-modes 'erlang-mode)
 
-
 ;;
 ; auto-complete-mode so can interact with inferior erlang and
 ; popup completion turn on when needed.
 ;;
 (add-hook 'erlang-mode-hook (lambda () (auto-complete-mode 1)))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; erlang auto completion using company mode and distel                          ;;
@@ -281,11 +312,10 @@ erlang-bin erlang-mode-path))))
         (error "Please set erlang-flymake-location to an actual location")
   (list escript-exe(list eflymake-loc local-file)))))
 
-;;
-; enable flymake globally
-;;
-; (add-hook 'find-file-hook 'flymake-find-file-hook)
-;; enabling only erlang-mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; enable flymake globally                                                       ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; enabling only for erlang-mode
 (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-erlang-init))
 (defun flymake-erlang-mode-hook ()
   "Set erlang flymake mode."
@@ -293,11 +323,12 @@ erlang-bin erlang-mode-path))))
 (add-hook 'erlang-mode-hook 'flymake-erlang-mode-hook)
 
 
-; https://github.com/ten0s/syntaxerl
-; see /usr/local/lib/erlang/lib/tools-<Ver>/emacs/erlang-flymake.erl
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; https://github.com/ten0s/syntaxerl                                            ;;
+;; see /usr/local/lib/erlang/lib/tools-<Ver>/emacs/erlang-flymake.erl            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun erlang-flymake-only-on-save ()
-  "Trigger flymake only when the buffer is saved (disables syntax
-check on newline and when there are no changes)."
+  "Trigger flymake only when the buffer is saved - removes syntax check on newline and when there are no changes."
   (interactive)
   ;; There doesn't seem to be a way of disabling this; set to the
   ;; largest int available as a workaround (most-positive-fixnum
@@ -306,7 +337,21 @@ check on newline and when there are no changes)."
   (setq flymake-start-syntax-check-on-newline nil))
 
 (erlang-flymake-only-on-save)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; paredit settings                                                              ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(eval-after-load 'erlang
+  '(progn
+     (setq erlang-indent-level 4)
+     (define-key erlang-mode-map "{" 'paredit-open-curly)
+     (define-key erlang-mode-map "}" 'paredit-close-curly)
+     (define-key erlang-mode-map "[" 'paredit-open-bracket)
+     (define-key erlang-mode-map "]" 'paredit-close-bracket)
+     (define-key erlang-mode-map (kbd "C-M-h") 'backward-kill-word)
+     (define-key erlang-mode-map (kbd "RET")
+       'reindent-then-newline-and-indent)))
+
 
 
 (add-hook 'erlang-mode-hook 'erlang-font-lock-level-3)

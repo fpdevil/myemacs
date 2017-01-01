@@ -6,7 +6,7 @@
 ;;;         and it must be stored in users home directory.
 ;;
 ;;; filename   :
-;;; description: default ~/.emacs file for loading emacs
+;;; description: default ~/.emacs file for loading Emacs
 ;;
 ;;; Last Updated Tue Nov 29 1:34:00 2016
 ;;
@@ -24,7 +24,7 @@
 ;;
 (package-initialize)
 
-;; load the main init.el file and aqua-methods.el under .emacs.d 
+;; load the main init.el file and aqua-methods.el under .emacs.d
 (load "~/.emacs.d/init.el")
 (load "~/.emacs.d/aqua-methods.el")
 ;; now load the custom settings from aqua-internals.el

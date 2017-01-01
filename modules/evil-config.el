@@ -57,6 +57,10 @@
 (setq evil-default-state 'normal)               ;; if default state is to set normal
 
 
+;; prevent esc-key from translating to meta-key in terminal mode
+(setq evil-esc-delay 0)
+
+
 ;; bind all emacs-state key to insert state
 (setcdr evil-insert-state-map nil)
 (define-key evil-insert-state-map
@@ -71,6 +75,12 @@
 
 ;; enable evil-leader globally
 (global-evil-leader-mode)
+
+
+;; bind ':ls' command to 'ibuffer instead of 'list-buffers
+(evil-ex-define-cmd "ls" 'ibuffer)
+;; show ibuffer in the same window
+(setq ibuffer-use-other-window t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -106,6 +116,12 @@
 )
 
 (global-set-key (kbd "M-u") 'toggle-evilmode)
+
+
+;; TAB Mode with C-i in evil-mode
+(when evil-want-C-i-jump
+  (define-key evil-motion-state-map (kbd "C-i") 'evil-jump-forward))
+
 
 ;;
 ; surround globally

@@ -11,6 +11,7 @@
 ;;;
 ;;; elisp code for customizing the web/html development settings
 ;;;===========================================================================
+(require 'cl)
 (require 'web-mode)                 ; for all web/html/js related work
 (require 'flycheck)                 ; on the fly syntax checker
 (require 'js2-refactor)             ; javascript refactoring
@@ -30,6 +31,7 @@
 (add-to-list 'auto-mode-alist '("\\.mustache\\'"  . web-mode))
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'"    . web-mode))
 (add-to-list 'auto-mode-alist '("\\.js[x]?\\'"    . web-mode))   ;; for js and jsx
+(add-to-list 'auto-mode-alist '("\\.es6\\'"       . web-mode))   ;; for ES6 js
 
 
 (setq web-mode-enable-css-colorization t)
@@ -55,6 +57,7 @@
 (add-hook 'web-mode-hook  'web-mode-hook)
 
 (defadvice web-mode-highlight-part (around tweak-jsx activate)
+  "Highlighting the components."
   (if (equal web-mode-content-type "jsx")
       (let ((web-mode-enable-part-face nil))
         ad-do-it)
@@ -86,6 +89,7 @@
 
 ;; Fix error when Tern does not auto refresh
 (defun delete-tern-process ()
+  "When auto-refresh is not happenning disable tern."
   (interactive)
   (delete-process "Tern"))
 

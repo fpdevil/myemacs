@@ -107,6 +107,7 @@
   '(;;;;;; appearance and visual customizations ;;;;;;
     powerline                                   ;; powerline smart mode
     delight                                     ;; customize mode names on modeline
+    dim                                         ;; mode-line names of major/minor modes
     rainbow-delimiters                          ;; colorful modes (delimiters and color codes)
     rainbow-mode                                ;; colored identifiers
     rainbow-identifiers                         ;; colored identifiers
@@ -123,9 +124,12 @@
     color-theme-sanityinc-tomorrow              ;; tomorrow themes
     color-theme-sanityinc-solarized             ;; solarized themes
     cyberpunk-theme                             ;; cyberpunk theme for emacs
-    apropospriate-theme                         ;; low-contrast light & dark theme set for Emacs
+    majapahit-theme                             ;; color theme with a dark and light versions
     zerodark-theme                              ;; dark medium-contrast theme
     flatui-theme                                ;; color theme based on flat colors
+    ;;;;;; project setup and configuration      ;;;;;;
+    projectile                                  ;; Project Interaction Library for Emacs
+    helm-projectile                             ;; Helm UI for Projectile
     ;;;;;; company auto completions frameworks  ;;;;;;
     company                                     ;; cmopany autocompletion modes
     ;;;;;; company backends for completion      ;;;;;;
@@ -140,6 +144,7 @@
     company-irony                               ;; completion backend for irony-mode
     company-irony-c-headers                     ;; backend for C/C++ header files with irony-mode
     company-c-headers                           ;; auto-completion for C/C++ headers using Company
+    ;company-ycm                                ;; Emacs client for the YCM code-completion engine
     ;;;;;; auto-complete family                 ;;;;;;
     auto-complete                               ;; auto completion for gnu emacs
     auto-complete-distel                        ;; auto completion distel for erlang
@@ -176,6 +181,7 @@
     flymake-python-pyflakes                     ;; flymake handler for syntax-checking Python source code using pyflakes or flake8
     flymake-hlint                               ;; linting for haskell language
     flymake-cursor                              ;; show flymake errors in mini buffer
+    flymake-google-cpplint                      ;; comply with the Google C++ Style Guide on Emacs with flymake
     ;;;;;; styling and formatting               ;;;;;;
     google-c-style                              ;; google's c/c++ style for c-mode
     ;;;;;; org modes                            ;;;;;;
@@ -213,6 +219,8 @@
     ac-alchemist                                ;; auto-complete source for alchemist
     ;;;;;; scala development with ensime        ;;;;;;
     ensime                                      ;; ENhanced Scala Interaction Mode for Emacs
+    scala-mode                                  ;; scala
+    sbt-mode                                    ;; Emacs mode for interacting with scala sbt and projects
     ;;;;;; go development support               ;;;;;;
     go-mode                                     ;; major mode for go programming
     go-eldoc                                    ;; eldoc for go-mode
@@ -229,6 +237,7 @@
     ;;;;;; important and useful utilities       ;;;;;;
     helm                                        ;; incremental completion and selection narrowing framework
     helm-core                                   ;; development files for Helm
+    ;helm-describe-modes                        ;; Helm interface to Emacs’s describe-mode
     ;helm-gtags                                 ;; gnu global helm interface
     ;;;;;; essential packs and tools            ;;;;;;
     ecb                                         ;; emacs code browser
@@ -261,6 +270,7 @@
     which-key                                   ;; displays available keybindings in popup
     discover-my-major                           ;; key bindings and their meaning for the current Emacs major mode
     sunshine                                    ;; weather and forecast information
+    manage-minor-mode                           ;; manage minor modes on a dedicated buffer
     ;;;;;; vim emulation                        ;;;;;;
     evil                                        ;; Extensible Vi layer for Emacs.
     undo-tree                                   ;; Treat undo history as a tree (evil dependency)
@@ -273,6 +283,12 @@
     helm-cider                                  ;; helm interface for cider
     helm-clojuredocs                            ;; searching for help in clojurdocs.org with helm
     cider                                       ;; Clojure Interactive Development Environment that Rocks
+    ;;;;;; YouCompleteMe Configurations         ;;;;;;
+    ycmd                                        ;; emacs bindings to the ycmd completion server
+    company-ycmd                                ;; company mode backend for ycmd
+    flycheck-ycmd                               ;; flycheck integration for ycmd
+    ;;;;;; indentation and text editing         ;;;;;;
+    ;aggressive-indent                          ;; minor mode for code indentation
   )
   "A list of packages that will be installed if not present when firing Emacs.")
 
@@ -317,11 +333,11 @@
   ; check for new packages (package versions)
   (message "%s" "Emacs is now refreshing its package database...")
   (package-refresh-contents)
-  (message "%s" " done.")
+  (message "%s" "package refresh done.")
   ; install the missing packages
   (dolist (pkg required-packages)
     (when (not (package-installed-p pkg))
-      (message "package: %s" pkg)
+      (message ">>> installing missing package -> %s" pkg)
       (package-install pkg))))
 
 
@@ -333,19 +349,10 @@
 ;; settings for each major/minor modes as well as any other packages
 ;; currently the below are all customized supported configurations.
 ;;
+;; miscellaneous settings
 ;; company
 ;; company-quickhelp
 ;; auto-complete
-;; haskell
-;; erlang
-;; python3
-;; scala
-;; elixir
-;; go
-;; c/c++
-;; web
-;; clojure
-;; delight
 ;; flycheck
 ;; helm
 ;; smartparens
@@ -367,22 +374,27 @@
 ;; evil
 ;; xslt
 ;; xml using nxml
+;; aggressive indentation
+;; haskell
+;; erlang
+;; python3
+;; scala
+;; elixir
+;; go
+;; c/c++
+;; web
+;; clojure
+;; ycm-config.el
+;; projectile
+;; delight and dim
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar configs
     '(
       "company-config"
       "ac-complete-config"
-      "haskell-config"
-      "erlang-config"
-      "python-config"
-      "scala-config"
-      "elixir-config"
-      "go-config"
-      "cpp-config"
-      "web-config"
-      "delight-config"
       "flycheck-config"
+      "misc-config"
       "helm-settings-config"
       "rbow-config"
       "rbow-identifiers-config"
@@ -403,7 +415,18 @@
       "evil-config"
       "xslt-process-config"
       "nxml-config"
+      "haskell-config"
+      "erlang-config"
+      "python-config"
+      "scala-config"
+      "elixir-config"
+      "go-config"
+      "cpp-config"
+      "web-config"
       "clojure-config"
+      "ycm-config"
+      "projectile-config"
+      "delighted-config"
       )
     "Configuration files which follow the modules/pkgname-config.el format."
     )
