@@ -30,7 +30,7 @@
 (set-variable 'ycmd-extra-conf-whitelist
     '("/Users/sampathsingamsetty/sw/programming/*"))
 (set-variable 'ycmd-python-binary-path "/usr/local/bin/python3")
-
+(set-variable 'ycmd-force-semantic-completion t)
 
 ;;
 ; company integration

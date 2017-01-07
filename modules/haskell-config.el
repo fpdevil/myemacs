@@ -50,16 +50,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; set up the required $PATH for the haskell and cabal environment       ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-; (setenv "PATH" (concat "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:"
-;                (getenv "HOME") "/Library/Haskell/bin"
-;                (getenv "PATH")))
-; (add-to-list 'exec-path (concat (getenv "HOME") "~/Library/Haskell/bin"))
-;
 ; Make Emacs look in to the Cabal directory for installed binaries
 ; and set the same into the classpath for ready access
-;;
-;;
 (let ((my-cabal-path (expand-file-name (concat (getenv "HOME") "/Library/Haskell/bin"))))
   ; setup the cabal path and put into classpath
   (setenv "PATH" (concat "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:"
@@ -85,12 +77,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar hoogle-url-base "http://haskell.org/hoogle/?q="
   "The base for the URL that will be used for web Hoogle lookups.")
+
 (defvar hoogle-local-command  (concat (getenv "HOME") "/Library/Haskell/bin/hoogle")
   "The name of the executable used for hoogle not found in $PATH (using `executable-find'), then a web lookup is used.")
+
 (defvar hoogle-always-use-web nil
   "Set to non-nil to always use web lookups.")
+
 (defvar hoogle-history nil
   "The history of what you've hoogled for.")
+
 (defvar hoogle-result-count 15
   "How many results should be shown (when running locally.")
 
@@ -145,29 +141,24 @@
 ;; set or unset variables needed for customization                         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (custom-set-variables
- ; Set up hasktags (part 2)
- '(haskell-tags-on-save nil)
- ; Set up interactive mode (part 2)
- '(haskell-process-log t)
+ '(haskell-tags-on-save nil)                            ; set up hasktags (part 2)
+ '(haskell-process-log t)                               ; set up interactive mode (part 2)
  '(haskell-process-suggest-remove-import-lines t)
  '(haskell-process-auto-import-loaded-modules t)
- ; set interpreter to be "cabal repl" or ghci
- ;'(haskell-process-type 'cabal-repl)
- '(haskell-process-type 'ghci)
- ; haskell font-lock
- '(haskell-font-lock-symbols t)
- '(haskell-stylish-on-save t)
- '(haskell-process-use-presentation-mode t)
- '(shm-use-hdevtools t)
- '(shm-use-presentation-mode t)
- '(shm-auto-insert-skeletons t)
- '(shm-auto-insert-bangs t)
+ ;'(haskell-process-type 'cabal-repl)                   ; set interpreter to be "cabal repl" or ghci
+ '(haskell-process-type 'ghci)                          ; set ghci as default
+ '(haskell-font-lock-symbols t)                         ; set haskell font-lock
+ '(haskell-stylish-on-save t)                           ; format code on save
+ '(haskell-process-use-presentation-mode t)             ; using presentation mode
+ '(shm-use-hdevtools t)                                 ; if hdevtools is used
+ '(shm-use-presentation-mode t)                         ; use SHM
+ '(shm-auto-insert-skeletons t)                         ; for auto-complete
+ '(shm-auto-insert-bangs t)                             ; auto complete
  '(haskell-process-show-debug-tips t)
  '(haskell-process-suggest-hoogle-imports t)
  '(haskell-process-suggest-haskell-docs-imports t)
- ; using chris-done style for code indenting
- '(hindent-style "chris-done")
- '(inferior-haskell-find-haddock)
+ '(hindent-style "chris-done")                          ; using chris-done style for code indenting
+ '(inferior-haskell-find-haddock)                       ;
  )
 
 
@@ -205,13 +196,13 @@
   (define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
   (define-key haskell-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
   (define-key haskell-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
-  (define-key haskell-mode-map (kbd "C-c c") 'haskell-process-cabal)))
+  (define-key haskell-mode-map (kbd "C-c c")   'haskell-process-cabal)))
 
 (eval-after-load 'haskell-cabal '(progn
   (define-key haskell-cabal-mode-map (kbd "C-c C-n C-z") 'haskell-interactive-switch)
   (define-key haskell-cabal-mode-map (kbd "C-c C-n C-k") 'haskell-interactive-mode-clear)
   (define-key haskell-cabal-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
-  (define-key haskell-cabal-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)))
+  (define-key haskell-cabal-mode-map (kbd "C-c C-n c")   'haskell-process-cabal)))
 
 (eval-after-load 'haskell-mode
   '(define-key haskell-mode-map (kbd "C-c C-o") 'haskell-compile))

@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "virtualenvwrapper" "virtualenvwrapper.el"
-;;;;;;  (22632 33665 0 0))
+;;;;;;  (22640 18872 0 0))
 ;;; Generated autoloads from virtualenvwrapper.el
 
 (autoload 'venv-deactivate "virtualenvwrapper" "\

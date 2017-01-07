@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "company-ghc" "company-ghc.el" (22632 33817
+;;;### (autoloads nil "company-ghc" "company-ghc.el" (22640 18882
 ;;;;;;  0 0))
 ;;; Generated autoloads from company-ghc.el
 

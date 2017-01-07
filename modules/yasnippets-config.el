@@ -25,6 +25,8 @@
 (add-to-list 'yas-snippet-dirs (concat (getenv "HOME") "/.emacs.d/snippets/"))
 (add-to-list 'yas-snippet-dirs (concat (getenv "HOME") "/.emacs.d/snippets/yasnippet-snippets"))
 
+(global-set-key (kbd "C-c y") 'helm-yas-complete)
+
 
 (provide 'yasnippets-config)
 

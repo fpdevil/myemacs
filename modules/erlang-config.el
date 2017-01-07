@@ -95,7 +95,6 @@
 (add-hook 'erlang-mode-hook #'my-erlang-hook)
 (add-hook 'after-save-hook #'ivy-erlang-complete-reparse)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; erlang binaries path setup                                                ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -176,47 +175,6 @@ erlang-bin erlang-mode-path))))
       (inferior-erlang)
       (select-window file-window)
       (switch-to-buffer file-buffer))))
-; }}}
-
-;----------------------------------------------------------------------------------
-;; tell distel to default to that node name                                      ;;
-;----------------------------------------------------------------------------------
-; {{{
-; define name and cookie for internally loaded erlang shell.
-; while starting an Erlang shell in Emacs, default in the node name
-; default node name to emacs@localhost
-;;
-;(setq inferior-erlang-machine-options '("-sname" "emacs"))
-; (setq inferior-erlang-machine-options
-; 	  '("-name" "emacs@127.0.0.1" "-setcookie" "emacs"))
-; }}}
-
-;; -- uncomment this is needed and comment out distel-node section
-;(require 'distel)
-;(distel-setup)
-;(setq inferior-erlang-machine-options '("-name" "emacs@localhost"))
-;; add Erlang functions to an imenu menu
-;(setq erl-nodename-cache (intern (concat "emacs" "@" "localhost")))
-;; --
-
-; {{{
-;; changed hostname to apple instead of apple.local so below is not needed
-; (setq erl-nodename-cache
-;       (make-symbol
-;        (concat
-;         "emacs@"
-;         ;; Mac OS X uses "name.local" instead of "name", this should work
-;         ;; pretty much anywhere without having to muck with NetInfo
-;         ;; ... but I only tested it on Mac OS X.
-;         (car (split-string (shell-command-to-string "hostname"))))))
-
-;; short host name, like `hostname -s`, remote shell likes this better
-; (defun short-host-name()
-;   "Hostname parsing."
-;   (string-match "[^\.]+" system-name)
-;   (substring system-name (match-beginning 0) (match-end 0)))
-;; set default nodename for distel (= also for erlang-shell-remote)
-;(setq erl-nodename-cache (intern (concat "emacs" "@" (short-host-name))))
 ; }}}
 
 ;; for imenu
@@ -313,26 +271,21 @@ erlang-bin erlang-mode-path))))
   (list escript-exe(list eflymake-loc local-file)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; enable flymake globally                                                       ;;
+;; enable flymake only for erlang mode                                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; enabling only for erlang-mode
 (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-erlang-init))
 (defun flymake-erlang-mode-hook ()
   "Set erlang flymake mode."
   (flymake-mode 1))
 (add-hook 'erlang-mode-hook 'flymake-erlang-mode-hook)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; https://github.com/ten0s/syntaxerl                                            ;;
 ;; see /usr/local/lib/erlang/lib/tools-<Ver>/emacs/erlang-flymake.erl            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun erlang-flymake-only-on-save ()
-  "Trigger flymake only when the buffer is saved - removes syntax check on newline and when there are no changes."
+  "Trigger flymake only when the buffer is saved - clears syntax checker on a newline and when there is no change."
   (interactive)
-  ;; There doesn't seem to be a way of disabling this; set to the
-  ;; largest int available as a workaround (most-positive-fixnum
-  ;; equates to 8.5 years on my machine, so it ought to be enough ;-) )
   (setq flymake-no-changes-timeout most-positive-fixnum)
   (setq flymake-start-syntax-check-on-newline nil))
 

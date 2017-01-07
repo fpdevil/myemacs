@@ -1,10 +1,13 @@
 ;;; package --- Aquamacs initialization file
 ;;; -*- coding: utf-8 -*-
 ;;;
-;;;    ___ _ __ ___   __ _  ___ ___
-;;;   / _ \ '_ ` _ \ / _` |/ __/ __|
-;;;  |  __/ | | | | | (_| | (__\__ \
-;;;   \___|_| |_| |_|\__,_|\___|___/
+;;;         ███████╗███╗   ███╗ █████╗  ██████╗███████╗
+;;;         ██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝
+;;;         █████╗  ██╔████╔██║███████║██║     ███████╗
+;;;         ██╔══╝  ██║╚██╔╝██║██╔══██║██║     ╚════██║
+;;;         ███████╗██║ ╚═╝ ██║██║  ██║╚██████╗███████║
+;;;         ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝
+;;;
 ;;;
 ;;; Author    : Sampath Singamsetty <Singansetty.Sampath@gmail.com>
 ;;; URL       : https://github.com/singamsetty/myemacs
@@ -38,12 +41,24 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; adding the required lisp files and libraries to the path for loading   ;;;
-;;; custom-settings.el will store any custom settings made on Emacs        ;;;
+;;; adding location for required lisp files and libraries to the path      ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'load-path (concat (getenv "HOME") "/.emacs.d"))
-(setq custom-file (concat (getenv "HOME") "/.emacs.d/custom-settings.el"))
-(load custom-file)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; custom-settings.el will store any custom settings made on Emacs        ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; (setq custom-file (concat (getenv "HOME") "/.emacs.d/custom-settings.el"))
+; (load custom-file)
+(setq custom-file (expand-file-name "custom-settings.el" (concat (getenv "HOME") "/.emacs.d")))
+(when (file-exists-p custom-file)
+  (load custom-file))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; aqua-package-repos.el will load the package repository settings        ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (load (concat (getenv "HOME") "/.emacs.d/aqua-package-repos.el"))
 
 
@@ -56,13 +71,11 @@
 ;   (expand-file-name (concat (getenv "HOME") "/.emacs.d/packages/elpa/")) 0)
 
 ;;;------------------------------------------------------------------------;;;
-;;
-; Finalizers
-; for debugging
-;;
+; Finalizers (for debugging)
 (setq debug-on-error t)
 ; (setq debug-on-error nil)
 ; (setq debug-on-quit nil)
+
 
 ;;;========================================================================;;;
 ;;;  specify all the require packages and settings to be loaded initially  ;;;
@@ -82,36 +95,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;(require 'powerline)
 ;(powerline-default-theme)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;          setting default color theme to the required one               ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'color-theme)
-(setq color-theme-is-global t)
-(color-theme-initialize)
-(add-hook 'after-init-hook
-      (lambda ()
-        ;(load-theme 'sanityinc-solarized-light)         ;; solarized light theme
-        ;(load-theme 'cyberpunk t)                       ;; cyberpunk theme
-        ;(load-theme 'material t)                        ;; material dark theme
-        ;(load-theme 'material-light t)                  ;; material light theme
-        ;(load-theme 'dracula t)                         ;; dracula dark theme
-        ;(load-theme 'mccarthy)                          ;; mccarthy from sublime-themes
-        ;(load-theme 'majapahit-light t)                 ;; majapahit light theme
-        ;(load-theme 'flatui t)                          ;; flat color theme
-        ;;
-        ;; -- below for activating moe-theme -- ;;
-        ;(require 'moe-theme)
-        ;; show highlighted buffer-id as decoration
-        ;(setq moe-theme-highlight-buffer-id t)
-        ;; choose a color for mode-line
-        ;(moe-theme-set-color 'cyan)
-        ;(moe-light)                                     ;; moe-light or moe-dark
-        ;;
-        )
-      )
-;; wait until startup initialization is complete
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; vim airline theme for emacs modeline customized display                ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -135,7 +118,35 @@
 ;(load-theme 'airline-base16-gui-dark)      ; load airline-base16-gui dark theme
 ;(load-theme 'airline-molokai)              ; load airline molokai light theme
 (load-theme 'airline-cool)                 ; load cool theme
-;(load-theme 'airline-solarized-gui)        ; solarized gui theme
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;          setting default color theme to the required one               ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'color-theme)
+(setq color-theme-is-global t)
+(color-theme-initialize)
+(add-hook 'after-init-hook
+      (lambda ()
+        ;(load-theme 'sanityinc-solarized-light)         ;; solarized light theme
+        ;(load-theme 'sanityinc-tomorrow-day)            ;; light sanity theme
+        ;(load-theme 'material t)                        ;; material dark theme
+        (load-theme 'material-light t)                  ;; material light theme
+        ;(load-theme 'dracula t)                         ;; dracula dark theme
+        ;(load-theme 'mccarthy)                          ;; mccarthy from sublime-themes
+        ;(load-theme 'majapahit-light t)                 ;; majapahit light theme
+        ;(load-theme 'flatui t)                          ;; flat color theme
+        ;;
+        ;; -- below for activating moe-theme -- ;;
+        ;(require 'moe-theme)
+        ;; show highlighted buffer-id as decoration
+        ;(setq moe-theme-highlight-buffer-id t)
+        ;; choose a color for mode-line
+        ;(moe-theme-set-color 'cyan)
+        ;(moe-light)                                     ;; moe-light or moe-dark
+        ;;
+        )
+      )
+;; wait until startup initialization is complete
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; identify unnecessary whitespace is in all programming modes            ;;;

@@ -159,7 +159,9 @@
     ; smex                                      ;; M-x interface with Ido-style fuzzy matching
     ;;;;;; essential utilities                  ;;;;;;
     smartparens                                 ;; parenthesis management
+    evil-smartparens                            ;; evil integration for smartparens
     paredit                                     ;; minor mode for editing parentheses
+    evil-paredit                                ;; evil extension for paredit
     ;;;;;; documentation and help               ;;;;;;
     markdown-mode                               ;; markdown language support
     ; auctex                                    ;; AUCTEX and LATEX

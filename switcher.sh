@@ -53,7 +53,6 @@ else
                 # I am cleaning up my old customizations which can be
                 # commented out if not needed.
                 rm -rvf aquamacs.d/SessionDesktop.el aquamacs.d/custom-settings.el
-                touch aquamacs.d/custom-settings.el
                 ln -s aquamacs .emacs
                 ln -s aquamacs.d .emacs.d
                 exit $?

@@ -106,7 +106,7 @@
   "Auto completion using ac."
   (add-to-list 'ac-sources 'ac-source-c-headers)
   ;; execute command `gcc -xc++ -E -v -` to find the header driectories
-  (add-to-list 'achead:include-directories '"/usr/local/Cellar/gcc/6.2.0/include/c++/6.2.0")
+  (add-to-list 'achead:include-directories '"/usr/local/opt/gcc/include/c++/6.3.0")
   (add-to-list 'achead:include-directories '"/usr/include/c++/4.2.1")
   (add-to-list 'achead:include-directories '"/usr/local/Cellar/opencv3/HEAD-7dd3723_4/include")
   (add-to-list 'achead:include-directories '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include")
@@ -148,7 +148,7 @@
           '("/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"
             "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include"
             "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"
-            "/usr/local/Cellar/gcc/6.2.0/include/c++/6.2.0"
+            "/usr/local/opt/gcc/include/c++/6.3.0"
             "/usr/include/c++/4.2.1"
             "/usr/local/Cellar/opencv3/HEAD-7dd3723_4/include"
             "/usr/local/include"
@@ -167,22 +167,10 @@
 (require 'cc-mode)
 (require 'semantic)
 (add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
-;; location for the semanticdb
-(setq semanticdb-default-save-directory (concat (getenv "HOME") "/.emacs.d/cache/semanticdb"))
-(global-semanticdb-minor-mode 1)
-(global-semantic-idle-scheduler-mode 1)
-(global-semantic-idle-summary-mode 1)
-(global-semantic-stickyfunc-mode 1)
-(global-semantic-highlight-func-mode t)
-(global-semantic-idle-completions-mode nil) ;; use company/ac
-(global-semantic-decoration-mode t)
-(global-semantic-show-unmatched-syntax-mode t)
-
 
 ;; By default, Semantic automatically includes some default system include
 ;; paths such as /usr/include, /usr/local/include. Specify additional ones
 (semantic-add-system-include "/usr/local/Cellar/opencv3/HEAD-7dd3723_4/include" 'c++-mode)
-
 
 (semantic-mode 1)
 
@@ -196,8 +184,27 @@
   )
 (add-hook 'c-mode-common-hook 'my:add-semantic-to-autocomplate)
 
+; turn on ede mode
+(global-ede-mode 1)
 
-;; flymake
+;; project
+; (ede-cpp-root-project "my project" :file "~/demos/my_program/src/main.cpp"
+;           :include-path '("/../my_inc"))
+
+;; location for the semanticdb
+(setq semanticdb-default-save-directory (concat (getenv "HOME") "/.emacs.d/cache/semanticdb"))
+(global-semanticdb-minor-mode 1)
+(global-semantic-idle-scheduler-mode 1)
+(global-semantic-idle-summary-mode 1)
+(global-semantic-stickyfunc-mode 1)
+(global-semantic-highlight-func-mode t)
+(global-semantic-idle-completions-mode nil) ;; use company/ac
+(global-semantic-decoration-mode t)
+(global-semantic-show-unmatched-syntax-mode t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flymake                                                                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun my:flymake-google-init()
   (require 'flymake-google-cpplint)
   (custom-set-variables

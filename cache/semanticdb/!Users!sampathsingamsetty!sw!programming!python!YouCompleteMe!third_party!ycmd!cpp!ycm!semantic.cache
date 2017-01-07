@@ -1,0 +1,278 @@
+;; Object semanticdb-project-database-file
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "semanticdb-project-database-file"
+  :tables
+  (list
+    (semanticdb-table "semanticdb-table"
+      :major-mode c++-mode
+      :tags 
+        '( ("IdentifierCompleter.h" include nil nil [700 732])
+            ("standard.h" include nil nil [733 754])
+            ("Candidate.h" include nil nil [756 778])
+            ("IdentifierUtils.h" include nil nil [779 807])
+            ("Result.h" include nil nil [808 827])
+            ("Utils.h" include nil nil [828 846])
+            ("ReleaseGil.h" include nil nil [847 870])
+            ("algorithm" include (:system-flag t) nil [872 892])
+            ("YouCompleteMe" type
+               (:members 
+                  ( ("IdentifierCompleter" function
+                       (:constructor-flag t
+                        :parent "IdentifierCompleter"
+                        :type ("IdentifierCompleter" type (:type "class") nil nil))
+                        (reparse-symbol namespacesubparts) [922 967])
+                    ("IdentifierCompleter" function
+                       (:constructor-flag t
+                        :parent "IdentifierCompleter"
+                        :arguments 
+                          ( ("candidates" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::vector" type
+                                     (:template-specifier 
+                                        ( ("std::string" type nil nil nil))                                        
+                                      :type "class")
+                                      nil nil))
+                                (reparse-symbol arg-sub-list) [1014 1060]))                          
+                        :type ("IdentifierCompleter" type (:type "class") nil nil))
+                        (reparse-symbol namespacesubparts) [970 1125])
+                    ("IdentifierCompleter" function
+                       (:constructor-flag t
+                        :parent "IdentifierCompleter"
+                        :arguments 
+                          ( ("candidates" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::vector" type
+                                     (:template-specifier 
+                                        ( ("std::string" type nil nil nil))                                        
+                                      :type "class")
+                                      nil nil))
+                                (reparse-symbol arg-sub-list) [1172 1217])
+                            ("filetype" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::string" type (:type "class") nil nil))
+                                (reparse-symbol arg-sub-list) [1220 1248])
+                            ("filepath" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::string" type (:type "class") nil nil))
+                                (reparse-symbol arg-sub-list) [1251 1280]))                          
+                        :type ("IdentifierCompleter" type (:type "class") nil nil))
+                        (reparse-symbol namespacesubparts) [1128 1357])
+                    ("AddIdentifiersToDatabase" function
+                       (:parent "IdentifierCompleter"
+                        :arguments 
+                          ( ("new_candidates" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::vector" type
+                                     (:template-specifier 
+                                        ( ("std::string" type nil nil nil))                                        
+                                      :type "class")
+                                      nil nil))
+                                (reparse-symbol arg-sub-list) [1414 1463])
+                            ("filetype" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::string" type (:type "class") nil nil))
+                                (reparse-symbol arg-sub-list) [1466 1494])
+                            ("filepath" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::string" type (:type "class") nil nil))
+                                (reparse-symbol arg-sub-list) [1497 1526]))                          
+                        :type "void")
+                        (reparse-symbol namespacesubparts) [1360 1706])
+                    ("ClearForFileAndAddIdentifiersToDatabase" function
+                       (:parent "IdentifierCompleter"
+                        :arguments 
+                          ( ("new_candidates" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::vector" type
+                                     (:template-specifier 
+                                        ( ("std::string" type nil nil nil))                                        
+                                      :type "class")
+                                      nil nil))
+                                (reparse-symbol arg-sub-list) [1778 1827])
+                            ("filetype" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::string" type (:type "class") nil nil))
+                                (reparse-symbol arg-sub-list) [1830 1858])
+                            ("filepath" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::string" type (:type "class") nil nil))
+                                (reparse-symbol arg-sub-list) [1861 1890]))                          
+                        :type "void")
+                        (reparse-symbol namespacesubparts) [1709 2035])
+                    ("AddIdentifiersToDatabaseFromTagFiles" function
+                       (:parent "IdentifierCompleter"
+                        :arguments 
+                          ( ("absolute_paths_to_tag_files" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::vector" type
+                                     (:template-specifier 
+                                        ( ("std::string" type nil nil nil))                                        
+                                      :type "class")
+                                      nil nil))
+                                (reparse-symbol arg-sub-list) [2104 2167]))                          
+                        :type "void")
+                        (reparse-symbol namespacesubparts) [2038 2354])
+                    ("CandidatesForQuery" function
+                       (:methodconst-flag t
+                        :parent "IdentifierCompleter"
+                        :arguments 
+                          ( ("query" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::string" type (:type "class") nil nil))
+                                (reparse-symbol arg-sub-list) [2427 2453]))                          
+                        :type ("std::vector" type
+                             (:template-specifier 
+                                ( ("std::string" type nil nil nil))                                
+                              :type "class")
+                              nil nil))
+                        (reparse-symbol namespacesubparts) [2357 2512])
+                    ("CandidatesForQueryAndType" function
+                       (:methodconst-flag t
+                        :parent "IdentifierCompleter"
+                        :arguments 
+                          ( ("query" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::string" type (:type "class") nil nil))
+                                (reparse-symbol arg-sub-list) [2592 2617])
+                            ("filetype" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::string" type (:type "class") nil nil))
+                                (reparse-symbol arg-sub-list) [2620 2649]))                          
+                        :type ("std::vector" type
+                             (:template-specifier 
+                                ( ("std::string" type nil nil nil))                                
+                              :type "class")
+                              nil nil))
+                        (reparse-symbol namespacesubparts) [2515 3061]))                  
+                :type "namespace")
+                nil [894 3065]))          
+      :file "IdentifierCompleter.cpp"
+      :pointmax 3093
+      :fsize 3092
+      :lastmodtime '(22612 31652 0 0)
+      :unmatched-syntax nil)
+    (semanticdb-table "semanticdb-table"
+      :file "IdentifierCompleter.h"
+      :fsize 2661
+      :lastmodtime '(22612 31652 0 0))
+    (semanticdb-table "semanticdb-table"
+      :file "standard.h"
+      :fsize 879
+      :lastmodtime '(22612 31652 0 0))
+    (semanticdb-table "semanticdb-table"
+      :file "Candidate.h"
+      :fsize 2132
+      :lastmodtime '(22612 31652 0 0))
+    (semanticdb-table "semanticdb-table"
+      :file "IdentifierUtils.h"
+      :fsize 1145
+      :lastmodtime '(22612 31652 0 0))
+    (semanticdb-table "semanticdb-table"
+      :file "Result.h"
+      :fsize 3559
+      :lastmodtime '(22612 31652 0 0))
+    (semanticdb-table "semanticdb-table"
+      :file "Utils.h"
+      :fsize 2483
+      :lastmodtime '(22612 31652 0 0))
+    (semanticdb-table "semanticdb-table"
+      :file "ReleaseGil.h"
+      :fsize 1099
+      :lastmodtime '(22612 31652 0 0))
+    (semanticdb-table "semanticdb-table"
+      :major-mode c++-mode
+      :tags 
+        '( ("standard.h" include nil nil [700 721])
+            ("Candidate.h" include nil nil [722 744])
+            ("Result.h" include nil nil [745 764])
+            ("boost/algorithm/string.hpp" include (:system-flag t) nil [766 803])
+            ("cctype" include (:system-flag t) nil [804 821])
+            ("locale" include (:system-flag t) nil [822 839])
+            ("boost::algorithm::all" using (:type ("boost::algorithm::all" type
+                 (:prototype t
+                  :type "class")
+                  nil nil)) nil [841 869])
+            ("boost::algorithm::is_lower" using (:type ("boost::algorithm::is_lower" type
+                 (:prototype t
+                  :type "class")
+                  nil nil)) nil [870 903])
+            ("boost::algorithm::is_print" using (:type ("boost::algorithm::is_print" type
+                 (:prototype t
+                  :type "class")
+                  nil nil)) nil [904 937])
+            ("YouCompleteMe" type
+               (:members 
+                  ( ("IsPrintable" function
+                       (:arguments 
+                          ( ("text" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::string" type (:type "class") nil nil))
+                                (reparse-symbol arg-sub-list) [984 1009]))                          
+                        :type "bool")
+                        (reparse-symbol namespacesubparts) [966 1071])
+                    ("GetWordBoundaryChars" function
+                       (:arguments 
+                          ( ("text" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::string" type (:type "class") nil nil))
+                                (reparse-symbol arg-sub-list) [1108 1133]))                          
+                        :type ("std::string" type (:type "class") nil nil))
+                        (reparse-symbol namespacesubparts) [1074 1804])
+                    ("LetterBitsetFromString" function
+                       (:arguments 
+                          ( ("text" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::string" type (:type "class") nil nil))
+                                (reparse-symbol arg-sub-list) [1838 1863]))                          
+                        :type ("Bitset" type (:type "class") nil nil))
+                        (reparse-symbol namespacesubparts) [1807 2088])
+                    ("Candidate" function
+                       (:constructor-flag t
+                        :parent "Candidate"
+                        :arguments 
+                          ( ("text" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::string" type (:type "class") nil nil))
+                                (reparse-symbol arg-sub-list) [2113 2138]))                          
+                        :type ("Candidate" type (:type "class") nil nil))
+                        (reparse-symbol namespacesubparts) [2091 2361])
+                    ("QueryMatchResult" function
+                       (:methodconst-flag t
+                        :parent "Candidate"
+                        :arguments 
+                          ( ("query" variable
+                               (:reference 1
+                                :constant-flag t
+                                :type ("std::string" type (:type "class") nil nil))
+                                (reparse-symbol arg-sub-list) [2400 2425])
+                            ("case_sensitive" variable (:type "bool") (reparse-symbol arg-sub-list) [2462 2483]))                          
+                        :type ("Result" type (:type "class") nil nil))
+                        (reparse-symbol namespacesubparts) [2364 3550]))                  
+                :type "namespace")
+                nil [939 3553]))          
+      :file "Candidate.cpp"
+      :pointmax 3581
+      :fsize 3580
+      :lastmodtime '(22612 31652 0 0)
+      :unmatched-syntax nil))
+  :file "!Users!sampathsingamsetty!sw!programming!python!YouCompleteMe!third_party!ycmd!cpp!ycm!semantic.cache"
+  :semantic-tag-version "2.0"
+  :semanticdb-version "2.2")

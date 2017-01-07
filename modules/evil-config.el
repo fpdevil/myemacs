@@ -12,14 +12,18 @@
 (require 'evil)
 (require 'undo-tree)
 (require 'evil-leader)
+(require 'evil-paredit)            ;; extension to integrate nicely with paredit
 ;;;
 ;;; Code:
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; evil mode (for vim emuation)                                             ;;
+;; evil mode (for vim emulation)                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (evil-mode t)                                   ;; enable evil-mode globally
 (global-undo-tree-mode)                         ;; enable undo-tree globally
+
+;; activate evil-smartparens
+(add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
 
 ;; evil search
 (setq evil-search-module 'evil-search)
@@ -127,6 +131,10 @@
 ; surround globally
 ;;
 (global-evil-surround-mode 1)
+
+
+;; Evil extension to integrate nicely with paredit
+(add-hook 'emacs-lisp-mode-hook 'evil-paredit-mode)
 
 (provide 'evil-config)
 

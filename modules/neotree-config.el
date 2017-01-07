@@ -18,6 +18,7 @@
 ;; a tree plugin like NerdTree for Vim (themes and modes)                   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq neo-theme (if window-system 'icons 'arrow))
+;(setq 'neo-smart-open t)
 ;(setq neo-theme 'ascii)
 (custom-set-faces
  '(neo-banner-face ((t . (:inherit shadow))) t)

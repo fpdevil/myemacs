@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "flymake-hlint" "flymake-hlint.el" (22632 33755
+;;;### (autoloads nil "flymake-hlint" "flymake-hlint.el" (22640 18870
 ;;;;;;  0 0))
 ;;; Generated autoloads from flymake-hlint.el
 

@@ -4,8 +4,8 @@
 ;;;
 ;;; filename.  : ~/.emacs.d/aqua-internals.el
 ;;; description: contains general Emacs customizations and custom functions
-;;;              which cannot be placed anywhere. Any customized settings
-;;;              for the emacs (aquamacs) or any packages or internal(s) may
+;;;              which cannot be placed anywhere.  Any customized settings
+;;;              for the Emacs (aquamacs) or any packages or internal(s) may
 ;;;              be placed here and the same will be loaded during bootstrap
 ;;;
 ;;; Code:
@@ -44,11 +44,21 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; record changes in window configurations                                 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(when (fboundp 'winner-mode)
+  (winner-mode 1))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; recent files list                                                       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (recentf-mode 1)
 ;; change the recentf file location to cache directory
 (setq recentf-save-file (expand-file-name "recentf" (concat (getenv "HOME") "/.emacs.d/cache")))
+(setq recentf-max-saved-items 1000)
+(setq recentf-exclude '(".recentf"))
+(setq recentf-auto-cleanup 'never)
 (recentf-load-list)
 
 (global-set-key "\M- " 'hippie-expand)
