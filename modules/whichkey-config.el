@@ -16,11 +16,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (which-key-mode)
 ;; set the time delay (in seconds) for the which-key popup to appear.
-(setq which-key-idle-delay 0.4)
-;; set the separator used between keys and descriptions.
-(setq which-key-separator " → " )
-;; allow extra padding for Unicode character
-(setq which-key-unicode-correction 3)
+(setq which-key-idle-delay 0.4
+      ;; set the separator used between keys and descriptions.
+      which-key-separator " → "
+      ;; allow extra padding for Unicode character
+      which-key-unicode-correction 3
+      which-key-sort-order 'which-key-key-order-alpha
+      which-key-key-replacement-alist '(("<\\([[:alnum:]-]+\\)>" . "\\1")
+                                        ("left" . "◀")
+                                        ("right" . "▶")
+                                        ("up" . "▲")
+                                        ("down" . "▼")))
 
 (provide 'whichkey-config)
 

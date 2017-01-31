@@ -5,9 +5,10 @@
 ;;; Filename   : misc-config.el
 ;;; Description: Miscellaneous configuration and customization for Emacs
 ;;;              elisp code snippets for customizing Emacs
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
 ;;; Code:
-
+;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; display an initial scratch message & prettify symbols                    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -53,7 +54,9 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq whitespace-style
       '(face tabs empty trailing))
+(setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
+(setq indent-line-function 'insert-tab)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -74,7 +77,7 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
         (if (looking-at "->") t nil)))))
 
 (defun do-yas-expand ()
-  "Fallbacl behaviour for yas."
+  "Fallback behaviour for yas."
   (let ((yas/fallback-behavior 'return-nil))
     (yas/expand)))
 
@@ -115,6 +118,17 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
           minor-mode-list)
     (message "Active modes are %s" active-modes)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; indentation function                                                   ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun hindent-reformat-buffer-on-save ()
+  "Indent an entire buffer with the default indentation scheme."
+  (interactive)
+  (save-excursion
+    (delete-trailing-whitespace)
+    (indent-region (point-min) (point-max) nil)
+    (untabify (point-min) (point-max))))
 
 
 (provide 'misc-config)

@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "company-irony-c-headers" "company-irony-c-headers.el"
-;;;;;;  (22640 18845 0 0))
+;;;;;;  (22669 26034 0 0))
 ;;; Generated autoloads from company-irony-c-headers.el
 
 (autoload 'company-irony-c-headers "company-irony-c-headers" "\

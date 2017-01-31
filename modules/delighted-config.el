@@ -50,16 +50,18 @@
 (dim-minor-names
  '((company-mode        " COM" company)
    (flymake-mode        " FlyM" flymake)
+   (flyspell-mode       " FlyS" flyspell)
    (git-gutter-mode     " Ⓖ" git-gutter)
    (visual-line-mode    " Ⓥ")
    (yas-minor-mode      " Ⓨ")
-   (auto-fill-function  " ↩")
+   (auto-fill-function  " ℱ")
    (which-key-mode      " Ⓚ")
-   (eldoc-mode          " ⓔ" eldoc)
-   (whitespace-mode     " _"  whitespace)
-   (paredit-mode        " ⓟ" paredit)))
+   (eldoc-mode          " Ⓔ" eldoc)
+   (whitespace-mode     " {W}"  whitespace)
+	 (undo-tree-mode      " 🌴")
+   (projectile-mode     " π")
+   (paredit-mode        " {Ƥ}" paredit)))
 
 
 (provide 'delighted-config)
-
 ;;; delighted-config.el ends here

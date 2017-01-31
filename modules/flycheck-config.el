@@ -53,6 +53,9 @@
      (setq flycheck-check-syntax-automatically
        '(mode-enabled save new-line idle-change))))
 
+;; use an italic face for the checker name
+(set-face-attribute 'flycheck-error-list-checker-name nil
+                    :inherit 'italic)
 
 ;;------------------------------------------------------------------------------
 ; (require 'flycheck)

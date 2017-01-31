@@ -6,7 +6,7 @@ My personal emacs configuration for Aquamacs on Mac Sierra.
 
 Clone the repository
 
-`git clone https://github.com/singamsetty/myemacs.git .emacs.d`
+`git clone https://github.com/fpdevil/myemacs.git .emacs.d`
 
 - Move the file `dotemacs` to the home folder and rename it as `.emacs`
 

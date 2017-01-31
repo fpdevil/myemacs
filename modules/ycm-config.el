@@ -24,13 +24,20 @@
 ; (add-hook 'after-init-hook #'global-ycmd-mode)  ;; global mode
 ; (add-hook 'c++-mode-hook 'ycmd-mode)            ;; only for cpp
 
-(set-variable 'ycmd-global-config "/Users/sampathsingamsetty/.emacs.d/global_config.py")
+(set-variable 'ycmd-global-config
+              "/Users/sampathsingamsetty/.emacs.d/global_config.py")
 (set-variable 'ycmd-server-command
-    '("/usr/local/bin/python3" "/Users/sampathsingamsetty/sw/programming/python/YouCompleteMe/third_party/ycmd/ycmd"))
+              '("/usr/local/bin/python3"
+                "/Users/sampathsingamsetty/sw/programming/python/YouCompleteMe/third_party/ycmd/ycmd"))
+; ycm configuration file
 (set-variable 'ycmd-extra-conf-whitelist
-    '("/Users/sampathsingamsetty/sw/programming/*"))
-(set-variable 'ycmd-python-binary-path "/usr/local/bin/python3")
+              '("/Users/sampathsingamsetty/sw/programming/*"))
+(set-variable 'ycmd-python-binary-path
+              "/usr/local/bin/python3")
 (set-variable 'ycmd-force-semantic-completion t)
+
+;; show flycheck errors in idle-mode
+(setq ycmd-parse-conditions '(save new-line mode-enabled idle-change))
 
 ;;
 ; company integration

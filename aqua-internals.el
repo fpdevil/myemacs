@@ -146,7 +146,7 @@
 (set-face-attribute 'default nil :family "Monaco"
             		                 :width 'normal
                                  :height 120
-                                 :weight 'ultra-light)
+                                 :weight 'regular)
 (set-face-bold 'bold nil)                                  ;; disable bold fonts
 ;(set-face-bold-p 'bold nil)                               ;; disable bold fonts
 
@@ -270,5 +270,4 @@ This command does the inverse of `fill-region'."
 
 
 (provide 'aqua-internals)
-
 ;;; aqua-internals.el ends here

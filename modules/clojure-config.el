@@ -40,7 +40,11 @@
       cider-show-error-buffer t
       cider-auto-select-error-buffer t
       cider-repl-history-file (concat (getenv "HOME") "/.emacs.d/cache/cider-history")
-      cider-repl-wrap-history t)
+      cider-repl-wrap-history t
+      nrepl-log-messages t
+      cider-font-lock-dynamically '(macro core function var)
+      nrepl-hide-special-buffers t
+      cider-overlays-use-font-lock t)
 
 ;; helm
 (helm-cider-mode 1)

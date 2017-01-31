@@ -53,12 +53,22 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; function to get current system's name
+;; function to get current system's name and defining system types
 (defun insert-system-name()
   (interactive)
   "Get current system's name"
   (insert (format "%s" system-name))
   )
+
+(defun is-mac()
+  "Get and see if the System type is MAC."
+  (interactive)
+  (string-equal system-type "darwin"))
+
+(defun is-linux()
+  "Get and see if the System type is Linux."
+  (interactive)
+  (string-equal system-type "gnu/linux"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; function to get current system type
@@ -113,15 +123,12 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;
 ; add hooks
 ;;
 (add-hook 'kill-buffer-hook 'my-command-buffer-kill-hook)
 (add-hook 'after-save-hook 'my-command-buffer-run-hook)
-
-(provide 'aqua-methods)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(provide 'aqua-methods)
 ;;; aqua-methods.el ends here

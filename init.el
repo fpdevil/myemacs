@@ -24,7 +24,7 @@
 ;;;
 
 ;;
-; utf-8 character set encoding
+; utf-8 character set encoding and Locale
 ;;
 (set-language-environment   'utf-8)
 (setq locale-coding-system  'utf-8)
@@ -34,11 +34,11 @@
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 (prefer-coding-system       'utf-8)
 
-;;
-; if system is mac os x
-;;
-(defconst *is-a-mac* (eq system-type 'darwin))
+;; language set
+(setq current-language-environment "English")
 
+;; if system is mac os x
+(defconst *is-a-mac* (eq system-type 'darwin))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; adding location for required lisp files and libraries to the path      ;;;
@@ -49,11 +49,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; custom-settings.el will store any custom settings made on Emacs        ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; (setq custom-file (concat (getenv "HOME") "/.emacs.d/custom-settings.el"))
-; (load custom-file)
-(setq custom-file (expand-file-name "custom-settings.el" (concat (getenv "HOME") "/.emacs.d")))
+(setq custom-file
+      (expand-file-name "custom-settings.el" (concat (getenv "HOME") "/.emacs.d")))
 (when (file-exists-p custom-file)
   (load custom-file))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; load custom methods and internal settings for Emacs                    ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(load "~/.emacs.d/aqua-methods.el")
+;; now load the custom settings from aqua-internals.el
+(add-hook 'after-init-hook
+          '(lambda ()
+             (load "~/.emacs.d/aqua-internals.el")))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -67,14 +75,10 @@
 ;;; a custom function is defined inside my-methods                         ;;;
 ;;; uncomment below section if needed                                      ;;;
 ;;;------------------------------------------------------------------------;;;
-; (byte-recompile-directory
-;   (expand-file-name (concat (getenv "HOME") "/.emacs.d/packages/elpa/")) 0)
-
+(byte-recompile-directory
+  (expand-file-name (concat (getenv "HOME") "/.emacs.d/packages/elpa/")) 0)
 ;;;------------------------------------------------------------------------;;;
-; Finalizers (for debugging)
-(setq debug-on-error t)
-; (setq debug-on-error nil)
-; (setq debug-on-quit nil)
+(setq debug-on-error t)  ;; finalizers (for debugging)
 
 
 ;;;========================================================================;;;
@@ -90,78 +94,12 @@
 (eval-after-load "whitespace" '(diminish 'whitespace-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; fancy modeline                                                         ;;;
-;;; powerline                                                              ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;(require 'powerline)
-;(powerline-default-theme)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; vim airline theme for emacs modeline customized display                ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'airline-themes)
-; setting powerline fonts for glyphs
-(setq powerline-utf-8-separator-left        #xe0b0
-      powerline-utf-8-separator-right       #xe0b2
-      airline-utf-glyph-separator-left      #xe0b0
-      airline-utf-glyph-separator-right     #xe0b2
-      airline-utf-glyph-subseparator-left   #xe0b1
-      airline-utf-glyph-subseparator-right  #xe0b3
-      airline-utf-glyph-branch              #xe0a0
-      airline-utf-glyph-readonly            #xe0a2
-      airline-utf-glyph-linenumber          #xe0a1)
-;;
-; change the airline themes as required from the below
-;;
-;(load-theme 'airline-light)                ; load airline light theme
-;(load-theme 'airline-papercolor)           ; load papercolor theme
-;(load-theme 'airline-base16-shell-dark)    ; load airline-base16-shell-dark theme
-;(load-theme 'airline-base16-gui-dark)      ; load airline-base16-gui dark theme
-;(load-theme 'airline-molokai)              ; load airline molokai light theme
-(load-theme 'airline-cool)                 ; load cool theme
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;          setting default color theme to the required one               ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'color-theme)
-(setq color-theme-is-global t)
-(color-theme-initialize)
-(add-hook 'after-init-hook
-      (lambda ()
-        ;(load-theme 'sanityinc-solarized-light)         ;; solarized light theme
-        ;(load-theme 'sanityinc-tomorrow-day)            ;; light sanity theme
-        ;(load-theme 'material t)                        ;; material dark theme
-        (load-theme 'material-light t)                  ;; material light theme
-        ;(load-theme 'dracula t)                         ;; dracula dark theme
-        ;(load-theme 'mccarthy)                          ;; mccarthy from sublime-themes
-        ;(load-theme 'majapahit-light t)                 ;; majapahit light theme
-        ;(load-theme 'flatui t)                          ;; flat color theme
-        ;;
-        ;; -- below for activating moe-theme -- ;;
-        ;(require 'moe-theme)
-        ;; show highlighted buffer-id as decoration
-        ;(setq moe-theme-highlight-buffer-id t)
-        ;; choose a color for mode-line
-        ;(moe-theme-set-color 'cyan)
-        ;(moe-light)                                     ;; moe-light or moe-dark
-        ;;
-        )
-      )
-;; wait until startup initialization is complete
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; identify unnecessary whitespace is in all programming modes            ;;;
 ;;; whitespace-cleanup command for clearing trailing white spaces          ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'whitespace)
 (setq-default show-trailing-whitespace t)
 (set-default 'indent-tabs-mode nil)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; editing files in markdown mode                                         ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'markdown-mode)
-(setq auto-mode-alist
-              (cons '("\\.mdml$" . markdown-mode) auto-mode-alist))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; magit (git integration - now using git-gutter)                         ;;;
@@ -196,7 +134,6 @@
 (require 'key-chord)
 (key-chord-define-global "fm" 'list-buffers)
 (key-chord-define-global "fm" 'helm-mini)
-;(use fm instead of C-x b to list buffers)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; edit multiple regions simultaneously in a buffer or a region           ;;;
@@ -205,20 +142,17 @@
 (setq iedit-unmatched-lines-invisible-default t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;   ido disabled in favour of helm                                       ;;;
+;;; pull PATH variables from the .zshrc                                    ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; ido settings
-; Interactively Do Things
-; using helm now
-;;
-; (require 'ido)
-; (ido-mode t)
-; (setq ido-enable-flex-matching t)
-; (setq ido-everywhere t)
-; (setq ido-max-prospects 50)
-; (setq ido-max-window-height 0.25)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun set-exec-path-from-shellpath ()
+  "Get the PATH variables from the .zshrc environment file."
+  (setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
+  (let ((path-from-shell (shell-command-to-string "$SHELL -i -c 'echo -n $PATH'")))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(if window-system (set-exec-path-from-shellpath))
+
 
 (provide 'init)
-
 ;;; init.el ends here

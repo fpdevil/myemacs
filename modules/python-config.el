@@ -23,6 +23,7 @@
 (require 'elpy)                 ; Emacs Python Development Environment
 (require 'python-pylint)        ; minor mode for running pylint
 (require 'py-yapf)              ; Use yapf to beautify a Python buffer
+(require 'py-autopep8)          ; Integrate autopep8 into Emacs
 (require 'virtualenvwrapper)    ; python virtualenv wrapper
 ;;;
 ;;; Code:
@@ -32,6 +33,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq-default python-shell-completion-native-enable nil)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; rebind Enter to Ctrl+j for proper indentation                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'python-mode-hook
+          (lambda ()
+             (define-key python-mode-map "\r" 'newline-and-indent)))
+
+;; for autopep8 formatting and linting
+(add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; python virtual environment setup                                         ;;
@@ -40,7 +50,6 @@
 (venv-initialize-eshell)             ;; if you want eshell support
 (setq venv-location
       (expand-file-name (concat (getenv "HOME") ".virtualenvs/")))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; flymake handler for syntax-checking Python source code using             ;;
@@ -68,52 +77,34 @@
 (add-hook 'python-mode-hook 'run-python-once)
 
 
-;;
-; hook up to autocomplete
-; (add-to-list ’ac-sources ’ac-source-jedi-direct)
-;;
-; (autoload 'jedi:setup "jedi" nil t)
-; ;; enable python-mode
-; (add-hook 'python-mode-hook 'jedi:setup)
-; (setq jedi-config:set-python-executable "/usr/local/bin/python3")
-; ;(setq jedi:setup-keys t)
-; (setq jedi:complete-on-dot t)
-; ; hack to never show in-function call automatically
-; (setq jedi:get-in-function-call-delay 300)
-; (setq jedi:server-command (list "/usr/local/bin/python3" jedi:server-script))
-; (setq jedi:tooltip-method '(pos-tip))
-; (jedi-mode 1)
-; (setq jedi:environment-root "env")
-; ; (setq jedi:environment-virtualenv
-; ;   (append python-environment-virtualenv
-; ;     '(' "--python" "/usr/local/bin/python3")))
-
-
 ;; enable python-mode with jedi
+(add-hook 'python-mode-hook 'jedi:setup)
+
 (add-hook 'python-mode-hook
           '(lambda ()
              ;; python common
-             (setq indent-tabs-mode nil)
-             (setq indent-level 4)
-             (setq python-indent 4)
-             (setq tab-width 4)
-             ;; jedi
-             (setq jedi:setup-keys t)
-             (setq jedi:complete-on-dot t)
-             ; hack to never show in-function call automatically
-             (setq jedi:get-in-function-call-delay 0.2)
-             (setq jedi:tooltip-method '(pos-tip))
-             (jedi-mode 1)
-             (jedi:setup)
-             (define-key jedi-mode-map (kbd "M-TAB") 'jedi:complete)
-             (setq jedi:complete-on-dot t)
-             (setq jedi:environment-root "env")
-             (setq jedi:environment-virtualenv
-                   (append python-environment-virtualenv
-                           '("--python" "/usr/local/bin/python3")))))
+             (setq indent-tabs-mode nil
+                   python-indent 4
+                   python-indent-offset 4
+                   indent-level 4
+                   tab-width 4))
+          (untabify (point-min) (point-max)))
+
 ;;
-; load jedi
+; load and setup jedi
 ;;
+(add-hook 'python-mode-hook
+          '(lambda ()
+            (setq jedi:setup-keys t
+                  jedi:complete-on-dot t
+                  ;; hack to never show in-function call automatically
+                  jedi:get-in-function-call-delay 0.2
+                  jedi:tooltip-method '(pos-tip popup)
+                  jedi:tooltip-show '(pos-tip popup)
+                  jedi:environment-root "env"
+                  jedi:environment-virtualenv (append python-environment-virtualenv
+                                                     '("--python" "/usr/local/bin/python3")))))
+
 (eval-after-load "jedi"
   '(progn
      (setq jedi:server-command
@@ -122,6 +113,7 @@
 ;; jedi keyboard mappings
 (defun jedi-config:setup-keys ()
   "Custom keyboard mapping for jedi."
+   (local-set-key (kbd "M-TAB") 'jedi:complete)
    (local-set-key (kbd "M-.") 'jedi:goto-definition)
    (local-set-key (kbd "M-,") 'jedi:goto-definition-pop-marker)
    (local-set-key (kbd "M-?") 'jedi:show-doc)
@@ -141,6 +133,8 @@
             )))
 (add-hook 'python-mode-hook 'my-python-hooks)
 
+(with-eval-after-load 'python
+  (remove-hook 'python-mode-hook #'python-setup-shell))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  python3 shell interpreter                                              ;;
@@ -148,7 +142,10 @@
 (setq python-shell-interpreter "/usr/local/bin/ipython3"
       ;; if extras are needed with ipython3
       ; (setq python-shell-interpreter-args "--pylab")
-      python-shell-interpreter-args "-i"
+      python-shell-interpreter-args (if (is-mac)
+                                        "--matplotlib=osx --colors=Linux"
+                                      (if (is-linux)
+                                          "--gui=wx --matplotlib=wx --colors=Linux"))
       ;; additional shell options added
       python-shell-prompt-regexp "In \\[[0-9]+\\]: "
       python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
@@ -185,6 +182,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setenv "PYTHONPATH" "/usr/local/lib/python3.5/site-packages:")
 
+(defun set-pypath-from-shell-pythonpath ()
+  "Set the PYTHONPATH variable as its not pulled from .profile."
+  (let ((path-from-shell (shell-command-to-string "$SHELL -i -c 'echo $PYTHONPATH'")))
+    (setenv "PYTHONPATH" path-from-shell)))
+
+(if window-system (set-pypath-from-shell-pythonpath))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; start elpy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -252,24 +255,33 @@
   "Flycheck python lint support."
   (flycheck-mode))
 (add-hook 'python-mode-hook #'flycheck-python-setup)
+(add-hook 'python-mode-hook
+          (lambda ()
+            (setq flycheck-python-flake8-executable "/usr/local/bin/flake8"
+                  flycheck-pylintrc (concat (getenv "HOME") ".pylintrc"))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; pylint integration through flymake                                       ;;
+;; pylint/pyflakes integration through flymake                              ;;
 ;; Configure flymake for Python                                             ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (when (load "flymake" t)
   (defun flymake-pylint-init ()
+    "Flymake lint for python."
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
                        'flymake-create-temp-inplace))
            (local-file (file-relative-name
                         temp-file
                         (file-name-directory buffer-file-name))))
-      (list "epylint" (list local-file))))
+      ;; (list "epylint" (list local-file))
+      (list "pyflakes" (list local-file))))
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pylint-init)))
 
 ;; Set as a minor mode for Python
-(add-hook 'python-mode-hook '(lambda () (flymake-mode)))
+(add-hook 'python-mode-hook
+          (lambda ()
+            (unless (eq buffer-file-name nil) (flymake-mode 1))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; To avoid having to mouse hover for the error message, these functions   ;;

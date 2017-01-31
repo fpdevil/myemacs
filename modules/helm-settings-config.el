@@ -46,5 +46,4 @@
 (helm-popup-tip-mode 1)
 
 (provide 'helm-settings-config)
-
 ;;; helm-settings-config.el ends here

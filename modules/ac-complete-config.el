@@ -27,9 +27,13 @@
   )
 
 (setq ac-auto-show-menu t
-      ac-delay 0.6
-      ac-quick-help-delay 1.0
-      ; ac-use-quick-help t
+      ac-delay 0.8
+      ac-quick-help-delay 0.8
+      ac-auto-start 2
+      ac-use-menu-map t
+      ac-menu-height 30
+      ac-ignore-case nil
+      ac-use-quick-help t
       ac-quick-help-prefer-pos-tip t
       ac-use-fuzzy t
       ac-fuzzy-enable t

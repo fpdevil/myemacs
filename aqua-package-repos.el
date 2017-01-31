@@ -135,6 +135,7 @@
     ;;;;;; company backends for completion      ;;;;;;
     company-jedi                                ;; company jedi mode for python
     company-distel                              ;; company distel mode for erlang
+    company-erlang                              ;; company backend for erlang, ivy-erlang-complete
     distel-completion-lib                       ;; distel-completion is needed for company-distel
     company-dict                                ;; backend that emulates ac-source-dictionary
     company-quickhelp                           ;; documentation popup for company
@@ -200,6 +201,7 @@
     python-pylint                               ;; python linter
     py-yapf                                     ;; python yapf
     pyvenv                                      ;; python virtual environment interface for Emacs
+    py-autopep8                                 ;; integrate autopep8 into Emacs
     ;;;;;; haskell programming modes            ;;;;;;
     haskell-mode                                ;; haskell language support
     company-ghc                                 ;; haskell company auto-completion
@@ -231,6 +233,7 @@
     ;;;;;; c/c++ language support               ;;;;;;
     irony                                       ;; a c/c++ minor mode for Emacs powered by libclang
     irony-eldoc                                 ;; eldoc support in irony-mode
+    clang-format                                ;; code formatting
     ;;;;;; yasnippets package                   ;;;;;;
     yasnippet                                   ;; Yet another snippet extension
     helm-c-yasnippet                            ;; Helm source for yasnippet
@@ -352,24 +355,26 @@
 ;; currently the below are all customized supported configurations.
 ;;
 ;; miscellaneous settings
+;; themes
 ;; company
 ;; company-quickhelp
 ;; auto-complete
 ;; flycheck
+;; flyspell
 ;; helm
-;; smartparens
-;; paredit
+;; smart parentheses
+;; parenthesis edit
 ;; rainbow-mode
 ;; rainbow identifiers
 ;; rainbow-delimiters
 ;; hihlight-symbols
 ;; fringe
 ;; neotree
-;; popwin
-;; ecb
+;; popup window
+;; Emacs code browser ecb
 ;; org bullets
 ;; multiple-cursors
-;; yasnippets
+;; code snippets with yas
 ;; gitgutter-config
 ;; weather info
 ;; which-key
@@ -386,6 +391,7 @@
 ;; c/c++
 ;; web
 ;; clojure
+;; markdown
 ;; ycm-config.el
 ;; projectile
 ;; delight and dim
@@ -393,15 +399,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar configs
     '(
+      "misc-config"
+      "themes-config"
       "company-config"
       "ac-complete-config"
       "flycheck-config"
-      "misc-config"
+      "flyspell-config"
       "helm-settings-config"
       "rbow-config"
       "rbow-identifiers-config"
       "rainbow-delims-config"
-      "smartparens-config"
+      "smart-config"
       "paredit-config"
       "highlight-symbol-config"
       "fringe-config"
@@ -416,16 +424,17 @@
       "whichkey-config"
       "evil-config"
       "xslt-process-config"
-      "nxml-config"
+      "cpp-config"
+      "python-config"
       "haskell-config"
       "erlang-config"
-      "python-config"
-      "scala-config"
       "elixir-config"
+      "scala-config"
       "go-config"
-      "cpp-config"
-      "web-config"
       "clojure-config"
+      "nxml-config"
+      "web-config"
+      "markdown-config"
       "ycm-config"
       "projectile-config"
       "delighted-config"
@@ -467,5 +476,4 @@
 
 
 (provide 'aqua-package-repos)
-
 ;;; aqua-package-repos.el ends here

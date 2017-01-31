@@ -37,7 +37,7 @@
       company-tooltip-flip-when-above t
       ;; additional options
       company-tooltip-limit 20                       ; bigger popup window
-      company-idle-delay 0.2                         ; decrease delay before autocompletion popup shows
+      company-idle-delay 0.4                         ; decrease delay before autocompletion popup shows
       company-echo-delay 0                           ; remove annoying blinking
       company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
 ;;
@@ -50,7 +50,6 @@
 (with-eval-after-load 'company
   (company-flx-mode +1))
 
-
 ;;
 ; look for dictionary files
 ;;
@@ -62,7 +61,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq-default company-backends
     '((company-yasnippet
-       ; company-ispell
+       ;company-ispell
        company-elisp
        company-clang
        company-nxml
@@ -85,6 +84,13 @@
   '(progn
      (define-key company-mode-map (kbd "C-:") 'helm-company)
      (define-key company-active-map (kbd "C-:") 'helm-company)))
+
+;;
+; company math mode
+;;
+;; (with-eval-after-load 'company
+;;   (add-to-list 'company-math-symbols-unicode)
+;;   (add-to-list 'company-math-symbols-latex))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

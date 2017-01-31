@@ -11,6 +11,7 @@
 (require 'cl)
 (require 'cl-lib)
 (require 'imenu)
+(require 'company-erlang)
 (require 'ivy-erlang-complete)
 ;;;
 ;;; Code:
@@ -49,6 +50,8 @@
 (add-hook 'erlang-mode-hook #'ivy-erlang-complete-init)
 ;; automatic update completion data after save
 (add-hook 'after-save-hook #'ivy-erlang-complete-reparse)
+;; company-erlang
+(add-hook 'erlang-mode-hook #'company-erlang-init)
 ;;
 (setq flycheck-erlang-include-path '("../include" "../deps"))
 
@@ -98,13 +101,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; erlang binaries path setup                                                ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq load-path (cons "/usr/local/opt/erlang/lib/erlang/lib/tools-*/emacs"
-load-path))
+(setq load-path
+      (cons "/usr/local/opt/erlang/lib/erlang/lib/tools-*/emacs"
+            load-path))
 (setq erlang-root-dir "/usr/local/opt/erlang/lib/erlang")
-;; below conditional code is needed for proper elang load
+
+;; below conditional code is needed for loading proper erlang vm
 (if
     (not (boundp 'erlang-root-dir))
-    (message "Skipping erlang-mode: erlang-root-dir not defined")
+    (message "Discarding the erlang-mode: erlang-root-dir not defined")
   (progn
     (set 'erlang-bin (concat erlang-root-dir "/bin/"))
     (set 'erlang-lib (concat erlang-root-dir "/lib/"))
@@ -129,8 +134,9 @@ load-path))
                             "emacs")
                            load-path))
           (set 'load-path (cons (file-name-directory erlang-mode-path) load-path))
-          (require 'erlang-start))
-      (message "Skipping erlang-mode: %s and/or %s not readable"
+          (require 'erlang-start)
+          (require 'erlang-flymake))
+      (message "Discarding the erlang-mode: %s and/or %s not readable"
 erlang-bin erlang-mode-path))))
 
 (setq erlang-man-root-dir "/usr/local/opt/erlang/lib/erlang/man")
@@ -170,7 +176,11 @@ erlang-bin erlang-mode-path))))
     ;; Start up an inferior erlang with node name `distel'
     (let ((file-buffer (current-buffer))
           (file-window (selected-window)))
-      (setq inferior-erlang-machine-options '("-name" "distel@localhost"))
+      (setq inferior-erlang-machine-options
+            '("-name" "distel@localhost"
+              "-pz" "ebin deps/*/ebin apps/*/ebin"
+              "-boot" "start_sasl"
+              ))
       (switch-to-buffer-other-window file-buffer)
       (inferior-erlang)
       (select-window file-window)
@@ -196,7 +206,8 @@ erlang-bin erlang-mode-path))))
 (require 'auto-complete-distel)
 (ac-config-default)
 (add-to-list 'ac-sources 'auto-complete-distel)
-;(add-to-list 'ac-dictionary-directories "~/.emacs.d/vendor/auto-complete/dict")
+(add-to-list 'ac-dictionary-directories
+             (concat (getenv "HOME") "/.emacs.d/vendor/auto-complete/dict"))
 
 (setq ac-auto-show-menu    0.2)
 (setq ac-delay             0.2)
@@ -256,7 +267,8 @@ erlang-bin erlang-mode-path))))
 (setq erlang-flymake-location (concat emacs-dir "/flymake/eflymake"))
 
 (defun flymake-syntaxerl ()
- (flymake-compile-script-path "/opt/erlang/syntaxerl"))
+  "Erlang syntax checker for flymake."
+  (flymake-compile-script-path "/opt/erlang/syntaxerl"))
 
 (defun flymake-erlang-init ()
   "Erlang flymake compilation settings."

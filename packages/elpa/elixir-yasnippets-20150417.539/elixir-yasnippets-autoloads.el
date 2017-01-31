@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "elixir-yasnippets" "elixir-yasnippets.el"
-;;;;;;  (22640 18900 0 0))
+;;;;;;  (22669 26094 0 0))
 ;;; Generated autoloads from elixir-yasnippets.el
 
 (autoload 'elixir-snippets-initialize "elixir-yasnippets" "\
@@ -16,7 +16,7 @@
 
 ;;;***
 
-;;;### (autoloads nil nil ("elixir-yasnippets-pkg.el") (22640 18900
+;;;### (autoloads nil nil ("elixir-yasnippets-pkg.el") (22669 26094
 ;;;;;;  0 0))
 
 ;;;***

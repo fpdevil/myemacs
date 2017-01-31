@@ -31,5 +31,4 @@
 
 
 (provide 'neotree-config)
-
 ;;; neotree-config.el ends here

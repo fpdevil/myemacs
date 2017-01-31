@@ -182,6 +182,108 @@
     (semanticdb-table "semanticdb-table"
       :major-mode c-mode
       :tags 
+        '( ("_INT8_T" variable (:constant-flag t) nil [1349 1356])
+            ("int8_t" type
+               (:typedef ("signed char")
+                :type "typedef")
+                nil [1357 1387]))          
+      :file "_int8_t.h"
+      :pointmax 1409
+      :fsize 1408
+      :lastmodtime '(22574 33310 0 0)
+      :unmatched-syntax nil
+      :lexical-table 
+        '(("_INT8_T")
+          )
+)
+    (semanticdb-table "semanticdb-table"
+      :major-mode c-mode
+      :tags 
+        '( ("_INT16_T" variable (:constant-flag t) nil [1350 1358])
+            ("int16_t" type
+               (:typedef ("short")
+                :type "typedef")
+                nil [1359 1383]))          
+      :file "_int16_t.h"
+      :pointmax 1406
+      :fsize 1405
+      :lastmodtime '(22574 33310 0 0)
+      :unmatched-syntax nil
+      :lexical-table 
+        '(("_INT16_T")
+          )
+)
+    (semanticdb-table "semanticdb-table"
+      :major-mode c-mode
+      :tags 
+        '( ("_INT32_T" variable (:constant-flag t) nil [1350 1358])
+            ("int32_t" type
+               (:typedef ("int")
+                :type "typedef")
+                nil [1359 1381]))          
+      :file "_int32_t.h"
+      :pointmax 1404
+      :fsize 1403
+      :lastmodtime '(22574 33310 0 0)
+      :unmatched-syntax nil
+      :lexical-table 
+        '(("_INT32_T")
+          )
+)
+    (semanticdb-table "semanticdb-table"
+      :major-mode c-mode
+      :tags 
+        '( ("_INT64_T" variable (:constant-flag t) nil [1350 1358])
+            ("int64_t" type
+               (:typedef ("long long")
+                :type "typedef")
+                nil [1359 1386]))          
+      :file "_int64_t.h"
+      :pointmax 1409
+      :fsize 1408
+      :lastmodtime '(22574 33310 0 0)
+      :unmatched-syntax nil
+      :lexical-table 
+        '(("_INT64_T")
+          )
+)
+    (semanticdb-table "semanticdb-table"
+      :major-mode c-mode
+      :tags 
+        '( ("_INTPTR_T" variable (:constant-flag t) nil [1356 1365])
+            ("intptr_t" type
+               (:typedef ("__darwin_intptr_t" type (:type "class") nil nil)
+                :type "typedef")
+                nil [1366 1401]))          
+      :file "_intptr_t.h"
+      :pointmax 1425
+      :fsize 1424
+      :lastmodtime '(22574 33310 0 0)
+      :unmatched-syntax nil
+      :lexical-table 
+        '(("_INTPTR_T")
+          )
+)
+    (semanticdb-table "semanticdb-table"
+      :major-mode c-mode
+      :tags 
+        '( ("_UINTPTR_T" variable (:constant-flag t) nil [1357 1367])
+            ("uintptr_t" type
+               (:typedef ("unsigned long")
+                :type "typedef")
+                nil [1368 1401]))          
+      :file "_uintptr_t.h"
+      :pointmax 1426
+      :fsize 1425
+      :lastmodtime '(22574 33314 0 0)
+      :unmatched-syntax nil
+      :lexical-table 
+        '(("_UINTPTR_T")
+          )
+)
+    (semanticdb-table "semanticdb-table"
+      :major-mode c-mode
+      :tags 
         '( ("_MODE_T" variable (:constant-flag t) nil [1355 1362])
             ("mode_t" type
                (:typedef ("__darwin_mode_t" type (:type "class") nil nil)
@@ -211,6 +313,36 @@
       :unmatched-syntax nil
       :lexical-table 
         '(("_DEV_T")
+          )
+)
+    (semanticdb-table "semanticdb-table"
+      :major-mode c-mode
+      :tags 
+        '( ("offsetof" variable (:constant-flag t) nil [1355 1363]))          
+      :file "_offsetof.h"
+      :pointmax 1423
+      :fsize 1422
+      :lastmodtime '(22574 33311 0 0)
+      :unmatched-syntax nil
+      :lexical-table 
+        '(("offsetof" (spp-arg-list ("type" "field") 1363 . 1376) . ((symbol "__offsetof" 1377 . 1387) (semantic-list "(type, field)" 1387 . 1400)))
+          )
+)
+    (semanticdb-table "semanticdb-table"
+      :major-mode c-mode
+      :tags 
+        '( ("_PTRDIFF_T" variable (:constant-flag t) nil [1353 1363])
+            ("ptrdiff_t" type
+               (:typedef ("__darwin_ptrdiff_t" type (:type "class") nil nil)
+                :type "typedef")
+                nil [1364 1401]))          
+      :file "_ptrdiff_t.h"
+      :pointmax 1426
+      :fsize 1425
+      :lastmodtime '(22574 33312 0 0)
+      :unmatched-syntax nil
+      :lexical-table 
+        '(("_PTRDIFF_T")
           )
 )
     (semanticdb-table "semanticdb-table"
@@ -440,74 +572,6 @@
     (semanticdb-table "semanticdb-table"
       :major-mode c-mode
       :tags 
-        '( ("_INT8_T" variable (:constant-flag t) nil [1349 1356])
-            ("int8_t" type
-               (:typedef ("signed char")
-                :type "typedef")
-                nil [1357 1387]))          
-      :file "_int8_t.h"
-      :pointmax 1409
-      :fsize 1408
-      :lastmodtime '(22574 33310 0 0)
-      :unmatched-syntax nil
-      :lexical-table 
-        '(("_INT8_T")
-          )
-)
-    (semanticdb-table "semanticdb-table"
-      :major-mode c-mode
-      :tags 
-        '( ("_INT16_T" variable (:constant-flag t) nil [1350 1358])
-            ("int16_t" type
-               (:typedef ("short")
-                :type "typedef")
-                nil [1359 1383]))          
-      :file "_int16_t.h"
-      :pointmax 1406
-      :fsize 1405
-      :lastmodtime '(22574 33310 0 0)
-      :unmatched-syntax nil
-      :lexical-table 
-        '(("_INT16_T")
-          )
-)
-    (semanticdb-table "semanticdb-table"
-      :major-mode c-mode
-      :tags 
-        '( ("_INT32_T" variable (:constant-flag t) nil [1350 1358])
-            ("int32_t" type
-               (:typedef ("int")
-                :type "typedef")
-                nil [1359 1381]))          
-      :file "_int32_t.h"
-      :pointmax 1404
-      :fsize 1403
-      :lastmodtime '(22574 33310 0 0)
-      :unmatched-syntax nil
-      :lexical-table 
-        '(("_INT32_T")
-          )
-)
-    (semanticdb-table "semanticdb-table"
-      :major-mode c-mode
-      :tags 
-        '( ("_INT64_T" variable (:constant-flag t) nil [1350 1358])
-            ("int64_t" type
-               (:typedef ("long long")
-                :type "typedef")
-                nil [1359 1386]))          
-      :file "_int64_t.h"
-      :pointmax 1409
-      :fsize 1408
-      :lastmodtime '(22574 33310 0 0)
-      :unmatched-syntax nil
-      :lexical-table 
-        '(("_INT64_T")
-          )
-)
-    (semanticdb-table "semanticdb-table"
-      :major-mode c-mode
-      :tags 
         '( ("_U_INT8_T" variable (:constant-flag t) nil [1351 1360])
             ("u_int8_t" type
                (:typedef ("unsigned char")
@@ -571,40 +635,6 @@
       :unmatched-syntax nil
       :lexical-table 
         '(("_U_INT64_T")
-          )
-)
-    (semanticdb-table "semanticdb-table"
-      :major-mode c-mode
-      :tags 
-        '( ("_INTPTR_T" variable (:constant-flag t) nil [1356 1365])
-            ("intptr_t" type
-               (:typedef ("__darwin_intptr_t" type (:type "class") nil nil)
-                :type "typedef")
-                nil [1366 1401]))          
-      :file "_intptr_t.h"
-      :pointmax 1425
-      :fsize 1424
-      :lastmodtime '(22574 33310 0 0)
-      :unmatched-syntax nil
-      :lexical-table 
-        '(("_INTPTR_T")
-          )
-)
-    (semanticdb-table "semanticdb-table"
-      :major-mode c-mode
-      :tags 
-        '( ("_UINTPTR_T" variable (:constant-flag t) nil [1357 1367])
-            ("uintptr_t" type
-               (:typedef ("unsigned long")
-                :type "typedef")
-                nil [1368 1401]))          
-      :file "_uintptr_t.h"
-      :pointmax 1426
-      :fsize 1425
-      :lastmodtime '(22574 33314 0 0)
-      :unmatched-syntax nil
-      :lexical-table 
-        '(("_UINTPTR_T")
           )
 ))
   :file "!usr!include!sys!_types!semantic.cache"

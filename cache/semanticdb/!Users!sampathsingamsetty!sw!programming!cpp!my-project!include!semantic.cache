@@ -1,0 +1,30 @@
+;; Object semanticdb-project-database-file
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "semanticdb-project-database-file"
+  :tables
+  (list
+    (semanticdb-table "semanticdb-table"
+      :major-mode c-mode
+      :tags 
+        '( ("ADD_H" variable (:constant-flag t) nil [42 47])
+            ("ADD_H" variable (:constant-flag t) nil [42 47])
+            ("ADD_H" variable (:constant-flag t) nil [42 47])
+            ("add" function
+               (:prototype-flag t
+                :arguments 
+                  ( ("x" variable (:type "int") (reparse-symbol arg-sub-list) [57 63])
+                    ("y" variable (:type "int") (reparse-symbol arg-sub-list) [64 70]))                  
+                :type "int")
+                nil [49 71]))          
+      :file "add.h"
+      :pointmax 80
+      :fsize 79
+      :lastmodtime '(22670 27698 0 0)
+      :unmatched-syntax '((thing 28 . 33) (thing 21 . 27) (thing 20 . 21))
+      :lexical-table 
+        '(("ADD_H")
+          )
+))
+  :file "!Users!sampathsingamsetty!sw!programming!cpp!my-project!include!semantic.cache"
+  :semantic-tag-version "2.0"
+  :semanticdb-version "2.2")
