@@ -5,10 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(aquamacs-customization-version-id 0 t)
  '(company-ghc-show-info t)
- '(custom-enabled-themes (quote (material-light)))
- '(custom-safe-themes
-   (quote
-    ("5dc0ae2d193460de979a463b907b4b2c6d2c9c4657b2e9e66b8898d2592e3de5" "251348dcb797a6ea63bbfe3be4951728e085ac08eee83def071e4d2e3211acc3" default)))
+ '(custom-enabled-themes (quote nil))
  '(git-gutter:added-sign "☀")
  '(git-gutter:deleted-sign "☂")
  '(git-gutter:modified-sign "☁")
@@ -26,6 +23,9 @@
  '(haskell-tags-on-save nil)
  '(hindent-style "chris-done")
  '(inferior-haskell-find-haddock nil)
+ '(package-selected-packages
+   (quote
+    (wttrin zerodark-theme zenburn-theme xterm-color xah-math-input which-key web-mode virtualenvwrapper tern-auto-complete sunshine sublime-themes shm rainbow-mode rainbow-identifiers rainbow-delimiters python-pylint py-yapf py-autopep8 popwin org-bullets neotree monokai-theme moe-theme material-theme markdown-mode manage-minor-mode majapahit-theme latex-pretty-symbols key-chord json-mode js2-refactor jedi irony-eldoc iedit hindent highlight-symbol hi2 helm-projectile helm-flycheck helm-company helm-clojuredocs helm-cider helm-c-yasnippet haskell-snippets google-c-style golint go-eldoc go-autocomplete git-gutter flymake-python-pyflakes flymake-hlint flymake-google-cpplint flymake-cursor flycheck-ycmd flycheck-tip flycheck-pos-tip flycheck-mix flycheck-irony flycheck-haskell flycheck-elixir flycheck-color-mode-line flycheck-clojure flatui-theme evil-surround evil-smartparens evil-paredit evil-leader esup ensime elpy elixir-yasnippets ecb dracula-theme discover-my-major diminish dim delight darkokai-theme cyberpunk-theme company-ycmd company-quickhelp company-math company-jedi company-irony-c-headers company-irony company-ghci company-ghc company-flx company-erlang company-distel company-dict company-cabal company-c-headers color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized color-theme clojure-snippets clojure-mode-extra-font-locking clang-format buffer-move auto-complete-nxml auto-complete-distel auto-complete-clang auto-complete-c-headers airline-themes ac-js2 ac-haskell-process ac-cider ac-alchemist)))
  '(shm-auto-insert-bangs t)
  '(shm-auto-insert-skeletons t)
  '(shm-use-hdevtools t)

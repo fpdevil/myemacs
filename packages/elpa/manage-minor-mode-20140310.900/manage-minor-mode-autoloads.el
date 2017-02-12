@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "manage-minor-mode" "manage-minor-mode.el"
-;;;;;;  (22669 26126 0 0))
+;;;;;;  (22687 16977 0 0))
 ;;; Generated autoloads from manage-minor-mode.el
 
 (autoload 'manage-minor-mode-set "manage-minor-mode" "\

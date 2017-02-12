@@ -276,11 +276,12 @@ erlang-bin erlang-mode-path))))
        'flymake-create-temp-inplace))
   (local-file (file-relative-name temp-file
   (file-name-directory buffer-file-name)))
-     (escript-exe (concat erlang-root-dir "/bin/escript"))
+  (list (concat (getenv "HOME") "/.emacs.d/flymake.eflymake"))
+  (escript-exe (concat erlang-root-dir "/bin/escript"))
   (eflymake-loc (expand-file-name erlang-flymake-location)))
   (if (not (file-exists-p eflymake-loc))
         (error "Please set erlang-flymake-location to an actual location")
-  (list escript-exe(list eflymake-loc local-file)))))
+  (list escript-exe (list eflymake-loc local-file)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; enable flymake only for erlang mode                                           ;;
@@ -303,21 +304,59 @@ erlang-bin erlang-mode-path))))
 
 (erlang-flymake-only-on-save)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; paredit settings                                                              ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(eval-after-load 'erlang
-  '(progn
-     (setq erlang-indent-level 4)
-     (define-key erlang-mode-map "{" 'paredit-open-curly)
-     (define-key erlang-mode-map "}" 'paredit-close-curly)
-     (define-key erlang-mode-map "[" 'paredit-open-bracket)
-     (define-key erlang-mode-map "]" 'paredit-close-bracket)
-     (define-key erlang-mode-map (kbd "C-M-h") 'backward-kill-word)
-     (define-key erlang-mode-map (kbd "RET")
-       'reindent-then-newline-and-indent)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; enable flymake for rebar projects                                             ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun ebm-find-rebar-top-recr (dirname)
+      (let* ((project-dir (locate-dominating-file dirname "rebar.config")))
+        (if project-dir
+            (let* ((parent-dir (file-name-directory (directory-file-name project-dir)))
+                   (top-project-dir (if (and parent-dir (not (string= parent-dir "/")))
+                                       (ebm-find-rebar-top-recr parent-dir)
+                                      nil)))
+              (if top-project-dir
+                  top-project-dir
+                project-dir))
+              project-dir)))
 
+    (defun ebm-find-rebar-top ()
+      (interactive)
+      (let* ((dirname (file-name-directory (buffer-file-name)))
+             (project-dir (ebm-find-rebar-top-recr dirname)))
+        (if project-dir
+            project-dir
+          (erlang-flymake-get-app-dir))))
+
+     (defun ebm-directory-dirs (dir name)
+        "Find all directories in DIR."
+        (unless (file-directory-p dir)
+          (error "Not a directory `%s'" dir))
+        (let ((dir (directory-file-name dir))
+              (dirs '())
+              (files (directory-files dir nil nil t)))
+            (dolist (file files)
+              (unless (member file '("." ".."))
+                (let ((absolute-path (expand-file-name (concat dir "/" file))))
+                  (when (file-directory-p absolute-path)
+                    (if (string= file name)
+                        (setq dirs (append (cons absolute-path
+                                                 (ebm-directory-dirs absolute-path name))
+                                           dirs))
+                        (setq dirs (append
+                                    (ebm-directory-dirs absolute-path name)
+                                    dirs)))))))
+              dirs))
+
+    (defun ebm-get-deps-code-path-dirs ()
+        (ebm-directory-dirs (ebm-find-rebar-top) "ebin"))
+
+    (defun ebm-get-deps-include-dirs ()
+       (ebm-directory-dirs (ebm-find-rebar-top) "include"))
+
+    (fset 'erlang-flymake-get-code-path-dirs 'ebm-get-deps-code-path-dirs)
+    (fset 'erlang-flymake-get-include-dirs-function 'ebm-get-deps-include-dirs)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-hook 'erlang-mode-hook 'erlang-font-lock-level-3)
 

@@ -76,7 +76,7 @@
 
 (add-hook 'python-mode-hook 'run-python-once)
 
-
+;;
 ;; enable python-mode with jedi
 (add-hook 'python-mode-hook 'jedi:setup)
 
@@ -98,9 +98,11 @@
             (setq jedi:setup-keys t
                   jedi:complete-on-dot t
                   ;; hack to never show in-function call automatically
-                  jedi:get-in-function-call-delay 0.2
-                  jedi:tooltip-method '(pos-tip popup)
-                  jedi:tooltip-show '(pos-tip popup)
+                  ;; jedi:get-in-function-call-delay 0.2
+                  jedi:get-in-function-call-delay 100
+                  jedi:tooltip-method '(popup pos-tip)
+                  jedi:tooltip-show '(popup pos-tip)
+                  jedi:doc-mode 'rst-mode
                   jedi:environment-root "env"
                   jedi:environment-virtualenv (append python-environment-virtualenv
                                                      '("--python" "/usr/local/bin/python3")))))
@@ -150,8 +152,8 @@
       python-shell-prompt-regexp "In \\[[0-9]+\\]: "
       python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
       python-shell-completion-setup-code "from IPython.core.completerlib import module_completion"
-      python-shell-completion-module-string-code  "';'.join(module_completion('''%s'''))\n"
-      python-shell-completion-string-code "';'.join(get_ipython().Completer.all_completions('''%s'''))\n"
+      ;python-shell-completion-module-string-code  "';'.join(module_completion('''%s'''))\n"
+      ;python-shell-completion-string-code "';'.join(get_ipython().Completer.all_completions('''%s'''))\n"
       ;; python3 command
       py-python-command "/usr/local/bin/python3")
 ;; below line specified for handling the args-out-of-range error in buffer
@@ -213,7 +215,7 @@
 ; use ipython if available
 ; (elpy-use-ipython)
 ;;
-(if (executable-find "ipython")
+(if (executable-find "/usr/local/bin/ipython3")
     (elpy-use-ipython))
 
 ;;
@@ -224,7 +226,7 @@
 (setq
   elpy-rpc-backend "jedi"
   elpy-rpc-python-command "/usr/local/bin/python3"
-  elpy-rpc-python-path "/usr/local/lib/python3.5/site-packages"
+  elpy-rpc-python-path "/usr/local/lib/python3.6/site-packages"
   flycheck-python-flake8-executable "/usr/local/bin/flake8"
   python-check-command "/usr/local/bin/pyflakes"
   python-environment-directory "~/.emacs.d/.python-environments")
@@ -235,13 +237,11 @@
 ;; M-TAB (elpy-company-backend) as per the below documentation
 ;; https://elpy.readthedocs.io/en/latest/ide.html#completion
 ;;
-
 ;; make sure elpy python completions don't start automatically
 (add-hook 'elpy-mode-hook
            (lambda ()
-;;              (require 'eval-in-repl-python)
-;;              (define-key elpy-mode-map "\C-c\C-c" 'eir-eval-in-python)
-              (setq company-idle-delay nil)))
+              (setq company-idle-delay nil)
+              'elpy-mode-hook 'py-autopep8-enable-on-save))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; end elpy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 

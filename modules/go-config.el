@@ -16,7 +16,7 @@
 ;; load go-specific language syntax                                        ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun go-mode-setup ()
-  "Major mode for Go programming languauge."
+  "Major mode for Go programming language."
   (go-eldoc-setup))
 
 (add-hook 'go-mode-hook 'go-mode-setup)
@@ -25,7 +25,7 @@
 ;;format the code before saving                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun go-mode-setup ()
-  "Set the Major mode for GO programming language."
+  "Consistent code formatting through gofmt."
   (go-eldoc-setup)
   (add-hook 'before-save-hook 'gofmt-before-save))
 (add-hook 'go-mode-hook 'go-mode-setup)
@@ -34,7 +34,7 @@
 ;; all go imports                                                          ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun go-mode-setup ()
-  "Set the Major mode for GO programming language."
+  "Keep your imports section nice and tidy with goimports."
   (go-eldoc-setup)
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save))
@@ -44,7 +44,7 @@
 ;; godef, shows function definition when calling godef-jump                ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun go-mode-setup ()
-  "Set the Major mode for GO programming language."
+  "Lookup the function definitions using godef."
   (go-eldoc-setup)
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save)
@@ -68,9 +68,9 @@
 ;; load auto-complete                                                      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (ac-config-default)
+(setenv "GOPATH" (concat (getenv "HOME") "/sw/programming/gocode/go"))
+(add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs"))
 
-(add-to-list 'load-path (concat (getenv "GOPATH")  "/src/github.com/golang/lint/misc/emacs"))
 
 (provide 'go-config)
-
 ;;; go-config.el ends here

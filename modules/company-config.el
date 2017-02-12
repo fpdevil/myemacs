@@ -31,14 +31,16 @@
       company-tooltip-align-annotations t
       company-selection-wrap-around t
       company-show-numbers t
+      company-require-match nil
+      company-dabbrev-ignore-case nil
       company-dabbrev-downcase 0
       ; invert navigation direction if completion popup-isearch-match
       ; is displayed on top (happens near the bottom of windows)
       company-tooltip-flip-when-above t
       ;; additional options
       company-tooltip-limit 20                       ; bigger popup window
-      company-idle-delay 0.4                         ; decrease delay before autocompletion popup shows
-      company-echo-delay 0                           ; remove annoying blinking
+      company-idle-delay 0.5                         ; decrease delay before autocompletion popup shows
+      company-echo-delay 0.01                        ; remove annoying blinking
       company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
 ;;
 (auto-complete-mode 1)
@@ -55,13 +57,11 @@
 ;;
 (setq company-dict-dir (concat user-emacs-directory "dict/"))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; specify all the company backends to be included                          ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq-default company-backends
     '((company-yasnippet
-       ;company-ispell
        company-elisp
        company-clang
        company-nxml
@@ -92,6 +92,20 @@
 ;;   (add-to-list 'company-math-symbols-unicode)
 ;;   (add-to-list 'company-math-symbols-latex))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; company-ispell toggle as needed                                          ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun switch-company-ispell ()
+  "Toggle company Ispell mode."
+  (interactive)
+  (cond
+   ((memq 'company-ispell company-backends)
+    (setq company-backends (delete 'company-ispell company-backends))
+    (message "disabling company-ispell mode"))
+   (t
+    (add-to-list 'company-backends 'company-ispell)
+    (message "enabling company-ispell mode"))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                  documentation popup for company                         ;;
@@ -100,6 +114,15 @@
 (setq company-quickhelp-use-propertized-text t)
 
 
-(provide 'company-config)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; highlight annotation when selected, match the search face when selected  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(set-face-background 'company-tooltip-annotation-selection
+                     (face-background 'company-tooltip-selection))
 
+(set-face-foreground 'company-tooltip-search-selection
+                     (face-foreground 'company-tooltip-search))
+
+
+(provide 'company-config)
 ;;; company-config.el ends here

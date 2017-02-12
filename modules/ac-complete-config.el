@@ -27,8 +27,8 @@
   )
 
 (setq ac-auto-show-menu t
-      ac-delay 0.8
-      ac-quick-help-delay 0.8
+      ac-delay 0.2
+      ac-quick-help-delay 1.0
       ac-auto-start 2
       ac-use-menu-map t
       ac-menu-height 30
@@ -43,6 +43,9 @@
 (setq ac-trigger-commands
       (cons 'backward-delete-char-untabify ac-trigger-commands))
 
+;; show the menu
+(setq ac-show-menu-immediately-on-auto-complete t)
+
 (setq-default ac-sources '(ac-source-dictionary
                            ac-source-words-in-buffer
                            ac-source-words-in-all-buffer
@@ -50,9 +53,6 @@
                            ac-source-yasnippet
                            ac-source-abbrev
                            ac-source-words-in-same-mode-buffers))
-;; show the menu
-(setq ac-show-menu-immediately-on-auto-complete t)
-
 
 (add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
 (add-hook 'c-mode-common-hook 'ac-cc-mode-setup)

@@ -106,6 +106,7 @@
 (defvar required-packages
   '(;;;;;; appearance and visual customizations ;;;;;;
     powerline                                   ;; powerline smart mode
+    ;smart-mode-line                            ;; powerful and beautiful mode-line
     delight                                     ;; customize mode names on modeline
     dim                                         ;; mode-line names of major/minor modes
     rainbow-delimiters                          ;; colorful modes (delimiters and color codes)
@@ -190,6 +191,7 @@
     ;;;;;; org modes                            ;;;;;;
     org                                         ;; org-mode setup
     org-bullets                                 ;; org mode with bullets
+    latex-pretty-symbols                        ;; unicode display of characters
     ;;;;;; git integration                      ;;;;;;
     ;magit                                      ;; git status
     git-gutter                                  ;; Emacs port of GitGutter
@@ -359,6 +361,7 @@
 ;; company
 ;; company-quickhelp
 ;; auto-complete
+;; semanticdb configuration
 ;; flycheck
 ;; flyspell
 ;; helm
@@ -395,6 +398,7 @@
 ;; ycm-config.el
 ;; projectile
 ;; delight and dim
+;; latex configuration
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar configs
@@ -403,6 +407,7 @@
       "themes-config"
       "company-config"
       "ac-complete-config"
+      "semantic-config"
       "flycheck-config"
       "flyspell-config"
       "helm-settings-config"
@@ -438,6 +443,7 @@
       "ycm-config"
       "projectile-config"
       "delighted-config"
+      "tex-config"
       )
     "Configuration files which follow the modules/pkgname-config.el format."
     )
@@ -457,7 +463,7 @@
 ;;;; contains packages not in elpa/melpa/marmalade/gnu/org                  ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar custom-load-paths
-  '("erlang/elisp"          ;; erlang lisp modules
+  '(; "erlang/elisp"        ;; erlang lisp modules
     ; "xslide"              ;; xml and xslt syntax, customizations
     "xslt-process/lisp"     ;; xslt processor ide
     )

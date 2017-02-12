@@ -36,12 +36,10 @@
 ;;
 ; change the airline themes as required from the below
 ;;
-;(load-theme 'airline-light)                ; load airline light theme
-;(load-theme 'airline-papercolor)           ; load papercolor theme
-;(load-theme 'airline-molokai)              ; load molokai theme
-;(load-theme 'airline-base16-gui-dark)      ; load airline-base16-gui dark theme
-;(load-theme 'airline-molokai)              ; load airline molokai light theme
-(load-theme 'airline-cool)                 ; load cool theme
+;(load-theme 'airline-light t)                ; light theme
+;(load-theme 'airline-papercolor t)           ; papercolor theme
+;(load-theme 'airline-badwolf t)              ; badwwolf theme
+(load-theme 'airline-cool t)                 ; cool theme
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; setting default color theme to required (from Steve Purcell .emacs)    ;;;
@@ -49,7 +47,7 @@
 (setq-default custom-enabled-themes '(;sanityinc-solarized-light
                                       ;sanityinc-tomorrow-day
                                       ;material
-                                      material-light
+                                      ;material-light
                                       ;mccarthy
                                       ;flatui
                                       ;majapahit-light

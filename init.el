@@ -142,17 +142,34 @@
 (setq iedit-unmatched-lines-invisible-default t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; pull PATH variables from the .zshrc                                    ;;;
+;;; set SHELL and pull PATH variables from the .zshrc                      ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; set shell
+(setenv "SHELL" "/bin/zsh")
 (defun set-exec-path-from-shellpath ()
   "Get the PATH variables from the .zshrc environment file."
   (setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
-  (let ((path-from-shell (shell-command-to-string "$SHELL -i -c 'echo -n $PATH'")))
+  (let ((path-from-shell (replace-regexp-in-string
+                          "[ \t\n]*$"
+                          ""
+                          (shell-command-to-string "$SHELL -i -c 'echo -n $PATH'"))))
     (setenv "PATH" path-from-shell)
+    (setq eshell-path-env path-from-shell)
     (setq exec-path (split-string path-from-shell path-separator))))
 
 (if window-system (set-exec-path-from-shellpath))
 
+;; path variables
+(dolist (dir '("/sbin"
+               "/usr/sbin"
+               "/bin"
+               "/usr/sbin"
+               "/usr/local/bin"))
+  (setenv "PATH" (concat dir ":" (getenv "PATH")))
+  (add-to-list 'exec-path dir))
+
+
+;;; custom init settings are all completed
 
 (provide 'init)
 ;;; init.el ends here

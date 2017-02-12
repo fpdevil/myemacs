@@ -13,6 +13,7 @@
 (require 'undo-tree)
 (require 'evil-leader)
 (require 'evil-paredit)            ;; extension to integrate nicely with paredit
+;(require 'evil-tabs)
 ;;;
 ;;; Code:
 ;;;
@@ -77,8 +78,16 @@
 (dolist (m evil-emacs-state-modes)
   (add-to-list 'evil-insert-state-modes m))
 
+
+;; default leader key is \
 ;; enable evil-leader globally
+(setq evil-leader/in-all-states 1)
 (global-evil-leader-mode)
+(evil-leader/set-leader "-")
+(evil-leader/set-key
+  "e" 'find-file
+  "b" 'switch-to-buffer
+  "k" 'kill-buffer)
 
 
 ;; bind ':ls' command to 'ibuffer instead of 'list-buffers
@@ -96,6 +105,34 @@
               (kbd "/") 'evil-search-forward
               (kbd "n") 'evil-search-next
               (kbd "N") 'evil-search-previous)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; evil tabs configuration :tabnew, gt                                    ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (global-evil-tabs-mode 1)
+;; (define-key evil-normal-state-map (kbd "C-0") (lambda() (interactive) (elscreen-goto 0)))
+;; (define-key evil-normal-state-map (kbd "C- ") (lambda() (interactive) (elscreen-goto 0)))
+;; (define-key evil-normal-state-map (kbd "C-1") (lambda() (interactive) (elscreen-goto 1)))
+;; (define-key evil-normal-state-map (kbd "C-2") (lambda() (interactive) (elscreen-goto 2)))
+;; (define-key evil-normal-state-map (kbd "C-3") (lambda() (interactive) (elscreen-goto 3)))
+;; (define-key evil-normal-state-map (kbd "C-4") (lambda() (interactive) (elscreen-goto 4)))
+;; (define-key evil-normal-state-map (kbd "C-5") (lambda() (interactive) (elscreen-goto 5)))
+;; (define-key evil-normal-state-map (kbd "C-6") (lambda() (interactive) (elscreen-goto 6)))
+;; (define-key evil-normal-state-map (kbd "C-7") (lambda() (interactive) (elscreen-goto 7)))
+;; (define-key evil-normal-state-map (kbd "C-8") (lambda() (interactive) (elscreen-goto 8)))
+;; (define-key evil-normal-state-map (kbd "C-9") (lambda() (interactive) (elscreen-goto 9)))
+;; (define-key evil-insert-state-map (kbd "C-0") (lambda() (interactive) (elscreen-goto 0)))
+;; (define-key evil-insert-state-map (kbd "C- ") (lambda() (interactive) (elscreen-goto 0)))
+;; (define-key evil-insert-state-map (kbd "C-1") (lambda() (interactive) (elscreen-goto 1)))
+;; (define-key evil-insert-state-map (kbd "C-2") (lambda() (interactive) (elscreen-goto 2)))
+;; (define-key evil-insert-state-map (kbd "C-3") (lambda() (interactive) (elscreen-goto 3)))
+;; (define-key evil-insert-state-map (kbd "C-4") (lambda() (interactive) (elscreen-goto 4)))
+;; (define-key evil-insert-state-map (kbd "C-5") (lambda() (interactive) (elscreen-goto 5)))
+;; (define-key evil-insert-state-map (kbd "C-6") (lambda() (interactive) (elscreen-goto 6)))
+;; (define-key evil-insert-state-map (kbd "C-7") (lambda() (interactive) (elscreen-goto 7)))
+;; (define-key evil-insert-state-map (kbd "C-8") (lambda() (interactive) (elscreen-goto 8)))
+;; (define-key evil-insert-state-map (kbd "C-9") (lambda() (interactive) (elscreen-goto 9)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

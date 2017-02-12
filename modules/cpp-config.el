@@ -10,11 +10,12 @@
 ;;; reference http://nilsdeppe.com/posts/emacs-c++-ide
 ;;===========================================================================
 (require 'cl)
+(require 'cc-mode)                      ;; major mode for c and similar languages
 (require 'irony)                        ;; irony cpp ide plugin
 (require 'company-c-headers)            ;; company backends for completing C/C++ headers
 (require 'company-irony-c-headers)      ;; company backend for irony c-headers
 (require 'irony-eldoc)                  ;; eldpc support for irony
-(require 'flycheck-irony)               ;; flycheck checker for the C, C++ and Objective-C languages
+(require 'flycheck-irony)               ;; flycheck checker for the C, C++ and Objective-C
 (require 'auto-complete-clang)          ;; auto complete source for clang. AC+Clang+Yasnippet
 (require 'auto-complete-c-headers)      ;; auto-complete source for C/C++ header files
 (require 'google-c-style)               ;; google's c/c++ style for c-mode
@@ -30,6 +31,9 @@
 (defvar osx-base-path
   "/Applications/Xcode.app/Contents/Developer/Platforms/")
 
+;; making code gnu style
+(setq c-default-style "linux"
+      c-basic-offset 4)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; setup irony modes for c/c++                                              ;;
@@ -72,18 +76,19 @@
                 irony-eldoc))
   (add-hook 'irony-mode-hook mode))
 
+;; company-irony setup, c-header completions
+(add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+(setq company-backends (delete 'company-semantic company-backends))
+(eval-after-load 'company
+ '(add-to-list
+   'company-backends 'company-irony))
+
 
 ;; Load with the `irony-mode` as a grouped back-end
 (eval-after-load 'company
   '(add-to-list
     'company-backends '(company-irony-c-headers
-                        company-irony
-                        company-c-headers)))
-
-;; company-irony setup, c-header completions
-(add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-
-
+                        company-irony)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Format code using clang-format /usr/local/bin/clang-format             ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -126,7 +131,7 @@
   ;; execute command `gcc -xc++ -E -v -` to find the header directories
   (add-to-list 'achead:include-directories '"/usr/local/opt/gcc/include/c++/6.3.0")
   (add-to-list 'achead:include-directories '"/usr/include/c++/4.2.1")
-  (add-to-list 'achead:include-directories '"/usr/local/Cellar/opencv3/HEAD-7dd3723_4/include")
+  (add-to-list 'achead:include-directories '"/usr/local/opt/opencv3/include")
   (add-to-list 'achead:include-directories '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include")
   (add-to-list 'achead:include-directories '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include")
   (add-to-list 'achead:include-directories '"/usr/local/include")
@@ -152,7 +157,7 @@
   "AutoComplete CC Mode."
   (setq ac-sources (append '(ac-source-clang
                              ac-source-yasnippet)
-                           ac-sources)))
+                             ac-sources)))
 (add-hook 'c-mode-common-hook 'my:ac-cc-mode-setup)
 
 
@@ -160,7 +165,7 @@
 ;; for company completion                                                   ;;
 ;; c++ header completion for standard libraries                             ;;
 ;;--------------------------------------------------------------------------;;
-(add-to-list 'company-c-headers-path-system "/usr/local/Cellar/opencv3/HEAD-7dd3723_4/include")
+(add-to-list 'company-c-headers-path-system "/usr/local/opt/opencv3/include")
 (defun my:company-c-headers-init()
   "Build the c headers for adding."
   ;;(setq company-idle-delay nil)
@@ -175,7 +180,7 @@
             "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"
             "/usr/local/opt/gcc/include/c++/6.3.0"
             "/usr/include/c++/4.2.1"
-            "/usr/local/Cellar/opencv3/HEAD-7dd3723_4/include"
+            "/usr/local/opt/opencv3/include"
             "/usr/local/include"
             "/usr/include"
            ))
@@ -195,65 +200,6 @@
 ;; now let's call this function from c/c++ hooks
 (add-hook 'c++-mode-hook 'my:company-c-headers-init)
 (add-hook 'c-mode-hook 'my:company-c-headers-init)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; turn on Semantic                                                       ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'cc-mode)
-(require 'semantic)
-
-; turn on ede mode
-(global-ede-mode 1)
-; activate semantic
-(semantic-mode 1)
-
-
-;;--------------------------------------------------------------------------;;
-;; define a function which adds semantic as a suggestion backend for  auto  ;;
-;; completion ac hook that function to the c-mode-common-hook               ;;
-;;--------------------------------------------------------------------------;;
-(defun my:add-semantic-to-autocomplate()
-  "Sematic mode hook."
-  (add-to-list 'ac-sources 'ac-source-semantic)
-  )
-(add-hook 'c-mode-common-hook 'my:add-semantic-to-autocomplate)
-
-
-;; location for the semantic db
-(setq semanticdb-default-save-directory
-      (concat (getenv "HOME") "/.emacs.d/cache/semanticdb"))
-(global-semanticdb-minor-mode 1)
-;; idle scheduler with automatically reparse buffers in idle time
-(global-semantic-idle-scheduler-mode 1)
-(global-semantic-idle-summary-mode 1)
-(global-semantic-stickyfunc-mode 1)
-(global-semantic-highlight-func-mode t)
-;; use company auto completion
-(global-semantic-idle-completions-mode nil)
-(global-semantic-decoration-mode t)
-(global-semantic-show-unmatched-syntax-mode t)
-
-
-;; Try to make completions when not typing
-'(semantic-complete-inline-analyzer-displayor-class (quote semantic-displayor-tooltip))
-'(semantic-complete-inline-analyzer-idle-displayor-class (quote semantic-displayor-tooltip))
-
-(add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
-(add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
-(add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode)
-(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
-(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
-(add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
-
-;; By default, Semantic automatically includes some default system include
-;; paths such as /usr/include, /usr/local/include. Specify additional ones
-(semantic-add-system-include "/usr/include" 'c++-mode)
-(semantic-add-system-include "/usr/local/include" 'c++-mode)
-(semantic-add-system-include "/usr/local/opt/opencv3/include" 'c++-mode)
-(semantic-add-system-include "/usr/local/opt/opencv3/include/opencv" 'c++-mode)
-(semantic-add-system-include "/usr/local/opt/opencv3/include/opencv2" 'c++-mode)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; flymake                                                                ;;;

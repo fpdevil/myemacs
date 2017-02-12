@@ -45,22 +45,23 @@
 ;; https://github.com/alezost/dim.el                                        ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (dim-major-names
- '((outline-mode        " Ⓞ")
-   (calendar-mode       " 📆")))
+ '((outline-mode          " Ⓞ")
+   (calendar-mode         " 📆")))
 (dim-minor-names
- '((company-mode        " COM" company)
-   (flymake-mode        " FlyM" flymake)
-   (flyspell-mode       " FlyS" flyspell)
-   (git-gutter-mode     " Ⓖ" git-gutter)
-   (visual-line-mode    " Ⓥ")
-   (yas-minor-mode      " Ⓨ")
-   (auto-fill-function  " ℱ")
-   (which-key-mode      " Ⓚ")
-   (eldoc-mode          " Ⓔ" eldoc)
-   (whitespace-mode     " {W}"  whitespace)
-	 (undo-tree-mode      " 🌴")
-   (projectile-mode     " π")
-   (paredit-mode        " {Ƥ}" paredit)))
+ '((company-mode          " COM" company)
+   (flymake-mode          " FlyM" flymake)
+   (flyspell-mode         " FlyS" flyspell)
+   (evil-smartparens-mode " ∈")
+   (git-gutter-mode       " Ⓖ" git-gutter)
+   (visual-line-mode      " Ⓥ")
+   (yas-minor-mode        " Ⓨ")
+   (auto-fill-function    " ℱ")
+   (which-key-mode        " Ⓚ")
+   (eldoc-mode            " Ⓔ" eldoc)
+   (whitespace-mode       " {W}"  whitespace)
+	 (undo-tree-mode        " Ʈ")
+   (projectile-mode       " ㏚")
+   (paredit-mode          " {Ƥ}" paredit)))
 
 
 (provide 'delighted-config)
