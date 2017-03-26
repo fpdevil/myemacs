@@ -150,4 +150,3 @@ Suitable for inclusion in `c-offsets-alist'."
 
 (provide 'google-c-style)
 ;;; google-c-style.el ends here
-closed

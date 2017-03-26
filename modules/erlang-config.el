@@ -30,6 +30,9 @@
 (add-to-list 'auto-mode-alist '(".*\\.es\\'"      . erlang-mode))
 (add-to-list 'auto-mode-alist '(".*\\.xrl\\'"     . erlang-mode))
 (add-to-list 'auto-mode-alist '(".*\\.yrl\\'"     . erlang-mode))
+(add-to-list 'auto-mode-alist '(".[eh]rl'"        . erlang-mode))
+(add-to-list 'auto-mode-alist '(".yaws?'"         . erlang-mode))
+(add-to-list 'auto-mode-alist '(".escript?'"      . erlang-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; erlang compilation options                                                  ;;;
@@ -40,76 +43,23 @@
                             (i . "../deps")
                             (i . "../../")
                             (i . "../../../deps")))
-
-; define where put beam files.
+; define where to put beam files.
 (setq erlang-compile-outdir "../ebin")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; context sensitive completion for erlang without connecting to erlang nodes    ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-hook 'erlang-mode-hook #'ivy-erlang-complete-init)
-;; automatic update completion data after save
-(add-hook 'after-save-hook #'ivy-erlang-complete-reparse)
-;; company-erlang
-(add-hook 'erlang-mode-hook #'company-erlang-init)
-;;
-(setq flycheck-erlang-include-path '("../include" "../deps"))
-
-(defun fix-erlang-project-includes (project-root)
-  "Find erlang include paths for PROJECT-ROOT with project deps."
-  (setq-local flycheck-erlang-include-path
-              (append
-               (s-split
-                "\n"
-                (shell-command-to-string
-                 (concat "find "
-                         project-root
-                         "/*"
-                         " -type d -name include"))
-                t)
-               (list project-root
-                     (concat project-root "/include")
-                     (concat project-root "/deps")
-                     default-directory
-                     (concat
-                      (locate-dominating-file
-                       default-directory
-                       "src") "include")
-                     (concat
-                      (locate-dominating-file
-                       default-directory
-                       "src") "deps")))))
-
-(defun fix-erlang-project-code-path (project-root)
-  "Find erlang include paths for PROJECT-ROOT with project deps."
-  (let ((code-path
-           (split-string (shell-command-to-string
-                        (concat "find " project-root " -type d -name ebin")))
-         ))
-    (setq-local flycheck-erlang-library-path code-path)))
-
-(require 'ivy-erlang-complete)
-(defun my-erlang-hook ()
-  "Setup for erlang."
-  (let ((project-root (ivy-erlang-complete-autosetup-project-root)))
-      (fix-erlang-project-code-path project-root)
-      (fix-erlang-project-includes project-root))
-  (ivy-erlang-complete-init))
-(add-hook 'erlang-mode-hook #'my-erlang-hook)
-(add-hook 'after-save-hook #'ivy-erlang-complete-reparse)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; erlang binaries path setup                                                ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq erlang-root-dir "/usr/local/opt/erlang/lib/erlang")
 (setq load-path
       (cons "/usr/local/opt/erlang/lib/erlang/lib/tools-*/emacs"
             load-path))
-(setq erlang-root-dir "/usr/local/opt/erlang/lib/erlang")
-
+(load "erlang_appwiz" t nil)
+(message "--> loading erlang root %s" erlang-root-dir)
 ;; below conditional code is needed for loading proper erlang vm
 (if
     (not (boundp 'erlang-root-dir))
-    (message "Discarding the erlang-mode: erlang-root-dir not defined")
+    (message "discarding the erlang-mode: erlang-root-dir not defined")
   (progn
     (set 'erlang-bin (concat erlang-root-dir "/bin/"))
     (set 'erlang-lib (concat erlang-root-dir "/lib/"))
@@ -125,7 +75,7 @@
          (file-readable-p erlang-mode-path)
          (file-readable-p erlang-bin))
         (progn
-          (message "Setting up erlang-mode")
+          (message "--> setting up erlang-mode from %s" erlang-root-dir)
           (set 'exec-path (cons erlang-bin exec-path))
           (set 'load-path (cons
                            (concat
@@ -135,18 +85,47 @@
                            load-path))
           (set 'load-path (cons (file-name-directory erlang-mode-path) load-path))
           (require 'erlang-start)
-          (require 'erlang-flymake))
-      (message "Discarding the erlang-mode: %s and/or %s not readable"
-erlang-bin erlang-mode-path))))
+          (require 'erlang-eunit)
+          (require 'erlang-flymake)
+          )
+      (message "--> discarding the erlang-mode: %s and/or %s not readable"
+               erlang-bin erlang-mode-path))))
 
-(setq erlang-man-root-dir "/usr/local/opt/erlang/lib/erlang/man")
-(setq exec-path (cons "/usr/local/opt/erlang/lib/erlang/bin" exec-path))
-(require 'erlang-start)
+(setq erlang-man-root-dir (expand-file-name "man" erlang-root-dir))
+(setq exec-path (cons "/usr/local/opt/erlang/bin" exec-path))
+
+;(require 'erlang-start)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; wrangler refactoring support for erlang                                       ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defcustom wrangler-path nil
+  "Location of the wrangler elisp directory."
+  :group 'erlang-config
+  :type 'string
+  :safe 'stringp)
+
+(setq wrangler-path "/usr/local/lib/erlang/lib/wrangler-1.2.0/elisp")
+
+(when (require 'erlang-start nil t)
+  (when (not (null wrangler-path))
+    (add-to-list 'load-path wrangler-path)
+    (require 'wrangler))
+  (add-hook 'erlang-mode-hook 'erlang-wrangler-on)
+  ;; some wrangler functionalities generate a .dot file and inorder
+  ;; to compile the same and view in graphviz specify the below.
+  (load-file (concat wrangler-path "/graphviz-dot-mode.el"))
+  )
+
+;; Intellisense
+;; (setq load-path (cons "/opt/erlang/esense-1.12" load-path))
+;; (require 'esense-start)
+;; (setq esense-indexer-program "/opt/erlang/esense-1.12/esense.sh")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; distel setup for erlang code auto-completion                              ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(let ((distel-dir "/opt/erlang/distel/elisp"))
+(let ((distel-dir "/usr/local/share/distel/elisp"))
     (unless (member distel-dir load-path)
       ;; add distel-dir to the end of load-path
       (setq load-path (append load-path (list distel-dir)))))
@@ -158,7 +137,8 @@ erlang-bin erlang-mode-path))))
 ; distel-node
 ; distel node connection launch with (^C-^D-n)
 (when (locate-library "distel")
-  (require 'distel)
+  ; distel invoked by wrangler step
+  ;(require 'distel)
   (distel-setup)
   ;; (add-hook 'erlang-mode-hook 'distel-erlang-mode-hook)
   (add-hook 'erlang-mode-hook
@@ -178,13 +158,36 @@ erlang-bin erlang-mode-path))))
           (file-window (selected-window)))
       (setq inferior-erlang-machine-options
             '("-name" "distel@localhost"
-              "-pz" "ebin deps/*/ebin apps/*/ebin"
-              "-boot" "start_sasl"
+              ; "-pz" "ebin deps/*/ebin apps/*/ebin"
+              ; "-boot" "start_sasl"
               ))
+      (message "--> connecting to %s" erl-nodename-cache)
+      (message "--> connecting with %s" inferior-erlang-machine-options)
       (switch-to-buffer-other-window file-buffer)
       (inferior-erlang)
       (select-window file-window)
       (switch-to-buffer file-buffer))))
+;; ==================================================================
+;; (add-to-list 'load-path "/opt/erlang/distel/elisp")
+;;       (require 'distel)
+;;       (distel-setup)
+;; ;; prevent annoying hang-on-compile
+;; (defvar inferior-erlang-prompt-timeout t)
+;; ;; default node name to emacs@localhost
+;; (setq inferior-erlang-machine-options '("-sname" "emacs"))
+;; ;; tell distel to default to that node
+;; (setq erl-nodename-cache
+;;       (make-symbol
+;;        (concat
+;;         "emacs@"
+;;         ;; Mac OS X uses "name.local" instead of "name", this should work
+;;         ;; pretty much anywhere without having to muck with NetInfo
+;;         ;; ... but I only tested it on Mac OS X.
+;;         (car (split-string (replace-regexp-in-string "\n\\'" "" (shell-command-to-string "hostname"))))
+;;         ;(car (split-string (shell-command-to-string "hostname")))
+;;         )))
+;; ==================================================================
+
 ; }}}
 
 ;; for imenu
@@ -201,23 +204,17 @@ erlang-bin erlang-mode-path))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; erlang ide set-up and erlang auto-completion using auto-complete and distel   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;(require 'auto-complete)
-;(require 'auto-complete-config)
 (require 'auto-complete-distel)
 (ac-config-default)
 (add-to-list 'ac-sources 'auto-complete-distel)
-(add-to-list 'ac-dictionary-directories
-             (concat (getenv "HOME") "/.emacs.d/vendor/auto-complete/dict"))
-
 (setq ac-auto-show-menu    0.2)
 (setq ac-delay             0.2)
 (setq ac-menu-height       20)
-; Start auto-completion after 2 characters of a word
+; tart auto-completion after 2 characters of a word
 (setq ac-auto-start 2)
 ; case sensitivity is important when finding matches
 (setq ac-ignore-case nil)
 (setq ac-show-menu-immediately-on-auto-complete t)
-
 ; Erlang auto-complete
 (add-to-list 'ac-modes 'erlang-mode)
 
@@ -225,16 +222,16 @@ erlang-bin erlang-mode-path))))
 ; auto-complete-mode so can interact with inferior erlang and
 ; popup completion turn on when needed.
 ;;
-(add-hook 'erlang-mode-hook (lambda () (auto-complete-mode 1)))
+(add-hook 'erlang-mode-hook
+          (lambda () (auto-complete-mode 1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; erlang auto completion using company mode and distel                          ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'company)
 (require 'company-distel)
 (add-hook 'after-init-hook 'global-company-mode)
 (with-eval-after-load 'company
-  (add-to-list 'company-backends 'company-distel))
+  (add-to-list 'company-backends '(company-distel :with company-yasnippet)))
 
 ; render company's doc-buffer (default <F1> when on a completion-candidate)
 ; in a small popup (using popup.el) instead of showing the whole help-buffer.
@@ -261,8 +258,6 @@ erlang-bin erlang-mode-path))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; on the fly source code checking through flymake                               ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'flymake)
-(require 'erlang-flymake)
 (setq flymake-log-level 3)
 (setq erlang-flymake-location (concat emacs-dir "/flymake/eflymake"))
 
@@ -273,15 +268,15 @@ erlang-bin erlang-mode-path))))
 (defun flymake-erlang-init ()
   "Erlang flymake compilation settings."
   (let* ((temp-file (flymake-init-create-temp-buffer-copy
-       'flymake-create-temp-inplace))
-  (local-file (file-relative-name temp-file
-  (file-name-directory buffer-file-name)))
-  (list (concat (getenv "HOME") "/.emacs.d/flymake.eflymake"))
-  (escript-exe (concat erlang-root-dir "/bin/escript"))
-  (eflymake-loc (expand-file-name erlang-flymake-location)))
-  (if (not (file-exists-p eflymake-loc))
+                     'flymake-create-temp-inplace))
+         (local-file (file-relative-name temp-file
+                                         (file-name-directory buffer-file-name)))
+         (list (concat (getenv "HOME") "/.emacs.d/flymake/eflymake"))
+         (escript-exe (concat erlang-root-dir "/bin/escript"))
+         (eflymake-loc (expand-file-name erlang-flymake-location)))
+    (if (not (file-exists-p eflymake-loc))
         (error "Please set erlang-flymake-location to an actual location")
-  (list escript-exe (list eflymake-loc local-file)))))
+      (list escript-exe (list eflymake-loc local-file)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; enable flymake only for erlang mode                                           ;;
@@ -304,61 +299,141 @@ erlang-bin erlang-mode-path))))
 
 (erlang-flymake-only-on-save)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; enable flymake for rebar projects                                             ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun ebm-find-rebar-top-recr (dirname)
-      (let* ((project-dir (locate-dominating-file dirname "rebar.config")))
-        (if project-dir
-            (let* ((parent-dir (file-name-directory (directory-file-name project-dir)))
-                   (top-project-dir (if (and parent-dir (not (string= parent-dir "/")))
-                                       (ebm-find-rebar-top-recr parent-dir)
-                                      nil)))
-              (if top-project-dir
-                  top-project-dir
-                project-dir))
-              project-dir)))
+  "Get rebar.config filename based on DIRNAME."
+  (let* ((project-dir (locate-dominating-file dirname "rebar.config")))
+    (if project-dir
+        (let* ((parent-dir (file-name-directory (directory-file-name project-dir)))
+               (top-project-dir (if (and parent-dir (not (string= parent-dir "/")))
+                                    (ebm-find-rebar-top-recr parent-dir)
+                                  nil)))
+          (if top-project-dir
+              top-project-dir
+            project-dir))
+      project-dir)))
 
-    (defun ebm-find-rebar-top ()
-      (interactive)
-      (let* ((dirname (file-name-directory (buffer-file-name)))
-             (project-dir (ebm-find-rebar-top-recr dirname)))
-        (if project-dir
-            project-dir
-          (erlang-flymake-get-app-dir))))
+(defun ebm-find-rebar-top ()
+  "Find top directory of rebar project."
+  (interactive)
+  (let* ((dirname (file-name-directory (buffer-file-name)))
+         (project-dir (ebm-find-rebar-top-recr dirname)))
+    (if project-dir
+        project-dir
+      (erlang-flymake-get-app-dir))))
 
-     (defun ebm-directory-dirs (dir name)
-        "Find all directories in DIR."
-        (unless (file-directory-p dir)
-          (error "Not a directory `%s'" dir))
-        (let ((dir (directory-file-name dir))
-              (dirs '())
-              (files (directory-files dir nil nil t)))
-            (dolist (file files)
-              (unless (member file '("." ".."))
-                (let ((absolute-path (expand-file-name (concat dir "/" file))))
-                  (when (file-directory-p absolute-path)
-                    (if (string= file name)
-                        (setq dirs (append (cons absolute-path
-                                                 (ebm-directory-dirs absolute-path name))
-                                           dirs))
-                        (setq dirs (append
-                                    (ebm-directory-dirs absolute-path name)
-                                    dirs)))))))
-              dirs))
+(defun ebm-directory-dirs (dir name)
+  "Find all directories in DIR with NAME."
+  (unless (file-directory-p dir)
+    (error "Not a directory `%s'" dir))
+  (let ((dir (directory-file-name dir))
+        (dirs '())
+        (files (directory-files dir nil nil t)))
+    (dolist (file files)
+      (unless (member file '("." ".."))
+        (let ((absolute-path (expand-file-name (concat dir "/" file))))
+          (when (file-directory-p absolute-path)
+            (if (string= file name)
+                (setq dirs (append (cons absolute-path
+                                         (ebm-directory-dirs absolute-path name))
+                                   dirs))
+              (setq dirs (append
+                          (ebm-directory-dirs absolute-path name)
+                          dirs)))))))
+    dirs))
 
-    (defun ebm-get-deps-code-path-dirs ()
-        (ebm-directory-dirs (ebm-find-rebar-top) "ebin"))
+(defun ebm-get-deps-code-path-dirs ()
+  "Get the files under deps directory."
+  (ebm-directory-dirs (ebm-find-rebar-top) "ebin"))
 
-    (defun ebm-get-deps-include-dirs ()
-       (ebm-directory-dirs (ebm-find-rebar-top) "include"))
+(defun ebm-get-deps-include-dirs ()
+  "Include directories under deps."
+  (ebm-directory-dirs (ebm-find-rebar-top) "include"))
 
-    (fset 'erlang-flymake-get-code-path-dirs 'ebm-get-deps-code-path-dirs)
-    (fset 'erlang-flymake-get-include-dirs-function 'ebm-get-deps-include-dirs)
+(fset 'erlang-flymake-get-code-path-dirs 'ebm-get-deps-code-path-dirs)
+(fset 'erlang-flymake-get-include-dirs-function 'ebm-get-deps-include-dirs)
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; context sensitive completion for erlang without connecting to erlang nodes    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (setq ivy-erlang-complete-erlang-root "/usr/local/opt/erlang/lib/erlang")
+;; (add-hook 'erlang-mode-hook #'ivy-erlang-complete-init)
+;; ;; automatic update completion data after save
+;; (add-hook 'after-save-hook #'ivy-erlang-complete-reparse)
 
-(add-hook 'erlang-mode-hook 'erlang-font-lock-level-3)
+;; (defun my-erlang-hook ()
+;;   "IVY configuration settings for Erlang."
+;;   (require 'wrangler)
+;;   (ivy-erlang-complete-init)
+;;   (defvar erlang-extended-mode-map)
+;;   (define-key erlang-extended-mode-map (kbd "M-.") nil)
+;;   (define-key erlang-extended-mode-map (kbd "M-,") nil)
+;;   (define-key erlang-extended-mode-map (kbd "M-?") nil)
+;;   (define-key erlang-extended-mode-map (kbd "(") nil)
+;;   (local-set-key (kbd "C-c C-p") #'align-erlang-record))
+;; (add-hook 'erlang-mode-hook #'my-erlang-hook)
+;; (add-hook 'after-save-hook #'ivy-erlang-complete-reparse)
 
+;; (add-to-list 'auto-mode-alist '("rebar\\.config$"  . erlang-mode))
+;; (add-to-list 'auto-mode-alist '("relx\\.config$"   . erlang-mode))
+;; (add-to-list 'auto-mode-alist '("system\\.config$" . erlang-mode))
+;; (add-to-list 'auto-mode-alist '("\\.app\\.src$"    . erlang-mode))
+
+;; ;; company-erlang for ivy
+;; (add-hook 'erlang-mode-hook #'company-erlang-init)
+
+;;
+; format the erlang records
+;;
+(defun align-erlang-record ()
+  "Formatting the erlang record data structure."
+  (interactive)
+  (let ((from (line-beginning-position)))
+    (goto-char from)
+    (search-forward "-record" )
+    (search-forward "{")
+    (goto-char (- (point) 1))
+    (ignore-errors (er/expand-region 1))
+    (my-align-region-by "=")
+    (goto-char from)
+    (search-forward "-record" )
+    (search-forward "{")
+    (goto-char (- (point) 1))
+    (ignore-errors (er/expand-region 1))
+    (my-align-region-by "::")))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; prettify symbols in erlang                                               ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'erlang-mode-hook 'erlang-font-lock-level-4)
+
+(defun erlang-prettify-symbols ()
+  "Prettify common erlang symbols."
+  (setq prettify-symbols-alist
+        '(
+          ("fun" . ?ƒ)
+          ("->" . ?➔)
+          ("<-" . ?∈)
+          ("=/=" . ?≠)
+          ("=:=" . ?≡)
+          ("==" . ?≈)
+          ("and" . ?∧)
+          ("or" . ?∨)
+          (">=" . ?≥)
+          ("=<" . ?≤)
+          ("lists:sum" . ?∑)
+          )))
+
+(defun my-delayed-prettify ()
+  "Mode is guaranteed to run after the style hooks."
+  (run-with-idle-timer 0 nil (lambda () (prettify-symbols-mode 1))))
+(add-hook 'erlang-mode-hook 'my-delayed-prettify)
+(add-hook 'erlang-mode-hook 'erlang-prettify-symbols)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'erlang-config)
 ;;; erlang-config.el ends here

@@ -385,3 +385,4 @@ Becomes this:
 (provide 'evil-surround)
 
 ;;; evil-surround.el ends here
+closed

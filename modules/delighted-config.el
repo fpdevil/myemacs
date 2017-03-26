@@ -51,7 +51,7 @@
  '((company-mode          " COM" company)
    (flymake-mode          " FlyM" flymake)
    (flyspell-mode         " FlyS" flyspell)
-   (evil-smartparens-mode " ∈")
+   ;(evil-smartparens-mode " ∈")
    (git-gutter-mode       " Ⓖ" git-gutter)
    (visual-line-mode      " Ⓥ")
    (yas-minor-mode        " Ⓨ")

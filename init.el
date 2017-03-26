@@ -10,22 +10,18 @@
 ;;;
 ;;;
 ;;; Author    : Sampath Singamsetty <Singansetty.Sampath@gmail.com>
-;;; URL       : https://github.com/singamsetty/myemacs
+;;; URL       : https://github.com/fpdevil/myemacs
 ;;; Commentary:
 ;;;
 ;;; filename   : init.el
 ;;; description: initialization file for loading the necessary packages
 ;;;
-;; This sets up the load path so that we can override it
-;; Updated    : 01 Dec 2016
-;;;===========================================================================
-;;;
 ;;; Code:
-;;;
+;;        This sets up the load path so that we can override it
+;;        Update Note    : 11 March 2017
+;;;===========================================================================
 
-;;
-; utf-8 character set encoding and Locale
-;;
+;; utf-8 character set encoding and Locale
 (set-language-environment   'utf-8)
 (setq locale-coding-system  'utf-8)
 (set-default-coding-systems 'utf-8)
@@ -34,15 +30,19 @@
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 (prefer-coding-system       'utf-8)
 
-;; language set
+;; language setup
 (setq current-language-environment "English")
 
-;; if system is mac os x
+;; a variable for holding if system is mac os x
 (defconst *is-a-mac* (eq system-type 'darwin))
-
+(message "Emacs Version: %d%s%d"
+         emacs-major-version
+         version-separator
+         emacs-minor-version)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; adding location for required lisp files and libraries to the path      ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq user-emacs-directory (concat (getenv "HOME") "/.emacs.d"))
 (add-to-list 'load-path (concat (getenv "HOME") "/.emacs.d"))
 
 
@@ -50,36 +50,38 @@
 ;;; custom-settings.el will store any custom settings made on Emacs        ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq custom-file
-      (expand-file-name "custom-settings.el" (concat (getenv "HOME") "/.emacs.d")))
+      (expand-file-name "custom-settings.el" user-emacs-directory))
 (when (file-exists-p custom-file)
   (load custom-file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; load custom methods and internal settings for Emacs                    ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(load "~/.emacs.d/aqua-methods.el")
+(load (concat user-emacs-directory "/core/aqua-methods.el"))
 ;; now load the custom settings from aqua-internals.el
 (add-hook 'after-init-hook
           '(lambda ()
-             (load "~/.emacs.d/aqua-internals.el")))
+             (load (concat user-emacs-directory "/core/aqua-internals.el"))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; aqua-package-repos.el will load the package repository settings        ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(load (concat (getenv "HOME") "/.emacs.d/aqua-package-repos.el"))
+;; (load (concat (getenv "HOME") "/.emacs.d/aqua-package-repos.el"))
+(load (concat user-emacs-directory "/aqua-package-repos.el"))
 
 
-;;;------------------------------------------------------------------------;;;
-;;; byte recompiling everything during bootstrap                           ;;;
-;;; a custom function is defined inside my-methods                         ;;;
-;;; uncomment below section if needed                                      ;;;
-;;;------------------------------------------------------------------------;;;
-(byte-recompile-directory
-  (expand-file-name (concat (getenv "HOME") "/.emacs.d/packages/elpa/")) 0)
-;;;------------------------------------------------------------------------;;;
-(setq debug-on-error t)  ;; finalizers (for debugging)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; byte recompiling everything during bootstrap (comment | uncomment)     ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun byte-recompile-init-files ()
+  "Recompile all of the startup files."
+  (interactive)
+  (byte-recompile-directory (concat (getenv "HOME") "/.emacs.d/packages") 0))
+(setq load-prefer-newer t)             ;; load the newest byte code every time
+(setq debug-on-error t)                ;; finalizers (for debugging)
 
+(byte-recompile-init-files)            ;; comment or uncomment
 
 ;;;========================================================================;;;
 ;;;  specify all the require packages and settings to be loaded initially  ;;;
@@ -141,6 +143,14 @@
 (require 'iedit)
 (setq iedit-unmatched-lines-invisible-default t)
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Make Emacs use the $PATH set up by the user's shell                    ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; set SHELL and pull PATH variables from the .zshrc                      ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -152,7 +162,7 @@
   (let ((path-from-shell (replace-regexp-in-string
                           "[ \t\n]*$"
                           ""
-                          (shell-command-to-string "$SHELL -i -c 'echo -n $PATH'"))))
+                          (shell-command-to-string "$SHELL -c 'echo -n $PATH'"))))
     (setenv "PATH" path-from-shell)
     (setq eshell-path-env path-from-shell)
     (setq exec-path (split-string path-from-shell path-separator))))
@@ -168,8 +178,8 @@
   (setenv "PATH" (concat dir ":" (getenv "PATH")))
   (add-to-list 'exec-path dir))
 
-
-;;; custom init settings are all completed
+;;; custom init settings completed
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'init)
 ;;; init.el ends here

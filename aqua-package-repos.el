@@ -17,12 +17,10 @@
 ;;;              by Emacs during startup.  Any new package required by the apps
 ;;;              or any custom settings needs to be specified here so that they
 ;;;              can be installed and loaded.  By default the package.el access
-;;;              to only the default ELPA repository.  So added additional repos
-;;;
-;;; Updated    : 01 Dec 2016
+;;;              to only the default ELPA repository, so added additional repos
 ;;;
 ;;; Code:
-;;;
+;;; Updated    : 16 Feb 2017
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;
 ;; Use M-x package-refresh-contents to reload the list of
@@ -32,7 +30,6 @@
 (require 'cl)
 (require 'cl-lib)
 (require 'package)
-
 
 ;;============================================================================;;
 ;;;;     Package repositories (gnu, melpa, melpa-stable and marmalade)      ;;;;
@@ -72,10 +69,14 @@
   "Top level Emacs dir.")
 (defvar emacs-dir (file-name-directory (concat (getenv "HOME") "/.emacs.d"))
   "Top level Emacs dir.")
+(defvar core-dir (expand-file-name "core" emacs-dir)
+  "Contains core components like the package repository information etc.")
 (defvar vendor-dir (expand-file-name "vendor" emacs-dir)
   "Packages not yet available in ELPA.")
 (defvar module-dir (expand-file-name "modules" emacs-dir)
   "Personal stuff.")
+(defvar personal-dir (expand-file-name "personal" emacs-dir)
+  "All personal configuration settings like theme names etc.")
 (defvar save-dir (expand-file-name "cache" emacs-dir)
   "Common directory for automatically generated save/history/files/etc.")
 (defvar pkg-dir (expand-file-name "packages" emacs-dir)
@@ -97,7 +98,6 @@
   (package-refresh-contents))
 (package-install-selected-packages)
 
-
 ;;============================================================================;;
 ;;;; new or missing packages to be installed during Emacs bootstrap.        ;;;;
 ;;;; defvar is the correct way to declare global variables                  ;;;;
@@ -106,7 +106,8 @@
 (defvar required-packages
   '(;;;;;; appearance and visual customizations ;;;;;;
     powerline                                   ;; powerline smart mode
-    ;smart-mode-line                            ;; powerful and beautiful mode-line
+    smart-mode-line                             ;; powerful and beautiful mode-line
+    smart-mode-line-powerline-theme             ;; sml powerline theme
     delight                                     ;; customize mode names on modeline
     dim                                         ;; mode-line names of major/minor modes
     rainbow-delimiters                          ;; colorful modes (delimiters and color codes)
@@ -146,6 +147,7 @@
     company-irony                               ;; completion backend for irony-mode
     company-irony-c-headers                     ;; backend for C/C++ header files with irony-mode
     company-c-headers                           ;; auto-completion for C/C++ headers using Company
+    company-tern                                ;; tern backend for company-mode
     ;company-ycm                                ;; Emacs client for the YCM code-completion engine
     ;;;;;; auto-complete family                 ;;;;;;
     auto-complete                               ;; auto completion for gnu emacs
@@ -157,8 +159,7 @@
     auto-complete-c-headers                     ;; auto-complete source for C/C++ header files
     ;;;;;; some utilities                       ;;;;;;
     parent-mode                                 ;; get major mode's parent modes
-    ; ido                                       ;; IDO mode
-    ; smex                                      ;; M-x interface with Ido-style fuzzy matching
+    exec-path-from-shell                        ;; make Emacs use the $PATH set up by the user's shell
     ;;;;;; essential utilities                  ;;;;;;
     smartparens                                 ;; parenthesis management
     evil-smartparens                            ;; evil integration for smartparens
@@ -167,6 +168,7 @@
     ;;;;;; documentation and help               ;;;;;;
     markdown-mode                               ;; markdown language support
     ; auctex                                    ;; AUCTEX and LATEX
+    graphviz-dot-mode                           ;; dotlanguage graphviz graphs (for erlang .dotfiles)
     ;;;;;; on the fly syntax checkers           ;;;;;;
     ;;;;;; flycheck family                      ;;;;;;
     flycheck                                    ;; flycheck on the fly syntax checker
@@ -178,8 +180,9 @@
     flycheck-elixir                             ;; flycheck checker for elixir files
     flycheck-mix                                ;; flycheck elixir mix support
     flycheck-clojure                            ;; flycheck clojure support
-    popup                                       ;; show popup for flycheck
     flycheck-irony                              ;; flycheck c/c++ support via Irony
+    flycheck-plantuml                           ;; flycheck for plantuml automatic syntax errors
+    popup                                       ;; show popup for flycheck
     ;;;;;; flymake family                       ;;;;;;
     flymake-easy                                ;; flymake on the fly syntax checker
     flymake-python-pyflakes                     ;; flymake handler for syntax-checking Python source code using pyflakes or flake8
@@ -190,8 +193,17 @@
     google-c-style                              ;; google's c/c++ style for c-mode
     ;;;;;; org modes                            ;;;;;;
     org                                         ;; org-mode setup
+    org-plus-contrib                            ;; plus all contribs files
+    org-ac                                      ;; auto completion for org
     org-bullets                                 ;; org mode with bullets
+    ox-reveal                                   ;; for reveal.js presentations through org-mode
+    org-tree-slide                              ;; presentations tools for org-mode
+    ox-html5slide                               ;; export org-mode to html5 slide
+    plantuml-mode                               ;; editing PlantUML sources
     latex-pretty-symbols                        ;; unicode display of characters
+    org-download                                ;; image drag and drop for org-mode
+    org-easy-img-insert                         ;; insert images from web
+    ob-http                                     ;; make http request within org-mode babel
     ;;;;;; git integration                      ;;;;;;
     ;magit                                      ;; git status
     git-gutter                                  ;; Emacs port of GitGutter
@@ -218,7 +230,6 @@
     ;;;;;; erlang laguage support               ;;;;;;
     erlang                                      ;; erlang emacs plugin
     ivy-erlang-complete                         ;; context sensitive completion for erlang
-    ; edts                                      ;; erlang development ide
     ;;;;;; elixir language                      ;;;;;;
     elixir-mode                                 ;; major mode for editing elixir files
     alchemist                                   ;; elixir tooling integration into Emacs
@@ -261,29 +272,48 @@
     diminish                                    ;; diminished modes are minor modes with no modeline display
     multiple-cursors                            ;; multiple cursors for emacs
     iedit                                       ;; edit multiple regions simultaneously in a buffer or a region
-    ;;;;;; web app(s), java script and json     ;;;;;;
+    ;;;;;; web, html, java script and json      ;;;;;;
     web-mode                                    ;; major-mode for editing web templates
     js2-refactor                                ;; javascript refactoring library
+    js2-highlight-vars                          ;; highlight variables
     tern                                        ;; JavaScript code analyzer
     tern-auto-complete                          ;; js tooling auto-complete
     js2-mode                                    ;; Improved JavaScript editing mode
+    js3-mode                                    ;; chimeric fork of js2-mode and js-mode
+    js-doc                                      ;; Insert JsDoc style comment easily
+    jsfmt                                       ;; formatting, searching, and rewriting javascript
     ac-js2                                      ;; Javascript auto-completion
     json-mode                                   ;; major mode for json editing
-    ;;;;;; text and file utilities              ;;;;;;
+    coffee-mode                                 ;; major mode for CoffeeScript
+    jade                                        ;; JS Awesome Development Environment
+    company-web                                 ;; company backend for ac-html
+    ;tidy                                       ;; interface to html tidy program
+    ac-emmet                                    ;; auto-complete sources for emmet-mode
+    emmet-mode                                  ;; emmet support for emacs
+    web-beautify                                ;; Format HTML, CSS and JavaScript/JSON by js-beautify
+    ;;;;;; window, text and file utilities      ;;;;;;
     popwin                                      ;; popup window manager
+    move-text                                   ;; move current line or region up or down
+    switch-window                               ;; window switching, the visual way
+    clippy                                      ;; show tooltip with function documentation at point
     ;;;;;; miscellaneous utilities              ;;;;;;
     wttrin                                      ;; weather information from wttr.in
     esup                                        ;; emacs startup profiler (https://github.com/jschaf/esup)
     which-key                                   ;; displays available keybindings in popup
+    guide-key                                   ;; displays key bindings
+    guide-key-tip                               ;; guide-key with pos-tio
+    beacon                                      ;; follows your cursor around
     discover-my-major                           ;; key bindings and their meaning for the current Emacs major mode
     sunshine                                    ;; weather and forecast information
     manage-minor-mode                           ;; manage minor modes on a dedicated buffer
+    know-your-http-well                         ;; Look up the meaning of HTTP metadata
     ;;;;;; vim emulation                        ;;;;;;
     evil                                        ;; Extensible Vi layer for Emacs.
     undo-tree                                   ;; Treat undo history as a tree (evil dependency)
     goto-chg                                    ;; goto last change (evil dependency)
     evil-leader                                 ;; let there be <leader>
     evil-surround                               ;; emulate surround.vim from Vim
+    evil-mc                                     ;; multiple cursors for evil-mode
     ;;;;;; clojure programming modes            ;;;;;;
     clojure-mode                                ;; Emacs support for clojure
     clojure-mode-extra-font-locking             ;; Extra font-locking for Clojure mode
@@ -301,18 +331,41 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;              Now add the above packages to the load-path               ;;;;
+;;;;         Now add the above packages to the Emacs load-path              ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (unless (file-exists-p save-dir)
   (make-directory save-dir))
+(add-to-list 'load-path core-dir)
 (add-to-list 'load-path module-dir)
 (add-to-list 'load-path vendor-dir)
+(add-to-list 'load-path personal-dir)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;          Load the requires packages in the vendor/ directory           ;;;;
+;; recursively add sub-folders in a folder to path                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun add-subfolders-to-load-path (parent-dir)
+ "Add all level PARENT-DIR subdirs to the `load-path'."
+ (dolist (f (directory-files parent-dir))
+   (let ((name (expand-file-name f parent-dir)))
+     (when (and (file-directory-p name)
+                (not (string-prefix-p "." f)))
+       (add-to-list 'load-path name)
+       (add-subfolders-to-load-path name)))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;          Load the requires packages in the personal, vendor            ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (mapc 'load (directory-files vendor-dir nil "^[^#].*el$"))
+; (add-subfolders-to-load-path vendor-dir)
+
+;; load personal elisp files if any from personal directory
+(when (file-exists-p personal-dir)
+  (message "Loading personal configuration files in %s..." personal-dir)
+  (mapc 'load (directory-files personal-dir 't "^[^#\.].*el$")))
+
+
 ;;
 ; Load the requires packages in the modules/ directory
 ; modules contain custom init files which can be loaded
@@ -320,43 +373,63 @@
 ;;
 ;(mapc 'load (directory-files module-dir nil "^[^#].*el$"))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; function to check if all listed packages are installed. return true when   ;;
 ;; package is not installed. When Emacs boots, check to make sure all the     ;;
 ;; packages defined in required-packages are installed. If not ELPA kicks in. ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun packages-installed-p()
-  "Load each package specified in the required-packages section."
-  (loop for pkg in required-packages
-        when (not (package-installed-p pkg)) do (return nil)
-            finally (return t)))
+(defun aqua-packages-installed-p ()
+  "Check if all the packages listed in `required-packages' are installed."
+  (every #'package-installed-p required-packages))
+
+(defun aqua-require-pkg (pkg)
+  "Check and install each PKG unless its already there."
+  (unless (memq pkg required-packages)
+    (add-to-list 'required-packages pkg))
+  (unless (package-installed-p pkg)
+    (message ">>> installing missing package -> %s" pkg)
+    (package-install pkg)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; if not all the packages which are listed are installed, check one by one ;;;
 ;;; and install the missing ones.                                            ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(unless (packages-installed-p)
-  ; check for new packages (package versions)
-  (message "%s" "Emacs is now refreshing its package database...")
-  (package-refresh-contents)
-  (message "%s" "package refresh done.")
-  ; install the missing packages
-  (dolist (pkg required-packages)
-    (when (not (package-installed-p pkg))
-      (message ">>> installing missing package -> %s" pkg)
-      (package-install pkg))))
+(defun aqua-require-packages (pkgs)
+  "Check that all PKGS are installed.
+Packages missing in the location will be automatically installed."
+  (mapc #'aqua-require-pkg pkgs))
 
+(defun aqua-install-packages ()
+  "Install each package listed in `required-packages'."
+  (unless (aqua-packages-installed-p)
+    ;; check for the new packages (package versions)
+    (message "%s" "Emacs is now refreshing its package database...")
+    (package-refresh-contents)
+    (message "%s" " package refresh done!")
+    ;; install any missing packages
+    (aqua-require-packages required-packages)))
 
-(provide 'required-packages)
+;;
+;; now run the package installation process
+;;
+(aqua-install-packages)
+
+(defun aqua-external-pkg-list ()
+  "Check all the external packages not installed via aqua.
+Gets all installed packages not in the `required-packages'.
+Helpful to get rid of unused packages."
+  (interactive)
+  (package-show-package-list
+   (set-difference package-activated-list required-packages)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; package loading of all the custom el files which contains customized
 ;; settings for each major/minor modes as well as any other packages
 ;; currently the below are all customized supported configurations.
 ;;
 ;; miscellaneous settings
+;; some utilities like window configurations etc.
+;; code snippets with yas
 ;; themes
 ;; company
 ;; company-quickhelp
@@ -375,14 +448,16 @@
 ;; neotree
 ;; popup window
 ;; Emacs code browser ecb
-;; org bullets
+;; org mode
+;; plantuml for org diagrams
+;; org reveal and html5
 ;; multiple-cursors
-;; code snippets with yas
 ;; gitgutter-config
 ;; weather info
-;; which-key
+;; which-key and guide-key
+;; beacon cursor highlight
 ;; evil
-;; xslt
+;; xslt transformations
 ;; xml using nxml
 ;; aggressive indentation
 ;; haskell
@@ -392,7 +467,9 @@
 ;; elixir
 ;; go
 ;; c/c++
-;; web
+;; javascript
+;; CoffeeScript
+;; Web html etc
 ;; clojure
 ;; markdown
 ;; ycm-config.el
@@ -405,8 +482,10 @@
     '(
       "misc-config"
       "themes-config"
+      "utils-config"
       "company-config"
       "ac-complete-config"
+      "yasnippets-config"
       "semantic-config"
       "flycheck-config"
       "flyspell-config"
@@ -422,13 +501,18 @@
       "popwin-config"
       "ecb-config"
       "org-config"
+      "plantuml-config"
+      "slides-config"
       "multiple-cursors-config"
-      "yasnippets-config"
       "gitgutter-config"
       "weather-config"
       "whichkey-config"
+      "guidekey-config"
+      "beacon-config"
       "evil-config"
+      "xslide-config"
       "xslt-process-config"
+      "nxml-config"
       "cpp-config"
       "python-config"
       "haskell-config"
@@ -437,16 +521,16 @@
       "scala-config"
       "go-config"
       "clojure-config"
-      "nxml-config"
       "web-config"
+      "js-config"
+      "coffee-config"
       "markdown-config"
       "ycm-config"
       "projectile-config"
       "delighted-config"
       "tex-config"
       )
-    "Configuration files which follow the modules/pkgname-config.el format."
-    )
+    "Configuration files which follow the modules/pkgname-config.el format.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; loop through each and load the configured custom packages              ;;;;
@@ -457,29 +541,27 @@
                        "modules/"
                        name ".el")))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; load packages from custom path                                         ;;;;
 ;;;; contains packages not in elpa/melpa/marmalade/gnu/org                  ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar custom-load-paths
   '(; "erlang/elisp"        ;; erlang lisp modules
-    ; "xslide"              ;; xml and xslt syntax, customizations
+    "xslide"                ;; xml and xslt syntax, customizations
     "xslt-process/lisp"     ;; xslt processor ide
     )
-  "Custom load paths that do not follow the normal vendor/elisp/module-name.el format."
-  )
+  "Custom load paths that do not follow the normal vendor/elisp/module-name.el format.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; loop through the custom lisp                                           ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (loop for location in custom-load-paths
       do (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name
-                                              (buffer-file-name)))
+             (concat (file-name-directory (or load-file-name (buffer-file-name)))
                      "vendor/"
                      location)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'aqua-package-repos)
 ;;; aqua-package-repos.el ends here

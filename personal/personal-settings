@@ -1,0 +1,64 @@
+;;; package --- personal user settings under personal-settings.el
+;;;
+;;; Commentary:
+;;;
+;;; filename.  : personal-settings.el
+;;; description: contains personal settings for various packages, colors and
+;;;              themes.  Any color theme settings or software location or
+;;;              directory location and path settings can be specified here
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Code:
+;;;
+(require 'misc-config)
+(require 'themes-config)
+(require 'company-config)
+(require 'ac-complete-config)
+(require 'yasnippets-config)
+(require 'semantic-config)
+(require 'flycheck-config)
+(require 'flyspell-config)
+(require 'helm-settings-config)
+(require 'rbow-config)
+(require 'rbow-identifiers-config)
+(require 'rainbow-delims-config)
+(require 'smart-config)
+(require 'paredit-config)
+(require 'highlight-symbol-config)
+(require 'fringe-config)
+(require 'neotree-config)
+(require 'popwin-config)
+(require 'ecb-config)
+(require 'plantuml-config)
+(require 'slides-config)
+(require 'multiple-cursors-config)
+(require 'gitgutter-config)
+(require 'weather-config)
+(require 'whichkey-config)
+(require 'beacon-config)
+(require 'evil-config)
+(require 'xslt-process-config)
+(require 'cpp-config)
+(require 'python-config)
+(require 'haskell-config)
+(require 'erlang-config)
+(require 'elixir-config)
+(require 'scala-config)
+(require 'go-config)
+(require 'clojure-config)
+(require 'web-config)
+(require 'js-config)
+(require 'coffee-config)
+(require 'nxml-config)
+(require 'markdown-config)
+(require 'ycm-config)
+(require 'projectile-config)
+(require 'delighted-config)
+(require 'tex-config)
+
+(setq aqua-airline-theme 'cool)
+(setq aqua-sml-theme 'dark)
+(setq wrangler-path "/usr/local/lib/erlang/lib/wrangler-1.2.0/elisp"")
+
+(provide 'personal-settings)
+;;; personal-settings.el ends here

@@ -33,6 +33,12 @@
           (lambda ()
             (toggle-read-only -1)))
 
+(setq auto-mode-alist
+      (append
+       (list
+    '("\\.xslt" . xsl-process-mode))
+       auto-mode-alist))
+
 (provide 'xslt-process-config)
 
 ;;; xslt-process-config.el ends here

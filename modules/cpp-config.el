@@ -155,9 +155,9 @@
 
 (defun my:ac-cc-mode-setup ()
   "AutoComplete CC Mode."
-  (setq ac-sources (append '(ac-source-clang
-                             ac-source-yasnippet)
-                             ac-sources)))
+  (setq ac-sources
+        (append '(ac-source-clang ac-source-yasnippet)
+                ac-sources)))
 (add-hook 'c-mode-common-hook 'my:ac-cc-mode-setup)
 
 

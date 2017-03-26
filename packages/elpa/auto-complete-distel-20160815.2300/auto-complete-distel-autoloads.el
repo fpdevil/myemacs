@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil nil ("auto-complete-distel.el") (22687 16886
+;;;### (autoloads nil nil ("auto-complete-distel.el") (22733 60760
 ;;;;;;  0 0))
 
 ;;;***

@@ -1,0 +1,10 @@
+ls
+pwd
+cd /tmp
+ps -ef
+  501   514     1   0  7:56PM ??         0:01.05 /System/Library/CoreServices/NotificationCenter.app/Contents/MacOS/NotificationCenter
+which aspell
+brew -v update
+brew -v outdated
+which python3
+exit

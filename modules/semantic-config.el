@@ -42,8 +42,8 @@
 
 
 ;; location for the semantic db
-;; (setq semanticdb-default-save-directory
-;;       (concat (getenv "HOME") "/.emacs.d/cache/semanticdb"))
+(setq semanticdb-default-save-directory
+      (concat (getenv "HOME") "/.emacs.d/cache/semanticdb"))
 ; (global-semanticdb-minor-mode 1)
 
 (when (featurep 'semanticdb)
@@ -82,6 +82,20 @@
 (semantic-add-system-include "/usr/local/opt/opencv3/include" 'c++-mode)
 (semantic-add-system-include "/usr/local/opt/opencv3/include/opencv" 'c++-mode)
 (semantic-add-system-include "/usr/local/opt/opencv3/include/opencv2" 'c++-mode)
+
+;;;
+;; Prohibit semantic from searching through system headers. We want
+;; company-clang to do that for us.
+;;;
+(setq-mode-local c-mode semanticdb-find-default-throttle
+                 '(local project unloaded recursive))
+(setq-mode-local c++-mode semanticdb-find-default-throttle
+                 '(local project unloaded recursive))
+
+(semantic-remove-system-include "/usr/include/" 'c++-mode)
+(semantic-remove-system-include "/usr/local/include/" 'c++-mode)
+(add-hook 'semantic-init-hooks
+          'semantic-reset-system-include)
 
 ;;;
 ;; Disable tag boundary decoration:

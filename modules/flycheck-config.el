@@ -28,7 +28,6 @@
               (flycheck-mode))))
 (global-set-key (kbd "M-n") 'next-error)
 (global-set-key (kbd "M-p") 'previous-error)
-(require 'flycheck-color-mode-line)
 (eval-after-load "flycheck"
   '(progn
      ;(setq flycheck-highlighting-mode nil)
@@ -98,9 +97,9 @@
 ;      (set-face-foreground 'flycheck-color-mode-line-info-face nil)))
 ;;------------------------------------------------------------------------------
 
-; for pos-tip
+; for flycheck-pos-tip
 (with-eval-after-load 'flycheck
-  '(flycheck-pos-tip-mode))
+  (flycheck-pos-tip-mode))
 (setq flycheck-pos-tip-mode t)
 ; for haskell
 (eval-after-load 'flycheck

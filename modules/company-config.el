@@ -33,15 +33,18 @@
       company-show-numbers t
       company-require-match nil
       company-dabbrev-ignore-case nil
+      company-dabbrev-code-ignore-case nil
       company-dabbrev-downcase 0
       ; invert navigation direction if completion popup-isearch-match
       ; is displayed on top (happens near the bottom of windows)
       company-tooltip-flip-when-above t
       ;; additional options
-      company-tooltip-limit 20                       ; bigger popup window
-      company-idle-delay 0.5                         ; decrease delay before autocompletion popup shows
-      company-echo-delay 0.01                        ; remove annoying blinking
-      company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
+      company-tooltip-limit 20                       ;; bigger popup window
+      ;company-idle-delay 0.5                        ;; decrease delay before autocompletion popup shows
+      company-idle-delay 0.5                         ;; provide completions only if needed
+      company-echo-delay 0                           ;; remove annoying blinking
+      company-transformers '(company-sort-by-occurrence)
+      company-begin-commands '(self-insert-command)) ;; start autocompletion only after typing
 ;;
 (auto-complete-mode 1)
 
@@ -85,6 +88,15 @@
      (define-key company-mode-map (kbd "C-:") 'helm-company)
      (define-key company-active-map (kbd "C-:") 'helm-company)))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ESC - exit evils insert state and also the popup                         ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; use function from core/aqua-methods
+(with-eval-after-load 'company
+  (define-key company-active-map (kbd "<escape>") 'aqua-company-abort)
+  (define-key company-search-map (kbd "<escape>") 'company-search-abort))
+
 ;;
 ; company math mode
 ;;
@@ -123,6 +135,14 @@
 (set-face-foreground 'company-tooltip-search-selection
                      (face-foreground 'company-tooltip-search))
 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; some company front-ends                                                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; using defaults now
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'company-config)
 ;;; company-config.el ends here

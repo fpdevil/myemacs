@@ -16,8 +16,54 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ENhanced Scala Interaction Mode for Emacs (for scala development)        ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-to-list 'auto-mode-alist '("\\.scala$" . scala-mode))
+(setq ensime-startup-snapshot-notification nil)
+
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; scala pretty fonts                                                       ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defcustom scala-prettify-symbols nil
+  "Define custom symbols for scala mode.")
+
+(setq scala-prettify-symbols
+  '(
+    ("=>" . ?⇒)
+    ("<-" . ?←)
+    ("->" . ?→)
+    ("undefined" . ?⊥)
+    ("&&" . ?∧)
+    ("||" . ?∨)
+    ("<<<" . ?⋘)
+    (">>>" . ?⋙)
+    ("++" . ?⧺)
+    ("any" . ?∃)
+    ("all" . ?∀)
+    ("traverse" . ?↦)
+    ("map" . ?∘)
+    ("lambda" . ?λ)
+    ("alpha" . ?α)
+    ("beta" . ?β)
+    ("Unit" . ?∅)
+  ))
+
+(add-hook 'scala-mode-hook
+  (lambda ()
+    (ensime-scala-mode-hook)
+    (setq prettify-symbols-alist scala-prettify-symbols)
+    (prettify-symbols-mode)
+    (define-key scala-mode-map (kbd "C-x M-e") 'ensime-fully-reload)
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Ensime                                                                   ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun ensime-fully-reload ()
+  "Reload Ensime."
+  (interactive)
+  (ensime-shutdown)
+  (ensime))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; scala and play                                                           ;;
@@ -47,7 +93,7 @@
           (lambda ()
             (add-hook 'after-save-hook 'compile-sbt-project)))
 
-;; ---------------------------------------------------------------------------
+;;---------------------------------------------------------------------------
 
 (provide 'scala-config)
 

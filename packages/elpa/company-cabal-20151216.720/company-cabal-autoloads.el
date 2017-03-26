@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "company-cabal" "company-cabal.el" (22687 16929
+;;;### (autoloads nil "company-cabal" "company-cabal.el" (22733 60846
 ;;;;;;  0 0))
 ;;; Generated autoloads from company-cabal.el
 
@@ -16,7 +16,7 @@ Provide completion info according to COMMAND and ARG.  IGNORED, not used.
 ;;;***
 
 ;;;### (autoloads nil nil ("company-cabal-fields.el" "company-cabal-pkg.el")
-;;;;;;  (22687 16929 0 0))
+;;;;;;  (22733 60846 0 0))
 
 ;;;***
 

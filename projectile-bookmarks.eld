@@ -1,0 +1,1 @@
+("~/aquamacs.d/" "/tmp/" "~/Downloads/" "~/sw/programming/fp/erlang/my-workspace/examples/" "~/" "~/Documents/orgdocs/" "~/Documents/" "~/sw/programming/js/OpenId/")

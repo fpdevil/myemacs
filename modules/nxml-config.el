@@ -19,23 +19,26 @@
 (add-to-list 'auto-mode-alist
              (cons (concat "\\." (regexp-opt
                                   '("xml" "xsd" "sch" "rng"
-                                    "xslt" "svg" "rss"
-                                    "html" "jelly" "jnlp" "fo"
-                                    "xsl" "xslt") t)
+                                    "svg" "rss"
+                                    "jelly" "jnlp" "fo"
+                                    ) t)
                            "\\'") 'nxml-mode))
 
 (when (> emacs-major-version 21)
   (setq magic-mode-alist
         (cons '("<\\?xml " . nxml-mode) magic-mode-alist)))
 
+;; if first line of file matches, activate nxml-mode
+(add-to-list 'magic-mode-alist
+             '("<!DOCTYPE html .+DTD XHTML .+>" . nxml-mode) )
+
 (fset 'xml-mode 'nxml-mode)
-(fset 'html-mode 'nxml-mode)
+;(fset 'html-mode 'nxml-mode)
 (require 'rng-loc nil t)
 
 ;; encoding, auto complete etc...
 (setq nxml-slash-auto-complete-flag t
       nxml-auto-insert-xml-declaration-flag t
-      nxml-slash-auto-complete-flag t
       nxml-default-buffer-file-coding-system 'utf-8)
 
 ;;
@@ -84,6 +87,18 @@
   '(progn
      (define-key nxml-mode-map (kbd "M-'") 'lgfang-toggle-level)
      (define-key nxml-mode-map [mouse-3] 'lgfang-toggle-level)))
+
+
+;;;
+; format xml data with xmllint
+;;;
+(defun format-xml ()
+  "Format an XML buffer with `xmllint'."
+  (interactive)
+  (shell-command-on-region (point-min) (point-max)
+                           "/usr/bin/xmllint -format -"
+                           (current-buffer) t
+                           "*Xmllint Error Buffer*" t))
 
 ;;
 ; for auto-complete of nXml

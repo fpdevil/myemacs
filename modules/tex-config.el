@@ -21,6 +21,55 @@
 (setq TeX-parse-self t)
 (setq-default TeX-master nil)
 
+;; set the LaTeX Engine
+(setq TeX-engine (quote "/Library/TeX/texbin/xetex"))
+;; add synctex
+(setq LaTeX-command "pdflatex -synctex=1")
+
+;; TeX command list configuration
+(setq TeX-command-list
+   (quote
+    (("TeX" "%(PDF)%(tex) %`%S%(PDFout)%(mode)%' %t" TeX-run-TeX nil
+      (plain-tex-mode texinfo-mode ams-tex-mode)
+      :help "Run plain TeX")
+     ("LaTeX" "%`%l%(mode)%' %t" TeX-run-TeX nil
+      (latex-mode doctex-mode)
+      :help "Run LaTeX")
+     ("LaTeX Make" "latexmk -pdflatex='pdflatex -synctex=1' -pdf %s" TeX-run-command nil t
+      :help "Run LaTeX Make")
+     ("Makeinfo" "makeinfo %t" TeX-run-compile nil
+      (texinfo-mode)
+      :help "Run Makeinfo with Info output")
+     ("Makeinfo HTML" "makeinfo --html %t" TeX-run-compile nil
+      (texinfo-mode)
+      :help "Run Makeinfo with HTML output")
+     ("AmSTeX" "%(PDF)amstex %`%S%(PDFout)%(mode)%' %t" TeX-run-TeX nil
+      (ams-tex-mode)
+      :help "Run AMSTeX")
+     ("ConTeXt" "texexec --once --texutil %(execopts)%t" TeX-run-TeX nil
+      (context-mode)
+      :help "Run ConTeXt once")
+     ("ConTeXt Full" "texexec %(execopts)%t" TeX-run-TeX nil
+      (context-mode)
+      :help "Run ConTeXt until completion")
+     ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX")
+     ("Biber" "biber %s" TeX-run-Biber t t :help "Run Biber")
+     ("View" "%V" TeX-run-discard-or-function nil t :help "Run Viewer")
+     ("Print" "%p" TeX-run-command t t :help "Print the file")
+     ("Queue" "%q" TeX-run-background nil t :help "View the printer queue" :visible TeX-queue-command)
+     ("File" "%(o?)dvips %d -o %f " TeX-run-command t t :help "Generate PostScript file")
+     ("Index" "makeindex %s" TeX-run-command nil t :help "Create index file")
+     ("Check" "lacheck %s" TeX-run-compile nil
+      (latex-mode)
+      :help "Check LaTeX file for correctness")
+     ("Spell" "(TeX-ispell-document \"\")" TeX-run-function nil t :help "Spell-check the document")
+     ("Clean" "TeX-clean" TeX-run-function nil t :help "Delete generated intermediate files")
+     ("Clean All" "(TeX-clean t)" TeX-run-function nil t :help "Delete generated intermediate and output files")
+     ("Other" "" TeX-run-command t t :help "Run an arbitrary command")
+     ("XeLaTeX_SyncteX" "%`xelatex --synctex=1%(mode)%' %t " TeX-run-command nil
+      (latex-mode doctex-mode)))))
+
+;;
 (add-hook 'LaTeX-mode-hook 'visual-line-mode)
 (add-hook 'LaTeX-mode-hook 'flyspell-mode)
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
@@ -56,10 +105,18 @@
 (setq TeX-view-program-list
      '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
 
+;; hide some parts of the text file
+(defun turn-on-outline-minor-mode ()
+  "Hide or show parts of a text file."
+  (outline-minor-mode 1))
+
+;; shortcuts C-c C-o C-l | C-c C-o C-n | C-c C-o C-p | C-c C-o C-a
+(add-hook 'LaTeX-mode-hook 'turn-on-outline-minor-mode)
+(add-hook 'latex-mode-hook 'turn-on-outline-minor-mode)
+(setq outline-minor-mode-prefix "\C-c \C-o")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq org-export-latex-listings t)
-;; Originally taken from Bruno Tavernier: \ http://thread.gmane.org/gmane.emacs.orgmode/31150/focus=31432
-;; but adapted to use latexmk 4.20 or higher.
 (defun my-auto-tex-cmd ()
   "When exporting from .org with latex, automatically run latex,
        pdflatex, or xelatex as appropriate, using latexmk."

@@ -15,9 +15,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; automatic and manual symbol highlighting for Emacs                       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(highlight-symbol-nav-mode)
-;(add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
-(add-hook 'org-mode-hook (lambda () (highlight-symbol-mode)))
+(dolist (hook '(prog-mode-hook html-mode-hook css-mode-hook))
+  (add-hook hook 'highlight-symbol-mode)
+  (add-hook hook 'highlight-symbol-nav-mode))
+(add-hook 'org-mode-hook (lambda () (highlight-symbol-nav-mode)))
 
 (setq highlight-symbol-idle-delay 0.2
       highlight-symbol-on-navigation-p t)

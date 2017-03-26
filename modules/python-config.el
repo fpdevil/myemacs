@@ -34,6 +34,12 @@
 (setq-default python-shell-completion-native-enable nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; make Emacs aware of the version-dependent shebangs                       ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-to-list 'interpreter-mode-alist '("python2" . python-mode))
+(add-to-list 'interpreter-mode-alist '("python3" . python-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; rebind Enter to Ctrl+j for proper indentation                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'python-mode-hook
@@ -41,6 +47,13 @@
              (define-key python-mode-map "\r" 'newline-and-indent)))
 
 ;; for autopep8 formatting and linting
+;; ignoring the below:
+;; - E501 - Try to make lines fit within --max-line-length characters.
+;; - W293 - Remove trailing whitespace on blank line.
+;; - W391 - Remove trailing blank lines.
+;; - W690 - Fix various deprecated code (via lib2to3).
+;; (setq py-autopep8-options '("--ignore=E501,W293,W391,W690"))
+(setq py-autopep8-options '("--ignore=W690"))
 (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -49,7 +62,7 @@
 (venv-initialize-interactive-shells) ;; if you want interactive shell support
 (venv-initialize-eshell)             ;; if you want eshell support
 (setq venv-location
-      (expand-file-name (concat (getenv "HOME") ".virtualenvs/")))
+      (expand-file-name (concat (getenv "HOME") "/.virtualenvs/")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; flymake handler for syntax-checking Python source code using             ;;
@@ -99,9 +112,9 @@
                   jedi:complete-on-dot t
                   ;; hack to never show in-function call automatically
                   ;; jedi:get-in-function-call-delay 0.2
-                  jedi:get-in-function-call-delay 100
-                  jedi:tooltip-method '(popup pos-tip)
-                  jedi:tooltip-show '(popup pos-tip)
+                  jedi:get-in-function-call-delay 0
+                  jedi:tooltip-method '(pos-tip popup)
+                  jedi:tooltip-show '(pos-tip popup)
                   jedi:doc-mode 'rst-mode
                   jedi:environment-root "env"
                   jedi:environment-virtualenv (append python-environment-virtualenv
@@ -151,7 +164,7 @@
       ;; additional shell options added
       python-shell-prompt-regexp "In \\[[0-9]+\\]: "
       python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-      python-shell-completion-setup-code "from IPython.core.completerlib import module_completion"
+      ;python-shell-completion-setup-code "from IPython.core.completerlib import module_completion"
       ;python-shell-completion-module-string-code  "';'.join(module_completion('''%s'''))\n"
       ;python-shell-completion-string-code "';'.join(get_ipython().Completer.all_completions('''%s'''))\n"
       ;; python3 command
@@ -182,7 +195,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; set PYTHONPATH, because we don't load from .bashrc                      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setenv "PYTHONPATH" "/usr/local/lib/python3.5/site-packages:")
+;; (setenv "PYTHONPATH" "/usr/local/lib/python3.5/site-packages:")
 
 (defun set-pypath-from-shell-pythonpath ()
   "Set the PYTHONPATH variable as its not pulled from .profile."
@@ -190,6 +203,12 @@
     (setenv "PYTHONPATH" path-from-shell)))
 
 (if window-system (set-pypath-from-shell-pythonpath))
+
+;;
+; virtualenv settings
+;;
+(setq python-shell-virtualenv-root (concat (getenv "HOME") "/.virtualenvs/")
+      pyvenv-virtualenvwrapper-python "/usr/local/bin/python3")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; start elpy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -216,7 +235,7 @@
 ; (elpy-use-ipython)
 ;;
 (if (executable-find "/usr/local/bin/ipython3")
-    (elpy-use-ipython))
+    (elpy-use-ipython "/usr/local/bin/ipython3"))
 
 ;;
 ; enable elpy
@@ -229,7 +248,8 @@
   elpy-rpc-python-path "/usr/local/lib/python3.6/site-packages"
   flycheck-python-flake8-executable "/usr/local/bin/flake8"
   python-check-command "/usr/local/bin/pyflakes"
-  python-environment-directory "~/.emacs.d/.python-environments")
+  python-environment-directory "~/.emacs.d/.python-environments"
+  )
 
 ;;
 ;; Note

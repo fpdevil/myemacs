@@ -20,15 +20,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (when (require 'auto-complete-config nil 'noerror)
   (add-to-list 'ac-dictionary-directories
-    (concat (getenv "HOME") "/.emacs.d/vendor/auto-complete/dict"))
+    (concat (getenv "HOME") "/.emacs.d/cache/auto-complete/ac-dict"))
   (setq ac-comphist-file
-    (concat (getenv "HOME") "/.emacs.d/cache/ac-comphist.dat"))
+    (concat (getenv "HOME") "/.emacs.d/cache/auto-complete/ac-comphist.dat"))
   (ac-config-default)
   )
 
 (setq ac-auto-show-menu t
-      ac-delay 0.2
-      ac-quick-help-delay 1.0
+      ac-delay 0.6
+      ac-quick-help-delay 0.8
       ac-auto-start 2
       ac-use-menu-map t
       ac-menu-height 30
@@ -67,6 +67,18 @@
 ; (ad-activate 'auto-complete-mode)
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; avoid competing with org-mode templates.                                 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (add-hook 'org-mode-hook
+;;           (lambda ()
+;;             (make-local-variable 'ac-stop-words)
+;;             (loop for template in org-structure-template-alist do
+;;                   (add-to-list 'ac-stop-words
+;;                                (concat "<" (car template))))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'ac-complete-config)
 
 ;;; ac-complete-config.el ends here

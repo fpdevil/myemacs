@@ -47,9 +47,9 @@
 ; (require 'intero)                   ; complete development mode for haskell
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;;; set up the required $PATH for the haskell and cabal environment       ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ; Make Emacs look in to the Cabal directory for installed binaries
 ; and set the same into the classpath for ready access
 (let ((my-cabal-path (expand-file-name (concat (getenv "HOME") "/Library/Haskell/bin"))))
@@ -60,11 +60,11 @@
   (add-to-list 'exec-path my-cabal-path))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;;;                emacs haskell-mode configuration setup                 ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;;
-; choose the indentation mode (using haskell-mode indentation)
+;; choose the indentation mode (using haskell-mode indentation)
 ;;
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 (add-hook 'haskell-mode-hook 'haskell-auto-insert-module-template)
@@ -72,9 +72,9 @@
 (add-hook 'haskell-mode-hook 'haskell-decl-scan-mode)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;; hoogle executable for documentation                                     ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 (defvar hoogle-url-base "http://haskell.org/hoogle/?q="
   "The base for the URL that will be used for web Hoogle lookups.")
 
@@ -90,12 +90,24 @@
 (defvar hoogle-result-count 15
   "How many results should be shown (when running locally.")
 
+;;--------------------------------------------------------------------------+
+;; specify a separate idle value for company than global                   ;;
+;;--------------------------------------------------------------------------+
+;;(add-hook 'haskell-mode-hook 'my/haskell-company-settings)
+(add-hook 'haskell-mode-hook (lambda () (aqua-company-idle-delay 0.8 1 'haskell-mode)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;--------------------------------------------------------------------------+
+;; disable company-deabbrev for haskell-mode settings                      ;;
+;;--------------------------------------------------------------------------+
+(add-hook 'haskell-mode-hook (lambda () (aqua-company-backend-disable 'company-deabbrev 'haskell-mode)))
+
+
+;;--------------------------------------------------------------------------+
 ;; auto-complete-mode for interacting with inferior haskell mode and popup ;;
 ;; completion turn on when needed; haskell completion source for the       ;;
 ;; necessary auto-complete is provided by ac-haskell-process               ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 (setq ac-delay 1.0) ; reducing auto-complete value to not conflict with company
 (add-hook 'haskell-mode-hook
           (lambda () (auto-complete-mode 1)))
@@ -116,30 +128,30 @@
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;; use hi2 for haskell indentation                                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 (add-hook 'haskell-mode-hook 'turn-on-hi2)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;; haskell syntax checking, indentation and snippets                       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 (add-hook 'haskell-mode-hook 'yas-minor-mode)
 (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;; add F8 key combination for going to imports block                       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 (eval-after-load 'haskell-mode
   '(define-key haskell-mode-map [f8] 'haskell-navigate-imports))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;; set or unset variables needed for customization                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 (custom-set-variables
  '(haskell-tags-on-save nil)                            ; set up hasktags (part 2)
  '(haskell-process-log t)                               ; set up interactive mode (part 2)
@@ -162,9 +174,9 @@
  )
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;; standard haskell module completions                                     ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 (setq haskell-complete-module-preferred
       '("Data.ByteString"
         "Data.ByteString.Lazy"
@@ -186,9 +198,9 @@
 (setq haskell-process-generate-tags nil)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;; Add key combinations for interactive haskell-mode                       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 (eval-after-load 'haskell-mode '(progn
   (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
   (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
@@ -211,9 +223,9 @@
   '(define-key haskell-cabal-mode-map (kbd "C-c C-n C-o") 'haskell-compile))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;; ghc-mod configuration (initializer for ghc-mod)                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 (autoload 'ghc-init "ghc" nil t)
 (autoload 'ghc-debug "ghc" nil t)
 (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
@@ -229,10 +241,10 @@
 ;;
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;; company-ghc configuration                                               ;;
 ;; enable company-mode for auto-completion                                 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ; (add-hook 'haskell-mode-hook 'company-mode)
 ; (add-hook 'after-init-hook 'global-company-mode) ; Use company in all buffers
 (setq company-ghc-hoogle-command (concat (getenv "HOME") "/Library/Haskell/bin/hoogle"))
@@ -243,20 +255,20 @@
 (custom-set-variables '(company-ghc-show-info t))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;; company-ghci configuration                                              ;;
 ;; company-ghci is a company backend that provides completions for the     ;;
 ;; haskell programming language by talking to a ghci process               ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 (push 'company-ghci company-backends)
 (add-hook 'haskell-mode-hook 'company-mode)
 ;;; to get auto completions in the ghci REPL
 (add-hook 'haskell-interactive-mode-hook 'company-mode)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;; shm (structured-haskell-mode) configuration                             ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 (add-hook 'haskell-mode-hook 'structured-haskell-mode)
 ;; ** customize colors while running shm (good colors for solarized) **
 ;(set-face-background 'shm-current-face "#eee8d5")
@@ -266,17 +278,18 @@
 (set-face-background 'shm-quarantine-face nil)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;; flymake handler for checking Haskell source code with hlint.             ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 (add-hook 'haskell-mode-hook 'flymake-hlint-load)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;; flcheck handler for checking Haskell source code with hlint.             ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 (setq flycheck-haskell-hlint-executable
   (concat (getenv "HOME") "/Library/Haskell/bin/hlint"))
+(setq flycheck-check-syntax-automatically '(save))
 (add-hook 'haskell-mode-hook
           '(lambda ()
              (setq flycheck-checker 'haskell-hlint)
@@ -284,9 +297,9 @@
              (flycheck-mode 1)))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;; haskell standard module imports                                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 (setq haskell-import-mapping
       '(("Data.Text" . "import qualified Data.Text as T
                         import Data.Text (Text)
@@ -325,9 +338,9 @@
 ))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;; custom set variables for haskell                                        ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 (setq haskell-language-extensions '())
 (setq haskell-process-type 'ghci)
 (setq haskell-process-path-ghci "/usr/local/bin/ghci")
@@ -335,9 +348,9 @@
 (setq haskell-hoogle-command (concat (getenv "HOME") "/Library/Haskell/bin/hoogle"))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 ;; insert haskell module header                                            ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------------------------------------------------------+
 (require 'skeleton)
 (require 'autoinsert)
 
@@ -357,6 +370,14 @@
   "module " v1 " where\n\n")
 
 (add-to-list 'auto-insert-alist '("\\.hs\\'" . haskell-module-skeleton))
+
+
+;;--------------------------------------------------------------------------+
+;; which-function-mode for Haskell buffers                                  |
+;;--------------------------------------------------------------------------+
+(eval-after-load "which-fun"
+  '(add-to-list 'which-func-modes 'haskell-mode))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; intero (not used, so commented)                                         ;;

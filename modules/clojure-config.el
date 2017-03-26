@@ -20,6 +20,24 @@
 (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)         ;; documentation
 
 ;; syntax hilighting for clj
+;; (add-hook 'clojure-mode-hook
+;;           (lambda ()
+;;             (setq inferior-lisp-program "lein repl")
+;;             (font-lock-add-keywords
+;;              nil
+;;              '(("(\\(facts?\\)"
+;;                 (1 font-lock-keyword-face))
+;;                ("(\\(background?\\)"
+;;                 (1 font-lock-keyword-face))))
+;;             (define-clojure-indent (fact 1))
+;;             (define-clojure-indent (facts 1))))
+
+
+
+
+;; syntax hilighting and indentation
+(setq clojure-indent-style :align-arguments)
+
 (add-hook 'clojure-mode-hook
           (lambda ()
             (setq inferior-lisp-program "lein repl")
@@ -29,8 +47,14 @@
                 (1 font-lock-keyword-face))
                ("(\\(background?\\)"
                 (1 font-lock-keyword-face))))
-            (define-clojure-indent (fact 1))
-            (define-clojure-indent (facts 1))))
+            (put-clojure-indent 'reg-event-db 1)
+            (put-clojure-indent 'reg-event-fx 1)
+            (put-clojure-indent 'reg-fx 1)
+            (put-clojure-indent 'reg-cofx 1)
+            (put-clojure-indent 'reg-sub 1)
+            (enable-paredit-mode)
+            (subword-mode)))
+
 
 ;;
 ; for cider
@@ -64,6 +88,7 @@
 ; shortcuts
 ;;
 (defun cider-start-http-server ()
+  "Start a HTTP Server."
   (interactive)
   (cider-load-current-buffer)
   (let ((ns (cider-current-ns)))
@@ -73,12 +98,14 @@
 
 
 (defun cider-refresh ()
+  "Refresh the cider repl."
   (interactive)
   (cider-interactive-eval (format "(user/reset)")))
 
 (defun cider-user-ns ()
+  "Take care of the clojure name space."
   (interactive)
-  (cider-repl-set-ns "user"))
+  (cider-repl-set-ns "boot.user"))
 
 (eval-after-load 'cider
   '(progn

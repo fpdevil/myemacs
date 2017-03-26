@@ -13,11 +13,11 @@
 ;; display an initial scratch message & prettify symbols                    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq-default initial-scratch-message
-              (concat "ॐ Hacking Emacs - With ♥ " user-login-name "!\n" "☆ సంపత్ కుమార్ ☆" "\n"))
+              (concat "ॐ  Emacs With ♥ " user-login-name "!\n" "☆ సంపత్ కుమార్ ☆" "\n"))
 
 ;; symbol prettify
 (when (fboundp 'global-prettify-symbols-mode)
-  (global-prettify-symbols-mode))
+  (global-prettify-symbols-mode +1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -45,9 +45,10 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 
 (defun sanityinc/show-init-time ()
   "Show Emacs initialization time in milli seconds."
-  (message "init completed in %.2fms"
+  (message "--> init completed in %.2fms"
            (sanityinc/time-subtract-millis after-init-time before-init-time)))
 
+(add-hook 'after-init-hook 'sanityinc/show-init-time)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TAB settings - handle whitespaces                                        ;;
@@ -60,7 +61,6 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; from http://thrownforaloop.com/posts/emacs-configuration/                ;;
 ;; Company mode and YASnippet step on each other toes. These functions are  ;;
 ;; to help expected TAB function. Attempt these actions, and do the         ;;
 ;; first one that works.                                                    ;;
@@ -117,7 +117,39 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
                            (error nil) ))
           minor-mode-list)
     (message "Active modes are %s" active-modes)))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; add or disable a specific backend in company-backends                    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun aqua-company-backend-disable (backend mymode)
+  "Disable a specific BACKEND in MYMODE in company for a mode."
+  (interactive)
+  (if (equal major-mode mymode)
+      (message "--> disabling %s for %S-hook" backend mymode)
+      (when (boundp 'company-backends)
+        (make-local-variable 'company-backends)
+        ;; disable or remove a backend
+        (setq company-backends (delete backend company-backends)))))
+
+
+(defun aqua-company-backend-add (backend mymode)
+  "Add a specific BACKEND in MYMODE in company for a mode."
+  (interactive)
+  (if (equal major-mode mymode)
+      (message "--> adding %s for %S-hook" backend mymode)
+      (when (boundp 'company-backends)
+        (make-local-variable 'company-backends)
+        ;; add a backend
+        (add-to-list 'company-backends backend))))
+
+
+(defun aqua-company-idle-delay (cdelay clength mymode)
+  "Set company idle CDELAY, prefix CLENGTH for a specific mode MYMODE."
+  (if (equal major-mode mymode)
+      (message "--> setting idle delay to %f prefix-length to %d for %S-hook" cdelay clength mymode)
+      (setq company-idle-delay cdelay
+            company-minimum-prefix-length clength)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; indentation function                                                   ;;;
@@ -130,6 +162,15 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
     (indent-region (point-min) (point-max) nil)
     (untabify (point-min) (point-max))))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; display context sensitive help with eldoc for elisp-mode                 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'misc-config)
 
