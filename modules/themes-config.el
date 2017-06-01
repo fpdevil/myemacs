@@ -7,19 +7,20 @@
 ;;; Description: Emacs Color themes set or unset values
 ;;;
 ;;; elisp code for customizing the color theme
-;;===========================================================================
+;;===============================================================================
 ;;;
 ;;; Code:
 ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; fancy modeline(s) - powerline, airline and sml                         ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;-------------------------------------------------------------------------------
+;; fancy modeline(s) - powerline, airline and sml
+;;-------------------------------------------------------------------------------
 (require 'powerline)
 (powerline-default-theme)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; define constants for holding the themes                                  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;-------------------------------------------------------------------------------
+;; define constants for holding the themes
+;;-------------------------------------------------------------------------------
 (defcustom aqua-airline-theme nil
   "Select an appropriate Airline Theme."
   :type 'symbol)
@@ -29,7 +30,7 @@
   :type 'symbol)
 
 ;; change the airline themes as required from the below
-(setq aqua-airline-theme 'airline-light)
+(setq aqua-airline-theme 'airline-cool)
 ;; set smart-mode-line theme
 (setq aqua-sml-theme 'powerline)
 ;; Alternatives:
@@ -39,14 +40,15 @@
 ;; (sml/apply-theme 'respectful)
 ;; (sml/apply-theme 'automatic)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; vim airline theme for emacs modeline customized display                ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;-------------------------------------------------------------------------------
+;; vim airline theme for emacs modeline customized display
+;;-------------------------------------------------------------------------------
 (defun load-airline-settings ()
   "Load required Airline theme settings."
   (interactive)
   (require 'airline-themes)
-  ;; setting powerline fonts for glyphs
+  ;; setting powerline fonts for font glyphs
   (setq powerline-utf-8-separator-left        #xe0b0
         powerline-utf-8-separator-right       #xe0b2
         airline-utf-glyph-separator-left      #xe0b0
@@ -58,21 +60,17 @@
         airline-utf-glyph-linenumber          #xe0a1)
   )
 
-;; load the required airline settings
-(add-hook 'after-init-hook 'load-airline-settings)
-
 (defun apply-airline ()
   "Apply the Airline Themes as needed."
   (interactive)
   ;; load the airline theme
   (load-theme aqua-airline-theme t)
 )
-;; uncomment if airline themes are required
-;; (add-hook 'after-init-hook 'apply-airline)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; smart-mode-line enable/disable                                         ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;-------------------------------------------------------------------------------
+;; smart-mode-line enable/disable
+;;-------------------------------------------------------------------------------
 (defun apply-sml ()
   "Apply SmartModeLine if needed."
   (interactive)
@@ -107,14 +105,13 @@
   )
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; setting default color theme to required (from Steve Purcell .emacs)    ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq-default custom-enabled-themes '(;sanityinc-solarized-light
+;;-------------------------------------------------------------------------------
+;; setting default color theme to required (from Steve Purcell .emacs)
+;;-------------------------------------------------------------------------------
+(setq-default custom-enabled-themes '(sanityinc-solarized-light
                                       ;sanityinc-tomorrow-day
-                                      ;material
-                                      ;cyberpunk
-                                      majapahit-light
+                                      ;majapahit-dark
+                                      ;majapahit-light
                                       ))
 
 ;; Ensure that themes will be applied even if they have not been customized
@@ -123,11 +120,30 @@
   (interactive)
   (dolist (theme custom-enabled-themes)
     (unless (custom-theme-p theme)
+      (message "loading the theme %s" theme)
       (load-theme theme t)))
   (custom-set-variables `(custom-enabled-themes (quote ,custom-enabled-themes))))
 
+;; disabling the current themes
+(defun disable-all-themes ()
+  "Disable each currently enabled theme."
+  (interactive)
+  (mapc #'disable-theme custom-enabled-themes))
+
+;;-------------------------------------------------------------------------------
 ;; apply the themes after emacs initializes
+;;-------------------------------------------------------------------------------
 (add-hook 'after-init-hook 'reapply-themes)
+
+;;-------------------------------------------------------------------------------
+;; load the required airline settings
+;;-------------------------------------------------------------------------------
+(add-hook 'after-init-hook 'load-airline-settings)
+
+;;-------------------------------------------------------------------------------
+;; uncomment if airline themes are required
+;;-------------------------------------------------------------------------------
+;; (add-hook 'after-init-hook 'apply-airline)
 
 ;;------------------------------------------------------------------------------
 ;; Toggle between light and dark solarized themes
@@ -144,8 +160,9 @@
   (require 'color-theme-sanityinc-tomorrow)
   (color-theme-sanityinc-solarized-dark))
 
-;; automatically switch colors between dark and light
-;; based on the system time
+;;-------------------------------------------------------------------------------
+;; automatically switch colors between dark and light based on the system time
+;;-------------------------------------------------------------------------------
 ;; (require 'moe-theme-switcher)
 (defun moe ()
   "Activate moe light theme."
@@ -160,7 +177,9 @@
   (powerline-moe-theme)
   (moe-light))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;-------------------------------------------------------------------------------
 
 (provide 'themes-config)
+
 ;;; themes-config.el ends here

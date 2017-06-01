@@ -39,6 +39,7 @@
          emacs-major-version
          version-separator
          emacs-minor-version)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; adding location for required lisp files and libraries to the path      ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -53,6 +54,7 @@
       (expand-file-name "custom-settings.el" user-emacs-directory))
 (when (file-exists-p custom-file)
   (load custom-file))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; load custom methods and internal settings for Emacs                    ;;;
@@ -83,9 +85,9 @@
 
 (byte-recompile-init-files)            ;; comment or uncomment
 
-;;;========================================================================;;;
-;;;  specify all the require packages and settings to be loaded initially  ;;;
-;;;========================================================================;;;
+;;============================================================================
+;;;  specify all the require packages and settings to be loaded initially
+;;============================================================================
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Diminished modes are minor modes with no modeline display              ;;;
@@ -179,7 +181,7 @@
   (add-to-list 'exec-path dir))
 
 ;;; custom init settings completed
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
 
 (provide 'init)
 ;;; init.el ends here

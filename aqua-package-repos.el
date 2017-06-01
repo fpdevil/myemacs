@@ -204,6 +204,7 @@
     org-download                                ;; image drag and drop for org-mode
     org-easy-img-insert                         ;; insert images from web
     ob-http                                     ;; make http request within org-mode babel
+    epresent                                    ;; simple presentation mode for Emacs Org-mode
     ;;;;;; git integration                      ;;;;;;
     ;magit                                      ;; git status
     git-gutter                                  ;; Emacs port of GitGutter
@@ -271,6 +272,7 @@
     key-chord                                   ;; map pairs of simultaneously pressed keys to commands
     diminish                                    ;; diminished modes are minor modes with no modeline display
     multiple-cursors                            ;; multiple cursors for emacs
+    ace-mc                                      ;; Add Multiple Cursors using Ace Jump
     iedit                                       ;; edit multiple regions simultaneously in a buffer or a region
     ;;;;;; web, html, java script and json      ;;;;;;
     web-mode                                    ;; major-mode for editing web templates
@@ -285,7 +287,7 @@
     ac-js2                                      ;; Javascript auto-completion
     json-mode                                   ;; major mode for json editing
     coffee-mode                                 ;; major mode for CoffeeScript
-    jade                                        ;; JS Awesome Development Environment
+    indium                                      ;; JS Awesome Development Environment formerly jade
     company-web                                 ;; company backend for ac-html
     ;tidy                                       ;; interface to html tidy program
     ac-emmet                                    ;; auto-complete sources for emmet-mode
@@ -326,6 +328,8 @@
     flycheck-ycmd                               ;; flycheck integration for ycmd
     ;;;;;; indentation and text editing         ;;;;;;
     ;aggressive-indent                          ;; minor mode for code indentation
+    ;;;;;; package installers                   ;;;;;;
+    use-package                                 ;; use-package declaration
   )
   "A list of packages that will be installed if not present when firing Emacs.")
 
@@ -420,7 +424,7 @@ Gets all installed packages not in the `required-packages'.
 Helpful to get rid of unused packages."
   (interactive)
   (package-show-package-list
-   (set-difference package-activated-list required-packages)))
+   (set-difference package-activated-   LISTIST required-packages)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; package loading of all the custom el files which contains customized
@@ -465,6 +469,7 @@ Helpful to get rid of unused packages."
 ;; python3
 ;; scala
 ;; elixir
+;; elisp
 ;; go
 ;; c/c++
 ;; javascript
@@ -476,6 +481,7 @@ Helpful to get rid of unused packages."
 ;; projectile
 ;; delight and dim
 ;; latex configuration
+;; hippie expansion
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar configs
@@ -485,6 +491,7 @@ Helpful to get rid of unused packages."
       "utils-config"
       "company-config"
       "ac-complete-config"
+      "evil-config"
       "yasnippets-config"
       "semantic-config"
       "flycheck-config"
@@ -509,7 +516,6 @@ Helpful to get rid of unused packages."
       "whichkey-config"
       "guidekey-config"
       "beacon-config"
-      "evil-config"
       "xslide-config"
       "xslt-process-config"
       "nxml-config"
@@ -518,6 +524,7 @@ Helpful to get rid of unused packages."
       "haskell-config"
       "erlang-config"
       "elixir-config"
+      "elisp-config"
       "scala-config"
       "go-config"
       "clojure-config"
@@ -529,8 +536,33 @@ Helpful to get rid of unused packages."
       "projectile-config"
       "delighted-config"
       "tex-config"
+      "hippie-config"
       )
     "Configuration files which follow the modules/pkgname-config.el format.")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; load packages from custom path                                         ;;;;
+;;;; contains packages not in elpa/melpa/marmalade/gnu/org                  ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar custom-load-paths
+  '(; "erlang/elisp"        ;; erlang lisp modules
+    "xslide"                ;; xml and xslt syntax, customization's
+    "xslt-process/lisp"     ;; xslt processor ide
+    "javascript/node-ac"    ;; node-js auto-complete package
+    )
+  "Custom load paths that do not follow the normal vendor/elisp/module-name.el format.")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; loop through the custom lisp under the vendor directory                ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(loop for location in custom-load-paths
+      do (add-to-list 'load-path
+		      (concat (file-name-directory (or load-file-name (buffer-file-name)))
+			      "vendor/"
+			      location)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; loop through each and load the configured custom packages              ;;;;
@@ -541,25 +573,6 @@ Helpful to get rid of unused packages."
                        "modules/"
                        name ".el")))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; load packages from custom path                                         ;;;;
-;;;; contains packages not in elpa/melpa/marmalade/gnu/org                  ;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defvar custom-load-paths
-  '(; "erlang/elisp"        ;; erlang lisp modules
-    "xslide"                ;; xml and xslt syntax, customizations
-    "xslt-process/lisp"     ;; xslt processor ide
-    )
-  "Custom load paths that do not follow the normal vendor/elisp/module-name.el format.")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; loop through the custom lisp                                           ;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(loop for location in custom-load-paths
-      do (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name (buffer-file-name)))
-                     "vendor/"
-                     location)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

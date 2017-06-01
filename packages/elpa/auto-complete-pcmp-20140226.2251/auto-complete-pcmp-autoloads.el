@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil nil ("auto-complete-pcmp.el") (22733 60813
+;;;### (autoloads nil nil ("auto-complete-pcmp.el") (22805 39278
 ;;;;;;  0 0))
 
 ;;;***

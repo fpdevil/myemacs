@@ -41,7 +41,7 @@
       ;; additional options
       company-tooltip-limit 20                       ;; bigger popup window
       ;company-idle-delay 0.5                        ;; decrease delay before autocompletion popup shows
-      company-idle-delay 0.5                         ;; provide completions only if needed
+      company-idle-delay 0.2                         ;; provide completions only if needed
       company-echo-delay 0                           ;; remove annoying blinking
       company-transformers '(company-sort-by-occurrence)
       company-begin-commands '(self-insert-command)) ;; start autocompletion only after typing
@@ -118,6 +118,14 @@
     (add-to-list 'company-backends 'company-ispell)
     (message "enabling company-ispell mode"))))
 
+(defun company-ispell-setup ()
+  "Setup the company ISPELL."
+  (when (boundp 'company-backends)
+    (add-to-list 'company-backends 'company-ispell)
+    (if (and (boundp 'ispell-alternate-dictionary) ispell-alternate-dictionary)
+        (setq company-ispell-dictionary ispell-alternate-dictionary))))
+
+(add-hook 'org-mode-hook 'company-ispell-setup)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                  documentation popup for company                         ;;

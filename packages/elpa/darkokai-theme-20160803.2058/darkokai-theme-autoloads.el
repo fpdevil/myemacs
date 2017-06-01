@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "darkokai-theme" "darkokai-theme.el" (22733
-;;;;;;  60730 0 0))
+;;;### (autoloads nil "darkokai-theme" "darkokai-theme.el" (22805
+;;;;;;  39116 0 0))
 ;;; Generated autoloads from darkokai-theme.el
 
 (when (and (boundp 'custom-theme-load-path) load-file-name) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))

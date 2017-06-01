@@ -263,6 +263,17 @@ This command does the inverse of `fill-region'."
 
 (add-hook 'prog-mode-hook #'add-watchwords)
 
+(defun annotate-todo ()
+  "Put fringe marker on TODO: lines in the curent buffer."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "TODO:" nil t)
+      (let ((overlay (make-overlay (- (point) 5) (point))))
+        (overlay-put overlay
+                     'before-string
+                     (propertize (format "A")
+                                 'display '(left-fringe right-triangle)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Spell checker - setting location for aspell                             ;;

@@ -83,6 +83,10 @@
 (define-key yas-keymap (kbd "C-e") 'yas/goto-end-of-active-field)
 (define-key yas-keymap (kbd "C-a") 'yas/goto-start-of-active-field)
 
+;; stop yasnippets from occupying TAB (God, that’s annoying) and rebind to C-c y e
+;; (global-set-key (kbd "C-c y e") 'yas-expand)
+;; (global-set-key (kbd "C-c y i") 'yas-insert-snippet)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; yas cursor customization                                               ;;;

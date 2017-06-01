@@ -21,5 +21,17 @@
               )
         auto-mode-alist))
 
+(defun markdown-imenu-index ()
+  "Provide an imenu handler for Markdown mode."
+  (let* ((patterns '((nil "^#\\([# ]*[^#\n\r]+\\)" 1))))
+    (save-excursion
+      (imenu--generic-function patterns))))
+
+(defun markdown-mode-hook-setup ()
+  "Add the markdown mode hook."
+  (setq imenu-create-index-function 'markdown-imenu-index))
+(add-hook 'markdown-mode-hook 'markdown-mode-hook-setup)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'markdown-config)
 ;;; markdown-config.el ends here

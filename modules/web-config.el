@@ -17,6 +17,7 @@
 (require 'company-web-html)                          ;; load company mode html backend
 (require 'company-web-jade)                          ;; load company mode jade backend
 (require 'company-web-slim)                          ;; load company mode slim backend
+(require 'indium)
 ;(require 'tidy)
 ;;;
 ;;; Code:

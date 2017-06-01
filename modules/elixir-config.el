@@ -2,7 +2,7 @@
 ;;;
 ;;; Commentary:
 ;;;
-;;; Filename: erlang-config.el
+;;; Filename: elixir-config.el
 ;;; Description: A major mode elixir language support in Emacs
 ;;;
 ;;; elisp code for elixir language support and handling
@@ -51,6 +51,7 @@
 (require 'company)
 (add-hook 'eval-after-load 'global-company-mode)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'elixir-config)
 
 ;;; elixir-config.el ends here

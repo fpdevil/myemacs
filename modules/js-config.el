@@ -16,6 +16,8 @@
 (require 'json-mode)                ;; for json
 (require 'js2-mode)                 ;; js2 javascript mode
 (require 'jsfmt)                    ;; formatting with jsfmt
+(require 'indium)
+(require 'node-ac-mode)             ;; nodejs auto-completion
 ; (require 'simple-httpd)           ;; required and fulfilled by js2-mode
 ;;;
 ;;; Code:
@@ -144,7 +146,7 @@
 ;; company auto completion for tern                                         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun start-tern-company ()
-  "Start company Tern based autocompletion for js."
+  "Start company Tern based auto completion for js."
   (interactive)
   (eval-after-load 'tern
     '(progn
@@ -196,9 +198,10 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; for js evaluation in js buffers through jade                             ;;
+;; for js evaluation in js buffers through indium (formerly jade)           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-hook 'js2-mode-hook #'jade-interaction-mode)
+;; (add-hook 'js2-mode-hook #'jade-interaction-mode)
+(add-hook 'js2-mode-hook #'indium-interaction-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -296,6 +299,16 @@
           #'(lambda ()
               (define-key js2-mode-map "\C-ci" 'js-doc-insert-function-doc)
               (define-key js2-mode-map "@" 'js-doc-insert-tag)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; node-ac node js auto-completion for emacs                                ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (add-hook 'js2-mode-hook
+;;           (lambda ()
+;; 		    (local-set-key (kbd "C-.") 'node-ac-auto-complete)
+;; 		  	(local-set-key (kbd "C-c C-d") 'node-ac-show-document)
+;; 		  	(local-set-key (kbd "C-c C-j") 'node-ac-jump-to-definition)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

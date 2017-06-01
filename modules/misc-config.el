@@ -59,6 +59,36 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 (setq-default tab-width 2)
 (setq indent-line-function 'insert-tab)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; check the buffer file name                                               ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar load-user-customized-major-mode-hook t)
+(defvar cached-normal-file-full-path nil)
+
+(defun is-buffer-file-temp ()
+  (interactive)
+  "If (buffer-file-name) is nil or a temp file or HTML file converted from org file"
+  (let ((f (buffer-file-name))
+        org
+        (rlt t))
+    (cond
+     ((not load-user-customized-major-mode-hook) t)
+     ((not f)
+      ;; file does not exist at all
+      (setq rlt t))
+     ((string= f cached-normal-file-full-path)
+      (setq rlt nil))
+     ((string-match (concat "^" temporary-file-directory) f)
+      ;; file is create from temp directory
+      (setq rlt t))
+     ((and (string-match "\.html$" f)
+           (file-exists-p (setq org (replace-regexp-in-string "\.html$" ".org" f))))
+      ;; file is a html file exported from org-mode
+      (setq rlt t))
+     (t
+      (setq cached-normal-file-full-path f)
+      (setq rlt nil)))
+    rlt))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Company mode and YASnippet step on each other toes. These functions are  ;;
@@ -169,6 +199,29 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ibuffer More of the mixed up stuff                                       ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'ibuffer)
+
+(setq ibuffer-saved-filter-groups
+      (quote (("default"
+               ("dired" (mode . dired-mode))
+               ("java" (mode . java-mode))
+               ("erlang" (mode . erlang-mode))
+               ("haskell" (mode . haskell-mode))
+               ("javascript" (mode . js-mode))
+               ("python" (mode . python-mode))
+               ("org" (mode . org-mode))
+               ("elisp" (mode . elisp-mode))
+               ("xml" (mode . nxml-mode))))))
+
+(setq ibuffer-show-empty-filter-groups nil)
+
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            (ibuffer-switch-to-saved-filter-groups "default")
+            (ibuffer-filter-by-filename "."))) ;; to show only dired and files buffers
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

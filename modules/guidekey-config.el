@@ -24,8 +24,17 @@
         ("bookmark" . "hot pink")))
 
 ;; Check key sequence recursively
-(setq guide-key/guide-key-sequence '("C-x"))
+;; (setq guide-key/guide-key-sequence '("C-x"))
+(setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-x v" "C-x 8" "C-x +"))
 (setq guide-key/recursive-key-sequence-flag t)
+
+;; some specific settings for org-mode
+(defun guide-key/my-hook-function-for-org-mode ()
+  "Org mode specific settings for guide key."
+  (guide-key/add-local-guide-key-sequence "C-c")
+  (guide-key/add-local-guide-key-sequence "C-c C-x")
+  (guide-key/add-local-highlight-command-regexp "org-"))
+(add-hook 'org-mode-hook 'guide-key/my-hook-function-for-org-mode)
 
 ;; guide-key tip
 ;; (setq guide-key-tip/enabled t)

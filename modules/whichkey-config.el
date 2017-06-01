@@ -22,6 +22,8 @@
       ;; allow extra padding for Unicode character
       which-key-unicode-correction 3
       which-key-sort-order 'which-key-key-order-alpha
+      ;; for performance
+      which-key-allow-imprecise-window-fit t
       which-key-key-replacement-alist '(("<\\([[:alnum:]-]+\\)>" . "\\1")
                                         ("left" . "◀")
                                         ("right" . "▶")

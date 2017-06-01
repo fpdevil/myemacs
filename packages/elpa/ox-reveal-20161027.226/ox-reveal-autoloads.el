@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ox-reveal" "ox-reveal.el" (22733 60831 0 0))
+;;;### (autoloads nil "ox-reveal" "ox-reveal.el" (22805 39308 0 0))
 ;;; Generated autoloads from ox-reveal.el
 
 (autoload 'org-reveal-publish-to-reveal "ox-reveal" "\

@@ -30,5 +30,6 @@
 (setq org-tree-slide-skip-outline-level 4)
 (org-tree-slide-simple-profile)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'slides-config)
 ;;; slides-config.el ends here

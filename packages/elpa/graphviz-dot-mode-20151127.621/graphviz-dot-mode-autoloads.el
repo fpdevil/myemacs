@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "graphviz-dot-mode" "graphviz-dot-mode.el"
-;;;;;;  (22733 60782 0 0))
+;;;;;;  (22805 39225 0 0))
 ;;; Generated autoloads from graphviz-dot-mode.el
 
 (autoload 'graphviz-dot-mode "graphviz-dot-mode" "\

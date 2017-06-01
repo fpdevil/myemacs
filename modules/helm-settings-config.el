@@ -23,7 +23,8 @@
       helm-buffers-fuzzy-matching t
       helm-completion-in-region-fuzzy-match t
       helm-mode-fuzzy-match t
-      helm-M-x-fuzzy-match t)
+      helm-M-x-fuzzy-match t
+      helm-split-window-in-side-p t)
 
 ;;
 ; global kbd mapping

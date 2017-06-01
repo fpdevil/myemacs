@@ -1,0 +1,59 @@
+#+title: show org-mode abstract before table of contents (TOC)
+#+options: toc:nil
+
+#+Begin_abstract
+/I use [[http://gnu.org/s/emacs][Emacs]] [[http://orgmode.org][Org-Mode]] for writing all kinds of articles. The standard format for org-mode is to show the table of contents before all other content, but that requires people to scroll down to see whether the article is interesting for them. Therefore I want the abstract to be shown before the table of contents./
+#+End_abstract
+
+#+TOC: headlines 2
+
+* Intro
+
+There is an old guide for [[http://orgmode.org/worg/org-tutorials/org-latex-export.html#sec-11-1][showing the abstract before the TOC in org-mode<8]], but since I use org-mode 8, that wasn’t applicable to me.
+
+With a short /C-h v org-toc TAB TAB/ (means: search all variables which start with /org-/ and containt /-toc/) I found the following even simpler way. After I got that solution working, I found that this was still much too complex and that org-mode actually provides an even easier and very convenient way to add the TOC at any place.
+
+
+* Solution
+
+/([[http://orgmode.org/manual/Table-of-contents.html][from the manual]])/
+
+At the beginning of your file (after the title) add 
+
+#+BEGIN_EXAMPLE
+#+OPTIONS: toc:nil
+#+END_EXAMPLE
+
+Then after the abstract add a TOC-option:
+
+#+BEGIN_example
+  #+BEGIN_ABSTRACT
+  Abstract
+  #+END_ABSTRACT
+  #+TOC: headlines 2
+#+END_example
+
+Done. Have fun with org-mode!
+
+* Appendix: Complex way
+
+/This is the complicated way I tried first. It only works with LaTeX, but there it works. Better use the [[Solution][simple way]]./
+
+Set /org-export-with-toc/ to nil as file-local variable. This means you just append the following to the file:
+
+#+BEGIN_EXAMPLE
+  # Local Variables:
+  # org-export-with-toc: nil
+  # End:
+#+END_EXAMPLE
+
+(another nice local variable is /org-confirm-babel-evaluate: nil/, but don’t set that globally, otherwise you could run untrusted code when you export org-mode files from others. When this is set file-local, emacs will ask you for each file you open whether you want to accept the variable setting)
+
+Then write the abstract before the first heading and add tableofcontents after it. Example:
+
+#+BEGIN_example
+  #+BEGIN_ABSTRACT
+  Abstract
+  #+END_ABSTRACT
+  #+LATEX: \tableofcontents
+#+END_example

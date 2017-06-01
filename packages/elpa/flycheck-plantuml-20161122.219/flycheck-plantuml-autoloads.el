@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "flycheck-plantuml" "flycheck-plantuml.el"
-;;;;;;  (22733 60788 0 0))
+;;;;;;  (22805 39236 0 0))
 ;;; Generated autoloads from flycheck-plantuml.el
 
 (autoload 'flycheck-plantuml-setup "flycheck-plantuml" "\
