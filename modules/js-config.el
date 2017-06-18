@@ -13,11 +13,12 @@
 (require 'js2-highlight-vars)       ;; highlight occurrences of vars
 (require 'ac-js2)                   ;; javascript auto-completion in Emacs
 (require 'js-doc)                   ;; insert JsDoc style comment easily
-(require 'json-mode)                ;; for json
 (require 'js2-mode)                 ;; js2 javascript mode
 (require 'jsfmt)                    ;; formatting with jsfmt
 (require 'indium)
 (require 'node-ac-mode)             ;; nodejs auto-completion
+(require 'json-mode)                ;; for json
+(require 'json-navigator)           ;; view json docs (M-x json-navigator)
 ; (require 'simple-httpd)           ;; required and fulfilled by js2-mode
 ;;;
 ;;; Code:
