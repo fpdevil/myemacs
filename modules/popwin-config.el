@@ -68,6 +68,9 @@
   (push '("*Org tags*" :stick t :height 30)
         popwin:special-display-config)
 
+  ;; colors
+  (push '("*Colors") popwin:special-display-config)
+
   ;; Completions
   (push '("*Completions*" :stick t :noselect t) popwin:special-display-config)
 
