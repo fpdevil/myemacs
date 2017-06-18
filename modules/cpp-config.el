@@ -266,4 +266,10 @@
 
 
 (provide 'cpp-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
+
 ;;; cpp-config.el ends here
