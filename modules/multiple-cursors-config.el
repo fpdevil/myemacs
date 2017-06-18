@@ -33,6 +33,20 @@
 (define-key evil-visual-state-map (kbd "ms") 'ace-mc-add-single-cursor)
 ;; }}
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; edit multiple regions simultaneously in a buffer or a region           ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'iedit)
+(setq iedit-unmatched-lines-invisible-default t)
+
+;;---------------------------------------------------------------------------
+
 (provide 'multiple-cursors-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
 
 ;;; multiple-cursors-config.el ends here
