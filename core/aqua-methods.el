@@ -6,9 +6,19 @@
 ;;;
 ;;; Code:
 ;;; Updated    : 02 Dec 2016
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq my-command-buffer-hooks (make-hash-table))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; identify unnecessary whitespace is in all programming modes            ;;;
+;;; whitespace-cleanup command for clearing trailing white spaces          ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'whitespace)                    ;; this is an internal package
+(setq-default show-trailing-whitespace t)
+(set-default 'indent-tabs-mode nil)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq my-command-buffer-hooks (make-hash-table))
 (defun my-command-on-save-buffer (c)
     "C Run a command <c> every time the buffer is saved."
     (interactive "sShell command: ")
@@ -217,13 +227,39 @@ This variable first existed in version 19.23.")
     (unless (or (eql buffer (current-buffer)) (not (buffer-file-name buffer)))
       (kill-buffer buffer))))
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+(defvar aqua--diminished-minor-modes nil
+  "List of diminished modes to unicode or ascii values.")
+
+(defmacro aqua|diminish (mode &optional unicode ascii)
+  "Diminish MODE name in mode line to UNICODE or ASCII depending on the value
+`dotspacemacs-mode-line-unicode-symbols'.
+If ASCII is not provided then UNICODE is used instead. If neither are provided,
+the mode will not show in the mode line."
+  `(let ((cell (assq ',mode aqua--diminished-minor-modes)))
+     (if cell
+         (setcdr cell '(,unicode ,ascii))
+       (push '(,mode ,unicode ,ascii) aqua--diminished-minor-modes))))
+
+(defmacro aqua|hide-lighter (mode)
+  "Diminish MODE name in mode line to LIGHTER."
+  `(eval-after-load 'diminish '(diminish ',mode)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; add hooks
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'kill-buffer-hook 'my-command-buffer-kill-hook)
 (add-hook 'after-save-hook 'my-command-buffer-run-hook)
+
+(message "Loaded the aqua-methods...")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'aqua-methods)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
+
 ;;; aqua-methods.el ends here
