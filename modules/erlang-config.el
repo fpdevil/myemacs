@@ -521,6 +521,12 @@
 (add-hook 'erlang-mode-hook 'my-delayed-prettify)
 (add-hook 'erlang-mode-hook 'erlang-prettify-symbols)
 
+;;-------------------------------------------------------------------------------
+;; which function mode for displaying function names
+;;-------------------------------------------------------------------------------
+(eval-after-load "which-func"
+  '(add-to-list 'which-func-modes 'elisp-mode))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'erlang-config)
 ;;; erlang-config.el ends here
