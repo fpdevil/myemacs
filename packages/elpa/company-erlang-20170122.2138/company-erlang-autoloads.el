@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "company-erlang" "company-erlang.el" (22805
-;;;;;;  40648 0 0))
+;;;### (autoloads nil "company-erlang" "company-erlang.el" (22851
+;;;;;;  28275 0 0))
 ;;; Generated autoloads from company-erlang.el
 
 (autoload 'company-erlang "company-erlang" "\

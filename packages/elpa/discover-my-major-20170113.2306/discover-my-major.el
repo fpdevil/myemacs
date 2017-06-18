@@ -213,4 +213,3 @@ If ARG is non-nil recreate the makey popup function even if it is already define
 (provide 'discover-my-major)
 
 ;;; discover-my-major.el ends here
-closed

@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ace-mc" "ace-mc.el" (22822 25263 0 0))
+;;;### (autoloads nil "ace-mc" "ace-mc.el" (22851 28476 0 0))
 ;;; Generated autoloads from ace-mc.el
 
 (autoload 'ace-mc-add-multiple-cursors "ace-mc" "\

@@ -1,5 +1,6 @@
 ./SessionDesktop.el
 ./custom-settings.el
+games/
 *.elc
 .DS_Store
 .*

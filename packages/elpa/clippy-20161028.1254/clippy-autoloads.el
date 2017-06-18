@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "clippy" "clippy.el" (22805 39448 0 0))
+;;;### (autoloads nil "clippy" "clippy.el" (22851 28526 0 0))
 ;;; Generated autoloads from clippy.el
 
 (autoload 'clippy-say "clippy" "\

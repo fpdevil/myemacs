@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil nil ("auto-complete-clang.el") (22805 39206
+;;;### (autoloads nil nil ("auto-complete-clang.el") (22851 28309
 ;;;;;;  0 0))
 
 ;;;***

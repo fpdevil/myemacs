@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "flycheck-irony" "flycheck-irony.el" (22805
-;;;;;;  39235 0 0))
+;;;### (autoloads nil "flycheck-irony" "flycheck-irony.el" (22851
+;;;;;;  28333 0 0))
 ;;; Generated autoloads from flycheck-irony.el
 
 (autoload 'flycheck-irony-setup "flycheck-irony" "\

@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "use-package" "use-package.el" (22823 4216
+;;;### (autoloads nil "use-package" "use-package.el" (22851 28557
 ;;;;;;  0 0))
 ;;; Generated autoloads from use-package.el
 
@@ -75,10 +75,6 @@ this file.  Usage:
 \(fn NAME &rest ARGS)" nil t)
 
 (function-put 'use-package 'lisp-indent-function '1)
-
-;;;***
-
-;;;### (autoloads nil nil ("use-package-pkg.el") (22823 4215 0 0))
 
 ;;;***
 

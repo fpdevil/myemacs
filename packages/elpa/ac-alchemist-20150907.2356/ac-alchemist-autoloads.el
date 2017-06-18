@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ac-alchemist" "ac-alchemist.el" (22805 39349
+;;;### (autoloads nil "ac-alchemist" "ac-alchemist.el" (22851 28439
 ;;;;;;  0 0))
 ;;; Generated autoloads from ac-alchemist.el
 
