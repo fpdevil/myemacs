@@ -30,8 +30,8 @@
 (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'"                               . web-mode))
 (add-to-list 'auto-mode-alist '("\\.erb\\'"                                   . web-mode))
 (add-to-list 'auto-mode-alist '("\\.mustache\\'"                              . web-mode))
-(add-to-list 'auto-mode-alist '("\\.jsx$\\'"                                  . web-mode))   ;; for jsx
-(add-to-list 'auto-mode-alist '("\\.es6\\'"                                  . web-mode))    ;; for ES6 js
+(add-to-list 'auto-mode-alist '("\\.jsx$\\'"                                  . web-mode))    ;; for jsx
+(add-to-list 'auto-mode-alist '("\\.es6\\'"                                   . web-mode))    ;; for ES6 js
 (add-to-list 'auto-mode-alist '("\\.phtml\\'"                                 . web-mode))
 (add-to-list 'auto-mode-alist '("\\.inc\\'"                                   . web-mode))
 (add-to-list 'auto-mode-alist '("\\.blade\\.php\\'"                           . web-mode))
