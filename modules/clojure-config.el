@@ -63,12 +63,13 @@
 (setq cider-repl-pop-to-buffer-on-connect t
       cider-show-error-buffer t
       cider-auto-select-error-buffer t
-      cider-repl-history-file (concat (getenv "HOME") "/.emacs.d/cache/cider-history")
+      cider-repl-history-file "~/.emacs.d/cache/cider-history"
       cider-repl-wrap-history t
       nrepl-log-messages t
       cider-font-lock-dynamically '(macro core function var)
       nrepl-hide-special-buffers t
-      cider-overlays-use-font-lock t)
+      cider-overlays-use-font-lock t
+      cider-repl-use-pretty-printing t)
 
 ;; helm
 (helm-cider-mode 1)
@@ -80,7 +81,8 @@
 ;;
 (add-to-list 'auto-mode-alist '("\\.edn$" . clojure-mode))
 (add-to-list 'auto-mode-alist '("\\.boot$" . clojure-mode))
-(add-to-list 'auto-mode-alist '("\\.cljs.*$" . clojure-mode))
+;(add-to-list 'auto-mode-alist '("\\.cljs.*$" . clojure-mode))
+(add-to-list 'auto-mode-alist '(".cljs.hl$" . clojurescript-mode))
 (add-to-list 'auto-mode-alist '("lein-env" . enh-ruby-mode))
 
 
@@ -126,6 +128,9 @@
      (add-to-list 'ac-modes 'cider-mode)
      (add-to-list 'ac-modes 'cider-repl-mode)))
 
+(defun clj-align-vectors (beg end)
+  (interactive "r")
+  (align-regexp beg end "^ \\[[^ ]+\\(\\s-+\\)" 1 1 t))
 
 (provide 'clojure-config)
 
