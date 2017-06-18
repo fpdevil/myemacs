@@ -77,7 +77,7 @@
          )
         local-file)))))
 
-(push '("\\.el$" flymake-elisp-init) flymake-allowed-file-name-masks)
+;; (push '("\\.el$" flymake-elisp-init) flymake-allowed-file-name-masks)
 
 ;;-------------------------------------------------------------------------------
 ;; Hippie-expand
@@ -107,8 +107,14 @@
 
 (add-hook 'emacs-lisp-mode-hook 'elisp-mode-hook-setup)
 
-
 ;;-------------------------------------------------------------------------------
+;; which function mode for displaying function names
+;;-------------------------------------------------------------------------------
+(eval-after-load "which-func"
+  '(add-to-list 'which-func-modes 'elisp-mode))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'elisp-config)
 
