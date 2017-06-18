@@ -43,7 +43,8 @@
 
 ;; location for the semantic db
 (setq semanticdb-default-save-directory
-      (concat (getenv "HOME") "/.emacs.d/cache/semanticdb"))
+      (expand-file-name "semanticdb" save-dir))
+
 ; (global-semanticdb-minor-mode 1)
 
 (when (featurep 'semanticdb)
