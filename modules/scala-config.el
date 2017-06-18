@@ -21,6 +21,10 @@
 
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
+(setq
+  ensime-sbt-command "/usr/local/bin/sbt"
+  sbt:program-name "/usr/local/bin/sbt")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; scala pretty fonts                                                       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
