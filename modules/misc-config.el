@@ -9,9 +9,11 @@
 ;;;
 ;;; Code:
 ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'imenu-list)
+
+;;----------------------------------------------------------------------------
 ;; display an initial scratch message & prettify symbols                    ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
 (setq-default initial-scratch-message
               (concat "ॐ  Emacs With ♥ " user-login-name "!\n" "☆ సంపత్ కుమార్ ☆" "\n"))
 
@@ -20,9 +22,9 @@
   (global-prettify-symbols-mode +1))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; benchmarking - check time taken to load each component                   ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
+;; benchmarking - check time taken to load each component
+;;----------------------------------------------------------------------------
 (defun sanityinc/time-subtract-millis (b a)
   "B - A difference multiplied with 1000."
   (* 1000.0 (float-time (time-subtract b a))))
@@ -50,18 +52,18 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 
 (add-hook 'after-init-hook 'sanityinc/show-init-time)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; TAB settings - handle whitespaces                                        ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
+;; TAB settings - handle whitespaces
+;;----------------------------------------------------------------------------
 (setq whitespace-style
       '(face tabs empty trailing))
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
 (setq indent-line-function 'insert-tab)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; check the buffer file name                                               ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
+;; check the buffer file name
+;;----------------------------------------------------------------------------
 (defvar load-user-customized-major-mode-hook t)
 (defvar cached-normal-file-full-path nil)
 
@@ -134,9 +136,9 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 
 (add-hook 'company-mode-hook 'bind-tab-properly)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; get list of minor modes                                                ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
+;; get list of minor modes
+;;----------------------------------------------------------------------------
 (defun which-active-modes ()
   "Give a message of which minor modes are enabled in the current buffer."
   (interactive)
@@ -149,9 +151,9 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
     (message "Active modes are %s" active-modes)))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; add or disable a specific backend in company-backends                    ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
+;; add or disable a specific backend in company-backends
+;;----------------------------------------------------------------------------
 (defun aqua-company-backend-disable (backend mymode)
   "Disable a specific BACKEND in MYMODE in company for a mode."
   (interactive)
@@ -181,9 +183,9 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
       (setq company-idle-delay cdelay
             company-minimum-prefix-length clength)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; indentation function                                                   ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
+;; indentation function
+;;----------------------------------------------------------------------------
 (defun hindent-reformat-buffer-on-save ()
   "Indent an entire buffer with the default indentation scheme."
   (interactive)
@@ -193,15 +195,15 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
     (untabify (point-min) (point-max))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; display context sensitive help with eldoc for elisp-mode                 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
+;; display context sensitive help with eldoc for elisp-mode
+;;----------------------------------------------------------------------------
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ibuffer More of the mixed up stuff                                       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
+;; ibuffer More of the mixed up stuff
+;;----------------------------------------------------------------------------
 (require 'ibuffer)
 
 (setq ibuffer-saved-filter-groups
@@ -223,8 +225,32 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
             (ibuffer-switch-to-saved-filter-groups "default")
             (ibuffer-filter-by-filename "."))) ;; to show only dired and files buffers
 
+;;----------------------------------------------------------------------------
+;; imenu-list settings
+;;----------------------------------------------------------------------------
+(setq imenu-list-focus-after-activation t)
+(setq imenu-list-auto-resize t)
+
+;;----------------------------------------------------------------------------
+;; show the name of the current function definition in the modeline
+;;----------------------------------------------------------------------------
+(require 'which-func)
+(which-function-mode 1)
+;; Show the current function name in the header line
+(setq-default header-line-format
+              '((which-func-mode ("" which-func-format " "))))
+(setq mode-line-misc-info
+      ;; We remove Which Function Mode from the mode line,
+      ;; because it's mostly invisible here anyway.
+      (assq-delete-all 'which-func-mode mode-line-misc-info))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'misc-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
 
 ;;; misc-config.el ends here
