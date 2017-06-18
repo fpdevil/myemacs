@@ -13,8 +13,11 @@
 (require 'company-quickhelp)        ;; documentation popup for company
 (require 'company-dict)             ;; ac-source-dictionary to company-mode
 (require 'company-math)             ;; back-ends for for math unicode symbols and latex tags
+
 ;;
 ;;; Code:
+;;;
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;            company mode (for company based completions)                  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -60,9 +63,9 @@
 ;;
 (setq company-dict-dir (concat user-emacs-directory "dict/"))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; specify all the company backends to be included                          ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
+;; specify all the company backends to be included
+;;----------------------------------------------------------------------------
 (setq-default company-backends
     '((company-yasnippet
        company-elisp
@@ -80,18 +83,18 @@
     ))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; helm interface for company-mode                                          ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
+;; helm interface for company-mode
+;;----------------------------------------------------------------------------
 (eval-after-load 'company
   '(progn
      (define-key company-mode-map (kbd "C-:") 'helm-company)
      (define-key company-active-map (kbd "C-:") 'helm-company)))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ESC - exit evils insert state and also the popup                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
+;; ESC - exit evils insert state and also the popup
+;;----------------------------------------------------------------------------
 ;; use function from core/aqua-methods
 (with-eval-after-load 'company
   (define-key company-active-map (kbd "<escape>") 'aqua-company-abort)
@@ -104,9 +107,9 @@
 ;;   (add-to-list 'company-math-symbols-unicode)
 ;;   (add-to-list 'company-math-symbols-latex))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; company-ispell toggle as needed                                          ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
+;; company-ispell toggle as needed
+;;----------------------------------------------------------------------------
 (defun switch-company-ispell ()
   "Toggle company Ispell mode."
   (interactive)
@@ -127,16 +130,16 @@
 
 (add-hook 'org-mode-hook 'company-ispell-setup)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                  documentation popup for company                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
+;;                  documentation popup for company
+;;----------------------------------------------------------------------------
 (company-quickhelp-mode 1)
 (setq company-quickhelp-use-propertized-text t)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; highlight annotation when selected, match the search face when selected  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
+;; highlight annotation when selected, match the search face when selected
+;;----------------------------------------------------------------------------
 (set-face-background 'company-tooltip-annotation-selection
                      (face-background 'company-tooltip-selection))
 
@@ -145,9 +148,14 @@
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; some company front-ends                                                  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
+;; A company-complete alternative that tries much harder to find completions.
+;; If none of the current completions look good, call the command again to try
+;; the next backend
+;;----------------------------------------------------------------------------
+(require 'company-try-hard)         ;; get all completions from company backends
+
+
 ; using defaults now
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
