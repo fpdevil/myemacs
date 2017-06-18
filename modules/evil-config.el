@@ -16,14 +16,23 @@
 (require 'evil-paredit)            ;; extension to integrate nicely with paredit
 (require 'evil-mc)                 ;; evil multiple cursors
 ;(require 'evil-tabs)
+
 ;;;
 ;;; Code:
 ;;;
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; evil mode (for vim emulation)                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (evil-mode t)                                   ;; enable evil-mode globally
+
+;;----------------------------------------------------------------------------
+;; auto save the undo-tree history
+;;----------------------------------------------------------------------------
 (global-undo-tree-mode)                         ;; enable undo-tree globally
+(setq undo-tree-history-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq undo-tree-auto-save-history t)
 
 ;;---------------------------------------------------------------------------+
 ;; activate evil-mc and evil-smartparens                                     |
@@ -64,15 +73,17 @@
 (evil-put-property 'evil-state-properties 'replace  :tag " REPLACE ")
 (evil-put-property 'evil-state-properties 'operator :tag " OPERTR ")
 
-;;
+;;----------------------------------------------------------------------------
 ; evil mode states (comment / un-comment)
-;;
+;;----------------------------------------------------------------------------
 ; (setq evil-default-state 'insert)             ;; if default state is to be set emacs
 ; (setq evil-default-state 'emacs)              ;; if default state is to be set emacs
 (setq evil-default-state 'normal)               ;; if default state is to set normal
 
 
+;;----------------------------------------------------------------------------
 ;; prevent esc-key from translating to meta-key in terminal mode
+;;----------------------------------------------------------------------------
 (setq evil-esc-delay 0)
 
 
@@ -171,10 +182,22 @@
 ;; surround globally                                                        ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-evil-surround-mode 1)
-
+;; use `s' for surround instead of `substitute'
+(evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)
+(evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
 
 ;; Evil extension to integrate nicely with paredit
 (add-hook 'emacs-lisp-mode-hook 'evil-paredit-mode)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; get rid of the emc in the mode line when multiple cursors are not used
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq evil-mc-mode-line
+      '(:eval (when (> (evil-mc-get-cursor-count) 1)
+                (format ,(propertize " %s:%d " 'face 'cursor)
+                        evil-mc-mode-line-prefix
+                        (evil-mc-get-cursor-count)))))
+
 
 (provide 'evil-config)
 
