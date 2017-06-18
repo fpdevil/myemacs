@@ -36,9 +36,14 @@
 ;(fset 'html-mode 'nxml-mode)
 (require 'rng-loc nil t)
 
+;; pom files should be treated as xml files
+(add-to-list 'auto-mode-alist '("\\.pom$" . nxml-mode))
+
 ;; encoding, auto complete etc...
 (setq nxml-slash-auto-complete-flag t
       nxml-auto-insert-xml-declaration-flag t
+      nxml-child-indent 4
+      nxml-attribute-indent 4
       nxml-default-buffer-file-coding-system 'utf-8)
 
 ;;
