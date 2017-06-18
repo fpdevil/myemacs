@@ -13,64 +13,51 @@
 ;;;
 (global-set-key (kbd "<menu>") 'nil)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                          some customizations                            ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----------------------------------------------------------------------------
+;;                          some customizations
+;----------------------------------------------------------------------------
 (setq user-full-name "Sampath Singamsetty"
       user-mail-address "Singamsetty.Sampath@gmail.com")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; garbage collection setup for aquamacs                                   ;;
-;; Start garbage collection every 100MB to improve Emacs performance       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq gc-cons-threshold 100000000)
+;----------------------------------------------------------------------------
+;; garbage collection setup for aquamacs
+;; Start garbage collection every 50MB to improve Emacs performance
+;; warn when opening files bigger than 100MB
+;----------------------------------------------------------------------------
+(setq gc-cons-threshold 50000000)
+(setq large-file-warning-threshold 100000000)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Enable Windows-like bindings (C-x and C-v)                              ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----------------------------------------------------------------------------
+;; Enable Windows-like bindings (C-x and C-v)
+;----------------------------------------------------------------------------
 (cua-mode 1)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; typing related                                                          ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----------------------------------------------------------------------------
+;; typing related
+;----------------------------------------------------------------------------
 (defalias 'yes-or-no-p 'y-or-n-p) ;; Don’t make me type yes or no to boolean interface questions
 (setq echo-keystrokes 0.1)        ;; Show the modifier combinations I just typed
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; OSX hosts are called hostname.localconfig or hostname.local, correct it ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----------------------------------------------------------------------------
+;; OSX hosts are called hostname.localconfig or hostname.local, correct it
+;----------------------------------------------------------------------------
 (when (eq system-type 'darwin)
   (setq system-name (car (split-string system-name "\\."))))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; parentheses show                                                        ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(show-paren-mode t)
-(setq show-paren-style 'parenthesis)    ;; highlight brackets
-(setq show-paren-style 'expression)     ;; highlight entire expression
-(setq show-paren-style 'mixed)          ;; highlight brackets if visible, else entire expression
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; get visual indication of an exception                                   ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(set 'visible-bell t)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; record changes in window configurations                                 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----------------------------------------------------------------------------
+;; record changes in window configurations
+;----------------------------------------------------------------------------
 (when (fboundp 'winner-mode)
   (winner-mode 1))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; recent files list                                                       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----------------------------------------------------------------------------
+;; recent files list
+;----------------------------------------------------------------------------
+(require 'recentf)
 (recentf-mode 1)
 ;; change the recentf file location to cache directory
 (setq recentf-save-file (expand-file-name "recentf" (concat (getenv "HOME") "/.emacs.d/cache")))
@@ -78,8 +65,6 @@
 (setq recentf-exclude '(".recentf"))
 (setq recentf-auto-cleanup 'never)
 (recentf-load-list)
-
-(global-set-key "\M- " 'hippie-expand)
 
 (setq truncate-lines t)
 (add-hook 'minibuffer-setup-hook
@@ -91,29 +76,9 @@
 
 (put 'upcase-region 'disabled nil)
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; syntax highlighting everywhere                                          ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-font-lock-mode 1)
-(setq font-lock-maximum-decoration t)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; add proper word wrapping                                                ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-visual-line-mode t)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; for pdf viewing                                                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq doc-view-continuous t)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; file backup and saving Emacs sessions                                   ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----------------------------------------------------------------------------
+;; file backup and saving Emacs sessions
+;----------------------------------------------------------------------------
 (setq desktop-save nil) ;; save without asking
 ;(setq desktop-restore-eager 10)
 
@@ -122,6 +87,7 @@
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; electric pair mode (currently disabled)                                 ;;
@@ -134,54 +100,32 @@
 ; (add-hook 'markdown-mode-hook 'markdown-add-electric-pairs)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; disable electric indent mode to prevent auto indentation                ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----------------------------------------------------------------------------
+;; disable electric indent mode to prevent auto indentation
+;----------------------------------------------------------------------------
 (when (fboundp 'electric-indent-mode)
   (electric-indent-mode -1))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; custom keybinding stuff                                                 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----------------------------------------------------------------------------
+;; custom keybinding stuff
+;----------------------------------------------------------------------------
 (global-set-key (kbd "<C-S-up>")     'windmove-up)
 (global-set-key (kbd "<C-S-down>")   'windmove-down)
 (global-set-key (kbd "<C-S-left>")   'windmove-left)
 (global-set-key (kbd "<C-S-right>")  'windmove-right)
+(global-set-key (kbd "C-+") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
 ; (global-set-key (kbd "RET") 'newline-and-indent)
 ; (global-set-key (kbd "C-;") 'comment-or-uncomment-region)
 ; (global-set-key (kbd "M-/") 'hippie-expand)
-(global-set-key (kbd "C-+") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
 ; (global-set-key (kbd "C-c C-k") 'compile)
 ; (global-set-key (kbd "C-x g") 'magit-status)
+;----------------------------------------------------------------------------
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; set default font for aquamacs                                           ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(if (string-match "apple-darwin" system-configuration)
-    (set-face-font 'default "Monaco-12"))
-
-(when (boundp 'aquamacs-version)
-  (aquamacs-autoface-mode 0)
-  (setq mac-allow-anti-aliasing t)                           ;; anti-aliasing
-  (set-face-attribute 'default nil
-                      :family "Monaco"
-                      :width 'normal
-                      :height 120
-                      :weight 'regular)
-  (set-face-bold 'bold nil)                                  ;; disable bold fonts
-  ;(set-face-bold-p 'bold nil)                               ;; disable bold fonts
-
-  ;;
-  ; (set-face-attribute 'default nil :family "Monaco for Powerline"
-                                     ;:height 120
-                                     ;:weight 'ultralight)
-)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; get default timestamp format                                            ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----------------------------------------------------------------------------
+;; get default timestamp format
+;----------------------------------------------------------------------------
 (defun timestamp ()
   "Latest timestamp."
   (interactive)
@@ -218,16 +162,9 @@ This command does the inverse of `fill-region'."
   (let ((fill-column 90002000))
     (fill-region start end)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; for latex editing                                                       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; (setq LaTeX-math-menu-unicode t)
-; (add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
-; (require 'reftex)
-; (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-; (setq reftex-plug-into-AUCTeX t)
-; (setq-default TeX-master nil)
-; (setq reftex-cite-format 'natbib)
+;----------------------------------------------------------------------------
+;; for latex editing
+;----------------------------------------------------------------------------
 (setq auto-mode-alist
       (cons '("\\.org$" . org-mode) auto-mode-alist))
 (global-set-key "\C-cl" 'org-store-link)
@@ -236,24 +173,31 @@ This command does the inverse of `fill-region'."
 (setq org-log-done t)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; colorize the output of the compilation mode.                            ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----------------------------------------------------------------------------
+;; colorize the output of the compilation mode.
+;----------------------------------------------------------------------------
+(defun aqua-colorize-compilation-buffer ()
+  "Colorize a compilation mode buffer."
+  (interactive)
+  (when (eq major-mode 'compilation-mode)
+    (let ((inhibit-read-only t))
+      (ansi-color-apply-on-region (point-min) (point-max)))))
+
+
+(require 'compile)
+(setq compilation-ask-about-save nil            ;; save before compile
+      compilation-always-kill t                 ;; kill old process before starting new
+      compilation-scroll-output 'first-error)   ;; scroll to first error automatically
+
+;; colorize the compilation mode
 (require 'ansi-color)
-(defun endless/colorize-compilation ()
-  "Colorize from `compilation-filter-start' to `point'."
-  (let ((inhibit-read-only t))
-    (ansi-color-apply-on-region
-     compilation-filter-start (point))))
-
-(add-hook 'compilation-filter-hook
-          #'endless/colorize-compilation)
+(add-hook 'compilation-filter-hook #'aqua-colorize-compilation-buffer)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Programming Mode Hooks                                                  ;;
-;; make sure things like FIXME and TODO are highlighted so they stand out  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----------------------------------------------------------------------------
+;; Programming Mode Hooks
+;; make sure things like FIXME and TODO are highlighted so they stand out
+;----------------------------------------------------------------------------
 (defun add-watchwords ()
   "Highlight FIXME, TODO, and NOCOMMIT in code TODO."
   (font-lock-add-keywords
@@ -264,7 +208,7 @@ This command does the inverse of `fill-region'."
 (add-hook 'prog-mode-hook #'add-watchwords)
 
 (defun annotate-todo ()
-  "Put fringe marker on TODO: lines in the curent buffer."
+  "Put a fringe marker on TODO: lines in the curent buffer."
   (interactive)
   (save-excursion
     (goto-char (point-min))
@@ -275,29 +219,54 @@ This command does the inverse of `fill-region'."
                      (propertize (format "A")
                                  'display '(left-fringe right-triangle)))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Spell checker - setting location for aspell                             ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----------------------------------------------------------------------------
+;; Spell checker - setting location for aspell
+;----------------------------------------------------------------------------
 (when (and (eq system-type 'darwin) (executable-find "aspell"))
     (setq ispell-program-name (executable-find "aspell")))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; display world times of interest with M-x display-time-world             ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----------------------------------------------------------------------------
+;; display world times of interest with M-x display-time-world
+;----------------------------------------------------------------------------
 (setq display-time-world-list
       '(("Asia/India" "India")
         ("America/Chicago" "Chicago")
         ("America/Los_Angeles" "Los Angeles")))
 
+;----------------------------------------------------------------------------
+;; abbrev configuration
+;----------------------------------------------------------------------------
+(add-hook 'text-mode-hook 'abbrev-mode)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; change the starup message in the echo area                              ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun display-startup-echo-area-message ()
-  "Startup echo message."
-  (message "Let the hacking begin!"))
+;----------------------------------------------------------------------------
+;; tab handling
+;----------------------------------------------------------------------------
+(global-set-key [tab] 'indent-or-expand)
+(defun indent-or-expand ()
+  "Either indent according to mode, or expand the word preceding the point."
+  (interactive)
+  (if (or
+       (eq last-command 'self-insert-command)
+       (eq last-command 'dabbrev-expand))
+      (progn
+        (setq this-command 'dabbrev-expand)
+        (deabbrev-expand nil))
+    (indent-according-to-mode)))
 
+(when (eq system-type 'darwin)
+  ;; Enable emoji, and stop the UI from freezing when trying to display them.
+  (if (fboundp 'set-fontset-font)
+      (set-fontset-font t 'unicode "Apple Color Emoji" nil 'prepend)))
+
+(message "Loaded the aquq-internals...")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'aqua-internals)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
+
 ;;; aqua-internals.el ends here
