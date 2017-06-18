@@ -9,14 +9,18 @@
 ;;;===========================================================================
 (require 'yasnippet)                    ;; yasnippet
 (require 'helm-c-yasnippet)             ;; helm source for yasnippet
+
 ;;;
 ;;; Code:
 ;;;
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; yasnippets configuration                                                 ;;
 ;; this will install and activate it everywhere.                            ;;
 ;; your snippets are stored in ~/.emacs.d/snippets.                         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(yas/initialize)
+
 (yas-global-mode 1)
 (setq helm-yas-space-match-any-greedy t
       helm-yas-display-key-on-candidate t
