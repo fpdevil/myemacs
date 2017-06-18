@@ -58,6 +58,7 @@
 (setq py-autopep8-options '("--ignore=W690"))
 (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; python virtual environment setup                                         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -65,6 +66,7 @@
 (venv-initialize-eshell)             ;; if you want eshell support
 (setq venv-location
       (expand-file-name (concat (getenv "HOME") "/.virtualenvs/")))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; flymake handler for syntax-checking Python source code using             ;;
@@ -137,6 +139,7 @@
    (local-set-key (kbd "M-/") 'jedi:get-in-function-call))
 (add-hook 'python-mode-hook 'jedi-config:setup-keys)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; company backend(s) setup for python jedi                                 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -152,6 +155,7 @@
 
 (with-eval-after-load 'python
   (remove-hook 'python-mode-hook #'python-setup-shell))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  python3 shell interpreter                                              ;;
@@ -220,11 +224,11 @@
 ;; simultaneously is considered an overkill and right now the jedi setup    ;;
 ;; has been working more than satisfactorily... but leaving for now         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; (elpy-enable)
 
 ;;
 ; python completion and code checking
 ;;
+; (elpy-enable)
 (setq elpy-modules '(elpy-module-company
                      elpy-module-eldoc
                      elpy-module-flymake
@@ -330,9 +334,23 @@
 ;; enable eldoc                                                             ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (eldoc-mode t)
-;;
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; sphinx documentation for python                                          ;;
+;; move the cursor to some function/method definition and hit C-c M-d       ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'python-mode-hook
+          (lambda ()
+            (require 'sphinx-doc)
+            (sphinx-doc-mode t)))
 
+;;-------------------------------------------------------------------------------
+;; which function mode for displaying function names
+;;-------------------------------------------------------------------------------
+(eval-after-load "which-func"
+  '(add-to-list 'which-func-modes 'elisp-mode))
+
+;;----------------------------------------------------------------------------
 (provide 'python-config)
 
 ;;; python-config.el ends here
