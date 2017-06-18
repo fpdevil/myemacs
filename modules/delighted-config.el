@@ -1,6 +1,9 @@
 ;;; package  --- delighted-config.el
 ;;;
 ;;; Commentary:
+;;; Diminished modes are minor modes with no modeline display
+;;; hide a minor mode that you know are always enabled using this
+;;; http://www.eskimo.com/~seldon/diminish.el
 ;;;
 ;;; Filename   : delighted-config.el
 ;;; Description: Emacs customization of the mode(s) displayed
@@ -8,8 +11,9 @@
 ;;;
 ;;; symbols can be checked with (C-h v minor-mode-alist)
 ;;;===========================================================================
-(require 'delight)  ;; customise how major and minor modes appear
+;(require 'delight)  ;; customise how major and minor modes appear
 (require 'dim)      ;; customize mode-line names of major/minor modes
+(require 'diminish) ;; diminish minor mode displays
 ;;;
 ;;; Code:
 ;;;
@@ -22,7 +26,7 @@
 ;            ;; (hs-minor-mode " ⓗ" hideshow)
 ;            ;; (outline-minor-mode " Ⓞ" outline)
 ;            (outline-mode " Ⓞ" :major)
-;            (git-gutter-mode " Ⓖ" git-gutter)
+;            ;; (git-gutter-mode " Ⓖ" git-gutter)
 ;            ;; (flyspell-mode " Ⓕ" flyspell)
 ;            ;; (smartparens-mode " Ⓢ" smartparens)
 ;            ;; (elisp-slime-nav-mode nil elisp-slime-nav)
@@ -45,24 +49,45 @@
 ;; https://github.com/alezost/dim.el                                        ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (dim-major-names
- '((outline-mode          " Ⓞ")
-   (calendar-mode         " 📆")))
+ '((outline-mode             " Ⓞ")
+   (calendar-mode            " 📆")))
 (dim-minor-names
- '((company-mode          " COM" company)
-   (flymake-mode          " FlyM" flymake)
-   (flyspell-mode         " FlyS" flyspell)
-   ;(evil-smartparens-mode " ∈")
-   (git-gutter-mode       " Ⓖ" git-gutter)
-   (visual-line-mode      " Ⓥ")
-   (yas-minor-mode        " Ⓨ")
-   (auto-fill-function    " ℱ")
-   (which-key-mode        " Ⓚ")
-   (eldoc-mode            " Ⓔ" eldoc)
-   (whitespace-mode       " {W}"  whitespace)
-	 (undo-tree-mode        " Ʈ")
-   (projectile-mode       " ㏚")
-   (paredit-mode          " {Ƥ}" paredit)))
+ '(
+   (flymake-mode             " 𝔽𝕝𝕪𝕄" flymake)
+   (flyspell-mode            " 𝔽𝕝𝕪𝕊" flyspell)
+   (company-mode             " ℂ𝕆" company)
+   ;(flycheck-mode            " 𝔽𝕝𝕪ℂ" flycheck)
+   (git-gutter-mode          " Ⓖ" git-gutter)
+   (visual-line-mode         " Ⓥ")
+   (yas-minor-mode           " Ⓨ")
+   (interactive-haskell-mode " 𝕴")
+   (auto-fill-function       " ℱ")
+   (which-key-mode           " Ⓚ")
+   ;(eldoc-mode               " 𝑬" eldoc)
+   (whitespace-mode          " 𝑾"  whitespace)
+   (undo-tree-mode           " ፕ")
+   (projectile-mode          " 𝓟")
+   (paredit-mode             " {ק}" paredit)
+   ))
 
+;;----------------------------------------------------------------------------
+;; diminish unneeded minor modes from mode line
+;;----------------------------------------------------------------------------
+(eval-after-load "guide-key"
+  '(diminish 'guide-key-mode))          ;; hide the Guide from mode line
+(eval-after-load "highlight-symbol"
+  '(diminish 'highlight-symbol-mode))   ;; hide the hl-s from mode line
+(eval-after-load "whitespace"
+  '(diminish 'whitespace-mode))         ;; whitespace handling
+(eval-after-load "eldoc"
+  '(diminish 'eldoc-mode))              ;; hide eldoc-mode from mode line
+; (eval-after-load 'flycheck
+;   '(diminish flycheck-mode " 𝔽𝕝𝕪ℂ" " 𝔽"))
+
+
+
+
+;;----------------------------------------------------------------------------
 
 (provide 'delighted-config)
 ;;; delighted-config.el ends here
