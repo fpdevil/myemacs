@@ -8,7 +8,10 @@
 ;;;              Using some functions from the excellent purcell Emacs.
 ;;; elisp code for customizing multiple things
 ;;;==========================================================================
-(require 'switch-window) ;; visual replacement for (C-x o)
+(require 'switch-window)              ;; visual replacement for (C-x o)
+(require 'dircolors)                  ;; ls --color inside emacs
+(require 'volatile-highlights)        ;; provide visual feedback
+
 ;;;
 ;;; Code:
 ;;;
@@ -24,6 +27,9 @@
 
 ;; Usage shortcut
 (global-set-key (kbd "C-x o") 'switch-window)
+
+;; volatile-highlights
+(volatile-highlights-mode t)
 
 ;;---------------------------------------------------------------------------
 ;; toggle menu-bar, scroll-bar and tool-bar
@@ -49,6 +55,14 @@
 (global-set-key (kbd "<S-s-down>")   'buf-move-down)
 (global-set-key (kbd "<S-s-left>")   'buf-move-left)
 (global-set-key (kbd "<S-s-right>")  'buf-move-right)
+
+;;---------------------------------------------------------------------------
+;; editor config
+;;---------------------------------------------------------------------------
+;;(use-package editorconfig
+;;  :ensure t
+;;  :config
+;;  (editorconfig-mode 1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

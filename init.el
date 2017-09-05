@@ -18,17 +18,12 @@
 ;;;
 ;;; Code:
 ;;        This sets up the load path so that we can override it
-;;        Update Note    : 18 June 2017
+;;        Update Note    : 01 Sep 2017
 ;;;=============================================================================
 
 ;; utf-8 character set encoding and Locale
-(set-language-environment   'utf-8)
-(setq locale-coding-system  'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
-(prefer-coding-system       'utf-8)
+(prefer-coding-system         'utf-8)
+(set-default-coding-systems   'utf-8)
 
 ;; language setup
 (setq current-language-environment "English")
@@ -39,6 +34,14 @@
          emacs-major-version
          version-separator
          emacs-minor-version)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; define a custom group for .emacs                                           ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defgroup dotemacs nil
+ "Customized configuration for .emacs."
+ :group 'local)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; load the newest byte code every time                                       ;;
@@ -54,14 +57,6 @@
 (add-to-list 'load-path user-emacs-directory)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;   custom-settings.el will store any custom settings made on Emacs        ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq custom-file
-      (expand-file-name "custom-settings.el" user-emacs-directory))
-(when (file-exists-p custom-file)
-  (load custom-file))
-
 ;;----------------------------------------------------------------------------;;
 ;;; Define custom directories for the packages                               ;;;
 ;;; packages/elpa will contain the standard packages installed by Emacs      ;;;
@@ -73,20 +68,30 @@
 
 (defvar emacs-dir (file-name-directory load-file-name)
   "Top level Emacs dir.")
+
 (defvar emacs-dir (file-name-directory (concat (getenv "HOME") "/.emacs.d"))
   "Top level Emacs dir.")
+
 (defvar core-dir (expand-file-name "core" emacs-dir)
   "Contains core components like the package repository information etc.")
+
 (defvar vendor-dir (expand-file-name "vendor" emacs-dir)
   "Packages not yet available in ELPA.")
+
 (defvar module-dir (expand-file-name "modules" emacs-dir)
   "Personal stuff.")
+
 (defvar personal-dir (expand-file-name "personal" emacs-dir)
   "All personal configuration settings like theme names etc.")
-(defvar save-dir (expand-file-name "cache" emacs-dir)
+
+(defvar cache-dir (expand-file-name "cache" emacs-dir)
   "Common directory for automatically generated save/history/files/etc.")
+
 (defvar pkg-dir (expand-file-name "packages" emacs-dir)
   "Package installation directory for all Emacs packages.")
+
+(unless (file-exists-p cache-dir)
+  (make-directory cache-dir))
 
 ;;----------------------------------------------------------------------------;;
 ;;;;;;;;;;          end of custom directory declaration.              ;;;;;;;;;;
@@ -101,7 +106,7 @@
 ;;;   aqua-ui.el
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'load-path core-dir)             ;; load the core dir first
-(message "Loading the aquamac's core...")
+(message "Loading the aquamacs core...")
 
 (require 'aqua-packages)
 (require 'aqua-methods)
@@ -109,6 +114,12 @@
 (require 'aqua-ui)
 (require 'aqua-customizations)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; add the Emacs package installation directory to load path                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-to-list 'load-path pkg-dir)
+(defconst package-user-dir (expand-file-name "elpa" pkg-dir)
+  "Which directory elpa packages is installed in. Defined in package.el.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   aqua-package-repos.el will load the package repository settings        ;;;
@@ -117,11 +128,8 @@
 (setq aqua-pkg-repos
       (expand-file-name "aqua-package-repos.el" user-emacs-directory))
 (when (file-exists-p aqua-pkg-repos)
-  (message "Loading the aquqmacs package installer...")
+  (message "Loading the aquqmacs packages from the repo...")
   (load aqua-pkg-repos))
-
-;; (load (concat user-emacs-directory "/aqua-package-repos.el"))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   byte recompiling everything during bootstrap (comment | un-comment)    ;;;
@@ -131,7 +139,6 @@
   (interactive)
   (byte-recompile-directory (concat user-emacs-directory "/packages") 0))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; finalizers (for debugging and recompiling)                               ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -139,13 +146,19 @@
 ;; (setq debug-on-signal t)
 (byte-recompile-init-files)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;   custom.el will store any custom settings made on Emacs                 ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq custom-file
+      (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   Make Emacs use the $PATH set up by the user's shell                    ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   set SHELL and pull PATH variables from the .zshrc                      ;;;
@@ -180,7 +193,14 @@
   (setq exec-path (append exec-path '("/usr/local/bin")))
 
 ;;; custom init settings completed
-;;--------------------------------------------------------------------------------
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'init)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
+
 ;;; init.el ends here

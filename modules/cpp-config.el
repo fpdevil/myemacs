@@ -25,6 +25,9 @@
 ;;; Code:
 ;;;
 
+(load-file (concat module-dir "/cpp-helper-config.el"))
+(require 'cpp-helper-config)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; OSX System base path for Xcode platform                                ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -77,18 +80,55 @@
   (add-hook 'irony-mode-hook mode))
 
 ;; company-irony setup, c-header completions
+;; adds CC special commands to `company-begin-commands' in order to trigger
+;; completion at interesting places, such as after scope operator, std::
 (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-(setq company-backends (delete 'company-semantic company-backends))
-(eval-after-load 'company
- '(add-to-list
-   'company-backends 'company-irony))
 
+;; delete company-semantic because it has higher precedance than company-clang
+(setq company-backends (delete 'company-semantic company-backends))
 
 ;; Load with the `irony-mode` as a grouped back-end
 (eval-after-load 'company
-  '(add-to-list
-    'company-backends '(company-irony-c-headers
-                        company-irony)))
+  '(add-to-list (make-local-variable 'company-backends)
+    '(company-irony-c-headers
+      company-irony
+      company-yasnippet
+      company-clang
+      ;; company-rtags
+      )))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; disable and enable company-semantic backend at will                    ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun my-disable-semantic ()
+  "Disable the company-semantic backends."
+  (interactive)
+  (setq company-backends  (delete '(company-irony-c-headers
+                                    company-irony
+                                    company-yasnippet
+                                    company-clang
+                                    ;; company-rtags
+                                    company-semantic)
+                            company-backends))
+  (add-to-list 'company-backends '(company-irony-c-headers
+                                   company-irony
+                                   company-yasnippet
+                                   ;; company-rtags
+                                   company-clang)))
+
+(defun my-enable-semantic ()
+  "Enable the company-semantic backends."
+  (interactive)
+  (setq company-backends (delete '(company-irony-c-headers
+                                   company-irony
+                                   company-yasnippet
+                                   company-clang)
+                           company-backends))
+  (add-to-list 'company-backends '(company-irony-c-headers
+                                   company-irony
+                                   company-yasnippet
+                                   company-clang)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Format code using clang-format /usr/local/bin/clang-format             ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -102,6 +142,45 @@
 (add-hook 'c-mode-hook 'flycheck-mode)
 (eval-after-load 'flycheck
   '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; bind TAB for indent-or-complete (optional)                               ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun irony--check-expansion ()
+  "TAB for indent or complete."
+  (save-excursion
+    (if (looking-at "\\_>") t
+      (backward-char 1)
+      (if (looking-at "\\.") t
+        (backward-char 1)
+        (if (looking-at "->") t nil)))))
+
+
+(defun irony--indent-or-complete ()
+  "Indent or Complete."
+  (interactive)
+  (cond ((and (not (use-region-p))
+           (irony--check-expansion))
+          (message "complete")
+          (company-complete-common))
+    (t (message "indent")
+      (call-interactively 'c-indent-line-or-region))))
+
+
+(defun irony-mode-keys ()
+  "Modify keymaps used by `irony-mode'."
+  (local-set-key (kbd "TAB") 'irony--indent-or-complete)
+  (local-set-key [tab] 'irony--indent-or-complete))
+(add-hook 'c-mode-common-hook 'irony-mode-keys)
+
+;; optional System paths for irony
+(setq irony--compile-options
+  '("-std=c++11"
+    "-stdlib=libc++"
+    "-I/System/Library/Frameworks/Python.framework/Headers"
+    "-isysroot"
+    "-I/usr/include/c++/4.2.1"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ac-clang-flags to include from echo "" | g++ -v -x c++ -E -            ;;;
@@ -122,7 +201,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; auto-complete settings                                                 ;;;
-;;; define a function which initializes auto-compelte-c-headers and then   ;;;
+;;; define a function which initializes auto-complete-c-headers and then   ;;;
 ;;; gets called for the relevant c/c++ hooks                               ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun my:ac-c-header-init ()
@@ -160,7 +239,6 @@
                 ac-sources)))
 (add-hook 'c-mode-common-hook 'my:ac-cc-mode-setup)
 
-
 ;;--------------------------------------------------------------------------;;
 ;; for company completion                                                   ;;
 ;; c++ header completion for standard libraries                             ;;
@@ -170,7 +248,6 @@
   "Build the c headers for adding."
   ;;(setq company-idle-delay nil)
   (add-to-list 'company-backends 'company-c-headers)
-  (add-to-list 'company-backends 'company-clang)
   (add-to-list 'ac-sources 'ac-source-c-headers)
   (mapcar (lambda (item)
             (add-to-list
@@ -183,18 +260,18 @@
             "/usr/local/opt/opencv3/include"
             "/usr/local/include"
             "/usr/include"
-           ))
-)
+           )))
 
 ;; company-clang system paths
 (setq company-clang-executable
-      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
-      company-clang-arguments
-      '("-std=c++11"
-        "-stdlib=libc++"
-        "-isysroot"
-        "-I/usr/include/c++/4.2.1"
-        ))
+  "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
+  company-clang-arguments
+  '("-std=c++11"
+     "-stdlib=libc++"
+     "-I/System/Library/Frameworks/Python.framework/Headers"
+     "-isysroot"
+     "-I/usr/include/c++/4.2.1"
+     ))
 
 
 ;; now let's call this function from c/c++ hooks
@@ -227,18 +304,19 @@
 ;; clang include paths for flycheck
 ;;
 (setq flycheck-clang-include-path
-      (append (mapcar
-               (lambda (item)
-                 (concat "-I" item))
-               (split-string
-                "
+  (append (mapcar
+            (lambda (item)
+              (concat "-I" item))
+            (split-string
+              "
                 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1
                 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include
                 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include
                 /usr/local/opt/opencv3/include
                 /usr/local/include
                 /usr/include
-                ")) flycheck-clang-include-path))
+                "))
+    flycheck-clang-include-path))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; google-c-style mode                                                    ;;;
@@ -257,14 +335,21 @@
   (add-to-list 'c-offsets-alist '(key . val)))
 
 (add-hook 'c-mode-common-hook
-          (lambda ()
-            (when (derived-mode-p 'c-mode 'c++-mode)
-              ;; indent
-              (fix-c-indent-offset-according-to-syntax-context 'substatement 0)
-              (fix-c-indent-offset-according-to-syntax-context 'func-decl-cont 0))
-            ))
+  (lambda ()
+    (when (derived-mode-p 'c-mode 'c++-mode)
+      ;; indent
+      (fix-c-indent-offset-according-to-syntax-context 'substatement 0)
+      (fix-c-indent-offset-according-to-syntax-context 'func-decl-cont 0))))
 
+;;
+;; [ modern-cpp-font-lock ] -- font-locking for C++ mode.
+;;
+(use-package modern-cpp-font-lock
+  :ensure t
+  :init
+  (modern-c++-font-lock-global-mode t))
 
+;;----------------------------------------------------------------------------
 (provide 'cpp-config)
 
 ;; Local Variables:

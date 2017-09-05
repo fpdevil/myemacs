@@ -11,21 +11,16 @@
 ;;; Code:
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fancy (but useful) stuff                                                 ;;
-;; for rainbow identifiers                                                  ;;
+;; fancy (but useful) stuff  for rainbow identifiers                        ;;
+;; customization's - use a wider set of colors                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'rainbow-identifiers)
-(add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
-;; rainbow identifier customizations
-;; use a wider set of colors
 (setq rainbow-identifiers-choose-face-function
       'rainbow-identifiers-cie-l*a*b*-choose-face)
 (setq rainbow-identifiers-cie-l*a*b*-lightness 45)
 (setq rainbow-identifiers-cie-l*a*b*-saturation 45)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; rainbow identifier customizations                                       ;;
+;; rainbow identifier customization's                                      ;;
 ;; customized filter: don't mark *all* identifiers                         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun rainbow-identifiers-filter (beg end)
@@ -53,8 +48,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'rainbow-identifiers-filter-functions 'rainbow-identifiers-filter)
 
+;; add rainbow identifiers for most programming language modes
+(add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'rbow-dentifiers-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
 
 ;;; rbow-identifiers-config.el ends here

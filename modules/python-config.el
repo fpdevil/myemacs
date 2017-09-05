@@ -1,4 +1,5 @@
 ;;; package --- customize python configuration for Emacs
+;;; -*- coding: utf-8 -*-
 ;;;
 ;;; Commentary:
 ;;;            Python 3 support
@@ -67,19 +68,6 @@
 (setq venv-location
       (expand-file-name (concat (getenv "HOME") "/.virtualenvs/")))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; flymake handler for syntax-checking Python source code using             ;;
-;; pyflakes or flake8                                                       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'flymake-python-pyflakes)
-;; (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
-;; using flake8 for flycheck
-(setq flymake-python-pyflakes-executable "/usr/local/bin/flake8")
-;; set flymake log level
-(setq flymake-log-level 3)
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; python jedi setup                                                        ;;
 ;; reference@http://tkf.github.io/emacs-jedi/latest/#                       ;;
@@ -110,6 +98,15 @@
 ;;
 ; load and setup jedi
 ;;
+(eval-after-load "jedi"
+  '(progn
+     (setq jedi:server-command
+           (list "/usr/local/bin/python3" jedi:server-script))))
+
+(setq jedi:server-args
+      '("--log-level" "DEBUG"
+        "--log-traceback"))
+
 (add-hook 'python-mode-hook
           '(lambda ()
             (setq jedi:setup-keys t
@@ -120,14 +117,9 @@
                   jedi:tooltip-method '(pos-tip popup)
                   jedi:tooltip-show '(pos-tip popup)
                   jedi:doc-mode 'rst-mode
-                  jedi:environment-root "env"
+                  jedi:environment-root "jedi"
                   jedi:environment-virtualenv (append python-environment-virtualenv
                                                      '("--python" "/usr/local/bin/python3")))))
-
-(eval-after-load "jedi"
-  '(progn
-     (setq jedi:server-command
-           (list "/usr/local/bin/python3" jedi:server-script))))
 
 ;; jedi keyboard mappings
 (defun jedi-config:setup-keys ()
@@ -170,16 +162,12 @@
       ;; additional shell options added
       python-shell-prompt-regexp "In \\[[0-9]+\\]: "
       python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-      ;python-shell-completion-setup-code "from IPython.core.completerlib import module_completion"
-      ;python-shell-completion-module-string-code  "';'.join(module_completion('''%s'''))\n"
-      ;python-shell-completion-string-code "';'.join(get_ipython().Completer.all_completions('''%s'''))\n"
-      ;; python3 command
       py-python-command "/usr/local/bin/python3")
 ;; below line specified for handling the args-out-of-range error in buffer
 (setenv "IPY_TEST_SIMPLE_PROMPT" "1")
 (setq python-check-command "/usr/local/bin/pyflakes")
 (setq python-environment-directory (concat (getenv "HOME") "/.emacs.d/.python-environments"))
-;; handling whitespaces in python mode
+;; handling white-spaces in python mode
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 
@@ -196,7 +184,6 @@
    "/usr/sbin:"
    "/usr/local/bin:"
    "/usr/local/sbin"))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; set PYTHONPATH, because we don't load from .bashrc                      ;;
@@ -229,33 +216,33 @@
 ; python completion and code checking
 ;;
 ; (elpy-enable)
-(setq elpy-modules '(elpy-module-company
-                     elpy-module-eldoc
-                     elpy-module-flymake
-                     elpy-module-pyvenv
-                     elpy-module-highlight-indentation ;breaks older emacs
-                     elpy-module-sane-defaults))
+(setq elpy-modules '(
+                      elpy-module-company
+                      elpy-module-eldoc
+                      elpy-module-flymake
+                      elpy-module-pyvenv
+                      elpy-module-highlight-indentation ;breaks older emacs
+                      elpy-module-sane-defaults
+                      ))
+
 
 ;;
-; use ipython if available
+; use ipython3 if available
 ; (elpy-use-ipython)
 ;;
 (if (executable-find "/usr/local/bin/ipython3")
     (elpy-use-ipython "/usr/local/bin/ipython3"))
 
+(setq elpy-rpc-backend "jedi"
+      elpy-rpc-python-command "/usr/local/bin/python3"
+      elpy-rpc-python-path "/usr/local/lib/python3.6/site-packages"
+      flycheck-python-flake8-executable "/usr/local/bin/flake8"
+      python-check-command "/usr/local/bin/pyflakes"
+      python-environment-directory "~/.emacs.d/.python-environments")
 ;;
 ; enable elpy
 ;;
 (elpy-enable)
-
-(setq
-  elpy-rpc-backend "jedi"
-  elpy-rpc-python-command "/usr/local/bin/python3"
-  elpy-rpc-python-path "/usr/local/lib/python3.6/site-packages"
-  flycheck-python-flake8-executable "/usr/local/bin/flake8"
-  python-check-command "/usr/local/bin/pyflakes"
-  python-environment-directory "~/.emacs.d/.python-environments"
-  )
 
 ;;
 ;; Note
@@ -269,10 +256,10 @@
               (setq company-idle-delay nil)
               'elpy-mode-hook 'py-autopep8-enable-on-save))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; end elpy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; python linting                                                           ;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; python linting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; using flycheck with pylint                                               ;;
 ;; http://liuluheng.github.io/wiki/public_html/Python                       ;;
 ;;                                /flycheck-pylint-emacs-with-python.html   ;;
@@ -280,6 +267,7 @@
 (defun flycheck-python-setup ()
   "Flycheck python lint support."
   (flycheck-mode))
+
 (add-hook 'python-mode-hook #'flycheck-python-setup)
 (add-hook 'python-mode-hook
           (lambda ()
@@ -288,21 +276,42 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flymake handler for syntax-checking Python source code using             ;;
+;; pyflakes or flake8                                                       ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'flymake-python-pyflakes)
+(add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
+;; using flake8 for flycheck
+;; (setq flymake-python-pyflakes-executable "/usr/local/bin/flake8")
+;; set flymake log level
+(setq flymake-log-level 3)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; pylint/pyflakes integration through flymake                              ;;
 ;; Configure flymake for Python                                             ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (when (load "flymake" t)
   (defun flymake-pylint-init ()
-    "Flymake lint for python."
+    "Flymake lint with pylint."
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
                        'flymake-create-temp-inplace))
            (local-file (file-relative-name
                         temp-file
                         (file-name-directory buffer-file-name))))
-      ;; (list "epylint" (list local-file))
-      (list "pyflakes" (list local-file))))
-  (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.py\\'" flymake-pylint-init)))
+      ;; (list "pep8" (list "--repeat" local-file))
+      (list "epylint" (list local-file))))
+
+  (defun flymake-pyflakes-init ()
+    "FlyMake lint with pyflakes."
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
+      (list "/usr/local/bin/pyflakes" (list local-file)))))
+
+
+(add-hook 'find-file-hook 'flymake-find-file-hook)
 
 ;; Set as a minor mode for Python
 (add-hook 'python-mode-hook
@@ -322,8 +331,16 @@
       (if (eq (car elem) line-no)
       (let ((err (car (second elem))))
         (message "%s" (flymake-ler-text err)))))))
-
 (add-hook 'post-command-hook 'show-fly-err-at-point)
+
+;; show message in the mini buffer
+(defun flymake-show-help ()
+  "Display help in minibuffer"
+  (interactive)
+  (when (get-char-property (point) 'flymake-overlay-p)
+    (let ((help (get-char-property (point) 'help-echo)))
+      (if help (message "FlyMake %s" help)))))
+(add-hook 'post-command-hook 'flymake-show-help)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; yapf mode for beautifying a python buffer                                ;;
@@ -348,7 +365,52 @@
 ;; which function mode for displaying function names
 ;;-------------------------------------------------------------------------------
 (eval-after-load "which-func"
-  '(add-to-list 'which-func-modes 'elisp-mode))
+  '(add-to-list 'which-func-modes 'python-mode))
+
+
+;;-------------------------------------------------------------------------------
+;; autopep8 functions
+;;-------------------------------------------------------------------------------
+(defun p8 ()
+  "Apply autopep8 to the current region or buffer."
+  (interactive)
+  (unless (region-active-p)
+    (mark-whole-buffer))
+  (shell-command-on-region
+    (region-beginning) (region-end)       ;; begin and end of a region/buffer
+    "autopep8 -"                          ;; autopep8 command and flags
+    (current-buffer)                      ;; the output buffer
+    t                                     ;; do replace?
+    "*autopep8 errors*"                   ;; name for error buffer
+    t)                                    ;; show the error buffer?
+  (goto-char (region-end))                ;; delete trailing newlines
+  (re-search-backward "\n+" nil t)
+  (replace-match "" nil t))
+
+(defun p8-ediff ()
+  "Compare the current buffer to the output of autopep8 using ediff."
+  (interactive)
+  (let ((p8-output
+          (get-buffer-create (format "* %s autopep8 *" (buffer-name)))))
+    (shell-command-on-region
+      (point-min) (point-max)             ;; begin and end of region/buffer
+      "autopep8 -"                        ;; autopep8 command and flags
+      p8-output                           ;; the output buffer
+      nil                                 ;; do replace?
+      "*autopep8 errors*"                 ;; name of error buffer
+      t)                                  ;; show the error buffer?
+    (ediff-buffers (current-buffer) p8-output)))
+
+;;----------------------------------------------------------------------------
+;; an auto insert header for new python files
+;;----------------------------------------------------------------------------
+(eval-after-load 'autoinsert
+  '(define-auto-insert '("\\.\\(py\\)\\'" . "Python skeleton")
+     '(
+       "Empty"
+       "#import os,sys" \n
+       \n \n
+       )))
 
 ;;----------------------------------------------------------------------------
 (provide 'python-config)

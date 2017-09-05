@@ -33,11 +33,21 @@
 ;----------------------------------------------------------------------------
 (cua-mode 1)
 
+;----------------------------------------------------------------------------
+;; delete a selection with a single keypress
+;----------------------------------------------------------------------------
+(delete-selection-mode t)
+
+;----------------------------------------------------------------------------
+; enable transient mode
+;----------------------------------------------------------------------------
+(transient-mark-mode t)
 
 ;----------------------------------------------------------------------------
 ;; typing related
 ;----------------------------------------------------------------------------
 (defalias 'yes-or-no-p 'y-or-n-p) ;; Don’t make me type yes or no to boolean interface questions
+(defalias 'list-buffers 'ibuffer) ;; always use ibuffer
 (setq echo-keystrokes 0.1)        ;; Show the modifier combinations I just typed
 
 
@@ -46,6 +56,13 @@
 ;----------------------------------------------------------------------------
 (when (eq system-type 'darwin)
   (setq system-name (car (split-string system-name "\\."))))
+
+;(defcustom hostname nil)
+;
+;(setq hostname
+;  (replace-regexp-in-string "\\`[ \t\n]*" ""
+;    (replace-regexp-in-string "[ \t\n]*\\'" ""
+;      (shell-command-to-string "hostname"))))
 
 ;----------------------------------------------------------------------------
 ;; record changes in window configurations
@@ -103,8 +120,8 @@
 ;----------------------------------------------------------------------------
 ;; disable electric indent mode to prevent auto indentation
 ;----------------------------------------------------------------------------
-(when (fboundp 'electric-indent-mode)
-  (electric-indent-mode -1))
+;; (when (fboundp 'electric-indent-mode)
+;;   (electric-indent-mode -1))
 
 ;----------------------------------------------------------------------------
 ;; custom keybinding stuff
@@ -180,6 +197,7 @@ This command does the inverse of `fill-region'."
   "Colorize a compilation mode buffer."
   (interactive)
   (when (eq major-mode 'compilation-mode)
+   (require 'ansi-color)
     (let ((inhibit-read-only t))
       (ansi-color-apply-on-region (point-min) (point-max)))))
 
@@ -189,10 +207,7 @@ This command does the inverse of `fill-region'."
       compilation-always-kill t                 ;; kill old process before starting new
       compilation-scroll-output 'first-error)   ;; scroll to first error automatically
 
-;; colorize the compilation mode
-(require 'ansi-color)
 (add-hook 'compilation-filter-hook #'aqua-colorize-compilation-buffer)
-
 
 ;----------------------------------------------------------------------------
 ;; Programming Mode Hooks
@@ -222,8 +237,8 @@ This command does the inverse of `fill-region'."
 ;----------------------------------------------------------------------------
 ;; Spell checker - setting location for aspell
 ;----------------------------------------------------------------------------
-(when (and (eq system-type 'darwin) (executable-find "aspell"))
-    (setq ispell-program-name (executable-find "aspell")))
+; (when (and (eq system-type 'darwin) (executable-find "/usr/local/bin/aspell"))
+;     (setq ispell-program-name (executable-find "aspell")))
 
 
 ;----------------------------------------------------------------------------

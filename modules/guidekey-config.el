@@ -25,7 +25,7 @@
 
 ;; Check key sequence recursively
 ;; (setq guide-key/guide-key-sequence '("C-x"))
-(setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-x v" "C-x 8" "C-x +"))
+(setq guide-key/guide-key-sequence '("C-x" "C-c" "C-x 4" "C-x 5" "C-c ;" "C-c ; f" "C-c ' f" "C-x n" "C-x C-r" "C-x r" "M-s" "C-h"))
 (setq guide-key/recursive-key-sequence-flag t)
 
 ;; some specific settings for org-mode

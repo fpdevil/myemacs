@@ -11,8 +11,6 @@
 ;;; Code:
 (global-set-key (kbd "M-/") 'hippie-expand)
 
-;; Since we got company-ispell and `M-x switch-company-ispell'
-;; Done, now we just use it as a clause in our make-hippie-expand-function (as above)
 (setq hippie-expand-try-functions-list
       '(
         ;; Try to expand word "dynamically", searching the current buffer.

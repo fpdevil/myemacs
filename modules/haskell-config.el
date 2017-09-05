@@ -46,6 +46,7 @@
 (require 'company-ghc)                ; company backend haskell-mode via ghc-mod
 (require 'company-ghci)               ; company backend which uses the current ghci process
 (require 'shm)                        ; structured haskell mode
+(require 'flycheck-haskell)           ; improved flycheck support for Haskell
 ; (require 'intero)                   ; complete development mode for haskell
 
 

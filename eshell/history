@@ -18,3 +18,27 @@ alias
 alias
 env
 exit
+pwd
+node dirstructure.js /tmp .
+users
+exit
+node 
+exit
+python3 test.py 
+exit
+ls -altr
+date
+rm -vrf -k
+ls
+exit
+ls -ltra
+whereis tmux
+which tmux
+brew -v update
+brew -v outdated
+vi
+ghci
+clear
+
+ls
+exit

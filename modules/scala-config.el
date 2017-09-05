@@ -1,4 +1,5 @@
 ;;; package  --- scala-config.el
+;;; -*- coding: utf-8 -*-
 ;;;
 ;;; Commentary:
 ;;;
@@ -18,12 +19,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'auto-mode-alist '("\\.scala$" . scala-mode))
 (setq ensime-startup-snapshot-notification nil)
+(setq ensime-completion-style 'company
+      ensime-graphical-tooltips t
+      ensime-auto-generate-config t)
 
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
-(setq
-  ensime-sbt-command "/usr/local/bin/sbt"
-  sbt:program-name "/usr/local/bin/sbt")
+(setq ensime-sbt-command "/usr/local/bin/sbt"
+      sbt:program-name "/usr/local/bin/sbt")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; scala pretty fonts                                                       ;;
@@ -33,23 +36,23 @@
 
 (setq scala-prettify-symbols
   '(
-    ("=>" . ?⇒)
-    ("<-" . ?←)
-    ("->" . ?→)
+    ("=>"        . ?⇒)
+    ("<-"        . ?←)
+    ("->"        . ?→)
     ("undefined" . ?⊥)
-    ("&&" . ?∧)
-    ("||" . ?∨)
-    ("<<<" . ?⋘)
-    (">>>" . ?⋙)
-    ("++" . ?⧺)
-    ("any" . ?∃)
-    ("all" . ?∀)
-    ("traverse" . ?↦)
-    ("map" . ?∘)
-    ("lambda" . ?λ)
-    ("alpha" . ?α)
-    ("beta" . ?β)
-    ("Unit" . ?∅)
+    ("&&"        . ?∧)
+    ("||"        . ?∨)
+    ("<<<"       . ?⋘)
+    (">>>"       . ?⋙)
+    ("++"        . ?⧺)
+    ("any"       . ?∃)
+    ("all"       . ?∀)
+    ("traverse"  . ?↦)
+    ("map"       . ?∘)
+    ("lambda"    . ?λ)
+    ("alpha"     . ?α)
+    ("beta"      . ?β)
+    ("Unit"      . ?∅)
   ))
 
 (add-hook 'scala-mode-hook
@@ -63,6 +66,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Ensime                                                                   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun ensime-auto-start ()
+  "Start Ensime."
+  (interactive)
+  (unless (get-buffer-process "*ENSIME*")
+    (ensime)))
+
+;; if auto starting of ensime is needed
+;; (add-hook 'ensime-mode-hook #'ensime-auto-start)
+
 (defun ensime-fully-reload ()
   "Reload Ensime."
   (interactive)

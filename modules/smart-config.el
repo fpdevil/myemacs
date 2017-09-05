@@ -23,9 +23,18 @@
 (setq sp-base-key-bindings 'paredit)
 (setq sp-autoskip-closing-pair 'always)
 (setq sp-hybrid-kill-entire-symbol nil)
+(setq blink-matching-paren t)
 (sp-use-paredit-bindings)
 
 (show-smartparens-global-mode +1)
+
+(custom-set-faces
+ '(sp-pair-overlay-face ((t (:background "grey20")))))
+
+;; angle brackets aren’t treated as delimiters by default in js2-mode
+;; below is the fix through sp
+(eval-after-load 'js2-mode
+  '(sp-local-pair 'js2-mode "<" ">"))
 
 (provide 'smart-config)
 ;;; smart-config.el ends here

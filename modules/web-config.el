@@ -17,7 +17,7 @@
 (require 'company-web-html)                          ;; load company mode html backend
 (require 'company-web-jade)                          ;; load company mode jade backend
 (require 'company-web-slim)                          ;; load company mode slim backend
-(require 'indium)
+
 ;(require 'tidy)
 ;;;
 ;;; Code:
@@ -111,7 +111,7 @@
    ((t (:foreground "#FF8A4B"))))
  '(web-mode-current-element-highlight-face
    ((t (:background "#000000"
-                    :foreground "#FF8A4B")))))
+        :foreground "#FF8A4B")))))
 
 
 (set-face-attribute 'web-mode-doctype-face nil :foreground "SlateBlue")
@@ -136,10 +136,12 @@
 ;; html document support
 ;(add-to-list 'auto-mode-alist '("\\.html$" . html-mode))
 (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+
 ;; set up HTML mode to do indenting
 (add-hook 'html-mode-hook
     (lambda ()
     (setq indent-line-function 'indent-relative)))
+
 ;; HTML settings
 ;; set up HTML mode to do indenting
 (add-hook 'html-mode-hook
@@ -180,6 +182,14 @@
               (flycheck-select-checker 'jsxhint-checker)
               (flycheck-mode))))
 
+
+;; syntax highlighting
+(defadvice web-mode-highlight-part (around tweak-jsx activate)
+  (if (equal web-mode-content-type "jsx")
+      (let ((web-mode-enable-part-face nil))
+        ad-do-it)
+    ad-do-it))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; if eslint is needed instead of jsxhint                                   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -211,6 +221,18 @@
 
 (eval-after-load 'css-mode
   '(define-key css-mode-map (kbd "C-c b") 'web-beautify-css))
+
+
+;; Enable JavaScript completion between <script>...</script> etc.
+(defadvice company-tern (before web-mode-set-up-ac-sources activate)
+  "Set `tern-mode' based on current language before running `company-tern'."
+  (if (equal major-mode 'web-mode)
+    (let ((web-mode-cur-language (web-mode-language-at-pos)))
+      (if (or (string= web-mode-cur-language "javascript")
+            (string= web-mode-cur-language "jsx"))
+        (unless tern-mode (tern-mode))
+        ;; (if tern-mode (tern-mode))
+        ))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'web-config)

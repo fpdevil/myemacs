@@ -48,44 +48,47 @@
 ;; dim - for customizing the mode names displayed on modeline               ;;
 ;; https://github.com/alezost/dim.el                                        ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(dim-major-names
- '((outline-mode             " Ⓞ")
-   (calendar-mode            " 📆")))
-(dim-minor-names
- '(
-   (flymake-mode             " 𝔽𝕝𝕪𝕄" flymake)
-   (flyspell-mode            " 𝔽𝕝𝕪𝕊" flyspell)
-   (company-mode             " ℂ𝕆" company)
-   ;(flycheck-mode            " 𝔽𝕝𝕪ℂ" flycheck)
-   (git-gutter-mode          " Ⓖ" git-gutter)
-   (visual-line-mode         " Ⓥ")
-   (yas-minor-mode           " Ⓨ")
-   (interactive-haskell-mode " 𝕴")
-   (auto-fill-function       " ℱ")
-   (which-key-mode           " Ⓚ")
-   ;(eldoc-mode               " 𝑬" eldoc)
-   (whitespace-mode          " 𝑾"  whitespace)
-   (undo-tree-mode           " ፕ")
-   (projectile-mode          " 𝓟")
-   (paredit-mode             " {ק}" paredit)
+(dim-major-names '(
+                    (outline-mode             " Ⓞ")
+                    (calendar-mode            " 📆")))
+(dim-minor-names '(
+                    (flymake-mode             " 𝔽𝕝𝕪𝕄" flymake)
+                    (flyspell-mode            " 𝔽𝕝𝕪𝕊" flyspell)
+                    (company-mode             " ℂ𝕆" company)
+                    (git-gutter-mode          " Ⓖ" git-gutter)
+                    (visual-line-mode         " Ⓥ")
+                    (yas-minor-mode           " Ⓨ")
+                    (interactive-haskell-mode " 𝕴")
+                    (auto-fill-function       " ℱ")
+                    (which-key-mode           " Ⓚ")
+                    (whitespace-mode          " 𝑾"  whitespace)
+                    (undo-tree-mode           " ፕ")
+                    (projectile-mode          " 𝓟")
+                    (paredit-mode             " {ק}" paredit)
+                    (emacs-lisp-mode          " ε")
+                    (helm-mode                " Ⓗ")
+                    (rainbow-mode             " 🌈")
    ))
 
 ;;----------------------------------------------------------------------------
 ;; diminish unneeded minor modes from mode line
 ;;----------------------------------------------------------------------------
 (eval-after-load "guide-key"
-  '(diminish 'guide-key-mode))          ;; hide the Guide from mode line
+  '(diminish 'guide-key-mode))            ;; hide the Guide from mode line
 (eval-after-load "highlight-symbol"
-  '(diminish 'highlight-symbol-mode))   ;; hide the hl-s from mode line
+  '(diminish 'highlight-symbol-mode))     ;; hide the hl-s from mode line
 (eval-after-load "whitespace"
-  '(diminish 'whitespace-mode))         ;; whitespace handling
+  '(diminish 'whitespace-mode))           ;; whitespace handling
 (eval-after-load "eldoc"
-  '(diminish 'eldoc-mode))              ;; hide eldoc-mode from mode line
-; (eval-after-load 'flycheck
-;   '(diminish flycheck-mode " 𝔽𝕝𝕪ℂ" " 𝔽"))
-
-
-
+  '(diminish 'eldoc-mode))                ;; hide eldoc-mode from mode line
+(eval-after-load "abbrev"
+  '(diminish 'abbrev-mode))               ;; hide Abbrev
+(eval-after-load "golden-ratio"
+  '(diminish 'golden-ratio-mode))         ;; Hide Golden
+(eval-after-load "editorconfig"
+  '(diminish 'editorconfig-mode))         ;; Hide editorconfig
+(eval-after-load "volatile-highlights"
+  '(diminish 'volatile-highlights-mode))  ;; Hide volatile-highlights
 
 ;;----------------------------------------------------------------------------
 

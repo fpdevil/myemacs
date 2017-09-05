@@ -140,3 +140,4 @@ TTY frames."
 (provide 'flycheck-pos-tip)
 
 ;;; flycheck-pos-tip.el ends here
+closed

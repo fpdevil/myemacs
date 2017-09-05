@@ -1,4 +1,5 @@
 ;;; package --- elixir configuration settings
+;;; -*- coding: utf-8 -*-
 ;;;
 ;;; Commentary:
 ;;;
@@ -34,8 +35,9 @@
           (lambda()
             (company-mode)
             (alchemist-mode)
-            (setq compaany-backends
-                  '((alchemist-company :with company-yasnippet)))))
+            (add-to-list (make-local-variable 'company-backends)
+              '(alchemist-company
+                :with company-yasnippet))))
 
 ;; add hook for indentation on save
 (add-hook 'elixir-mode-hook
@@ -48,8 +50,8 @@
 (add-hook 'elixir-mode-hook 'ac-alchemist-setup)
 
 ;; company auto completion
-(require 'company)
-(add-hook 'eval-after-load 'global-company-mode)
+;; (require 'company)
+;; (add-hook 'eval-after-load 'global-company-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'elixir-config)

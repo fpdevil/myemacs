@@ -9,6 +9,7 @@
 ;;               under required-packages. Any packages not available as ready
 ;;               packages should be in the vendor directory.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;;
 ;;; Code:
 ;;;
@@ -18,11 +19,12 @@
 ;;;; setq is supposed to be use just to set variables and not create them.  ;;;;
 ;;============================================================================;;
 (defvar required-packages
-  '(;;;;;; appearance and visual customizations ;;;;;;
+  '(;;;;;; appearance and visual customization's ;;;;;;
     powerline                                   ;; powerline smart mode
     smart-mode-line                             ;; powerful and beautiful mode-line
     smart-mode-line-powerline-theme             ;; sml powerline theme
-    ;delight                                    ;; customize mode names on modeline
+    spaceline                                   ;; powerline theme from spacemacs
+    ;delight                                    ;; customize mode names on mode-line
     dim                                         ;; mode-line names of major/minor modes
     rainbow-delimiters                          ;; colorful modes (delimiters and color codes)
     rainbow-mode                                ;; colored identifiers
@@ -45,6 +47,10 @@
     zerodark-theme                              ;; dark medium-contrast theme
     flatui-theme                                ;; color theme based on flat colors
     spacemacs-theme                             ;; spacemacs light and dark themes
+    gruvbox-theme                               ;; retro-groove colour theme
+    paper-theme                                 ;; minimal color theme
+    twilight-bright-theme                       ;; light theme based on twilight
+    tango-plus-theme                            ;; light theme based on tango
     ;;;;;; project setup and configuration      ;;;;;;
     projectile                                  ;; Project Interaction Library for Emacs
     helm-projectile                             ;; Helm UI for Projectile
@@ -54,7 +60,7 @@
     ;;;;;; company backends for completion      ;;;;;;
     company-jedi                                ;; company jedi mode for python
     company-distel                              ;; company distel mode for erlang
-    company-erlang                              ;; company backend for erlang, ivy-erlang-complete
+    ;company-erlang                             ;; company backend for erlang, ivy-erlang-complete
     distel-completion-lib                       ;; distel-completion is needed for company-distel
     company-dict                                ;; backend that emulates ac-source-dictionary
     company-quickhelp                           ;; documentation popup for company
@@ -75,18 +81,19 @@
     auto-complete-clang                         ;; auto complete source for clang
     auto-complete-c-headers                     ;; auto-complete source for C/C++ header files
     ac-slime                                    ;; auto completion for slime
+    fuzzy                                       ;; fuzzy matching utilities for GNU Emacs
     ;;;;;; some utilities                       ;;;;;;
     parent-mode                                 ;; get major mode's parent modes
     exec-path-from-shell                        ;; make Emacs use the $PATH set up by the user's shell
+    ;better-defaults                            ;; better defaults for Emacs
     ;;;;;; essential utilities                  ;;;;;;
     smartparens                                 ;; parenthesis management
-    evil-smartparens                            ;; evil integration for smartparens
     paredit                                     ;; minor mode for editing parentheses
-    evil-paredit                                ;; evil extension for paredit
     ;;;;;; documentation and help               ;;;;;;
+    dumb-jump                                   ;; jump to definition for multiple languages
     markdown-mode                               ;; markdown language support
     ; auctex                                    ;; AUCTEX and LATEX
-    graphviz-dot-mode                           ;; dotlanguage graphviz graphs (for erlang .dotfiles)
+    graphviz-dot-mode                           ;; dot language graphviz graphs (for erlang .dotfiles)
     ;;;;;; on the fly syntax checkers           ;;;;;;
     ;;;;;; flycheck family                      ;;;;;;
     flycheck                                    ;; flycheck on the fly syntax checker
@@ -100,6 +107,8 @@
     flycheck-clojure                            ;; flycheck clojure support
     flycheck-irony                              ;; flycheck c/c++ support via Irony
     flycheck-plantuml                           ;; flycheck for plantuml automatic syntax errors
+    flycheck-rebar3                             ;; flycheck integration for rebar3 projects
+    flyspell-lazy                               ;; improve Emacs flyspell responsiveness using idle timers
     popup                                       ;; show popup for flycheck
     ;;;;;; flymake family                       ;;;;;;
     flymake-easy                                ;; flymake on the fly syntax checker
@@ -149,7 +158,8 @@
     ; intero                                    ;; complete dev environment for haskell
     ;;;;;; erlang laguage support               ;;;;;;
     erlang                                      ;; erlang emacs plugin
-    ivy-erlang-complete                         ;; context sensitive completion for erlang
+    ;ivy-erlang-complete                        ;; context sensitive completion for erlang
+    edts                                        ;; Erlang Development Tool Suite
     ;;;;;; elixir language                      ;;;;;;
     elixir-mode                                 ;; major mode for editing elixir files
     alchemist                                   ;; elixir tooling integration into Emacs
@@ -160,8 +170,10 @@
     sbt-mode                                    ;; Emacs mode for interacting with scala sbt and projects
     ;;;;;; go development support               ;;;;;;
     go-mode                                     ;; major mode for go programming
+    go-guru                                     ;; go guru analysis tool
     go-eldoc                                    ;; eldoc for go-mode
     go-autocomplete                             ;; auto completion backend for go
+    company-go                                  ;; Company complete for go
     golint                                      ;; lint for go source
     ;;;;;; c/c++ language support               ;;;;;;
     irony                                       ;; a c/c++ minor mode for Emacs powered by libclang
@@ -177,19 +189,24 @@
     helm-core                                   ;; development files for Helm
     helm-describe-modes                         ;; Helm interface to Emacs’s describe-mode
     ;helm-gtags                                 ;; gnu global helm interface
+    imenu-list                                  ;; show the current buffer's imenu entries
     ;;;;;; essential packs and tools            ;;;;;;
     ecb                                         ;; emacs code browser
     buffer-move                                 ;; move buffer
     neotree                                     ;; a tree plugin like NerdTree for Vim
+    dired-imenu                                 ;; imenu binding for dired mode
+    golden-ratio                                ;; auto re-size Emacs windows Tool golden ratio
+    volatile-highlights                         ;; visual feedback on operations
     ;;;;;; essential utilities                  ;;;;;;
     highlight-symbol                            ;; automatic and manual symbol highlighting for Emacs
     xah-math-input                              ;; show math input symbols
+    fiplr                                       ;; Emacs Fuzzy Find in Project Package
     ;;;;;; icon displays                        ;;;;;;
     ; mode-icons                                ;; show icons for modes
     all-the-icons                               ;; package for showing various icons
     ;;;;;; editing and keyboard mappings        ;;;;;;
     key-chord                                   ;; map pairs of simultaneously pressed keys to commands
-    diminish                                    ;; diminished modes are minor modes with no modeline display
+    diminish                                    ;; diminished modes are minor modes with no mode-line display
     multiple-cursors                            ;; multiple cursors for emacs
     ace-mc                                      ;; Add Multiple Cursors using Ace Jump
     iedit                                       ;; edit multiple regions simultaneously in a buffer or a region
@@ -199,6 +216,8 @@
     js2-highlight-vars                          ;; highlight variables
     tern                                        ;; JavaScript code analyzer
     tern-auto-complete                          ;; js tooling auto-complete
+    ;tern-context-coloring                      ;; adding scope coloring
+    ;tj-mode                                    ;; Highlight JavaScript with Tern
     js2-mode                                    ;; Improved JavaScript editing mode
     js3-mode                                    ;; chimeric fork of js2-mode and js-mode
     js-doc                                      ;; Insert JsDoc style comment easily
@@ -206,7 +225,7 @@
     ac-js2                                      ;; Javascript auto-completion
     json-mode                                   ;; major mode for json editing
     coffee-mode                                 ;; major mode for CoffeeScript
-    indium                                      ;; JS Awesome Development Environment formerly jade
+    ;indium                                     ;; JS Awesome Development Environment formerly jade
     company-web                                 ;; company backend for ac-html
     ;tidy                                       ;; interface to html tidy program
     ac-emmet                                    ;; auto-complete sources for emmet-mode
@@ -218,7 +237,7 @@
     move-text                                   ;; move current line or region up or down
     switch-window                               ;; window switching, the visual way
     clippy                                      ;; show tooltip with function documentation at point
-    imenu-list                                  ;; show the current buffer's imenu entries in a seperate buffer
+    quick-peek                                  ;; inline window doc popup
     ;;;;;; miscellaneous utilities              ;;;;;;
     wttrin                                      ;; weather information from wttr.in
     esup                                        ;; emacs startup profiler (https://github.com/jschaf/esup)
@@ -233,17 +252,20 @@
     ;;;;;; vim emulation                        ;;;;;;
     evil                                        ;; Extensible Vi layer for Emacs.
     undo-tree                                   ;; Treat undo history as a tree (evil dependency)
-    goto-chg                                    ;; goto last change (evil dependency)
+    goto-chg                                    ;; go to last change (evil dependency)
     evil-leader                                 ;; let there be <leader>
     evil-surround                               ;; emulate surround.vim from Vim
     evil-mc                                     ;; multiple cursors for evil-mode
+    evil-smartparens                            ;; evil integration for smartparens
+    evil-paredit                                ;; evil extension for paredit
+    evil-indent-textobject
     ;;;;;; clojure programming modes            ;;;;;;
     clojure-mode                                ;; Emacs support for clojure
     clojure-mode-extra-font-locking             ;; Extra font-locking for Clojure mode
     helm-cider                                  ;; helm interface for cider
-    helm-clojuredocs                            ;; searching for help in clojurdocs.org with helm
+    helm-clojuredocs                            ;; searching for help in clojuredocs.org with helm
     cider                                       ;; Clojure Interactive Development Environment that Rocks
-    ;;;;;; YouCompleteMe Configurations         ;;;;;;
+    ;;;;;; You Complete Me  Completion          ;;;;;;
     ycmd                                        ;; emacs bindings to the ycmd completion server
     company-ycmd                                ;; company mode backend for ycmd
     flycheck-ycmd                               ;; flycheck integration for ycmd
@@ -260,20 +282,67 @@
 ;;;; contains packages not in elpa/melpa/marmalade/gnu/org                  ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar custom-load-paths
-  '(; "erlang/elisp"        ;; erlang lisp modules
+  '(
     "xslide"                ;; xml and xslt syntax, customization's
     "xslt-process/lisp"     ;; xslt processor ide
     "javascript/node-ac"    ;; node-js auto-complete package
+    "dircolors"             ;; colored buffer
+    "elisp/elisp-format"    ;; format elisp code
     )
   "Custom load paths that do not follow the normal vendor/elisp/module-name.el format.")
 
-(message "Loaded the aquq-packages...")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Standard file extensions for which appropriate packages will be automatically
+;; installed if not already present
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmacro aqua-auto-install-packages (extension package mode)
+   "If a new file with EXTENSION is opened, then the function gets triggered for automatic PACKAGE install.
+ The specified PACKAGE will only installed if not already present."
+   `(add-to-list 'auto-mode-alist
+                 `(,extension . (lambda ()
+                                  (unless (package-installed-p ',package)
+                                    (message "installing the missing package %s for extension %s and mode %s" package extension mode)
+                                    (package-install ',package))
+                                  (,mode)))))
+
+(defvar aqua-auto-install-alist
+  '(("CMakeLists\\.txt'" cmake-mode cmake-mode)
+    ("PKGBUILD\\'" pkgbuild-mode pkgbuild-mode)
+    ("\\.elm\\'" elm-mode elm-mode)
+    ("\\.groovy\\'" groovy-mode groovy-mode)
+    ("\\.lua\\'" lua-mode lua-mode)
+    ("\\.cmake\\'" cmake-mode cmake-mode)
+    ("\\.php\\'" php-mode php-mode)
+    ("\\.proto\\'" protobuf-mode protobuf-mode)
+    ("\\.rs\\'" rust-mode rust-mode)
+    ("\\.swift\\'" swift-mode swift-mode)
+    ("\\.yml\\'" yaml-mode yaml-mode)
+    ("\\.yaml\\'" yaml-mode yaml-mode)
+    ("Dockerfile\\'" dockerfile-mode dockerfile-mode))
+  "All extensions of some popular file formats.")
+
+(when (package-installed-p 'pkgbuild-mode)
+  (add-to-list 'auto-mode-alist '("PKGBUILD\\'" . pkgbuild-mode)))
+
+;; for all the mappings for auto-install build
+(mapc
+ (lambda (entry)
+   (let ((extension (car entry))
+         (package (cadr entry))
+         (mode (cadr (cdr entry))))
+     (unless (package-installed-p package)
+       (aqua-auto-install-packages extension package mode))))
+ aqua-auto-install-alist)
+
+(message "Loaded the aqua-packages...")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'aqua-packages)
 
 ;; Local Variables:
 ;; coding: utf-8
 ;; mode: emacs-lisp
+;; byte-compile-warnings: (not cl-functions)
 ;; End:
 
 ;;; aqua-packages.el ends here

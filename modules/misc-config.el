@@ -6,16 +6,16 @@
 ;;; Description: Miscellaneous configuration and customization for Emacs
 ;;;              elisp code snippets for customizing Emacs
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;;
 ;;; Code:
 ;;;
-(require 'imenu-list)
 
 ;;----------------------------------------------------------------------------
 ;; display an initial scratch message & prettify symbols                    ;;
 ;;----------------------------------------------------------------------------
 (setq-default initial-scratch-message
-              (concat "ॐ  Emacs With ♥ " user-login-name "!\n" "☆ సంపత్ కుమార్ ☆" "\n"))
+              (concat "ॐ  Emacs With ❤️ " user-login-name "!\n" "☆ సంపత్ కుమార్ ☆" "\n"))
 
 ;; symbol prettify
 (when (fboundp 'global-prettify-symbols-mode)
@@ -23,7 +23,7 @@
 
 
 ;;----------------------------------------------------------------------------
-;; benchmarking - check time taken to load each component
+;; bench marking - check time taken to load each component
 ;;----------------------------------------------------------------------------
 (defun sanityinc/time-subtract-millis (b a)
   "B - A difference multiplied with 1000."
@@ -47,7 +47,7 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 
 (defun sanityinc/show-init-time ()
   "Show Emacs initialization time in milli seconds."
-  (message "--> init completed in %.2fms"
+  (message "*** init completed in %.2fms ***"
            (sanityinc/time-subtract-millis after-init-time before-init-time)))
 
 (add-hook 'after-init-hook 'sanityinc/show-init-time)
@@ -226,10 +226,16 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
             (ibuffer-filter-by-filename "."))) ;; to show only dired and files buffers
 
 ;;----------------------------------------------------------------------------
-;; imenu-list settings
+;; imenu-list settings (invoke With "-bi")
 ;;----------------------------------------------------------------------------
-(setq imenu-list-focus-after-activation t)
-(setq imenu-list-auto-resize t)
+(require 'golden-ratio)
+(golden-ratio-mode 1)
+
+(require 'imenu-list)
+(add-to-list 'golden-ratio-exclude-buffer-regexp "^\\*Ilist\\*")
+(setq imenu-list-focus-after-activation t
+      imenu-list-auto-resize t)
+
 
 ;;----------------------------------------------------------------------------
 ;; show the name of the current function definition in the modeline
@@ -240,9 +246,12 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 (setq-default header-line-format
               '((which-func-mode ("" which-func-format " "))))
 (setq mode-line-misc-info
-      ;; We remove Which Function Mode from the mode line,
-      ;; because it's mostly invisible here anyway.
+;;       ;; We remove Which Function Mode from the mode line,
+;;       ;; because it's mostly invisible here anyway.
       (assq-delete-all 'which-func-mode mode-line-misc-info))
+
+;; remove the ??? when which-func cannot determine name
+(setq which-func-unknown "n/a")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

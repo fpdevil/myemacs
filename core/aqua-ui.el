@@ -13,7 +13,7 @@
 ;; frame title to show either a file or a buffer name
 ;----------------------------------------------------------------------------
 (setq frame-title-format
-      '("" invocation-name " Aqua - " (:eval (if (buffer-file-name)
+      '("" invocation-name " Emacs - " (:eval (if (buffer-file-name)
                                                  (abbreviate-file-name (buffer-file-name))
                                                "%b"))))
 
@@ -69,8 +69,8 @@
   (set-face-attribute 'default nil
                       :family "Monaco"
                       :width 'normal
-                      :height 120
-                      :weight 'regular)
+                      :height 115
+                      :weight 'light)
   (set-face-bold 'bold nil)                                  ;; disable bold fonts
   ;(set-face-bold-p 'bold nil)                               ;; disable bold fonts
 

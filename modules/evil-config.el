@@ -15,7 +15,8 @@
 (require 'evil-leader)
 (require 'evil-paredit)            ;; extension to integrate nicely with paredit
 (require 'evil-mc)                 ;; evil multiple cursors
-;(require 'evil-tabs)
+(require 'evil-indent-textobject)
+;;(require 'evil-tabs)
 
 ;;;
 ;;; Code:
@@ -65,27 +66,59 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; evil operations for various vim states                                   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(evil-put-property 'evil-state-properties 'normal   :tag " NORMAL ")
-(evil-put-property 'evil-state-properties 'insert   :tag " INSERT ")
-(evil-put-property 'evil-state-properties 'visual   :tag " VISUAL ")
-(evil-put-property 'evil-state-properties 'motion   :tag " MOTION ")
-(evil-put-property 'evil-state-properties 'emacs    :tag " EMACS ")
-(evil-put-property 'evil-state-properties 'replace  :tag " REPLACE ")
-(evil-put-property 'evil-state-properties 'operator :tag " OPERTR ")
+(with-eval-after-load 'evil-common
+  (evil-put-property 'evil-state-properties 'normal   :tag " NORMAL ")
+  (evil-put-property 'evil-state-properties 'insert   :tag " INSERT ")
+  (evil-put-property 'evil-state-properties 'visual   :tag " VISUAL ")
+  (evil-put-property 'evil-state-properties 'motion   :tag " MOTION ")
+  (evil-put-property 'evil-state-properties 'emacs    :tag " EMACS ")
+  (evil-put-property 'evil-state-properties 'replace  :tag " REPLACE ")
+  (evil-put-property 'evil-state-properties 'operator :tag " OPERTR "))
 
 ;;----------------------------------------------------------------------------
 ; evil mode states (comment / un-comment)
 ;;----------------------------------------------------------------------------
 ; (setq evil-default-state 'insert)             ;; if default state is to be set emacs
-; (setq evil-default-state 'emacs)              ;; if default state is to be set emacs
-(setq evil-default-state 'normal)               ;; if default state is to set normal
+(setq evil-default-state 'normal)             ;; if default state is to set normal
+; (setq evil-default-state 'emacs)                ;; if default state is to be set emacs
 
+;{{{
+; clear evil's white-lists of modes that should start in a particular state,
+; so they all start in Emacs state
+(setq-default evil-insert-state-modes '())
+;}}}
+
+
+;{{{ specify which modes we want Normal state for
+
+(setq-default evil-normal-state-modes
+              '(clojure-mode
+                python-mode
+                erlang-mode
+                elixir-mode
+                haskell-mode
+                go-mode
+                emacs-lisp-mode
+                web-mode
+                css-mode
+                js2-mode
+                js-mode
+                json-mode
+                html-mode
+                xsl-mode
+                xml-mode
+                org-mode
+                sh-mode
+                elm-mode
+                purescript-mode
+                markdown-mode))
+
+;}}}
 
 ;;----------------------------------------------------------------------------
 ;; prevent esc-key from translating to meta-key in terminal mode
 ;;----------------------------------------------------------------------------
 (setq evil-esc-delay 0)
-
 
 (setcdr evil-insert-state-map nil)
 (define-key evil-insert-state-map
@@ -98,9 +131,8 @@
 (dolist (m evil-emacs-state-modes)
   (add-to-list 'evil-insert-state-modes m))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; default leader key is \ enable evil-leader globally                      ;;
+;; default leader key is - enable evil-leader globally                      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq evil-leader/in-all-states 1)
 (global-evil-leader-mode)
@@ -113,7 +145,7 @@
   "by" 'copy-whole-buffer
   "cy" 'clipboard-kill-ring-save
   "cp" 'clipboard-yank
-  "fs" 'save-buffer
+  "bs" 'save-buffer
   "gs" 'magit-status
   "hs" 'split-window-horizontally
   "lf" 'load-file
@@ -124,7 +156,11 @@
   "w1" 'delete-other-windows
   "wk" 'windmove-left
   "wj" 'windmove-right
-  "qq" 'save-buffers-kill-emacs
+  "qs" 'save-buffers-kill-emacs
+  "il" 'imenu-list-minor-mode
+  "dn" 'dired-hacks-next-file
+  "dp" 'dired-hacks-previous-file
+  "dm" 'dired-filter-map
 )
 
 
@@ -154,19 +190,15 @@
   "Toggle the evil mode states."
   (interactive)
   (if (bound-and-true-p evil-local-mode)
+      (progn
+        ;; go emacs
+        (evil-local-mode (or -1 1))
+        (undo-tree-mode (or -1 1))
+        (set-variable 'cursor-type 'bar))
     (progn
-      ; go emacs
-      (evil-local-mode (or -1 1))
-      (undo-tree-mode (or -1 1))
-      (set-variable 'cursor-type 'bar)
-    )
-    (progn
-      ; go evil
+      ;; go evil
       (evil-local-mode (or 1 1))
-      (set-variable 'cursor-type 'box)
-    )
-  )
-)
+      (set-variable 'cursor-type 'box))))
 
 (global-set-key (kbd "M-u") 'toggle-evilmode)
 
@@ -179,24 +211,27 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; surround globally                                                        ;;
+;; evil plugins                                                             ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;{{{ surround globally
 (global-evil-surround-mode 1)
 ;; use `s' for surround instead of `substitute'
 (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)
 (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
+;}}}
 
-;; Evil extension to integrate nicely with paredit
+;; evil extension to integrate nicely with paredit
 (add-hook 'emacs-lisp-mode-hook 'evil-paredit-mode)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; get rid of the emc in the mode line when multiple cursors are not used
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq evil-mc-mode-line
-      '(:eval (when (> (evil-mc-get-cursor-count) 1)
-                (format ,(propertize " %s:%d " 'face 'cursor)
-                        evil-mc-mode-line-prefix
-                        (evil-mc-get-cursor-count)))))
+  '(:eval (when (> (evil-mc-get-cursor-count) 1)
+            (format ,(propertize " %s:%d " 'face 'cursor)
+                    evil-mc-mode-line-prefix
+                    (evil-mc-get-cursor-count)))))
 
 
 (provide 'evil-config)

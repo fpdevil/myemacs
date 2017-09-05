@@ -43,7 +43,7 @@
 
 ;; location for the semantic db
 (setq semanticdb-default-save-directory
-      (expand-file-name "semanticdb" save-dir))
+      (expand-file-name "semanticdb" cache-dir))
 
 ; (global-semanticdb-minor-mode 1)
 

@@ -2,12 +2,19 @@
 ;;;
 ;;; Commentary:
 ;;; Filename   : go-config.el
+;;;
 ;;; Description: A major mode go language support in Emacs
+;;; optional install libraries
+;;; $ go get -u golang.org/x/tools/cmd/...
+;;; $ go get -u github.com/rogpeppe/godef/...
+;;; $ go get -u github.com/nsf/gocode
+;;; $ go get -u golang.org/x/tools/cmd/goimports
+;;; $ go get -u golang.org/x/tools/cmd/guru
+;;; $ go get -u github.com/dougm/goflymake
 ;;;
 ;;; elisp code for go language support and handling
 ;;===========================================================================
-(require 'auto-complete-config)   ; using auto-complete for completion
-(require 'go-autocomplete)        ; for go autocomplete
+(require 'cl)
 (require 'golint)                 ; linter for the go code
 ;;;
 ;;; Code:
@@ -19,7 +26,7 @@
   "Major mode for Go programming language."
   (go-eldoc-setup))
 
-(add-hook 'go-mode-hook 'go-mode-setup)
+;; (add-hook 'go-mode-hook 'go-mode-setup)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;format the code before saving                                            ;;
@@ -28,7 +35,7 @@
   "Consistent code formatting through gofmt."
   (go-eldoc-setup)
   (add-hook 'before-save-hook 'gofmt-before-save))
-(add-hook 'go-mode-hook 'go-mode-setup)
+;; (add-hook 'go-mode-hook 'go-mode-setup)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; all go imports                                                          ;;
@@ -38,7 +45,7 @@
   (go-eldoc-setup)
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save))
-(add-hook 'go-mode-hook 'go-mode-setup)
+;; (add-hook 'go-mode-hook 'go-mode-setup)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; godef, shows function definition when calling godef-jump                ;;
@@ -49,7 +56,7 @@
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save)
   (local-set-key (kbd "M-.") 'godef-jump))
-(add-hook 'go-mode-hook 'go-mode-setup)
+;; (add-hook 'go-mode-hook 'go-mode-setup)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; custom compile command                                                  ;;
@@ -62,7 +69,44 @@
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save)
   (local-set-key (kbd "M-.") 'godef-jump))
-(add-hook 'go-mode-hook 'go-mode-setup)
+;; (add-hook 'go-mode-hook 'go-mode-setup)
+
+
+(defun aqua/go-mode-config ()
+  "Configure golang."
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  (setq-default gofmt-command "goimports")
+  (add-hook 'go-mode-hook 'go-eldoc-setup)
+  (add-hook 'go-mode-hook (lambda ()
+                            (set (make-local-variable 'company-backends) '(company-go))
+                            (company-mode)))
+  (add-hook 'go-mode-hook 'yas-minor-mode)
+  (add-hook 'go-mode-hook 'flycheck-mode)
+  (setq compile-command "go build -v && go test -v && go vet && golint && errcheck"))
+
+(add-hook 'go-mode-hook 'aqua/go-mode-config)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Load auto-complete                                                      ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(ac-config-default)
+ (require 'auto-complete-config)   ; using auto-complete for completion
+(require 'go-autocomplete)        ; for go autocomplete
+(add-hook 'go-mode-hook 'auto-complete-for-go)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; go company mode                                                         ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun my-go-company-toggle ()
+ "Disable Company mode."
+ (company-mode -1))
+
+
+
+(add-hook 'go-mode-hook 'company-mode)
+(add-hook 'go-mode-hook (lambda ()
+  (set (make-local-variable 'company-backends) '(company-go))
+  (company-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; load auto-complete                                                      ;;
@@ -72,5 +116,19 @@
 (add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs"))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; enable flycheck and yas
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'go-mode-hook 'yas-minor-mode)
+(add-hook 'go-mode-hook 'flycheck-mode)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;eldoc for go
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'go-eldoc)
+(add-hook 'go-mode-hook 'go-eldoc-setup)
+
+;;
 (provide 'go-config)
+
 ;;; go-config.el ends here

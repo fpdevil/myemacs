@@ -15,11 +15,27 @@
 (require 'flycheck-color-mode-line)   ;; flycheck color mode line
 (require 'flycheck-tip)               ;; show flycheck/flymake errors indent tooltip
 (require 'flycheck-pos-tip)           ;; flycheck errors display in tooltip
-(require 'flycheck-haskell)           ;; Improved Haskell support for Flycheck
 
 ;;;
 ;;; Code:
 ;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; custom function for enabling flycheck on demand
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar syntax-checking-enable-by-default t
+  "Enable syntax-checking by default.")
+
+(defun add-flycheck-hook (mode)
+  "Use flycheck in MODE by default, if `syntax-checking-enable-by-default' is
+true."
+  (when (and syntax-checking-enable-by-default
+             (listp flycheck-global-modes)
+             (not (eq 'not (car flycheck-global-modes))))
+    (push mode flycheck-global-modes)))
+
+;; usage ...
+;; (add-flycheck-hook 'erlang-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; setting up customized flycheck                                           ;;
@@ -42,16 +58,6 @@
      ;; indicate syntax errors/warnings in the left-fringe.
      (setq flycheck-indication-mode 'left-fringe)
      (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
-     ;;
-     ;; for a cusomized display of error message
-     ;; (set-face-background 'flycheck-error "#E5E8E8")
-     ;; (set-face-foreground 'flycheck-error "#00796B")
-     ;; (set-face-background 'flycheck-warning "#E5E8E8")
-     ;; (set-face-foreground 'flycheck-warning "#775500")
-     ;; (set-face-attribute 'flycheck-color-mode-line-error-face
-     ;;    		 '(:inherit flycheck-fringe-error
-     ;;    			    :foreground "red" :weight normal))
-     ;;
      (setq flycheck-highlighting-mode 'symbols)
      (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages)
      (setq flycheck-check-syntax-automatically
@@ -59,6 +65,21 @@
          new-line
          idle-change
          mode-enabled))))
+
+
+(defun aqua/adjust-flycheck-automatic-syntax-eagerness ()
+  "Adjust how often we check for errors based on if there are any.
+This lets us fix any errors as quickly as possible, but in a
+clean buffer we're an order of magnitude laxer about checking."
+  (setq flycheck-idle-change-delay
+        (if flycheck-current-errors 0.5 30.0)))
+
+;; Each buffer gets its own idle-change-delay because of the
+;; buffer-sensitive adjustment above.
+(make-variable-buffer-local 'flycheck-idle-change-delay)
+
+(add-hook 'flycheck-after-syntax-check-hook
+          'aqua/adjust-flycheck-automatic-syntax-eagerness)
 
 ;;----------------------------------------------------------------------------
 ;; use an italic face for the checker name
@@ -71,7 +92,6 @@
 ;;----------------------------------------------------------------------------
 (with-eval-after-load 'flycheck
   (flycheck-pos-tip-mode))
-(setq flycheck-pos-tip-mode t)
 
 ;;----------------------------------------------------------------------------
 ;; add on option for error messages
@@ -107,27 +127,6 @@ If the error list is visible, hide it.  Otherwise, show it."
               (side            . bottom)
               (reusable-frames . visible)
               (window-height   . 0.33)))
-
-
-;;----------------------------------------------------------------------------
-;; flycheck idle delay
-;;----------------------------------------------------------------------------
-(defun flycheck-handle-idle-change ()
-  "Handle an expired idle time since the last change.
-This is an overwritten version of the original
-flycheck-handle-idle-change, which removes the forced deferred.
-Timers should only trigger inbetween commands in a single
-threaded system and the forced deferred makes errors never show
-up before you execute another command."
-  (flycheck-clear-idle-change-timer)
-  (flycheck-buffer-automatically 'idle-change))
-
-
-; (add-hook 'find-file-hook
-;           (lambda ()
-;             (when (not (equal 'emacs-lisp-mode major-mode))
-;               (flycheck-mode))))
-
 
 ;;============================================================================
 (provide 'flycheck-config)

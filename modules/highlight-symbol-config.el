@@ -9,9 +9,11 @@
 ;;; immediately jump to the next/previous symbols in a buffer.
 ;;;===========================================================================
 (require 'highlight-symbol)
+
 ;;;
 ;;; Code:
 ;;;
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; automatic and manual symbol highlighting for Emacs                       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -20,7 +22,7 @@
   (add-hook hook 'highlight-symbol-nav-mode))
 (add-hook 'org-mode-hook (lambda () (highlight-symbol-nav-mode)))
 
-(setq highlight-symbol-idle-delay 0.2
+(setq highlight-symbol-idle-delay 0.3
       highlight-symbol-on-navigation-p t)
 
 (global-set-key [(control shift mouse-1)]

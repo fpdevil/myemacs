@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ox-html5slide" "ox-html5slide.el" (22851 28401
+;;;### (autoloads nil "ox-html5slide" "ox-html5slide.el" (22957 18910
 ;;;;;;  0 0))
 ;;; Generated autoloads from ox-html5slide.el
 

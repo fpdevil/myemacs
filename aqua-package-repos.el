@@ -1,4 +1,4 @@
-;;; package --- aqua-package-repos.el package respository information for Emacs
+;;; package --- aqua-package-repos.el package repository information for Emacs
 ;;; -*- coding: utf-8 -*-
 ;;;
 ;;;           ######## ##     ##    ###     ######   ######
@@ -19,69 +19,57 @@
 ;;;              can be installed and loaded.  By default the package.el access
 ;;;              to only the default ELPA repository, so added additional repos
 ;;;
+;;;              Use standard Emacs binding M-x and package-refresh-contents to
+;;;              reload  the list of packages after for the first time
+;;;
 ;;; Code:
 ;;; Updated    : 16 Feb 2017
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;
-;; Use M-x package-refresh-contents to reload the list of
-;; packages after adding these for the first time
+
 ;; required default standard libraries
-;
-(require 'cl)
+(eval-when-compile (require 'cl))
 (require 'cl-lib)
 (require 'package)
 
 ;;============================================================================;;
 ;;;;     Package repositories (gnu, melpa, melpa-stable and marmalade)      ;;;;
 ;;============================================================================;;
-(add-to-list 'package-archives
-             '("gnu"          . "http://elpa.gnu.org/packages/"))
-(add-to-list 'package-archives
-             '("melpa"        . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives
-             '("marmalade"    . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives
-             '("org"          . "http://orgmode.org/elpa/") t)
-;;============================================================================;;
+; (add-to-list 'package-archives '("gnu"          . "http://elpa.gnu.org/packages/"))
+; (add-to-list 'package-archives '("melpa"        . "http://melpa.milkbox.net/packages/") t)
+; (add-to-list 'package-archives '("marmalade"    . "http://marmalade-repo.org/packages/"))
+; (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
+; (add-to-list 'package-archives '("org"          . "http://orgmode.org/elpa/"))
+
+(setq package-archives
+      '(
+        ("gnu"       . "https://elpa.gnu.org/packages/")
+        ("melpa"     . "https://melpa.org/packages/")
+        ("marmalade" . "https://marmalade-repo.org/packages/")
+        ("org"       . "http://orgmode.org/elpa/")
+        ("elpy"      . "https://jorgenschaefer.github.io/packages/")
+        ))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; incase if package archive priorities needs to be specified
+; in case if package archive priorities needs to be specified
 ; the below section may be used; for now just commented
-;;
-; (setq package-archive-priorities
-;       '(("marmalade" . 20)
-;         ("gnu" . 10)
-;         ("melpa" . 0)
-;         ("melpa-stable" . 0)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;------------------------------------------------------------------------------
-;; add the Emacs package installation directory to load path
-;;------------------------------------------------------------------------------
-(add-to-list 'load-path pkg-dir)
-(setq package-user-dir (concat pkg-dir "/elpa"))
+; (setq package-archive-priorities
+;       '(("melpa-stable" . 20)
+;         ("gnu"          . 15)
+;         ("melpa"        . 10)
+;         ("marmalade"    . 5)
+;         ("org"          . 0)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;           initialize all the defined packages              ;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(package-initialize)
-; make sure to have downloaded the archive description.
-(when (not package-archive-contents)
+(unless (file-exists-p package-user-dir)
+  (message "No packages exists yet, refreshing archives.")
   (package-refresh-contents))
-(package-install-selected-packages)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;         Now add the above packages to the Emacs load-path              ;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(unless (file-exists-p save-dir)
-  (make-directory save-dir))
-(add-to-list 'load-path module-dir)
-(add-to-list 'load-path vendor-dir)
-(add-to-list 'load-path personal-dir)
+(package-initialize)
+(setq package-enable-at-startup nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; recursively add sub-folders in a folder to path                            ;;
@@ -96,15 +84,9 @@
        (add-subfolders-to-load-path name)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;          Load the requires packages in the personal, vendor            ;;;;
+;;;;          Load the requires packages in the vendor                      ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(mapc 'load (directory-files vendor-dir nil "^[^#].*el$"))
-; (add-subfolders-to-load-path vendor-dir)
-
-;; load personal elisp files if any from personal directory
-(when (file-exists-p personal-dir)
-  (message "Loading personal configuration files in %s..." personal-dir)
-  (mapc 'load (directory-files personal-dir 't "^[^#\.].*el$")))
+;(mapc 'load (directory-files vendor-dir nil "^[^#].*el$"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; function to check if all listed packages are installed. return true when   ;;
@@ -113,14 +95,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun aqua-packages-installed-p ()
   "Check if all the packages listed in `required-packages' are installed."
-  (every #'package-installed-p required-packages))
+  (loop for p in required-packages
+        when (not (package-installed-p p)) do (return nil)
+        finally (return t)))
 
 (defun aqua-require-pkg (pkg)
   "Check and install each PKG unless its already there."
   (unless (memq pkg required-packages)
     (add-to-list 'required-packages pkg))
   (unless (package-installed-p pkg)
-    (message ">>> installing missing package -> %s" pkg)
+    (message ">>> installing missing package >>> %s" pkg)
     (package-install pkg)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -136,7 +120,7 @@ Packages missing in the location will be automatically installed."
   "Install each package listed in `required-packages'."
   (unless (aqua-packages-installed-p)
     ;; check for the new packages (package versions)
-    (message "%s" "Emacs is now refreshing its package database...")
+    (message "%s" " Emacs is now refreshing its package database...")
     (package-refresh-contents)
     (message "%s" " package refresh done!")
     ;; install any missing packages
@@ -156,12 +140,36 @@ Helpful to get rid of unused packages."
    (set-difference package-activated-list required-packages)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; package loading of all the custom el files which contains customized
-;; settings for each major/minor modes as well as any other packages
+;; upgrade all packages and delete obsolete ones                              ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun aqua-package-upgrade ()
+  "Upgrade all the listed packages."
+  (interactive)
+  (save-window-excursion
+    (with-temp-buffer
+      (package-list-packages)
+      (package-menu-mark-upgrades)
+      (package-menu-mark-obsolete-for-deletion)
+      (package-menu-execute t))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; for package installation through use-package
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq use-package-verbose t
+      use-package-always-ensure t)
+
+(eval-when-compile
+  (require 'use-package))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; package loading of  all the custom el files  which contains customized
+;; settings  for each  major/minor modes  as well  as any  other packages
 ;; currently the below are all customized supported configurations.
 ;;
 ;; miscellaneous settings
-;; some utilities like window configurations etc.
+;; some utilities like window configurations, dired*, imenu-list etc.
+;; quick-peek
 ;; code snippets with yas
 ;; themes
 ;; flycheck
@@ -206,7 +214,9 @@ Helpful to get rid of unused packages."
 ;; CoffeeScript
 ;; Web html etc
 ;; clojure
+;; VIM
 ;; markdown
+;; yaml support
 ;; shell scripting
 ;; you complete me
 ;; projectile
@@ -216,9 +226,12 @@ Helpful to get rid of unused packages."
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar configs
-    '(
+  '(
       "misc-config"
+      "dired-config"
       "utils-config"
+      "fiplr-config"
+      "quick-peek-config"
       "themes-config"
       "flycheck-config"
       "flymake-config"
@@ -226,6 +239,8 @@ Helpful to get rid of unused packages."
       "company-config"
       "ac-complete-config"
       "flyspell-config"
+      ;"spell-config"
+      "undo-tree-config"
       "evil-config"
       "yasnippets-config"
       "semantic-config"
@@ -248,6 +263,7 @@ Helpful to get rid of unused packages."
       "whichkey-config"
       "guidekey-config"
       "beacon-config"
+      "vregex-config"
       "xslide-config"
       "xslt-process-config"
       "nxml-config"
@@ -260,11 +276,13 @@ Helpful to get rid of unused packages."
       "scala-config"
       "go-config"
       "clojure-config"
+      "vim-config"
       "web-config"
       "js-config"
       "coffee-config"
       "shell-config"
       "markdown-config"
+      "yaml-config"
       "ycm-config"
       "projectile-config"
       "delighted-config"
@@ -277,21 +295,28 @@ Helpful to get rid of unused packages."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; loop through the custom lisp under the vendor directory                ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(loop for location in custom-load-paths
-      do (add-to-list 'load-path
-		      (concat (file-name-directory (or load-file-name (buffer-file-name)))
-			      "vendor/"
-			      location)))
-
+(cl-loop for location in custom-load-paths
+         do (add-to-list 'load-path
+                         (concat (file-name-directory (or load-file-name
+                                                          (buffer-file-name)))
+                                 "vendor/"
+                                 location)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; loop through each and load the configured custom packages              ;;;;
 ;;;; each configuration file has a format of name-config.el                 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(loop for name in configs
-      do (load (concat (file-name-directory load-file-name)
-                       "modules/"
-                       name ".el")))
+(cl-loop for name in configs
+         do (load (concat (file-name-directory load-file-name)
+                          "modules/"
+                          name ".el")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; now load personal elisp files if any from personal directory               ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(when (file-exists-p personal-dir)
+  (message "Loading personal configuration files in %s..." personal-dir)
+  (mapc 'load (directory-files personal-dir 't "^[^#\.].*el$")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -33,6 +33,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Location where homebrew installed the ditaa
 (setq org-ditaa-jar-path "/usr/local/Cellar/ditaa/0.10/libexec/ditaa0_10.jar")
+(setq ditaa-cmd "java -jar /usr/local/Cellar/ditaa/0.10/libexec/ditaa0_10.jar")
+(defun djcb-ditaa-generate ()
+  (interactive)
+  (shell-command
+    (concat ditaa-cmd " " buffer-file-name)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; activate Babel language and use plantuml as org-babel language         ;;;
@@ -45,7 +50,8 @@
    (emacs-lisp . t)
    (scala . t)
    (js . t)
-   (sh . t)
+   (shell . t)
+   ;(sh . t)
    (python . t)
    (dot . t)
    (plantuml . t)

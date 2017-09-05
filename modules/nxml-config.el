@@ -1,4 +1,5 @@
 ;;; package  --- nxml-config.el
+;;; -*- coding: utf-8 -*-
 ;;;
 ;;; Commentary:
 ;;;
@@ -10,12 +11,14 @@
 ;;;===========================================================================
 (require 'cl)
 (require 'nxml-mode)
+
 ;;;
 ;;; Code:
 ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; nXML mode
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'auto-mode-alist
              (cons (concat "\\." (regexp-opt
                                   '("xml" "xsd" "sch" "rng"
@@ -39,16 +42,30 @@
 ;; pom files should be treated as xml files
 (add-to-list 'auto-mode-alist '("\\.pom$" . nxml-mode))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; encoding, auto complete etc...
-(setq nxml-slash-auto-complete-flag t
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq nxml-slash-auto-complete-flag t             ; </ to complete
+      nxml-bind-meta-tab-to-complete-flag t       ; M-Tab to complete
       nxml-auto-insert-xml-declaration-flag t
       nxml-child-indent 4
       nxml-attribute-indent 4
       nxml-default-buffer-file-coding-system 'utf-8)
 
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; company-nxml
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun my-company-nxml-settings ()
+  "Add company backends for xml."
+  (setq-local company-minimum-prefix-length 1)
+  (add-to-list (make-local-variable 'company-backends)
+    'company-nxml))
+
+(add-hook 'nxml-mode-hook 'my-company-nxml-settings)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; hide show
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'nxml-mode-hook (lambda() (hs-minor-mode 1)))
 
 (add-to-list 'hs-special-modes-alist
@@ -59,9 +76,9 @@
                nxml-forward-element
                nil))
 
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; xpath display where are we in buffer
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun nxml-where ()
   "Display the hierarchy of XML elements the point is on as a path, from http://www.emacswiki.org/emacs/NxmlMode."
   (interactive)
@@ -82,9 +99,24 @@
             (message "/%s" (mapconcat 'identity path "/"))
           (format "/%s" (mapconcat 'identity path "/")))))))
 
-;;
-; key-bindings
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; [ x-path-walker ] -- navigation for JSON/XML/HTML based on path (imenu like)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package x-path-walker
+  :ensure t
+  :config
+  (dolist (hook '(html-mode-hook
+                  web-mode-hook
+                  nxml-mode-hook
+                  json-mode-hook
+                  ))
+    (add-hook hook
+              (lambda ()
+                (local-set-key (kbd "C-c C-j") 'helm-x-path-walker)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; key-bindings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun lgfang-toggle-level ()
   "Mainly to be used in nxml mode."
   (interactive) (hs-show-block) (hs-hide-level 1))
@@ -94,9 +126,9 @@
      (define-key nxml-mode-map [mouse-3] 'lgfang-toggle-level)))
 
 
-;;;
-; format xml data with xmllint
-;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; format xml data with xmllint
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun format-xml ()
   "Format an XML buffer with `xmllint'."
   (interactive)
@@ -105,9 +137,9 @@
                            (current-buffer) t
                            "*Xmllint Error Buffer*" t))
 
-;;
-; for auto-complete of nXml
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; for auto-complete of nXml
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'auto-complete-nxml nil t)
 ;; customize
 ;; Keystroke for popup help about something at point.
@@ -117,6 +149,7 @@
 ;; If you want to start completion manually from the beginning
 ;(setq auto-complete-nxml-automatic-p nil)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'nxml-config)
 
 ;;; nxml-config.el ends here

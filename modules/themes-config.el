@@ -5,22 +5,29 @@
 ;;;
 ;;; Filename   : themes-config.el
 ;;; Description: Emacs Color themes set or unset values
+;;;              Add an airline theme or a smart mode line
 ;;;
 ;;; elisp code for customizing the color theme
 ;;===============================================================================
+
 ;;;
 ;;; Code:
 ;;;
-;;-------------------------------------------------------------------------------
+
+(use-package highlight-numbers
+  :ensure t
+  :init
+  (add-hook 'prog-mode-hook 'highlight-numbers-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; fancy modeline(s) - powerline, airline and sml
-;;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'powerline)
 (powerline-default-theme)
 
-
-;;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; define constants for holding the themes
-;;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defcustom aqua-airline-theme nil
   "Select an appropriate Airline Theme."
   :type 'symbol)
@@ -31,14 +38,11 @@
 
 ;; change the airline themes as required from the below
 (setq aqua-airline-theme 'airline-cool)
-;; Alternatives
-;; (setq aqua-airline-theme 'airline-light)
-;; (setq aqua-airline-theme 'airline-kalisi)
 
 
 ;; set smart-mode-line theme
 (setq aqua-sml-theme 'powerline)
-;; Alternatives:
+;; alternative themes available:
 ;; (sml/apply-theme 'powerline)
 ;; (sml/apply-theme 'dark)
 ;; (sml/apply-theme 'light)
@@ -46,9 +50,9 @@
 ;; (sml/apply-theme 'automatic)
 
 
-;;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; vim airline theme for emacs modeline customized display
-;;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun load-airline-settings ()
   "Load required Airline theme settings."
   (interactive)
@@ -73,9 +77,9 @@
   (load-theme aqua-airline-theme t))
 
 
-;;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; smart-mode-line enable/disable
-;;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun apply-sml ()
   "Apply Smart Mode Line if needed."
   (interactive)
@@ -88,8 +92,6 @@
         (setq sml/shorten-modes t)
         (setq sml/no-confirm-load-theme t)
         (rich-minority-mode 1)
-        ;; for hiding minor modes
-        (setq rm-blacklist '(" GitGutter" " Helm" " es" " Guide"))
         (if after-init-time
             (sml/setup)
           (add-hook 'after-init-hook #'sml/setup))
@@ -100,23 +102,19 @@
         (setq sml/replacer-regexp-list
               '(("^~/org/" ":O:")
                 ("^~/code/" ":CODE:")
-                ("^~/\\.emacs\\.d/" ":ED:")))))
-  ;; (setq sml/no-confirm-load-theme t)
-  ;; (if (not (null aqua-sml-theme))
-  ;;     (setq sml/theme aqua-sml-theme)
-  ;;   ;; delegate theme to current active one
-  ;;   (setq sml/theme nil))
-  )
+                ("^~/\\.emacs\\.d/" ":ED:"))))))
 
 
-;;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; setting default color theme to required (from Steve Purcell .emacs)
-;;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq-default custom-enabled-themes '(
-                                      sanityinc-solarized-light
-                                      ;sanityinc-tomorrow-day
-                                      ;majapahit-dark
-                                      ;majapahit-light
+                                      ;;sanityinc-solarized-light
+                                      ;;darkokai
+                                      ;;majapahit-light
+                                      ;;paper
+                                      ;;whiteboard
+                                      ;;material-light
                                       ))
 
 ;; Ensure that themes will be applied even if they have not been customized
@@ -135,30 +133,29 @@
   (interactive)
   (mapc #'disable-theme custom-enabled-themes))
 
-;;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; load the required airline settings
-;;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; (add-hook 'after-init-hook 'load-airline-settings)
 
-;;-------------------------------------------------------------------------------
-;; uncomment if airline themes are required
-;;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; un-comment if airline themes are required
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; (add-hook 'after-init-hook 'apply-airline)
 
-;;-------------------------------------------------------------------------------
-;; uncomment if sml is required
-;;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; un-comment if smart mode line is required
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'after-init-hook 'apply-sml)
 
-;;-------------------------------------------------------------------------------
-;; apply the themes after emacs initializes
-;;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; apply the themes after Emacs initializes
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'after-init-hook 'reapply-themes)
 
-
-;;------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Toggle between light and dark solarized themes
-;;------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun light ()
   "Activate a solarized light color theme."
   (interactive)
@@ -171,32 +168,32 @@
   (require 'color-theme-sanityinc-tomorrow)
   (color-theme-sanityinc-solarized-dark))
 
-;;------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Toggle between prelude's light and dark solarized themes
-;;------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun prelude-solarized-settings ()
   "Settings for the prelude solarized themes."
   (interactive)
   ;; make the fringe stand out from the background
-  (setq solarized-distinct-fringe-background t)
-  ;; Don't change the font for some headings and titles
-  (setq solarized-use-variable-pitch nil)
-  ;; make the modeline high contrast
-  (setq solarized-high-contrast-mode-line t)
-  ;; Use less bold font
-  (setq solarized-use-less-bold t)
-  ;; Use more italics
-  (setq solarized-use-more-italic t)
-  ;; Use less colors for indicators such as git:gutter, flycheck and similar
-  (setq solarized-emphasize-indicators nil)
-  ;; Don't change size of org-mode headlines (but keep other size-changes)
-  (setq solarized-scale-org-headlines nil)
-  ;; Avoid all font-size changes
-  (setq solarized-height-minus-1 1.0)
-  (setq solarized-height-plus-1 1.0)
-  (setq solarized-height-plus-2 1.0)
-  (setq solarized-height-plus-3 1.0)
-  (setq solarized-height-plus-4 1.0)
+  (setq solarized-distinct-fringe-background t
+        ;; Don't change the font for some headings and titles
+        solarized-use-variable-pitch nil
+        ;; make the modeline high contrast
+        solarized-high-contrast-mode-line t
+        ;; Use less bold font
+        solarized-use-less-bold t
+        ;; Use more italics
+        solarized-use-more-italic t
+        ;; Use less colors for indicators such as git:gutter, flycheck and similar
+        solarized-emphasize-indicators nil
+        ;; Don't change size of org-mode headlines (but keep other size-changes)
+        solarized-scale-org-headlines nil
+        ;; Avoid all font-size changes
+        solarized-height-minus-1 1.0
+        solarized-height-plus-1 1.0
+        solarized-height-plus-2 1.0
+        solarized-height-plus-3 1.0
+        solarized-height-plus-4 1.0)
   (message "loading the custom settings for solarized..."))
 
 (defun slight ()
@@ -213,9 +210,9 @@
   (prelude-solarized-settings)
   (load-theme 'solarized-dark t))
 
-;;------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Toggle between spacemacs's light and dark themes
-;;------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun space-light ()
   "Activate spacemacs light theme"
   (interactive)
@@ -228,9 +225,9 @@
   (load-theme 'spacemacs-dark t))
 
 
-;;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; automatically switch colors between dark and light based on the system time
-;;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; (require 'moe-theme-switcher)
 (defun moe ()
   "Activate moe light theme."
@@ -245,8 +242,13 @@
   (powerline-moe-theme)
   (moe-light))
 
-;;-------------------------------------------------------------------------------
 
 (provide 'themes-config)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
 
 ;;; themes-config.el ends here

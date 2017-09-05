@@ -27,8 +27,8 @@
 (setq projectile-remember-window-configs t )
 (setq projectile-completion-system 'helm)
 (setq projectile-switch-project-action 'helm-projectile)
-(setq projectile-cache-file (expand-file-name "projectile.cache" save-dir))
-(setq bookmark-default-file (expand-file-name "bookmarks" save-dir))
+(setq projectile-cache-file (expand-file-name "projectile.cache" cache-dir))
+(setq bookmark-default-file (expand-file-name "bookmarks" cache-dir))
 
 (projectile-global-mode t)
 
