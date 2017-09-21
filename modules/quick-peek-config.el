@@ -41,4 +41,10 @@ string."
 
 (provide 'quick-peek-config)
 
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; byte-compile-warnings: (not cl-functions)
+;; End:
+
 ;;; quick-peek-config.el ends here

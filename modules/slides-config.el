@@ -32,4 +32,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'slides-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; byte-compile-warnings: (not cl-functions)
+;; End:
+
 ;;; slides-config.el ends here
