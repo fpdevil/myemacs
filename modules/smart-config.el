@@ -35,6 +35,14 @@
 ;; below is the fix through sp
 (eval-after-load 'js2-mode
   '(sp-local-pair 'js2-mode "<" ">"))
+(eval-after-load 'html-mode
+  '(sp-local-pair 'html-mode "<" ">"))
 
 (provide 'smart-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
+
 ;;; smart-config.el ends here
