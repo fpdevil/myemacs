@@ -35,13 +35,36 @@
   "/Applications/Xcode.app/Contents/Developer/Platforms/")
 
 ;; making code gnu style
-(setq c-default-style "linux"
-      c-basic-offset 4)
+;; (setq c-default-style "linux"
+;;       c-basic-offset 4)
+
+(setq c-default-style '((java-mode  . "java")
+                        (awk-mode   . "awk")
+                        (c-mode     . "k&r")
+                        (c++-mode   . "stroustrup")
+                        (other      . "linux")))
+
+(setq-default c-basic-offset 4)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; setup irony modes for c/c++                                              ;;
+;; some basic cc mode settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun aqua/c-initialization-hook ()
+  (define-key c-mode-base-map (kbd "RET") 'c-context-line-break))
+
+(add-hook 'c-initialization-hook 'aqua/c-initialization-hook)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; makefile settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'makefile-mode-hook
+          (lambda ()
+            (setq indent-tabs-mode t)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                        setup irony modes for c/c++                       ;;
 ;; https://github.com/Sarcasm/irony-mode/wiki/Mac-OS-X-issues-and-workaround;;
-;; refer my own instalaltion log in root irony-install.md                   ;;
+;; refer my own installation log in root irony-install.md                   ;;
 ;; ---------------------------- check commands ---------------------------- ;;
 ;; xcodebuild -find make                                                    ;;
 ;; xcodebuild -find gcc                                                     ;;
@@ -84,7 +107,7 @@
 ;; completion at interesting places, such as after scope operator, std::
 (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
 
-;; delete company-semantic because it has higher precedance than company-clang
+;; delete company-semantic because it has higher precedence than company-clang
 (setq company-backends (delete 'company-semantic company-backends))
 
 ;; Load with the `irony-mode` as a grouped back-end
@@ -186,17 +209,36 @@
 ;;; ac-clang-flags to include from echo "" | g++ -v -x c++ -E -            ;;;
 ;;; add necessary include locations                                        ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq ac-clang-flags (append
-      (mapcar (lambda (item)(concat "-I" item))
-              (split-string
-               "
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include
-/usr/local/opt/opencv3/include
-/usr/local/include
-/usr/include
-")) ac-clang-flags))
+(defun aqua/auto-complete-clang-setup ()
+  (require 'auto-complete-clang)
+  (setq command "echo | g++ -v -x c++ -E - 2>&1 |
+                 grep -A 20 starts | grep include | grep -v search")
+  (setq ac-clang-flags
+        (mapcar (lambda (item)
+                  (concat "-I" item))
+                (split-string
+                 (shell-command-to-string command))))
+  ;; completion for C/C++ macros.
+  (push "-code-completion-macros" ac-clang-flags)
+  (push "-code-completion-patterns" ac-clang-flags)
+  (dolist (mode-hook '(c-mode-hook c++-mode-hook))
+    (add-hook mode-hook
+              (lambda ()
+                (add-to-list 'ac-sources 'ac-source-clang)))))
+
+(aqua/auto-complete-clang-setup)
+
+;; (setq ac-clang-flags (append
+;;       (mapcar (lambda (item)(concat "-I" item))
+;;               (split-string
+;;                "
+;; /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1
+;; /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include
+;; /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include
+;; /usr/local/opt/opencv3/include
+;; /usr/local/include
+;; /usr/include
+;; ")) ac-clang-flags))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
