@@ -236,4 +236,9 @@
 
 (provide 'evil-config)
 
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
+
 ;;; evil-config.el ends here
