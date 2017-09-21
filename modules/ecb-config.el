@@ -22,4 +22,9 @@
 
 (provide 'ecb-config)
 
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
+
 ;;; ecb-config.el ends here
