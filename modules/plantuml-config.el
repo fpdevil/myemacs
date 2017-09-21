@@ -97,4 +97,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'plantuml-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; byte-compile-warnings: (not cl-functions)
+;; End:
+
 ;;; plantuml-config.el ends here
