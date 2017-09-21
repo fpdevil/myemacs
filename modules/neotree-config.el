@@ -33,4 +33,11 @@
  '(neo-expand-btn-face ((t . (:inherit button))) t))
 
 (provide 'neotree-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; byte-compile-warnings: (not cl-functions)
+;; End:
+
 ;;; neotree-config.el ends here
