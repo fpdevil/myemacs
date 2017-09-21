@@ -92,50 +92,6 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
       (setq rlt nil)))
     rlt))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Company mode and YASnippet step on each other toes. These functions are  ;;
-;; to help expected TAB function. Attempt these actions, and do the         ;;
-;; first one that works.                                                    ;;
-;; 1. expand yas snippet                                                    ;;
-;; 2. auto complete with company                                            ;;
-;; 3. indent                                                                ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun check-expansion ()
-  (save-excursion
-    (if (looking-at "\\_>") t
-      (backward-char 1)
-      (if (looking-at "\\.") t
-        (backward-char 1)
-        (if (looking-at "->") t nil)))))
-
-(defun do-yas-expand ()
-  "Fallback behaviour for yas."
-  (let ((yas/fallback-behavior 'return-nil))
-    (yas/expand)))
-
-(defun tab-indent-or-complete ()
-  "Using TAB for indentation or completion."
-  (interactive)
-  (if (minibufferp)
-      (minibuffer-complete)
-    (if (or (not yas/minor-mode)
-            (null (do-yas-expand)))
-        (if (check-expansion)
-            (company-complete-common)
-          (indent-for-tab-command)))))
-
-;; altering the keymaps of company and yas-minor modes
-(defun bind-tab-properly ()
-  "Binds tab to tab-indent-or-complete, overwritting yas and company bindings."
-  (interactive)
-  ;;overwrite yas and company tab mappings
-  (define-key yas-minor-mode-map (kbd "<tab>") 'tab-indent-or-complete)
-  (define-key yas-minor-mode-map (kbd "TAB") 'tab-indent-or-complete)
-  (define-key company-active-map [tab] 'tab-indent-or-complete)
-  (define-key company-active-map (kbd "TAB") 'tab-indent-or-complete))
-
-(add-hook 'company-mode-hook 'bind-tab-properly)
-
 ;;----------------------------------------------------------------------------
 ;; get list of minor modes
 ;;----------------------------------------------------------------------------
@@ -260,6 +216,7 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 ;; Local Variables:
 ;; coding: utf-8
 ;; mode: emacs-lisp
+;; byte-compile-warnings: (not cl-functions)
 ;; End:
 
 ;;; misc-config.el ends here
