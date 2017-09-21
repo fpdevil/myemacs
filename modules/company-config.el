@@ -176,7 +176,7 @@
 ;(company-quickhelp-mode 1)
 
 ;; unset M-h key
-; (global-set-key (kbd "M-h") nil)
+;; (global-set-key (kbd "M-h") nil)
 (with-eval-after-load 'company
   (company-quickhelp-mode 1)
   (setq company-quickhelp-use-propertized-text t)
@@ -197,9 +197,60 @@
 ;; If none of the current completions look good, call the command again to try
 ;; the next backend
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'company-try-hard)         ;; get all completions from company backends
+(require 'company-try-hard)      ; get all completions from company backends
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Company mode and YASnippet step on each other toes. These functions are  ;;
+;; to help expected TAB function. Attempt these actions, and do the         ;;
+;; first one that works.                                                    ;;
+;; 1. expand yas snippet                                                    ;;
+;; 2. auto complete with company                                            ;;
+;; 3. indent                                                                ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun check-expansion ()
+  "Check the expansion lists."
+  (save-excursion
+    (if (looking-at "\\_>") t
+      (backward-char 1)
+      (if (looking-at "\\.") t
+        (backward-char 1)
+        (if (looking-at "->") t nil)))))
 
+(defun do-yas-expand ()
+  "Fallback behavior for YASnippets."
+  (let ((yas/fallback-behavior 'return-nil))
+    (yas/expand)))
+
+(defun tab-indent-or-complete ()
+  "Using TAB for indentation or completion."
+  (interactive)
+  (if (minibufferp)
+      (minibuffer-complete)
+    (if (or (not yas/minor-mode)
+            (null (do-yas-expand)))
+        (if (check-expansion)
+            (company-complete-common)
+          (indent-for-tab-command)))))
+
+;; altering the key-maps of company and yas-minor modes
+(defun bind-tab-properly ()
+  "Binds tab to tab-indent-or-complete, overwriting yas and company bindings."
+  (interactive)
+  ;;overwrite yas and company tab mappings
+  (define-key yas-minor-mode-map (kbd "<tab>") 'tab-indent-or-complete)
+  (define-key yas-minor-mode-map (kbd "TAB") 'tab-indent-or-complete)
+  (define-key company-active-map [tab] 'tab-indent-or-complete)
+  (define-key company-active-map (kbd "TAB") 'tab-indent-or-complete))
+
+(add-hook 'company-mode-hook 'bind-tab-properly)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'company-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
+
 ;;; company-config.el ends here
