@@ -217,13 +217,13 @@
 ;;
 ; (elpy-enable)
 (setq elpy-modules '(
-                      elpy-module-company
-                      elpy-module-eldoc
-                      elpy-module-flymake
-                      elpy-module-pyvenv
-                      elpy-module-highlight-indentation ;breaks older emacs
-                      elpy-module-sane-defaults
-                      ))
+                     elpy-module-company
+                     elpy-module-eldoc
+                     elpy-module-flymake
+                     elpy-module-pyvenv
+                     elpy-module-highlight-indentation ;breaks older emacs
+                     elpy-module-sane-defaults
+                     ))
 
 
 ;;
@@ -240,7 +240,7 @@
       python-check-command "/usr/local/bin/pyflakes"
       python-environment-directory "~/.emacs.d/.python-environments")
 ;;
-; enable elpy
+; now enable elpy
 ;;
 (elpy-enable)
 
@@ -255,6 +255,10 @@
            (lambda ()
               (setq company-idle-delay nil)
               'elpy-mode-hook 'py-autopep8-enable-on-save))
+
+;; visual clue on how the code is indented
+(require 'highlight-indentation)
+(add-hook 'python-mode-hook 'highlight-indentation)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; end elpy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -324,8 +328,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun show-fly-err-at-point ()
   "If the cursor is sitting on a flymake error, display the message in the minibuffer."
-  (require 'cl)
   (interactive)
+  (require 'cl)
   (let ((line-no (line-number-at-pos)))
     (dolist (elem flymake-err-info)
       (if (eq (car elem) line-no)
@@ -401,18 +405,13 @@
       t)                                  ;; show the error buffer?
     (ediff-buffers (current-buffer) p8-output)))
 
-;;----------------------------------------------------------------------------
-;; an auto insert header for new python files
-;;----------------------------------------------------------------------------
-(eval-after-load 'autoinsert
-  '(define-auto-insert '("\\.\\(py\\)\\'" . "Python skeleton")
-     '(
-       "Empty"
-       "#import os,sys" \n
-       \n \n
-       )))
 
 ;;----------------------------------------------------------------------------
 (provide 'python-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
 
 ;;; python-config.el ends here
