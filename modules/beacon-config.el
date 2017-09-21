@@ -16,4 +16,11 @@
 (beacon-mode +1)
 
 (provide 'beacon-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; byte-compile-warnings: (not cl-functions)
+;; End:
+
 ;;; beacon-config.el ends here
