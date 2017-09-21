@@ -44,13 +44,15 @@ true."
 ; (global-set-key (kbd "M-p") 'previous-error)
 
 
-;;----------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; additional flycheck options
-;;----------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (eval-after-load "flycheck"
   '(progn
-     ;(setq flycheck-highlighting-mode nil)
-     (setq flycheck-highlighting-mode 'symbols)
+     ;; (setq flycheck-highlighting-mode nil)
+     ;; (setq flycheck-highlighting-mode 'symbols)
+     ;; highlight the whole line, as it’s much faster
+     (setq flycheck-highlighting-mode 'lines)
      ;; enable flycheck globally
      (add-hook 'after-init-hook #'global-flycheck-mode)
      ;; helm based flycheck
@@ -81,27 +83,35 @@ clean buffer we're an order of magnitude laxer about checking."
 (add-hook 'flycheck-after-syntax-check-hook
           'aqua/adjust-flycheck-automatic-syntax-eagerness)
 
-;;----------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; use an italic face for the checker name
-;;----------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (set-face-attribute 'flycheck-error-list-checker-name nil
                     :inherit 'italic)
 
-;;----------------------------------------------------------------------------
-; for flycheck-pos-tip
-;;----------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; style flycheck errors consistently with flymake
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(custom-set-faces
+ '(flycheck-error ((((class color)) (:underline "Red"))))
+ '(flycheck-warning ((((class color)) (:underline "Green")))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; for flycheck-pos-tip
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (with-eval-after-load 'flycheck
   (flycheck-pos-tip-mode))
 
-;;----------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; add on option for error messages
-;;----------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq flycheck-display-errors-function
       #'flycheck-display-error-messages-unless-error-list)
 
-;;----------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; toggle flycheck window
-;;----------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun aqua/toggle-flycheck-error-list ()
   "Toggle flycheck's error list window.
 If the error list is visible, hide it.  Otherwise, show it."
@@ -117,9 +127,9 @@ If the error list is visible, hide it.  Otherwise, show it."
     (flycheck-list-errors)
     (switch-to-buffer-other-window flycheck-error-list-buffer)))
 
-;;----------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; flycheck error display
-;;----------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'display-buffer-alist
              `(,(rx bos "*Flycheck errors*" eos)
               (display-buffer-reuse-window
@@ -128,7 +138,12 @@ If the error list is visible, hide it.  Otherwise, show it."
               (reusable-frames . visible)
               (window-height   . 0.33)))
 
-;;============================================================================
+;;----------------------------------------------------------------------------
 (provide 'flycheck-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
 
 ;;; flycheck-config.el ends here
