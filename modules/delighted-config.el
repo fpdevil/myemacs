@@ -93,4 +93,10 @@
 ;;----------------------------------------------------------------------------
 
 (provide 'delighted-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
+
 ;;; delighted-config.el ends here
