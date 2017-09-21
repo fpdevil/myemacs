@@ -61,4 +61,9 @@
 
 (provide 'whichkey-config)
 
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
+
 ;;; whichkey-config.el ends here

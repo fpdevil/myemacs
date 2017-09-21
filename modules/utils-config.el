@@ -65,7 +65,21 @@
 ;;  (editorconfig-mode 1))
 
 
+;;---------------------------------------------------------------------------
+;; get the buffer file name
+;;---------------------------------------------------------------------------
+(defmacro buffer-real-name ()
+  "Get the real filename of the current buffer without parent directory"
+  '(file-name-nondirectory buffer-file-name))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'utils-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; byte-compile-warnings: (not cl-functions)
+;; End:
+
 ;;; utils-config.el ends here

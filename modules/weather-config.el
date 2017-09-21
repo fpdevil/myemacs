@@ -31,4 +31,9 @@
 
 (provide 'weather-config)
 
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
+
 ;;; weather-config.el ends here

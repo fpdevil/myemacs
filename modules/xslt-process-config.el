@@ -41,4 +41,9 @@
 
 (provide 'xslt-process-config)
 
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
+
 ;;; xslt-process-config.el ends here

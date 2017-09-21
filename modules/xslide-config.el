@@ -36,4 +36,10 @@
 (abbrev-mode t)
 
 (provide 'xslide-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
+
 ;;; xslide-config.el ends here
