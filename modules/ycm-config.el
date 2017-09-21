@@ -22,7 +22,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;     YCMD Configuration for Emacs                                             ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(let ((ycmd-dir (expand-file-name "private/.ycmd/" user-emacs-directory)))
+(let ((ycmd-dir (expand-file-name "private/ycmd/" user-emacs-directory)))
   (if (not (file-exists-p ycmd-dir))
     (progn
       (message "Cloning and building YouCompleteMe ...")
@@ -115,5 +115,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'ycm-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:
 
 ;;; ycm-config.el ends here
