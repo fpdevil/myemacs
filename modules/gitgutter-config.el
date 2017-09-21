@@ -36,4 +36,10 @@
 
 (provide 'gitgutter-config)
 
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; byte-compile-warnings: (not cl-functions)
+;; End:
+
 ;;; gitgutter-config.el ends here
