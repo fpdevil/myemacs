@@ -105,4 +105,10 @@ auto-dictionary is not used, use the adict version otherwise."
 
 (provide 'spell-config)
 
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; byte-compile-warnings: (not cl-functions)
+;; End:
+
 ;;; spell-config.el ends here
