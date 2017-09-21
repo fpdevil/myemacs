@@ -92,9 +92,6 @@
 ;; Dash character (`-') is considered as a word delimiter
 (setq flyspell-consider-dash-as-word-delimiter-flag t)
 
-;; flyspell mode breaks auto-complete mode without this.
-(ac-flyspell-workaround)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'flyspell-config)
