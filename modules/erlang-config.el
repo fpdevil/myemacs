@@ -135,10 +135,10 @@
 (defvar erlang-erlmode-path
   (concat (wild (concat erlang-erl-path "/lib/") "tools-") "emacs"))
 
-(add-to-list 'load-path erlang-erlmode-path)
-(add-to-list 'load-path erlang-esense-path)
-(add-to-list 'load-path erlang-distel-path)
-(add-to-list 'load-path erlang-wrangler-path)
+(add-to-list 'load-path erlang-erlmode-path)           ;; add erlang toos to the path
+(add-to-list 'load-path erlang-esense-path)            ;; add esense to path
+(add-to-list 'load-path erlang-distel-path)            ;; add distel to path
+(add-to-list 'load-path erlang-wrangler-path)          ;; add wrangler to path
 
 ;; man pages
 (setq erlang-man-root-dir (expand-file-name "man" erlang-erl-path))
@@ -160,6 +160,19 @@
    (set 'inferior-erlang-machine-options (split-string flags))
    (erlang-shell))
 
+
+(defun init-esense ()
+  "Set esense configuration."
+  ;; (add-to-list 'load-path "~/emacs/esense")
+  (require 'esense-start)
+  (setq esense-indexer-program
+        (concat erlang-esense-path "esense.sh"))
+  (setq esense-setup-otp-search-directories t)
+  (setq esense-module-search-directories (concat erlang-root-dir "/lib/*/src"))
+  (setq esense-include-search-directories (concat erlang-root-dir "/lib/*/include"))
+  (setq esense-distel-node "distel@apple"))
+
+
 (defun my-erlang-load-hook ()
   "Erlang hook for Distel and Esense."
   (require 'distel)
@@ -168,10 +181,14 @@
   ;; when loading a beam file from emacs, add the path to erlang
   (setq erl-reload-dwim t)
 
-  (require 'esense)
-  (setq esense-indexer-program
-    (concat erlang-esense-path "esense.sh"))
-  (setq esense-completion-display-method 'frame)
+  ;; esense specific settings
+  ;; (require 'esense)
+  ;; (setq esense-indexer-program
+  ;;   (concat erlang-esense-path "esense.sh"))
+  ;; (setq esense-completion-display-method 'frame)
+
+  (init-esense)
+
   ;; find the man pages
   (setq erlang-root-dir erlang-erl-path)
   (message "#### loading the ERLANG root %s ####" erlang-root-dir)
@@ -244,6 +261,7 @@
     (inferior-erlang)
     (select-window file-window)
     (switch-to-buffer file-buffer)))
+
 
 ;;-------------------------------------------------------------------------------
 ;; erlang ide set-up and erlang auto-completion using auto-complete and distel
