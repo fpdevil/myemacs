@@ -232,6 +232,10 @@
 (defvar ac-source-eshell-pcomplete
   '((candidates . ac-eshell-pcomplete)))
 
+
+;; flyspell mode breaks auto-complete mode without this.
+(ac-flyspell-workaround)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'ac-complete-config)
