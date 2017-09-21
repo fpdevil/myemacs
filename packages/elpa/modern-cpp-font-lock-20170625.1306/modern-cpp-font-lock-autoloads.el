@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "modern-cpp-font-lock" "modern-cpp-font-lock.el"
-;;;;;;  (22957 19119 0 0))
+;;;;;;  (22965 6684 0 0))
 ;;; Generated autoloads from modern-cpp-font-lock.el
 
 (autoload 'modern-c++-font-lock-mode "modern-cpp-font-lock" "\

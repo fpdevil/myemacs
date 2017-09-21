@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "dired-filter" "dired-filter.el" (22957 19111
+;;;### (autoloads nil "dired-filter" "dired-filter.el" (22965 6142
 ;;;;;;  0 0))
 ;;; Generated autoloads from dired-filter.el
 

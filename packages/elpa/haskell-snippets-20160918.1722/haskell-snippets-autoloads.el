@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "haskell-snippets" "haskell-snippets.el" (22957
-;;;;;;  18972 0 0))
+;;;### (autoloads nil "haskell-snippets" "haskell-snippets.el" (22965
+;;;;;;  6011 0 0))
 ;;; Generated autoloads from haskell-snippets.el
 
 (autoload 'haskell-snippets-initialize "haskell-snippets" "\
@@ -16,7 +16,7 @@
 
 ;;;***
 
-;;;### (autoloads nil nil ("haskell-snippets-pkg.el") (22957 18972
+;;;### (autoloads nil nil ("haskell-snippets-pkg.el") (22965 6010
 ;;;;;;  0 0))
 
 ;;;***

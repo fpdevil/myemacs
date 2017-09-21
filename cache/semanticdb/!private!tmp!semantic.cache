@@ -6,15 +6,21 @@
     (semanticdb-table "semanticdb-table"
       :major-mode c++-mode
       :tags 
-        '( ("iomanip" include (:system-flag t) nil [1 19])
-            ("iostream" include (:system-flag t) nil [20 39])
-            ("main" function (:type "int") nil [41 611]))          
-      :file "mtable.cpp"
-      :pointmax 612
-      :fsize 611
-      :lastmodtime '(22954 26406 0 0)
-      :unmatched-syntax nil)
-)
+        '( ("iostream" include (:system-flag t) nil [509 528])
+            ("string" include (:system-flag t) nil [529 546])
+            ("main" function
+               (:arguments 
+                  ( ("argc" variable (:type "int") (reparse-symbol arg-sub-list) [558 567])
+                    ("argv" variable
+                       (:pointer 1
+                        :dereference 1
+                        :type "char")
+                        (reparse-symbol arg-sub-list) [568 581]))                  
+                :type "int")
+                nil [548 654]))          
+      :file "abc.cpp"
+      :pointmax 654
+      :unmatched-syntax nil))
   :file "!private!tmp!semantic.cache"
   :semantic-tag-version "2.0"
   :semanticdb-version "2.2")

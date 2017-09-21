@@ -180,6 +180,7 @@ Helpful to get rid of unused packages."
 ;; auto-complete
 ;; semanticdb configuration
 ;; flyspell
+;; bookmarks
 ;; helm
 ;; smart parentheses
 ;; parenthesis edit
@@ -190,6 +191,7 @@ Helpful to get rid of unused packages."
 ;; neotree
 ;; popup window
 ;; Emacs code browser ecb
+;; Auto Insert code template headers
 ;; org mode
 ;; plantuml for org diagrams
 ;; org reveal and html5
@@ -229,7 +231,9 @@ Helpful to get rid of unused packages."
   '(
       "misc-config"
       "dired-config"
+      "move-text-config"
       "utils-config"
+      "bookmarks-config"
       "fiplr-config"
       "quick-peek-config"
       "themes-config"
@@ -254,6 +258,7 @@ Helpful to get rid of unused packages."
       "neotree-config"
       "popwin-config"
       "ecb-config"
+      "auto-insert-config"
       "org-config"
       "plantuml-config"
       "slides-config"

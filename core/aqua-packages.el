@@ -234,7 +234,6 @@
     json-navigator                              ;; View and navigate JSON structures
     ;;;;;; window, text and file utilities      ;;;;;;
     popwin                                      ;; popup window manager
-    move-text                                   ;; move current line or region up or down
     switch-window                               ;; window switching, the visual way
     clippy                                      ;; show tooltip with function documentation at point
     quick-peek                                  ;; inline window doc popup

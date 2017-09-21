@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "helm-cider" "helm-cider.el" (22957 19090 0
+;;;### (autoloads nil "helm-cider" "helm-cider.el" (22965 6121 0
 ;;;;;;  0))
 ;;; Generated autoloads from helm-cider.el
 
@@ -81,8 +81,8 @@ Use Helm for CIDER.
 
 ;;;***
 
-;;;### (autoloads nil "helm-cider-repl" "helm-cider-repl.el" (22957
-;;;;;;  19090 0 0))
+;;;### (autoloads nil "helm-cider-repl" "helm-cider-repl.el" (22965
+;;;;;;  6121 0 0))
 ;;; Generated autoloads from helm-cider-repl.el
 
 (autoload 'helm-cider-repl-history-insert "helm-cider-repl" "\
@@ -108,8 +108,8 @@ Helm interface to CIDER REPL history.
 
 ;;;***
 
-;;;### (autoloads nil "helm-cider-spec" "helm-cider-spec.el" (22957
-;;;;;;  19090 0 0))
+;;;### (autoloads nil "helm-cider-spec" "helm-cider-spec.el" (22965
+;;;;;;  6121 0 0))
 ;;; Generated autoloads from helm-cider-spec.el
 
 (autoload 'helm-cider-spec-symbol "helm-cider-spec" "\
@@ -154,7 +154,7 @@ If ARG is raw prefix argument \\[universal-argument]
 ;;;***
 
 ;;;### (autoloads nil nil ("helm-cider-pkg.el" "helm-cider-util.el")
-;;;;;;  (22957 19090 0 0))
+;;;;;;  (22965 6121 0 0))
 
 ;;;***
 

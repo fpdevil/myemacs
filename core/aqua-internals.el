@@ -13,19 +13,31 @@
 ;;;
 (global-set-key (kbd "<menu>") 'nil)
 
-;----------------------------------------------------------------------------
-;;                          some customizations
-;----------------------------------------------------------------------------
-(setq user-full-name "Sampath Singamsetty"
-      user-mail-address "Singamsetty.Sampath@gmail.com")
 
 ;----------------------------------------------------------------------------
 ;; garbage collection setup for aquamacs
 ;; Start garbage collection every 50MB to improve Emacs performance
 ;; warn when opening files bigger than 100MB
 ;----------------------------------------------------------------------------
-(setq gc-cons-threshold 50000000)
-(setq large-file-warning-threshold 100000000)
+;; (setq gc-cons-threshold 50000000)
+;; (setq large-file-warning-threshold 100000000)
+
+
+;; tweaking as per the below...
+;; https://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
+;; this also makes init.el load faster
+(setq gc-cons-threshold most-positive-fixnum)
+
+(defun my-minibuffer-setup-hook ()
+  "Crank up the Garbage Collection threshold."
+  (setq gc-cons-threshold most-positive-fixnum))
+
+(defun my-minibuffer-exit-hook ()
+  "Put Garbage Collection back to default value."
+  (setq gc-cons-threshold 800000))
+
+(add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
+(add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
 
 
 ;----------------------------------------------------------------------------
@@ -96,9 +108,10 @@
 ;----------------------------------------------------------------------------
 ;; file backup and saving Emacs sessions
 ;----------------------------------------------------------------------------
-(setq desktop-save nil) ;; save without asking
+(setq desktop-save nil)                               ; save without asking
 ;(setq desktop-restore-eager 10)
 
+(setq backup-by-copying t)                            ; do not clobber symbolic links
 ;; store all backup and autosave files in the tmp dir
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -106,9 +119,13 @@
       `((".*" ,temporary-file-directory t)))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----------------------------------------------------------------------------
+;; deleting files(when deleting, send it to Thrash rather than use rm)                                        ;----------------------------------------------------------------------------
+(setq delete-by-moving-to-trash t)
+
+;----------------------------------------------------------------------------
 ;; electric pair mode (currently disabled)                                 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;----------------------------------------------------------------------------
 ; (electric-pair-mode 1)
 ; (defvar markdown-electric-pairs '((?* . ?*)) "Electric pairs for markdown-mode.")
 ; (defun markdown-add-electric-pairs ()
@@ -122,6 +139,7 @@
 ;----------------------------------------------------------------------------
 ;; (when (fboundp 'electric-indent-mode)
 ;;   (electric-indent-mode -1))
+
 
 ;----------------------------------------------------------------------------
 ;; custom keybinding stuff
@@ -179,6 +197,7 @@ This command does the inverse of `fill-region'."
   (let ((fill-column 90002000))
     (fill-region start end)))
 
+
 ;----------------------------------------------------------------------------
 ;; for latex editing
 ;----------------------------------------------------------------------------
@@ -233,6 +252,7 @@ This command does the inverse of `fill-region'."
                      'before-string
                      (propertize (format "A")
                                  'display '(left-fringe right-triangle)))))))
+
 
 ;----------------------------------------------------------------------------
 ;; Spell checker - setting location for aspell

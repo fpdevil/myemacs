@@ -50,6 +50,8 @@
 
 (setq save-place-file
     (expand-file-name "places.el" "~/.emacs.d/preferences"))
+
+(setq desktop-path (quote ("~/aquamacs.d" "." "~")))
 ;-------------------------------------------------------------------------------
 ;; Enable emoji, and stop the UI from freezing when trying to display them.
 ;-------------------------------------------------------------------------------

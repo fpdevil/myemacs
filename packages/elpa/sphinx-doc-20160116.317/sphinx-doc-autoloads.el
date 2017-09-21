@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "sphinx-doc" "sphinx-doc.el" (22957 18935 0
+;;;### (autoloads nil "sphinx-doc" "sphinx-doc.el" (22965 6004 0
 ;;;;;;  0))
 ;;; Generated autoloads from sphinx-doc.el
 

@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "rainbow-identifiers" "rainbow-identifiers.el"
-;;;;;;  (22957 18744 0 0))
+;;;;;;  (22965 5804 0 0))
 ;;; Generated autoloads from rainbow-identifiers.el
 
 (autoload 'rainbow-identifiers-mode "rainbow-identifiers" "\
