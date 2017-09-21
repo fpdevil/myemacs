@@ -44,4 +44,10 @@
 
 (provide 'paredit-config)
 
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; byte-compile-warnings: (not cl-functions)
+;; End:
+
 ;;; paredit-config.el ends here
