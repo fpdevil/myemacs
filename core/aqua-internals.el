@@ -46,7 +46,7 @@
 (cua-mode 1)
 
 ;----------------------------------------------------------------------------
-;; delete a selection with a single keypress
+;; delete a selection with a single key-press
 ;----------------------------------------------------------------------------
 (delete-selection-mode t)
 
@@ -277,17 +277,17 @@ This command does the inverse of `fill-region'."
 ;----------------------------------------------------------------------------
 ;; tab handling
 ;----------------------------------------------------------------------------
-(global-set-key [tab] 'indent-or-expand)
-(defun indent-or-expand ()
-  "Either indent according to mode, or expand the word preceding the point."
-  (interactive)
-  (if (or
-       (eq last-command 'self-insert-command)
-       (eq last-command 'dabbrev-expand))
-      (progn
-        (setq this-command 'dabbrev-expand)
-        (deabbrev-expand nil))
-    (indent-according-to-mode)))
+;; (global-set-key [tab] 'indent-or-expand)
+;; (defun indent-or-expand ()
+;;   "Either indent according to mode, or expand the word preceding the point."
+;;   (interactive)
+;;   (if (or
+;;        (eq last-command 'self-insert-command)
+;;        (eq last-command 'dabbrev-expand))
+;;       (progn
+;;         (setq this-command 'dabbrev-expand)
+;;         (deabbrev-expand nil))
+;;     (indent-according-to-mode)))
 
 (when (eq system-type 'darwin)
   ;; Enable emoji, and stop the UI from freezing when trying to display them.

@@ -3,11 +3,16 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "dracula-theme" "dracula-theme.el" (22965 5811
+;;;### (autoloads nil "dracula-theme" "dracula-theme.el" (23016 16980
 ;;;;;;  0 0))
 ;;; Generated autoloads from dracula-theme.el
 
 (when load-file-name (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
+
+;;;***
+
+;;;### (autoloads nil nil ("dracula-theme-pkg.el") (23003 7464 0
+;;;;;;  0))
 
 ;;;***
 

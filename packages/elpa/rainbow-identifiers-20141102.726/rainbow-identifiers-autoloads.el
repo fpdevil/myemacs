@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "rainbow-identifiers" "rainbow-identifiers.el"
-;;;;;;  (22965 5804 0 0))
+;;;;;;  (23016 16975 0 0))
 ;;; Generated autoloads from rainbow-identifiers.el
 
 (autoload 'rainbow-identifiers-mode "rainbow-identifiers" "\
@@ -17,6 +17,11 @@ positive, and disable it otherwise. If called from Lisp, enable the
 mode if ARG is omitted or nil, and toggle it if ARG is `toggle'.
 
 \(fn &optional ARG)" t nil)
+
+;;;***
+
+;;;### (autoloads nil nil ("rainbow-identifiers-pkg.el") (23003 7465
+;;;;;;  0 0))
 
 ;;;***
 

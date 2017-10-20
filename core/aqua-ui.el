@@ -66,6 +66,7 @@
 (when (boundp 'aquamacs-version)
   (aquamacs-autoface-mode 0)
   (setq mac-allow-anti-aliasing t)                           ;; anti-aliasing
+  (setq ns-use-srgb-colorspace t)
   (set-face-attribute 'default nil
                       :family "Monaco"
                       :width 'normal

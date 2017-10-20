@@ -1,0 +1,1 @@
+/Users/sampathsingamsetty/.emacs.d/irony/bin/irony-server

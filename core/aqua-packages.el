@@ -145,6 +145,7 @@
     pyvenv                                      ;; python virtual environment interface for Emacs
     py-autopep8                                 ;; integrate autopep8 into Emacs
     sphinx-doc                                  ;; sphinx style doc strings for python code
+    pydoc-info                                  ;; better python support for info lookup
     ;;;;;; haskell programming modes            ;;;;;;
     haskell-mode                                ;; haskell language support
     company-ghc                                 ;; haskell company auto-completion
@@ -287,6 +288,7 @@
     "javascript/node-ac"    ;; node-js auto-complete package
     "dircolors"             ;; colored buffer
     "elisp/elisp-format"    ;; format elisp code
+    "psgml"                 ;; markup languages...
     )
   "Custom load paths that do not follow the normal vendor/elisp/module-name.el format.")
 

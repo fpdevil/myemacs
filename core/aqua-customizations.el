@@ -42,6 +42,11 @@
 (when (file-exists-p savehist-file)
   (load savehist-file))
 
+(setq history-length 100)
+(put 'minibuffer-history 'history-length 50)
+(put 'evil-ex-history 'history-length 50)
+(put 'kill-ring 'history-length 25)
+
 (setq aquamacs-scratch-file
     (expand-file-name "scratch buffer" "~/.emacs.d/preferences"))
 
