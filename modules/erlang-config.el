@@ -102,32 +102,6 @@
   (string-match "[^\.]+" system-name)
   (substring system-name (match-beginning 0) (match-end 0)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; set default nodename for distel (= also for erlang-shell-remote)
-;; for imenu and start an erlang shell with boot flags
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; {{{ setup for imenu and shell
-(add-hook 'erlang-mode-hook
-  (lambda ()
-    ;; when starting an Erlang shell in Emacs, default in the node name
-    ;; (setq inferior-erlang-machine-options (list "-sname" "emacs" "-remsh" (string erl-nodename-cache))
-    ;; (setq erl-nodename-cache (intern (concat "dev" "@" (short-host-name))))
-    (setq erl-nodename-cache (intern (concat "distel" "@" (short-host-name))))))
-
-(add-hook 'erlang-shell-mode-hook
-  (lambda ()
-    ;; add some Distel bindings to the Erlang shell
-    (dolist (spec distel-shell-keys)
-    (define-key erlang-shell-mode-map (car spec) (cadr spec)))))
-
-(add-hook 'erlang-mode-hook 'my-erlang-hook-function)
-(defun my-erlang-hook-function ()
-    (interactive)
-    (imenu-add-to-menubar "Functions"))
-; }}}
-
-
-;; hopefully no further configuration is needed
 
 ;;---------------------------------------------------------------------------------
 ;; find the erlang mode .el file
@@ -142,6 +116,10 @@
 
 ;; man pages
 (setq erlang-man-root-dir (expand-file-name "man" erlang-erl-path))
+(setq erlang-man-dirs (list '("Man - Commands" "lib/erlang/man/man1" t)
+                            '("Man - Modules" "lib/erlang/man/man3" t)
+                            '("Man - Files" "lib/erlang/man/man4" t)
+                            '("Man - Applications" "lib/erlang/man/man6" t)))
 
 
 ;; (add-hook 'erlang-mode-hook 'erlang-wrangler-on)
@@ -151,14 +129,65 @@
 
 (show-paren-mode t)
 (global-font-lock-mode t)
-(add-hook 'erlang-load-hook 'my-erlang-load-hook)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; for imenu and start an erlang shell with boot flags
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun my-erlang-hook-function ()
+    (interactive)
+    (imenu-add-to-menubar "Functions"))
+(add-hook 'erlang-mode-hook 'my-erlang-hook-function)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; distel setup
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (add-hook 'erlang-load-hook 'my-erlang-load-hook)
+(eval-after-load "distel"
+  '(progn
+     (distel-setup)
+     (add-hook 'erlang-mode-hook 'distel-erlang-mode-hook)
+     (add-hook 'erlang-mode-hook
+               (lambda ()
+                 (setq distel-modeline-node "distel")
+                 ;; When starting an Erlang shell in Emacs, default in
+                 ;; the node name.  Pass -name, not -sname so you
+                 ;; could talk to this node from other machines.
+                 ;; (setq inferior-erlang-machine-options '("-name" "emacs"))
+                 (setq inferior-erlang-machine-options '("-sname" "emacs"))
+                 ;; Add Erlang functions to an imenu menu
+                 (imenu-add-to-menubar "imenu")))
+
+     (defvar *erlang-shell-distel-keys* '(erl-complete
+                                          erl-find-source-under-point
+                                          erl-find-source-unwind
+                                          erl-process-list
+                                          erl-ie-show-session
+                                          erl-fdoc-describe
+                                          erl-fdoc-apropos
+                                          erl-who-calls
+                                          erl-openparen)
+       "Distel functions useful in the Erlang shell.")
+
+     (add-hook 'erlang-shell-mode-hook
+               ;; Add Distel bindings to the Erlang shell.
+               (lambda ()
+                 ;; Comint binding that conflicts with some of the
+                 ;; distel keybindings.
+                 (define-key erlang-shell-mode-map (kbd "C-c C-d") nil)
+
+                 (loop for (key-binding function) in distel-keys
+                       when (memq function *erlang-shell-distel-keys*)
+                       do (progn
+                            (message "Adding keybinding %s for %s"
+                                     (format-kbd-macro key-binding) function)
+                            (define-key erlang-shell-mode-map key-binding function)))))))
 
 ;; use to start an erlang shell with boot flags
 (defun erl-shell (flags)
-   "Start an erlang shell with flags"
-   (interactive (list (read-string "Flags: ")))
-   (set 'inferior-erlang-machine-options (split-string flags))
-   (erlang-shell))
+  "Start an erlang shell with flags"
+  (interactive (list (read-string "Flags: ")))
+  (set 'inferior-erlang-machine-options (split-string flags))
+  (erlang-shell))
 
 
 (defun init-esense ()
@@ -209,14 +238,14 @@
   (unless (null buffer-file-name)
     (make-local-variable 'compile-command)
     (setq compile-command
-      (if (file-exists-p "Makefile") "make -k"
-        (concat
-          (concat
-            "erlc "
+          (if (file-exists-p "Makefile") "make -k"
             (concat
-              (if (file-exists-p "../ebin") "-o ../ebin " "")
-              (if (file-exists-p "../inc") "-I ../inc " ""))
-            "+debug_info -W " buffer-file-name))))))
+             (concat
+              "erlc "
+              (concat
+               (if (file-exists-p "../ebin") "-o ../ebin " "")
+               (if (file-exists-p "../inc") "-I ../inc " ""))
+              "+debug_info -W " buffer-file-name))))))
 
 (add-hook 'comint-mode-hook 'my-comint)
 
@@ -238,7 +267,7 @@
 (defun my-erl-complete ()
   "Call erl-complete if we have an Erlang node name"
   (if erl-nodename-cache
-    (erl-complete erl-nodename-cache)
+      (erl-complete erl-nodename-cache)
     nil))
 
 
@@ -254,8 +283,8 @@
   (force-mode-line-update)
   ;; Start up an inferior erlang with node name `distel'
   (let ((file-buffer (current-buffer))
-         (file-window (selected-window)))
-    (setq inferior-erlang-machine-options '("-sname" "distel"))
+        (file-window (selected-window)))
+    (setq inferior-erlang-machine-options '("-sname" "emacs"))
     ;; (setq inferior-erlang-machine-options '("-name" "distel"))
     (switch-to-buffer-other-window file-buffer)
     (inferior-erlang)
