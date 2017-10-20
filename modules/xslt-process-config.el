@@ -9,9 +9,11 @@
 ;;; http://xslt-process.sourceforge.net/documentation.php
 ;;;===========================================================================
 (require 'cl)
+
 ;;;
 ;;; Code:
 ;;;
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; for xslt-process using saxon or xalan processor                          ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -21,8 +23,9 @@
 (autoload 'xslt-process-install-docbook "xslt-process"
   "Register the DocBook package with XSLT-process" t)
 
-(add-hook 'xml-mode-hook 'xslt-process-mode)
 (add-hook 'xsl-mode-hook 'xslt-process-mode)
+(add-hook 'sgml-mode-hook 'xslt-process-mode)
+(add-hook 'xml-mode-hook 'xslt-process-mode)
 
 (defadvice xml-mode (after run-xml-mode-hooks act)
   "Invoke `xml-mode-hook' hooks in the XML mode."
@@ -34,10 +37,13 @@
             (toggle-read-only -1)))
 
 (setq auto-mode-alist
-      (append
-       (list
-    '("\\.xslt" . xsl-process-mode))
-       auto-mode-alist))
+      (union '(("\\.html$" . html-mode)
+               ("\\.shtml$" . html-mode)
+               ("\\.xml$" . sgml-mode)
+               ("\\.xsl$" . sgml-mode)
+               ("\\.xmap$" . sgml-mode)
+               ("\\.xconf$" . sgml-mode)
+               ) auto-mode-alist))
 
 (provide 'xslt-process-config)
 
