@@ -28,7 +28,13 @@
 (yas-load-directory (concat (getenv "HOME") "/.emacs.d/snippets"))
 (add-to-list 'yas-snippet-dirs (concat user-emacs-directory "/snippets/yasnippet-snippets"))
 (add-hook 'term-mode-hook (lambda()
-    (setq yas-dont-activate t)))
+    (setq yas-dont-activate-functions t)))
+
+(define-key yas-minor-mode-map (kbd "<tab>") nil)
+(define-key yas-minor-mode-map (kbd "TAB") nil)
+(define-key yas-minor-mode-map (kbd "<C-tab>") 'yas-expand)
+;;(define-key yas-minor-mode-map (kbd "C-c k") 'yas-expand)
+(define-key global-map (kbd "C-c o") 'iedit-mode)
 
 ;; yas verbosity set to trace
 (setq yas-verbosity 3)
@@ -88,14 +94,14 @@ Get back the initial smartpaens state."
 ;;----------------------------------------------------------------------------
 (defun yas/org-very-safe-expand ()
   "WORKAROUND http://orgmode.org/manual/Conflicts.html yas conflict."
-  (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
+  (let ((yas-fallback-behavior 'return-nil)) (yas-expand)))
 
 (defun yas/org-setup ()
   ;; yasnippet (using the new org-cycle hooks)
   (make-variable-buffer-local 'yas/trigger-key)
   (setq yas/trigger-key [tab])
   (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-  (define-key yas/keymap [tab] 'yas/next-field))
+  (define-key yas-keymap [tab] 'yas/next-field))
 
 ;; See https://github.com/eschulte/emacs24-starter-kit/issues/80.
 (setq org-src-tab-acts-natively nil)
@@ -152,29 +158,29 @@ Get back the initial smartpaens state."
         (if (looking-at "->") t nil)))))
 
 (defun do-yas-expand ()
-  (let ((yas/fallback-behavior 'return-nil))
+  (let ((yas-fallback-behavior 'return-nil))
     (yas/expand)))
 
-(defun tab-indent-or-complete ()
-  (interactive)
-  (cond
-   ((minibufferp)
-    (minibuffer-complete))
-   (t
-    (indent-for-tab-command)
-    (if (or (not yas/minor-mode)
-            (null (do-yas-expand)))
-        (if (check-expansion)
-            (progn
-              (company-manual-begin)
-              (if (null company-candidates)
-                  (progn
-                    (company-abort)
-                    (indent-for-tab-command)))))))))
+;; (defun tab-indent-or-complete ()
+;;   (interactive)
+;;   (cond
+;;    ((minibufferp)
+;;     (minibuffer-complete))
+;;    (t
+;;     (indent-for-tab-command)
+;;     (if (or (not yas-minor-mode)
+;;             (null (do-yas-expand)))
+;;         (if (check-expansion)
+;;             (progn
+;;               (company-manual-begin)
+;;               (if (null company-candidates)
+;;                   (progn
+;;                     (company-abort)
+;;                     (indent-for-tab-command)))))))))
 
 (defun tab-complete-or-next-field ()
   (interactive)
-  (if (or (not yas/minor-mode)
+  (if (or (not yas-minor-mode)
           (null (do-yas-expand)))
       (if company-candidates
           (company-complete-selection)
@@ -189,7 +195,7 @@ Get back the initial smartpaens state."
 
 (defun expand-snippet-or-complete-selection ()
   (interactive)
-  (if (or (not yas/minor-mode)
+  (if (or (not yas-minor-mode)
           (null (do-yas-expand))
           (company-abort))
       (company-complete-selection)))
