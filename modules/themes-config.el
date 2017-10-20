@@ -86,6 +86,8 @@
   (require 'smart-mode-line)
   (if (require 'smart-mode-line nil 'noerror)
       (progn
+        ;;(setq powerline-arrow-shape 'curve)
+        ;;(setq powerline-default-separator-dir '(right . left))
         (setq sml/name-width 20)
         (setq sml/mode-width 'full)
         (setq sml/shorten-directory t)
@@ -160,6 +162,7 @@
         solarized-use-variable-pitch nil
         ;; make the modeline high contrast
         solarized-high-contrast-mode-line t
+        solarized-distinct-doc-face t
         ;; Use less bold font
         solarized-use-less-bold t
         ;; Use more italics
@@ -222,7 +225,7 @@
   (moe-theme-set-color 'orange)
   (moe-light))
 
-(moe)
+;; (moe)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; uncomment if airline themes are required (load airline settings)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
