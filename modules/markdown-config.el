@@ -19,6 +19,7 @@
               '("\\.mdml$"    . markdown-mode)
               '("\\.markdown" . markdown-mode))
         auto-mode-alist))
+(add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
 
 (defun markdown-imenu-index ()
   "Provide an imenu handler for Markdown mode."
