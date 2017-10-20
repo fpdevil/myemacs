@@ -5,7 +5,7 @@
 ;;; Code:
 ;;;
 ;;; Filename   : dired-config.el
-;;; Description: file explorer operations through dired
+;;; Description: file explorer operations through dired [C-U C-X d]
 ;;;============================================================================
 (when (eq system-type 'darwin)
   (require 'ls-lisp)

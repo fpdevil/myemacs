@@ -29,16 +29,16 @@
          "%%%-----------------------------------------------------------------------------\n\n"
          "-module(" (file-name-base buffer-file-name) ").\n\n")
          ;;"-module(." (file-name-sans-extension buffer-file-name) ").\n")
-        ((python-mode . "Python program") nil
-         "#!/usr/bin/env python\n"
-         "# -*- encoding:utf-8 -*-\n"
-         "# @Copyright (C) " (substring (current-time-string) -4) " " (user-full-name) "\n\n"
-         "# @File        : " (file-name-nondirectory buffer-file-name) "\n"
-         "# @Author      : " (user-full-name) " <" (progn user-mail-address) ">\n"
-         "# @Time-stamp  : " (format-time-string "%a %b %d %H:%M:%S %Z %Y") "\n"
-         "# @Description : " _ "\n"
-         "#\n"
-         "################################################################################\n\n")
+        ; ((python-mode . "Python program") nil
+        ;  "#!/usr/bin/env python\n"
+        ;  "# -*- encoding:utf-8 -*-\n"
+        ;  "# @Copyright (C) " (substring (current-time-string) -4) " " (user-full-name) "\n\n"
+        ;  "# @File        : " (file-name-nondirectory buffer-file-name) "\n"
+        ;  "# @Author      : " (user-full-name) " <" (progn user-mail-address) ">\n"
+        ;  "# @Time-stamp  : " (format-time-string "%a %b %d %H:%M:%S %Z %Y") "\n"
+        ;  "# @Description : " _ "\n"
+        ;  "#\n"
+        ;  "################################################################################\n\n")
         ((c-mode . "C program") nil
          "/*\n"
          " * File: " (file-name-nondirectory buffer-file-name) "\n"

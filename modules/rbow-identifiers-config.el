@@ -52,7 +52,7 @@
 (add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(provide 'rbow-dentifiers-config)
+(provide 'rbow-identifiers-config)
 
 ;; Local Variables:
 ;; coding: utf-8

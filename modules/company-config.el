@@ -243,7 +243,7 @@
   (define-key company-active-map [tab] 'tab-indent-or-complete)
   (define-key company-active-map (kbd "TAB") 'tab-indent-or-complete))
 
-(add-hook 'company-mode-hook 'bind-tab-properly)
+;; (add-hook 'company-mode-hook 'bind-tab-properly)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'company-config)

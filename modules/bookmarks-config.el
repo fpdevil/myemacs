@@ -19,7 +19,7 @@
                        ("Vim"       (filename . "~/vim"))
                        ("Emacs.d"   (filename . "~emacs.d"))))
 
-(provide 'init-bookmarks)
+(provide 'bookmarks-config)
 
 ;; Local Variables:
 ;; coding: utf-8
