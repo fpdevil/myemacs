@@ -29,64 +29,55 @@
 ;; required default standard libraries
 (eval-when-compile (require 'cl))
 (require 'cl-lib)
-(require 'package)
 
 ;;============================================================================;;
 ;;;;     Package repositories (gnu, melpa, melpa-stable and marmalade)      ;;;;
 ;;============================================================================;;
-; (add-to-list 'package-archives '("gnu"          . "http://elpa.gnu.org/packages/"))
-; (add-to-list 'package-archives '("melpa"        . "http://melpa.milkbox.net/packages/") t)
-; (add-to-list 'package-archives '("marmalade"    . "http://marmalade-repo.org/packages/"))
-; (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
-; (add-to-list 'package-archives '("org"          . "http://orgmode.org/elpa/"))
+(require 'package)
 
 (setq package-archives
-      '(
-        ("gnu"       . "https://elpa.gnu.org/packages/")
-        ("melpa"     . "https://melpa.org/packages/")
-        ("marmalade" . "https://marmalade-repo.org/packages/")
-        ("org"       . "http://orgmode.org/elpa/")
-        ("elpy"      . "https://jorgenschaefer.github.io/packages/")
+      '(("elpy"         . "https://jorgenschaefer.github.io/packages/")
+        ("gnu"          . "https://elpa.gnu.org/packages/")
+        ("melpa"        . "https://melpa.org/packages/")
+        ("melpa-stable" . "http://stable.melpa.org/packages/")
+        ("org"          . "http://orgmode.org/elpa/")
+        ("marmalade"    . "https://marmalade-repo.org/packages/")
         ))
 
+;; if on Emacs 24.4 or newer, if so, use the pinned package feature
+(when (boundp 'package-pinned-packages)
+  (setq package-pinned-packages
+        '((elpy                  . "elpy")
+          (highlight-indentation . "elpy") ;; fixes error in elpy 1.6
+          (org                   . "org")
+          (jedi                  . "melpa")
+          (markdown-mode         . "melpa-stable")
+          (smart-mode-line       . "melpa-stable")
+          (swiper                . "melpa-stable")
+          (web-mode              . "melpa")
+          (which-key             . "melpa-stable")
+          )))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; in case if package archive priorities needs to be specified
-; the below section may be used; for now just commented
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; (setq package-archive-priorities
-;       '(("melpa-stable" . 20)
-;         ("gnu"          . 15)
-;         ("melpa"        . 10)
-;         ("marmalade"    . 5)
-;         ("org"          . 0)))
-
+(setq package-archive-priorities
+      '(("org"          . 30)
+        ("elpy"         . 30)
+        ("melpa"        . 20)
+        ("gnu"          . 10)
+        ("melpa-stable" . 10)
+        ("marmalade"    . 5)
+        ))
+(setq package-menu-hide-low-priority t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;           initialize all the defined packages              ;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (unless (file-exists-p package-user-dir)
-  (message "No packages exists yet, refreshing archives.")
+  (message "No packages exist yet, refreshing archives.")
   (package-refresh-contents))
 (package-initialize)
+
+(setq url-http-attempt-keepalives nil)
 (setq package-enable-at-startup nil)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; recursively add sub-folders in a folder to path                            ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun add-subfolders-to-load-path (parent-dir)
- "Add all level PARENT-DIR subdirs to the `load-path'."
- (dolist (f (directory-files parent-dir))
-   (let ((name (expand-file-name f parent-dir)))
-     (when (and (file-directory-p name)
-                (not (string-prefix-p "." f)))
-       (add-to-list 'load-path name)
-       (add-subfolders-to-load-path name)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;          Load the requires packages in the vendor                      ;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;(mapc 'load (directory-files vendor-dir nil "^[^#].*el$"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; function to check if all listed packages are installed. return true when   ;;
@@ -94,42 +85,23 @@
 ;; packages defined in required-packages are installed. If not ELPA kicks in. ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun aqua-packages-installed-p ()
-  "Check if all the packages listed in `required-packages' are installed."
-  (loop for p in required-packages
-        when (not (package-installed-p p)) do (return nil)
-        finally (return t)))
-
-(defun aqua-require-pkg (pkg)
-  "Check and install each PKG unless its already there."
-  (unless (memq pkg required-packages)
-    (add-to-list 'required-packages pkg))
-  (unless (package-installed-p pkg)
-    (message ">>> installing missing package >>> %s" pkg)
-    (package-install pkg)))
+  (cl-loop for p in required-packages
+           when (not (package-installed-p p)) do (cl-return nil)
+           finally (cl-return t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; if not all the packages which are listed are installed, check one by one ;;;
 ;;; and install the missing ones.                                            ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun aqua-require-packages (pkgs)
-  "Check that all PKGS are installed.
-Packages missing in the location will be automatically installed."
-  (mapc #'aqua-require-pkg pkgs))
-
-(defun aqua-install-packages ()
-  "Install each package listed in `required-packages'."
-  (unless (aqua-packages-installed-p)
-    ;; check for the new packages (package versions)
-    (message "%s" " Emacs is now refreshing its package database...")
-    (package-refresh-contents)
-    (message "%s" " package refresh done!")
-    ;; install any missing packages
-    (aqua-require-packages required-packages)))
-
-;;
-;; now run the package installation process
-;;
-(aqua-install-packages)
+(unless (aqua-packages-installed-p)
+  ;; check for new packages (package versions)
+  (message "%s" ">>> Emacs refreshing its package database...")
+  (package-refresh-contents)
+  (message "%s" ">>> package refresh done.")
+  ;; install the missing packages
+  (dolist (p required-packages)
+    (when (not (package-installed-p p))
+      (package-install p))))
 
 (defun aqua-external-pkg-list ()
   "Check all the external packages not installed via aqua.
@@ -152,7 +124,6 @@ Helpful to get rid of unused packages."
       (package-menu-mark-obsolete-for-deletion)
       (package-menu-execute t))))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; for package installation through use-package
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -161,140 +132,6 @@ Helpful to get rid of unused packages."
 
 (eval-when-compile
   (require 'use-package))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; package loading of  all the custom el files  which contains customized
-;; settings  for each  major/minor modes  as well  as any  other packages
-;; currently the below are all customized supported configurations.
-;;
-;; miscellaneous settings
-;; some utilities like window configurations, dired*, imenu-list etc.
-;; quick-peek
-;; code snippets with yas
-;; themes
-;; flycheck
-;; flymake
-;; fringe
-;; company
-;; company-quickhelp
-;; auto-complete
-;; semanticdb configuration
-;; flyspell
-;; bookmarks
-;; helm
-;; smart parentheses
-;; parenthesis edit
-;; rainbow-mode
-;; rainbow identifiers
-;; rainbow-delimiters
-;; hihlight-symbols
-;; neotree
-;; popup window
-;; Emacs code browser ecb
-;; Auto Insert code template headers
-;; org mode
-;; plantuml for org diagrams
-;; org reveal and html5
-;; multiple-cursors
-;; gitgutter-config
-;; weather info
-;; which-key and guide-key
-;; beacon cursor highlight
-;; evil
-;; xslt transformations
-;; xml using nxml
-;; aggressive indentation
-;; haskell
-;; erlang
-;; python3
-;; scala
-;; elixir
-;; elisp
-;; go
-;; c/c++
-;; javascript
-;; CoffeeScript
-;; Web html etc
-;; clojure
-;; VIM
-;; markdown
-;; yaml support
-;; shell scripting
-;; you complete me
-;; projectile
-;; delight and dim
-;; latex configuration
-;; hippie expansion
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defvar configs
-  '(
-      "misc-config"
-      "helm-settings-config"
-      "dired-config"
-      "utils-config"
-      "bookmarks-config"
-      "fiplr-config"
-      "quick-peek-config"
-      "themes-config"
-      "flycheck-config"
-      "flymake-config"
-      "fringe-config"
-      "company-config"
-      "ac-complete-config"
-      "flyspell-config"
-      "spell-config"
-      "undo-tree-config"
-      "evil-config"
-      "yasnippets-config"
-      "semantic-config"
-      "rbow-config"
-      "rbow-identifiers-config"
-      "rainbow-delims-config"
-      "smart-config"
-      "paredit-config"
-      "highlight-symbol-config"
-      "neotree-config"
-      "popwin-config"
-      "ecb-config"
-      "auto-insert-config"
-      "org-config"
-      "plantuml-config"
-      "slides-config"
-      "multiple-cursors-config"
-      "gitgutter-config"
-      "weather-config"
-      "whichkey-config"
-      "guidekey-config"
-      "beacon-config"
-      "vregex-config"
-      "xslide-config"
-      "xslt-process-config"
-      "nxml-config"
-      "cpp-config"
-      "python-config"
-      "haskell-config"
-      "erlang-config"
-      "elixir-config"
-      "elisp-config"
-      "scala-config"
-      "go-config"
-      "clojure-config"
-      "vim-config"
-      "web-config"
-      "js-config"
-      "coffee-config"
-      "shell-config"
-      "markdown-config"
-      "yaml-config"
-      "ycm-config"
-      "projectile-config"
-      "delighted-config"
-      "tex-config"
-      "hippie-config"
-      )
-    "Configuration files which follow the modules/pkgname-config.el format.")
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; loop through the custom lisp under the vendor directory                ;;;;
@@ -310,10 +147,77 @@ Helpful to get rid of unused packages."
 ;;;; loop through each and load the configured custom packages              ;;;;
 ;;;; each configuration file has a format of name-config.el                 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(cl-loop for name in configs
-         do (load (concat (file-name-directory load-file-name)
-                          "modules/"
-                          name ".el")))
+;; (mapc 'load (directory-files module-dir nil "^[^#].*el$"))
+(add-to-list 'load-path module-dir)             ;; load the modules dir
+(message "Loading the aquamacs modules...")
+
+(require 'misc-config)
+(require 'dired-config)
+(require 'move-text-config)
+(require 'utils-config)
+(require 'bookmarks-config)
+(require 'fiplr-config)
+(require 'quick-peek-config)
+(require 'themes-config)
+(require 'flycheck-config)
+(require 'flymake-config)
+(require 'fringe-config)
+(require 'company-config)
+(require 'ac-complete-config)
+(require 'flyspell-config)
+;; (require 'spell-config)
+(require 'undo-tree-config)
+(require 'evil-config)
+(require 'yasnippets-config)
+(require 'helm-settings-config)
+(require 'rbow-config)
+(require 'rbow-identifiers-config)
+(require 'rainbow-delims-config)
+(require 'smart-config)
+(require 'paredit-config)
+(require 'highlight-symbol-config)
+(require 'neotree-config)
+(require 'popwin-config)
+(require 'ecb-config)
+(require 'auto-insert-config)
+;; (require 'org-config)
+;; (require 'plantuml-config)
+;; (require 'slides-config)
+(require 'multiple-cursors-config)
+(require 'gitgutter-config)
+(require 'weather-config)
+(require 'whichkey-config)
+(require 'guidekey-config)
+(require 'beacon-config)
+(require 'vregex-config)
+;; (require 'psgml-config)
+;; (require 'xslide-config)
+;; (require 'xslt-process-config)
+;; (require 'nxml-config)
+;; (require 'cpp-config)
+(require 'python-config)
+(require 'elpy-python-config)
+;; (require 'jedi-python-config)
+;; (require 'haskell-config)
+;; (require 'erlang-config)
+;; (require 'elixir-config)
+;; (require 'elisp-config)
+;; (require 'scala-config)
+;; (require 'go-config)
+;; (require 'clojure-config)
+;; (require 'vim-config)
+;; (require 'web-config)
+;; (require 'js-config)
+;; (require 'coffee-config)
+;; (require 'shell-config)
+;; (require 'markdown-config)
+;; (require 'yaml-config)
+;; (require 'ycm-config)
+(require 'projectile-config)
+(require 'delighted-config)
+(require 'tex-config)
+(require 'hippie-config)
+;; (require 'semantic-config)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; now load personal elisp files if any from personal directory               ;;
