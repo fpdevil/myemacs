@@ -4,12 +4,36 @@
 ;;;
 ;;; filename.  : aqua-customizations.el
 ;;; description: Contains general Aquamacs custom options
-;;;              This is the place where Aquqmacs default preferences are
+;;;              This is the place where Aquamacs default preferences are
 ;;;              changed or altered.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Code:
 ;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; utf-8 character set encoding and Locale
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(prefer-coding-system         'utf-8)
+(set-default-coding-systems   'utf-8)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; language setup
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq current-language-environment "English")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; user settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq user-full-name "Sampath Singamsetty")
+(setq user-mail-address "Singamsetty.Sampath@gmail.com")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; disable startup, splash screen and startup message
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq inhibit-startup-screen t)
+;; (setq inhibit-startup-message t)
+;; (setq initial-scratch-message nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Visually indicate buffer boundaries and scrolling in the fringe
@@ -22,13 +46,6 @@
 (setq abbrev-file-name
       (expand-file-name "abbrev_defs" cache-dir))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; CEDET ede custom save directory settings
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq ede-simple-save-directory
-      (expand-file-name "EDE" cache-dir))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; escape save question during exit for custom settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -37,12 +54,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; save and load mini buffer history
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq savehist-file
-      (expand-file-name "minibuffer-history.el" cache-dir))
-(when (file-exists-p savehist-file)
-  (load savehist-file))
+(savehist-mode 1)
+(setq savehist-file (expand-file-name "minibuffer-history.el" cache-dir))
+;; (when (file-exists-p savehist-file)
+;;   (load savehist-file))
 
 (setq history-length 100)
+(setq savehist-additional-variables '(search-ring regexp-search-ring kill-ring))
 (put 'minibuffer-history 'history-length 50)
 (put 'evil-ex-history 'history-length 50)
 (put 'kill-ring 'history-length 25)
@@ -57,14 +75,23 @@
     (expand-file-name "places.el" "~/.emacs.d/preferences"))
 
 (setq desktop-path (quote ("~/aquamacs.d" "." "~")))
-;-------------------------------------------------------------------------------
+
+;; save-list-file customizations
+(let ((dir (expand-file-name (concat cache-dir "/auto-save-list/"))))
+  (setq auto-save-list-file-prefix (concat dir "saves-"))
+  (setq auto-save-file-name-transforms `((".*" ,(concat dir "save-") t))))
+
+;; better scrolling
+(setq scroll-conservatively 9999
+      scroll-preserve-screen-position t
+      scroll-margin 3)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Enable emoji, and stop the UI from freezing when trying to display them.
-;-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (if (fboundp 'set-fontset-font)
     (set-fontset-font t 'unicode "Apple Color Emoji" nil 'prepend))
 
-
-(message "Loaded the aquq-customizations...")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'aqua-customizations)
 

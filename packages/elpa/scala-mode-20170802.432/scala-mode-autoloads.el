@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "scala-mode" "scala-mode.el" (22965 6025 0
-;;;;;;  0))
+;;;### (autoloads nil "scala-mode" "scala-mode.el" (23063 38585 972138
+;;;;;;  721000))
 ;;; Generated autoloads from scala-mode.el
 
 (autoload 'scala-mode:set-scala-syntax-mode "scala-mode" "\
@@ -36,7 +36,7 @@ When started, runs `scala-mode-hook'.
 ;;;;;;  "scala-mode-imenu.el" "scala-mode-indent.el" "scala-mode-lib.el"
 ;;;;;;  "scala-mode-map.el" "scala-mode-paragraph.el" "scala-mode-pkg.el"
 ;;;;;;  "scala-mode-prettify-symbols.el" "scala-mode-syntax.el")
-;;;;;;  (22965 6025 0 0))
+;;;;;;  (23063 38585 983496 372000))
 
 ;;;***
 

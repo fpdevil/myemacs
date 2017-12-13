@@ -6,32 +6,78 @@
 ;;; Description: C++ Auto Insert statements
 ;;;
 ;;; elisp code for cpp helpers
-;;===========================================================================
-
 ;;;
 ;;; Code:
-;;;
+;;===========================================================================
 
+;; C++ completion for GNU Emacs
+(require 'function-args)
+(fa-config-default)
+
+
+;; compilation database code
+(defun cpp-complete/find-clang-complete-file ()
+  "Find the .clang_complete file."
+  (when buffer-file-name
+    (let ((dir (locate-dominating-file buffer-file-name ".clang_complete")))
+      (when dir
+        (concat (file-name-as-directory dir) ".clang_complete")))))
+
+(defun cpp-complete/load-clang-complete-file (cc-file)
+  "Load the flags from CC-FILE, compilation database one line at a time"
+  (let ((invocation-dir (expand-file-name (file-name-directory cc-file)))
+        (case-fold-search nil)
+        compile-flags)
+    (with-temp-buffer
+      (insert-file-contents cc-file)
+      ;; replace the relative paths with absolute paths
+      (while (re-search-forward cc-file "\\(-I\\|-isystem\n\\)\\(\\S-+\\)" nil t)
+        (replace-match (format "%s%s" (match-string 1)
+                               (expand-file-name (match-string 2) invocation-dir))))
+      ;; turn the lines to a list
+      (setq compile-flags
+            (mapcar #'(lambda (line)
+                        (if (string-match "[ \t]+$" line)
+                            (replace-match "" t t line)
+                          line))
+                    (split-string (buffer-string) "\n" t))))
+    compile-flags))
+
+;; Now load the compilation database
+(defun cpp-complete/load-clang-args ()
+  "Set arguments for company-clang, system paths for company-c-headers and
+arguments for flycheck-clang based on project specific file"
+  (unless company-clang-arguments
+    (let* ((cc-file (company-mode/find-clang-complete-file))
+           (flags (if cc-file (company-mode/load-clang-complete-file cc-file) '()))
+           (dirs (mapcar (lambda (f) (substring f 2))
+                         (remove-if-not (lambda (f) (string-prefix-p "-I" f)) flags))))
+      (setq-local company-clang-arguments flags)
+      (setq-local company-c-headers-path-system (append '("/usr/include" "/usr/local/include") dirs))
+      (setq-local flycheck-clang-args flags))))
+
+(add-to-hooks 'cpp-complete/load-clang-args '(c-mode-hook c++-mode-hook))
+
+;; eldoc support
+(with-eval-after-load 'c-eldoc
+ (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
+ (add-hook 'c++-mode-hook 'c-turn-on-eldoc-mode)
+ (setq c-eldoc-cpp-command (executable-find "clang"))
+ )
+
+;; auto-insert the comment strings at top based on the file types
 (eval-after-load 'autoinsert
   '(define-auto-insert '("\\.cpp\\|.cc\\'" . "C++ skeleton")
      '(
        "Short description:"
-       "/*\n"
-       " *********************************************************************************\n"
-       " *    Filename      : " (file-name-nondirectory buffer-file-name) "\n"
-       " *\n"
-       " *    Description   : " _ "\n"
-       " *\n"
-       " *    Version       : 1.0\n"
-       " *    Created       : " (format-time-string "%a %b %d %H:%M:%S %Z %Y") "\n"
-       " *    Revision      : none\n"
-       " *    Compiler      : GCC\n"
-       " *\n"
-       " *    Author        : " (progn user-full-name) " <" (progn user-mail-address) ">\n"
-       " *    Organization  : \n"
-       " *    Copyright (C) " (substring (current-time-string) -4) " " (user-full-name) "\n"
-       " *********************************************************************************\n"
-       " */\n\n"
+       "//\n"
+       "//"  (file-name-nondirectory buffer-file-name) "\n"
+       "//\n"
+       "//\n"
+       "//  Created by " (progn user-full-name) " on " (format-time-string "%a %b %d %H:%M:%S %Z %Y") "\n"
+       "//  Copyright © " (substring (current-time-string) -4) " " (user-full-name) ". All rights reserved." "\n\n"
+    ;;" //  " (progn user-full-name) " <" (progn user-mail-address) ">\n"
+       "// \n\n"
        "#include <iostream>" \n
        "//#include \""
        (file-name-sans-extension

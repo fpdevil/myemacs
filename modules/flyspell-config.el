@@ -6,26 +6,40 @@
 ;;; Filename   : flyspell-config.el
 ;;; Description: Emacs enable spell checking for comments & text
 ;;;              spell checking on the fly.
-;;;===========================================================================
-(require 'flyspell)                                           ; flyspell mode
-(require 'flyspell-lazy)
-
 ;;;
 ;;; Code:
 ;;;
-(setq flyspell-issue-message-flg nil)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;           find aspell load                                             ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq ispell-program-name "/usr/local/bin/aspell"
+;;;=============================================================================
+(require 'flyspell)                                           ; flyspell mode
+
+;;------------------------------------------------------------------------------
+;; improve performance by not printing messages for every word
+;;------------------------------------------------------------------------------
+(setq flyspell-issue-message-flag nil
+      flyspell-issue-welcome-flag nil
+      flyspell-use-meta-tab nil)
+
+;; Don't consider that a word repeated twice is an error
+(setq flyspell-mark-duplications-flag nil)
+;; Lower (for performance reasons) the maximum distance for finding
+;; duplicates of unrecognized words (default: 400000)
+(setq flyspell-duplicate-distance 12000)
+;; Dash character (`-') is considered as a word delimiter
+(setq flyspell-consider-dash-as-word-delimiter-flag t)
+
+;; load flyspell-lazy
+(eval-after-load 'flyspell
+  '(progn
+     (require 'flyspell-lazy)
+     (flyspell-lazy-mode 1)))
+
+;;------------------------------------------------------------------------------
+;;;           find aspell load
+;;------------------------------------------------------------------------------
+(setq ispell-program-name (executable-find "aspell")
       ispell-dictionary "american" ; better for aspell
       ispell-extra-args '("--sug-mode=ultra" "--lang=en_US")
       ispell-list-command "--list")
-
-(defun enable-flyspell ()
-  "Enable command `flyspell-mode' if `prelude-flyspell' is not nil."
-  (when (and prelude-flyspell (executable-find ispell-program-name))
-    (flyspell-mode +1)))
 
 (add-to-list 'ispell-local-dictionary-alist '(nil
                                               "[[:alpha:]]"
@@ -36,17 +50,36 @@
                                               nil
                                               utf-8))
 
-(with-eval-after-load 'flyspell
-    (require 'flyspell-lazy)
-    (flyspell-lazy-mode 1)
-    (setq ;; Be a little more aggressive than the lazy defaults
-     flyspell-lazy-idle-seconds 2 ;; This scans just the recent changes
-     flyspell-lazy-window-idle-seconds 6 ;; This scans the whole window
-     ))
+;; Use helm with flyspell
+(define-key flyspell-mode-map (kbd "<f8>") 'helm-flyspell-correct)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; flyspell checking for comments and text mode                             ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flyspell line styles
+(custom-set-faces
+ '(flyspell-duplicate ((t (:underline (:color "Blue" :style wave)))))
+ '(flyspell-incorrect ((t (:underline (:color "Purple" :style wave))))))
+
+;;------------------------------------------------------------------------------
+;; flyspell setup for js2-mode
+;;------------------------------------------------------------------------------
+(defun js-flyspell-verify ()
+  (let* ((f (get-text-property (- (point) 1) 'face)))
+    ;; *whitelist*
+    ;; only words with following font face will be checked
+    (memq f '(js2-function-call
+              js2-function-param
+              js2-object-property
+              font-lock-variable-name-face
+              font-lock-string-face
+              font-lock-function-name-face
+              font-lock-builtin-face
+              rjsx-tag
+              rjsx-attr))))
+(put 'js2-mode 'flyspell-mode-predicate 'js-flyspell-verify)
+(put 'rjsx-mode 'flyspell-mode-predicate 'js-flyspell-verify)
+
+;;------------------------------------------------------------------------------
+;; flyspell checking for comments and text mode
+;;------------------------------------------------------------------------------
 (if (fboundp 'prog-mode)
     (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
@@ -76,23 +109,39 @@
   ;;   (add-hook hook 'flyspell-prog-mode))
   )
 
+;; Spell check comments in c++ and c common
+(add-hook 'c++-mode-hook  'flyspell-prog-mode)
+(add-hook 'c-mode-common-hook 'flyspell-prog-mode)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; improve performance by not printing messages for every word              ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq flyspell-issue-message-flag nil
-      flyspell-issue-welcome-flag nil
-      flyspell-use-meta-tab nil)
+;;------------------------------------------------------------------------------
+;; company ispell integration
+;;------------------------------------------------------------------------------
+(defun company-text-mode-hook ()
+  "Company for `text-mode'"
+  (make-local-variable 'company-backends)
+  (add-to-list 'company-backends 'company-ispell)
+  (setq company-ispell-dictionary (file-truename "~/.emacs.d/private/english-words.txt")))
+(add-hook 'text-mode-hook 'company-text-mode-hook)
 
-;; Don't consider that a word repeated twice is an error
-(setq flyspell-mark-duplications-flag nil)
-;; Lower (for performance reasons) the maximum distance for finding
-;; duplicates of unrecognized words (default: 400000)
-(setq flyspell-duplicate-distance 12000)
-;; Dash character (`-') is considered as a word delimiter
-(setq flyspell-consider-dash-as-word-delimiter-flag t)
+(defun toggle-company-ispell ()
+  "M-x toggle the company iSpell."
+  (interactive)
+  (cond
+   ((memq 'company-ispell company-backends)
+    (setq company-backends (delete 'company-ispell company-backends))
+    (message "company-ispell disabled"))
+   (t
+    (add-to-list 'company-backends 'company-ispell)
+    (message "company-ispell enabled!"))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'flyspell-config)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; no-byte-compile t
+;; End:
+
 ;;; flyspell-config.el ends here

@@ -37,7 +37,8 @@
             (toggle-read-only -1)))
 
 (setq auto-mode-alist
-      (union '(("\\.html$" . html-mode)
+      (union '(
+               ;;("\\.html$" . html-mode)
                ("\\.shtml$" . html-mode)
                ("\\.xml$" . sgml-mode)
                ("\\.xsl$" . sgml-mode)

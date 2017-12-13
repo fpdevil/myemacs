@@ -114,7 +114,6 @@
   :bind (:map dired-mode-map
               ("P" . peep-dired)))
 
-(message "loaded dired-config.el")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'dired-config)

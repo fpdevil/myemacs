@@ -13,122 +13,58 @@
 ;;; $ go get -u github.com/dougm/goflymake
 ;;;
 ;;; elisp code for go language support and handling
-;;===========================================================================
-(require 'cl)
-(require 'golint)                 ; linter for the go code
 ;;;
 ;;; Code:
 ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; load go-specific language syntax                                        ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun go-mode-setup ()
-  "Major mode for Go programming language."
-  (go-eldoc-setup))
+;;===========================================================================
+(require 'golint)                 ; linter for the go code
+(require 'go-guru)
+(require 'go-eldoc)
+(require-package 'flymake-go)
+(require 'flymake-go)
 
-;; (add-hook 'go-mode-hook 'go-mode-setup)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;format the code before saving                                            ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun go-mode-setup ()
-  "Consistent code formatting through gofmt."
-  (go-eldoc-setup)
-  (add-hook 'before-save-hook 'gofmt-before-save))
-;; (add-hook 'go-mode-hook 'go-mode-setup)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; all go imports                                                          ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun go-mode-setup ()
-  "Keep your imports section nice and tidy with goimports."
-  (go-eldoc-setup)
+(defun my-go-mode-hook ()
+  ; Use goimports instead of go-fmt
   (setq gofmt-command "goimports")
-  (add-hook 'before-save-hook 'gofmt-before-save))
-;; (add-hook 'go-mode-hook 'go-mode-setup)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; godef, shows function definition when calling godef-jump                ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun go-mode-setup ()
-  "Lookup the function definitions using godef."
-  (go-eldoc-setup)
-  (setq gofmt-command "goimports")
+  ; Call gofmt before saving
   (add-hook 'before-save-hook 'gofmt-before-save)
-  (local-set-key (kbd "M-.") 'godef-jump))
-;; (add-hook 'go-mode-hook 'go-mode-setup)
+  ; Customize compile command to run go build
+  (if (not (string-match "go" compile-command))
+      (set (make-local-variable 'compile-command)
+           "go build -v && go test -v && go vet && golint && errcheck"))
+  ; Godef jump key binding
+  (local-set-key (kbd "M-.") 'godef-jump)
+  (local-set-key (kbd "M-*") 'pop-tag-mark))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; custom compile command                                                  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun go-mode-setup ()
-  "Set the Major mode for GO programming language."
-  (setq compile-command "go build -v && go test -v && go vet && golint && errcheck")
-  (define-key (current-local-map) "\C-c\C-c" 'compile)
-  (go-eldoc-setup)
-  (setq gofmt-command "goimports")
-  (add-hook 'before-save-hook 'gofmt-before-save)
-  (local-set-key (kbd "M-.") 'godef-jump))
-;; (add-hook 'go-mode-hook 'go-mode-setup)
+(after 'go-mode
+  (add-hook 'go-mode-hook 'compilation-auto-quit-window)
+  (add-hook 'go-mode-hook 'my-go-mode-hook)
 
+  (after "company-autoloads"
+    (require-package 'company-go)
+    (require 'company-go)
+    (add-hook 'go-mode-hook
+              (lambda ()
+                (set (make-local-variable 'company-backends) '(company-go)))))
 
-(defun aqua/go-mode-config ()
-  "Configure golang."
-  (add-hook 'before-save-hook 'gofmt-before-save)
-  (setq-default gofmt-command "goimports")
-  (add-hook 'go-mode-hook 'go-eldoc-setup)
-  (add-hook 'go-mode-hook (lambda ()
-                            (set (make-local-variable 'company-backends) '(company-go))
-                            (company-mode)))
   (add-hook 'go-mode-hook 'yas-minor-mode)
   (add-hook 'go-mode-hook 'flycheck-mode)
-  (setq compile-command "go build -v && go test -v && go vet && golint && errcheck"))
 
-(add-hook 'go-mode-hook 'aqua/go-mode-config)
+  ;; Load auto-complete
+  (after 'auto-complete
+    (require 'go-autocomplete)
+    (require 'auto-complete-config)
+    ;; (add-to-list 'ac-modes 'go-mode)
+    (add-hook 'go-mode-hook 'auto-complete-mode))
+  (setenv "GOPATH" (concat (getenv "HOME") "/sw/programming/gocode/go"))
+  (add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs"))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Load auto-complete                                                      ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(ac-config-default)
- (require 'auto-complete-config)   ; using auto-complete for completion
-(require 'go-autocomplete)        ; for go autocomplete
-(add-hook 'go-mode-hook 'auto-complete-for-go)
+  (after 'go-eldoc
+    (add-hook 'go-mode-hook 'go-eldoc-setup))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; go company mode                                                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun my-go-company-toggle ()
- "Disable Company mode."
- (company-mode -1))
+  (after 'go-guru
+    (go-guru-hl-identifier-mode)))
 
-
-
-(add-hook 'go-mode-hook 'company-mode)
-(add-hook 'go-mode-hook (lambda ()
-  (set (make-local-variable 'company-backends) '(company-go))
-  (company-mode)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; load auto-complete                                                      ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(ac-config-default)
-(setenv "GOPATH" (concat (getenv "HOME") "/sw/programming/gocode/go"))
-(add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs"))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; enable flycheck and yas
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-hook 'go-mode-hook 'yas-minor-mode)
-(add-hook 'go-mode-hook 'flycheck-mode)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;eldoc for go
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'go-eldoc)
-(add-hook 'go-mode-hook 'go-eldoc-setup)
-
-;;
 (provide 'go-config)
 
 ;; Local Variables:

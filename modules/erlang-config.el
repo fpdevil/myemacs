@@ -194,8 +194,7 @@
   "Set esense configuration."
   ;; (add-to-list 'load-path "~/emacs/esense")
   (require 'esense-start)
-  (setq esense-indexer-program
-        (concat erlang-esense-path "esense.sh"))
+  (setq esense-indexer-program (concat erlang-esense-path "esense.sh"))
   (setq esense-setup-otp-search-directories t)
   (setq esense-module-search-directories (concat erlang-root-dir "/lib/*/src"))
   (setq esense-include-search-directories (concat erlang-root-dir "/lib/*/include"))
@@ -227,7 +226,7 @@
 
 (defun my-erlang-mode-hook ()
   "Erlang hook for Esense Mode."
-  (esense-mode)
+  ;; (esense-mode)
   ;; distel The Right Way(tm)
   (local-set-key [(meta l)] 'erl-find-mod)
   (local-set-key [(meta \()] 'erl-openparent)
@@ -404,8 +403,8 @@
 ;;-------------------------------------------------------------------------------
 ;; erlang flycheck support and custom helpers
 ;;-------------------------------------------------------------------------------
-(load-file (concat module-dir "/erlang-flycheck-config.el"))
-(load-file (concat module-dir "/erlang-helper-config.el"))
+;; (load-file (concat module-dir "/erlang-flycheck-config.el"))
+;; (load-file (concat module-dir "/erlang-helper-config.el"))
 (require 'erlang-flycheck-config)
 (require 'erlang-helper-config)
 
@@ -433,10 +432,10 @@
   (setq edts-man-root erlang-root-dir
         erlang-indent-level 2)
   (setq edts-log-level 'debug)
-  (message "starting EDTS...")
   (require 'edts-start))
 
-(add-hook 'after-init-hook 'start-edts)
+;;(add-hook 'after-init-hook 'start-edts)
+(add-hook 'erlang-mode-hook 'start-edts)
 ;;}}}
 
 (provide 'erlang-config)

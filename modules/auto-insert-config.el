@@ -21,7 +21,7 @@
          "%%%-----------------------------------------------------------------------------\n"
          "%%% File: " (file-name-nondirectory buffer-file-name) "\n"
          "%%% @author " (user-full-name) " <" (progn user-mail-address) ">\n"
-         "%%% @copyright (C) " (format-time-string "%Y")  " " (user-full-name) "\n"
+         "%%% @copyright © " (format-time-string "%Y")  " " (user-full-name) "\n"
          "%%% @doc\n"
          "%%%\n"
          "%%% @end\n"
@@ -29,37 +29,38 @@
          "%%%-----------------------------------------------------------------------------\n\n"
          "-module(" (file-name-base buffer-file-name) ").\n\n")
          ;;"-module(." (file-name-sans-extension buffer-file-name) ").\n")
-        ; ((python-mode . "Python program") nil
-        ;  "#!/usr/bin/env python\n"
-        ;  "# -*- encoding:utf-8 -*-\n"
-        ;  "# @Copyright (C) " (substring (current-time-string) -4) " " (user-full-name) "\n\n"
-        ;  "# @File        : " (file-name-nondirectory buffer-file-name) "\n"
-        ;  "# @Author      : " (user-full-name) " <" (progn user-mail-address) ">\n"
-        ;  "# @Time-stamp  : " (format-time-string "%a %b %d %H:%M:%S %Z %Y") "\n"
-        ;  "# @Description : " _ "\n"
-        ;  "#\n"
-        ;  "################################################################################\n\n")
+        ((python-mode . "Python program") nil
+         "#!/usr/bin/env python\n"
+         "# -*- coding:utf-8 -*-\n"
+         "# @Copyright © " (substring (current-time-string) -4) " " (user-full-name) "\n"
+         "#\n"
+         "# @File        : " (file-name-nondirectory buffer-file-name) "\n"
+         "# @Author      : " (user-full-name) " <" (progn user-mail-address) ">\n"
+         "# @Time-stamp  : " (format-time-string "%a %b %d %H:%M:%S %Z %Y") "\n"
+         "# @Description : " _ "\n"
+         "#\n"
+         "################################################################################\n\n")
         ((c-mode . "C program") nil
          "/*\n"
          " * File: " (file-name-nondirectory buffer-file-name) "\n"
          " * Time-stamp: <>\n"
-         " * Copyright (C) " (substring (current-time-string) -4) " " (user-full-name) "\n"
+         " * Copyright © " (substring (current-time-string) -4) " " (user-full-name) "\n"
          " * Description: " _ "\n"
          " */\n\n")
         ((c++-mode . "CPP program") nil
-         "/*\n"
-         " *================================================================================\n\n"
-         " * Filename      : " (file-name-nondirectory buffer-file-name) "\n"
-         " * Description   : " _ "\n"
-         " * Version       : 1.0\n"
-         " * Created       : " (format-time-string "%a %b %d %H:%M:%S %Z %Y") "\n"
-         " * Revision      : none\n"
-         " * Compiler      : gcc\n"
-         " * Author        : " (progn user-full-name) " <" (progn user-mail-address) ">\n"
-         " * Organization  : "
-         " * Copyright (C) " (substring (current-time-string) -4) " " (user-full-name) "\n"
-         " *================================================================================\n"
-         " */\n\n")
+         "/**\n"
+         "  * Copyright © " (substring (current-time-string) -4) " " (user-full-name) "\n"
+         "  *\n"
+         "  * Filename      " (file-name-nondirectory buffer-file-name) "\n"
+         "  * Description   "_"\n"
+         "  * Version       1.0\n"
+         "  * Created       " (format-time-string "%a %b %d %H:%M:%S %Z %Y") "\n"
+         "  * Revision      none\n"
+         "  * Compiler      gcc\n"
+         ;;"  * Author        " (progn user-full-name) " <" (progn user-mail-address) ">\n"
+         "  * Author        " (progn user-full-name)"\n"
+         "  * Organization  "_"\n"
+         "  */\n\n")
         ((sh-mode . "Shell script") nil
          "#!/usr/bin/env bash\n"
          "# -*- mode: sh; -*-\n\n"

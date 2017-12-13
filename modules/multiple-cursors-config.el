@@ -7,15 +7,22 @@
 ;;;              http://www.star.bris.ac.uk/bjm/emacs-tips.html
 ;;;
 ;;; elisp code for customizing the multiple-cursors package for Emacs
-;;;===========================================================================
-(require 'multiple-cursors)
 ;;;
 ;;; Code:
 ;;;
+;;;===========================================================================
+(require 'multiple-cursors)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; multiple cursors for Emacs                                               ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(with-eval-after-load "multiple-cursors-autoloads"
+(after "multiple-cursors-autoloads"
+  (setq mc/list-file (expand-file-name "mc-lists.el" cache-dir))
+
+  (after 'evil
+    (add-hook 'multiple-cursors-mode-enabled-hook #'evil-emacs-state)
+    (add-hook 'multiple-cursors-mode-disabled-hook #'evil-normal-state))
+
   (global-set-key (kbd "C-c m c") 'mc/edit-lines)
   (global-set-key (kbd "C->") 'mc/mark-next-like-this)
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
@@ -34,12 +41,6 @@
   (define-key evil-visual-state-map (kbd "ms") 'ace-mc-add-single-cursor)
   ;; }}
   )
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; edit multiple regions simultaneously in a buffer or a region           ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'iedit)
-(setq iedit-unmatched-lines-invisible-default t)
 
 ;;---------------------------------------------------------------------------
 

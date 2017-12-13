@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "dired+" "dired+.el" (22965 6138 0 0))
+;;;### (autoloads nil "dired+" "dired+.el" (23063 38734 542890 729000))
 ;;; Generated autoloads from dired+.el
 
 (defvar diff-switches "-c" "\

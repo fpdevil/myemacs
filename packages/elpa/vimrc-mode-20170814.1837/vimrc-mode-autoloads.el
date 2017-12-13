@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "vimrc-mode" "vimrc-mode.el" (22965 6689 0
-;;;;;;  0))
+;;;### (autoloads nil "vimrc-mode" "vimrc-mode.el" (23063 38756 770417
+;;;;;;  970000))
 ;;; Generated autoloads from vimrc-mode.el
  (add-to-list 'auto-mode-alist '("\\.vim\\'" . vimrc-mode))
  (add-to-list 'auto-mode-alist '("[._]?g?vimrc\\'" . vimrc-mode))

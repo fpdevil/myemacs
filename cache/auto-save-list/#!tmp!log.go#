@@ -1,0 +1,11 @@
+type Logger struct {
+	out *os.File
+}
+
+func (l Logger) Log(s string) {
+	out := l.out
+	if (out == null) {
+		out = os.Stderr
+	}
+	fmt.
+}

@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "dim" "dim.el" (23016 16973 0 0))
+;;;### (autoloads nil "dim" "dim.el" (23063 38322 487963 116000))
 ;;; Generated autoloads from dim.el
 
 (autoload 'dim-major-name "dim" "\
@@ -33,10 +33,6 @@ Each element of the list should be a list of arguments taken by
 `dim-minor-name' function.
 
 \(fn SPECS)" nil nil)
-
-;;;***
-
-;;;### (autoloads nil nil ("dim-pkg.el") (23003 7464 0 0))
 
 ;;;***
 

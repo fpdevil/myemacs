@@ -61,21 +61,18 @@
 ;;-------------------------------------------------------------------------------
 ;; on the fly source code checking through flymake
 ;;-------------------------------------------------------------------------------
+(require 'erlang-flymake)
 (setq flymake-log-level 3)
-(setq erlang-flymake-location (concat emacs-dir "/flymake/eflymake"))
+(setq erlang-flymake-location (concat user-emacs-directory "/flymake/eflymake"))
 
 (defun flymake-erlang-init ()
-  "Erlang flymake compilation settings."
   (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                      'flymake-create-temp-inplace))
-          (local-file (file-relative-name temp-file
-                        (file-name-directory buffer-file-name)))
-          (list "~/.emacs.d/flymake/eflymake")
-          (escript-exe (concat erlang-root-dir "/bin/escript"))
-          (eflymake-loc (expand-file-name erlang-flymake-location)))
-    (if (not (file-exists-p eflymake-loc))
-      (error "Please set erlang-flymake-location to an actual location")
-      (list escript-exe (list eflymake-loc local-file)))))
+         'flymake-create-temp-inplace))
+   (local-file (file-relative-name temp-file
+    (file-name-directory buffer-file-name))))
+    (list "~/.emacs.d/flymake/eflymake" (list local-file))))
+
+(add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-erlang-init))
 
 ;;-------------------------------------------------------------------------------
 ;; enable flymake only for erlang mode
@@ -83,7 +80,7 @@
 ; {{{ flymake syntax checkers
 (defun flymake-syntaxerl ()
   "Erlang syntax checker for flymake."
-  (flymake-compile-script-path "/opt/erlang/syntaxerl"))
+  (flymake-compile-script-path "/opt/erlang/syntaxerl/syntaxerl"))
 
 (defun flymake-compile-script-path (path)
   "Syntax checker PATH for flymake."
@@ -98,8 +95,8 @@
   "Setup the syntax path for files with erlang extensions."
   (interactive)
   (unless (is-buffer-file-temp)
-    (when (file-exists-p (file-truename "~/bin/syntaxerl"))
-      (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'"     flymake-syntaxerl))
+    (when (file-exists-p (file-truename "/opt/erlang/syntaxerl/syntaxerl"))
+      ;; (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'"     flymake-syntaxerl))
       (add-to-list 'flymake-allowed-file-name-masks '("\\.hrl\\'"     flymake-syntaxerl))
       (add-to-list 'flymake-allowed-file-name-masks '("\\.app\\'"     flymake-syntaxerl))
       (add-to-list 'flymake-allowed-file-name-masks '("\\.app.src\\'" flymake-syntaxerl))
@@ -107,7 +104,7 @@
       (add-to-list 'flymake-allowed-file-name-masks '("\\.rel\\'"     flymake-syntaxerl))
       (add-to-list 'flymake-allowed-file-name-masks '("\\.script\\'"  flymake-syntaxerl))
       (add-to-list 'flymake-allowed-file-name-masks '("\\.escript\\'" flymake-syntaxerl))
-      ;; should be the last.
+      ;; should be the last one.
       (flymake-mode 1))))
 
 ;; add the above function to erlang mode
@@ -237,8 +234,6 @@
         erlang-electric-gt
         ))
 ;}}}
-
-(message "loading the erlang syntex checking...")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

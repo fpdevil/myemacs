@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "helm-clojuredocs" "helm-clojuredocs.el" (22965
-;;;;;;  6123 0 0))
+;;;### (autoloads nil "helm-clojuredocs" "helm-clojuredocs.el" (23063
+;;;;;;  38721 342051 998000))
 ;;; Generated autoloads from helm-clojuredocs.el
 
 (autoload 'helm-clojuredocs "helm-clojuredocs" "\

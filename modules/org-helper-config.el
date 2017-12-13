@@ -6,11 +6,22 @@
 ;;; Description: Some helper functions and utils for org-mode
 ;;
 ;; elisp code for org helpers and utilities
-;;;============================================================================
-
 ;;;
 ;;;Code:
 ;;;
+;;;============================================================================
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; org agenda files
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq org-directory (expand-file-name "org" personal-dir))
+(setq org-agenda-files (list (expand-file-name "home.org" org-directory)
+                             (expand-file-name "python.org" org-directory)
+                             (expand-file-name "todo.org" org-directory)))
+
+(setq org-agenda-include-all-todo t)
+(setq org-agenda-include-diary t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   Display images in org mode enable image mode first                    ;;;
@@ -44,25 +55,23 @@
 
 (define-key org-mode-map (kbd "C-S-a") 'org-archive-subtree)
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; yasnippet compatibility
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-hook 'org-mode-hook
-  (lambda ()
-    (org-set-local 'yas/trigger-key [tab])
-    (define-key yas/keymap [tab] 'yas/next-field-or-maybe-expand)))
-
-(defun yas/org-very-safe-expand ()
-  (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
-
-(add-hook 'org-mode-hook
-  (lambda ()
-    (make-variable-buffer-local 'yas/trigger-key)
-    (setq yas/trigger-key [tab])
-    (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-    (define-key yas/keymap [tab] 'yas/next-field)))
+;;(add-hook 'org-mode-hook
+;;  (lambda ()
+;;    (org-set-local 'yas/trigger-key [tab])
+;;    (define-key yas/keymap [tab] 'yas/next-field-or-maybe-expand)))
+;;
+;;(defun yas/org-very-safe-expand ()
+;;  (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
+;;
+;;(add-hook 'org-mode-hook
+;;  (lambda ()
+;;    (make-variable-buffer-local 'yas/trigger-key)
+;;    (setq yas/trigger-key [tab])
+;;    (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+;;    (define-key yas/keymap [tab] 'yas/next-field)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Drag images and files onto org-mode and insert a link to them           ;;
@@ -169,9 +178,6 @@
      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
      ("\\paragraph{%s}" . "\\paragraph*{%s}")
      ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-;; debug message
-(message "--> Loading the org helpers and utilities....")
 
 ;;-----------------------------------------------------------------------------
 

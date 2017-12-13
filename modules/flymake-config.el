@@ -12,14 +12,25 @@
 ;;; Code:
 ;;;===========================================================================
 (require 'flymake)
-(require 'flymake-easy)                  ; helpers for easily building Emacs flymake checkers
-;; (require 'flymake-cursor)             ; show flymake errors in mini buffer
-(eval-after-load 'flymake '(require 'flymake-cursor))
+(after 'flymake '(require 'flymake-cursor))
 
-;; show errors as underlined
+;; show errors and warnings as colored underlined text
 (custom-set-faces
- '(flymake-errline ((((class color)) (:underline "Red"))))
- '(flymake-warnline ((((class color)) (:underline "Orange")))))
+ '(flymake-errline ((((class color)) (:style wave :underline "Red"))))
+ '(flymake-warnline ((((class color)) (:style wave :underline "Yellow")))))
+
+;; show error and warning messages in mini buffer
+ (defun my-flymake-show-help ()
+   (when (get-char-property (point) 'flymake-overlay)
+     (let ((help (get-char-property (point) 'help-echo)))
+       (if help (message "%s" help)))))
+
+ (add-hook 'post-command-hook 'my-flymake-show-help)
+
+;; disable flymake to html file.
+(delete '("\\.html?\\'" flymake-xml-init) flymake-allowed-file-name-masks)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'flymake-config)
 

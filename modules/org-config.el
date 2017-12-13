@@ -7,8 +7,16 @@
 ;;;              configuration file for org bullets mode
 ;;;              https://github.com/sabof/org-bullets
 ;;;              follow: http://doc.norang.ca/org-mode.html
-;;
-;; elisp code for org mode configuration support and handling
+;;;
+;;; shell command execution example (C-c C-c) also include in export
+;;; #+begin_src sh :results output :exports both
+;;;   df -Ph
+;;; #+end_src
+;;;
+;;; elisp code for org mode configuration support and handling
+;;;
+;;; Code:
+;;;
 ;;;============================================================================
 (require 'org)
 (require 'org-install)
@@ -18,10 +26,6 @@
 (require 'ox-latex)
 (require 'ox-html)
 (require 'ox-reveal)
-
-;;;
-;;; Code:
-;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  turn on visual-line-mode for Org-mode only                             ;;;
@@ -67,21 +71,19 @@
 ;;  select, do [M-x eval-region]. The *s will be replaced with utf-8 bullets ;;
 ;;  next time you open an org file                                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq org-bullets-face-name
-      (quote org-bullet-face))
-(setq org-bullets-bullet-list
-        '("◉" "◎" "⚫" "○" "►" "◇"))
+;;(setq org-bullets-bullet-list '("◉" "◎" "⚫" "○" "►" "◇"))
 (add-hook 'org-mode-hook
           (lambda ()
             (org-bullets-mode 1)))
+
+
 (setq org-todo-keywords
       '((sequence "☛ TODO(t)" "₪ NEXT(n)" "|" "✔ DONE(d)")
         (sequence "⚑ WAITING(w@/!)" "⟁ HOLD(h@/!)" "|")
         (sequence "|" "✘ CANCELED(c@/!)" "|" "§ POSTPONED(p@/!)" "PHONE" "MEETING")))
 
 ;; change the elipsis face
-;; (setq org-ellipsis "⤵")
-(setq org-ellipsis "⚡⚡⚡")
+;; (setq org-ellipsis "⚡⚡⚡")
 
 ;; fast TODO selection
 (setq org-use-fast-todo-selection t)
@@ -90,17 +92,16 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq org-todo-keyword-faces
-      '(("IDEA" . (:foreground "GoldenRod" :weight bold))
-        ("NEXT" . (:foreground "IndianRed1" :weight bold))
-        ("DONE" . (:foreground "forest green" :weight bold))
-        ("STARTED" . (:foreground "OrangeRed" :weight bold))
-        ("WAITING" . (:foreground "IndianRed1" :weight bold))
-        ("HOLD" . (:foreground "magenta" :weight bold))
+      '(("IDEA"      . (:foreground "GoldenRod" :weight bold))
+        ("NEXT"      . (:foreground "IndianRed1" :weight bold))
+        ("DONE"      . (:foreground "forest green" :weight bold))
+        ("STARTED"   . (:foreground "OrangeRed" :weight bold))
+        ("WAITING"   . (:foreground "IndianRed1" :weight bold))
+        ("HOLD"      . (:foreground "magenta" :weight bold))
         ("CANCELLED" . (:foreground "LimeGreen" :weight bold))
         ("POSTPONED" . (:foreground "LimeGreen" :weight bold))
-        ("MEETING" . (:foreground "forest green" :weight bold))
-        ("PHONE" . (:foreground "forest green" :weight bold))
-        ))
+        ("MEETING"   . (:foreground "forest green" :weight bold))
+        ("PHONE"     . (:foreground "forest green" :weight bold))))
 
 ;; State Triggers for TODO
 ;; The triggers are governed by the following rules
@@ -122,34 +123,34 @@
 
 (setq org-tag-persistent-alist
       '((:startgroup . nil)
-        ("HOME" . ?h)
-        ("RESEARCH" . ?r)
-        ("TEACHING" . ?t)
-        (:endgroup . nil)
+        ("HOME"      . ?h)
+        ("RESEARCH"  . ?r)
+        ("TEACHING"  . ?t)
+        (:endgroup   . nil)
         (:startgroup . nil)
-        ("OS" . ?o)
-        ("DEV" . ?d)
-        ("WWW" . ?w)
-        (:endgroup . nil)
-        ("URGENT" . ?u)
-        ("KEY" . ?k)
-        ("HARD" . ?a)
-        ("BONUS" . ?b)
-        ("noexport" . ?x)
+        ("OS"        . ?o)
+        ("DEV"       . ?d)
+        ("WWW"       . ?w)
+        (:endgroup   . nil)
+        ("URGENT"    . ?u)
+        ("KEY"       . ?k)
+        ("HARD"      . ?a)
+        ("BONUS"     . ?b)
+        ("noexport"  . ?x)
         ))
 
 (setq org-tag-faces
       '(
-        ("HOME" . (:foreground "GoldenRod" :weight bold))
+        ("HOME"     . (:foreground "GoldenRod" :weight bold))
         ("RESEARCH" . (:foreground "GoldenRod" :weight bold))
         ("TEACHING" . (:foreground "GoldenRod" :weight bold))
-        ("OS" . (:foreground "IndianRed1" :weight bold))
-        ("DEV" . (:foreground "IndianRed1" :weight bold))
-        ("WWW" . (:foreground "IndianRed1" :weight bold))
-        ("URGENT" . (:foreground "Red" :weight bold))
-        ("KEY" . (:foreground "Red" :weight bold))
-        ("HARD" . (:foreground "Red" :weight bold))
-        ("BONUS" . (:foreground "GoldenRod" :weight bold))
+        ("OS"       . (:foreground "IndianRed1" :weight bold))
+        ("DEV"      . (:foreground "IndianRed1" :weight bold))
+        ("WWW"      . (:foreground "IndianRed1" :weight bold))
+        ("URGENT"   . (:foreground "Red" :weight bold))
+        ("KEY"      . (:foreground "Red" :weight bold))
+        ("HARD"     . (:foreground "Red" :weight bold))
+        ("BONUS"    . (:foreground "GoldenRod" :weight bold))
         ("noexport" . (:foreground "Red" :weight bold))
         ))
 
@@ -299,9 +300,6 @@
               nil))))))
 
 (add-hook 'org-mode-hook #'prettier-org-code-blocks)
-
-;; debug statement
-(message "--> Loading the org-config....")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

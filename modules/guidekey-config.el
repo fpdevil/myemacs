@@ -38,6 +38,8 @@
 
 ;; guide-key tip
 ;; (setq guide-key-tip/enabled t)
+;;; Enable tooltips: bubbles with help text
+(gud-tooltip-mode t)
 
 (provide 'guidekey-config)
 ;;; guidekey-config.el ends here

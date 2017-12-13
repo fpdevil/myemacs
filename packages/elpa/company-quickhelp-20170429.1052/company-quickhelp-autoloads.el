@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "company-quickhelp" "company-quickhelp.el"
-;;;;;;  (22965 5861 0 0))
+;;;;;;  (23086 33632 234047 232000))
 ;;; Generated autoloads from company-quickhelp.el
 
 (autoload 'company-quickhelp-local-mode "company-quickhelp" "\

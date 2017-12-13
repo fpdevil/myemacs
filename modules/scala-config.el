@@ -8,12 +8,13 @@
 ;;;              ENhanced Scala Interaction Mode for Emacs
 ;;;
 ;;; elisp code for customizing the scala development settings
-;;;===========================================================================
-(require 'ensime)               ; ensime loads scala-mode2 internally
-(require 'sbt-mode)             ; interact with scala and sbt projects
 ;;;
 ;;; Code:
 ;;;
+;;;===========================================================================
+(require 'ensime)               ; ensime loads scala-mode2 internally
+(require 'sbt-mode)             ; interact with scala and sbt projects
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ENhanced Scala Interaction Mode for Emacs (for scala development)        ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,0 +1,29 @@
+* Docker Enterprise Edition setup
+** Get the Docker Repository URL for Enterprise
+In order to install the Docker EE version, it's recommended to setup a Docker repository from which the Docker EE can be updated and installed.
+- Go to https://store.docker.com/my-content.
+- Each subscription or trial you have access to is listed. Click the Setup button for Docker Enterprise Edition for Linux.
+- Copy the URL from the field labeled Copy and paste this URL to download your Edition.
+- Export the Repository URL as a variable
+  #+begin_src sh
+  $ export DOCKERURL='<DOCKER-EE-URL>'
+  #+end_src
+- Store your Docker EE repository URL in a yum variable in =/etc/yum/vars/=. This command relies on the variable you stored in the previous step.
+  #+begin_src sh
+  $ sudo -E sh -c 'echo "$DOCKERURL/rhel" > /etc/yum/vars/dockerurl'
+  #+end_src
+- Store your OS version string in =/etc/yum/vars/dockerosversion=.
+  #+BEGIN_SRC sh
+  $ sudo sh -c 'echo "7" > /etc/yum/vars/dockerosversion'
+  #+END_SRC
+- Install the required packages with yum as below
+  #+BEGIN_SRC sh
+  $ sudo yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
+  #+END_SRC
+- Enable the /extras/ RHEL repository. This ensures access to the =container-selinux= package which is required by docker-ee
+  #+BEGIN_SRC sh
+  $ sudo yum-config-manager --enable rhel-7-server-extras-rpms
+  $ sudo yum -y install docker-ee
+  #+END_SRC

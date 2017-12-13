@@ -8,20 +8,16 @@
 ;;;              configuration file for neotree custom settings.
 ;;;
 ;;; elisp code for customizing the neotree settings
+;;;
+;;; Code:
+;;;
 ;;;===========================================================================
 (require 'neotree)
 (require 'all-the-icons) ; collect various Icon Fonts and propertize them within Emacs
 
-;;;
-;;; Code:
-;;;
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; a tree plugin like NerdTree for Vim (themes and modes)                   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (setq neo-theme (if window-system 'icons 'arrow))
-;; (setq 'neo-smart-open t)
-;; (setq neo-theme 'ascii)
 (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
 (custom-set-faces
  '(neo-banner-face ((t . (:inherit shadow))) t)

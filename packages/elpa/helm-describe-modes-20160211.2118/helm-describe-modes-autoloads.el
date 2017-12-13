@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "helm-describe-modes" "helm-describe-modes.el"
-;;;;;;  (22965 6038 0 0))
+;;;;;;  (23063 38608 599598 190000))
 ;;; Generated autoloads from helm-describe-modes.el
 
 (autoload 'helm-describe-modes "helm-describe-modes" "\

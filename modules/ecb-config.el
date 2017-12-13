@@ -6,19 +6,21 @@
 ;;; Description: Emacs Code Browser
 ;;;
 ;;; elisp code for customizing the ECB
-;;===========================================================================
-(require 'ecb)
 ;;;
 ;;; Code:
 ;;;
+;;===========================================================================
+(require 'ecb)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ecb (emacs code browser)                                                 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq ecb-auto-activate nil)
-(setq ecb-layout-name "left13")
-(setq ecb-new-ecb-frame nil)
-(setq ecb-tip-of-the-day nil)
-(setq ecb-windows-width 13)
+(after 'ecb
+  (setq ecb-auto-activate nil)
+  (setq ecb-layout-name "left13")
+  (setq ecb-new-ecb-frame nil)
+  (setq ecb-tip-of-the-day nil)
+  (setq ecb-windows-width 13))
 
 (provide 'ecb-config)
 

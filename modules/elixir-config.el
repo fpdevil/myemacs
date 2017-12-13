@@ -7,15 +7,16 @@
 ;;; Description: A major mode elixir language support in Emacs
 ;;;
 ;;; elisp code for elixir language support and handling
+;;;
+;;; Code:
+;;;
 ;;===========================================================================
 (require 'elixir-mode)         ;; this is installed as a alchemist dependency
 (require 'alchemist)           ;; alchemist for elixir major mode
 (require 'flycheck-elixir)     ;; flycheck checker for Elixir files
 (require 'flycheck-mix)
 (require 'ac-alchemist)        ;; auto-complete source of alchemist
-;;;
-;;; Code:
-;;;
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; using elixir-mode and alchemist                                         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

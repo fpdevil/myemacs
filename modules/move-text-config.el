@@ -156,6 +156,8 @@ them when there's no region."
 
 (move-text-set-bindings)
 
+(message "move-text-config.el")
+
 (provide 'move-text-config)
 
 ;; Local Variables:

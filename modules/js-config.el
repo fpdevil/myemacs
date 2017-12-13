@@ -29,24 +29,24 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Change some defaults: customize them to override                         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defconst preferred-javascript-indent-level 2)
-(setq-default js2-basic-offset 2
-              js2-bounce-indent-p nil)
+(defconst preferred-javascript-indent-level 4)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; for js-mode indentation levels                                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq-default js-indent-level preferred-javascript-indent-level)
+(setq-default js2-basic-offset preferred-javascript-indent-level)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; file association and modes                                               ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-to-list 'auto-mode-alist '("\\.js\\'"    . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.js$"      . js2-mode))
-(add-to-list 'interpreter-mode-alist '("node" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'"       . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.js$"         . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'"      . js2-mode))    ;; for jsx
 (add-to-list 'auto-mode-alist '("\\.eslintrc.*$" . json-mode))
-(add-to-list 'auto-mode-alist '("\\.babelrc$" . json-mode))
-;(add-to-list 'auto-mode-alist '("\\.es6\\'"   . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.babelrc$"    . json-mode))
+
+(add-to-list 'interpreter-mode-alist '("node"    . js2-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

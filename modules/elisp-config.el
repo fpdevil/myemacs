@@ -20,30 +20,38 @@
 
 (add-hook 'emacs-lisp-mode-hook 'global-prettify-symbols-mode)
 (add-hook 'emacs-lisp-mode-hook 'imenu-elisp)
-;; activate `eldoc' for certain modes
-;; (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
-(add-hook 'lisp-interaction-mode-hook #'eldoc-mode)
 
 
+;;----------------------------------------------------------------------------
+;; display context sensitive help with eldoc for elisp-mode
+;;----------------------------------------------------------------------------
+(require-package 'elisp-slime-nav)
 (defun imenu-elisp ()
   "Handle sections of elisp under imenu."
   (setq imenu-prev-index-position-function nil)
   (add-to-list 'imenu-generic-expression '("Sections" "^;;; \\(.+\\)$" 1) t))
 
-(add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+(defun my-lisp-hook ()
+  (progn
+    (elisp-slime-nav-mode)
+    (eldoc-mode)))
+
+(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
+(add-hook 'lisp-interaction-mode-hook #'eldoc-mode)
+(add-hook 'ielm-mode-hook #'my-lisp-hook)
 
 (setq flycheck-disabled-checkers '(emacs-lisp-checkdoc))
 
 ;;-------------------------------------------------------------------------------
 ;;; company elisp backend for auto completion support
 ;;-------------------------------------------------------------------------------
-(add-hook 'emacs-lisp-mode-hook
-  (lambda ()
-    (set (make-local-variable 'company-backends)
-      (list
-        (cons 'company-elisp
-          (car company-backends))))))
+; (add-hook 'emacs-lisp-mode-hook
+;   (lambda ()
+;     (set (make-local-variable 'company-backends)
+;       (list
+;         (cons 'company-elisp
+;           (car company-backends))))))
+(add-hook 'emacs-lisp-mode-hook '(lambda () (set (make-local-variable 'company-backends) '(company-elisp))))
 
 ;;-------------------------------------------------------------------------------
 ;;; @see http://blog.urth.org/2011/06/02/flymake-versus-the-catalyst-restarter/

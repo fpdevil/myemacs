@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "flycheck-rebar3" "flycheck-rebar3.el" (22965
-;;;;;;  5923 0 0))
+;;;### (autoloads nil "flycheck-rebar3" "flycheck-rebar3.el" (23063
+;;;;;;  38460 326135 745000))
 ;;; Generated autoloads from flycheck-rebar3.el
 
 (autoload 'flycheck-rebar3-setup "flycheck-rebar3" "\

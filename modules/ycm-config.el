@@ -27,7 +27,7 @@
     (progn
       (message "Cloning and building YouCompleteMe ...")
       (setenv "EXTRA_CMAKE_ARGS"
-              "-DEXTERNAL_LIBCLANG_PATH=/opt/software/clang+llvm-3.9.0-x86_64-apple-darwin/lib/libclang.dylib")
+              "-DEXTERNAL_LIBCLANG_PATH=/opt/software/clang+llvm-5.0.0-x86_64-apple-darwin/lib/libclang.dylib")
       (shell-command (concat "git clone --recursive "
                        "https://github.com/Valloric/ycmd.git "
                        ycmd-dir
@@ -47,8 +47,8 @@
 (set-variable 'ycmd-global-modes 'nil)
 (set-variable 'ycmd-parse-conditions
   '(save new-line mode-enabled idle-change buffer-focus))
-(set-variable 'ycmd-global-config "~/aquamacs.d/.ycm_extra_conf.py")
-(set-variable 'ycmd-python-binary-path "/usr/local/bin/python3")
+(set-variable 'ycmd-global-config "~/.emacs.d/.ycm_extra_conf.py")
+(set-variable 'ycmd-python-binary-path (executable-find "python3"))
 (setq ycmd-extra-conf-handler 'load)
 (setq ycmd-force-semantic-completion t)
 (setq ycmd-min-num-chars-for-completion 1)

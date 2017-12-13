@@ -5,19 +5,20 @@
 ;;; Filename   : rbow-identifiers-config.el
 ;;; Description: rainbow identifiers is a minor mode for Emacs which displays the
 ;;;              variables in multiple colors.
-;;;===========================================================================
-(require 'rainbow-identifiers)    ;; Highlight identifiers as per their names
 ;;;
 ;;; Code:
 ;;;
+;;;===========================================================================
+(require 'rainbow-identifiers)    ;; Highlight identifiers as per their names
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; fancy (but useful) stuff  for rainbow identifiers                        ;;
 ;; customization's - use a wider set of colors                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq rainbow-identifiers-choose-face-function
       'rainbow-identifiers-cie-l*a*b*-choose-face)
-(setq rainbow-identifiers-cie-l*a*b*-lightness 45)
-(setq rainbow-identifiers-cie-l*a*b*-saturation 45)
+(setq rainbow-identifiers-cie-l*a*b*-lightness 100)
+(setq rainbow-identifiers-cie-l*a*b*-saturation 40)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; rainbow identifier customization's                                      ;;
@@ -39,9 +40,10 @@
 ;; filter: don't mark identifiers inside comments or strings               ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq rainbow-identifiers-faces-to-override
-      '(font-lock-type-face
+      '(font-lock-keyword-face
         font-lock-variable-name-face
-        font-lock-function-name-face))
+        font-lock-function-name-face
+        highlight-quoted-symbol))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; set the filter                                                          ;;
@@ -49,7 +51,8 @@
 (add-hook 'rainbow-identifiers-filter-functions 'rainbow-identifiers-filter)
 
 ;; add rainbow identifiers for most programming language modes
-(add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
+;; (add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
+(add-hook 'js2-mode-hook 'rainbow-identifiers-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'rbow-identifiers-config)

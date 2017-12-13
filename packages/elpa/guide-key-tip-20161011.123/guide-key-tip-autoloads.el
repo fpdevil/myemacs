@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "guide-key-tip" "guide-key-tip.el" (22965 6101
-;;;;;;  0 0))
+;;;### (autoloads nil "guide-key-tip" "guide-key-tip.el" (23063 38680
+;;;;;;  996544 205000))
 ;;; Generated autoloads from guide-key-tip.el
 
 (autoload 'guide-key-tip/toggle-enable "guide-key-tip" "\

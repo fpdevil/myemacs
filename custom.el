@@ -3,8 +3,15 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-ghc-show-info t)
- '(custom-enabled-themes (quote nil))
+ '(aquamacs-customization-version-id 0 t)
+ '(custom-enabled-themes (quote (material)))
+ '(custom-safe-themes
+   (quote
+    ("a24c5b3c12d147da6cef80938dca1223b7c7f70f2f382b26308eba014dc4833a" "0a3a41085c19d8121ed0ad3eb658a475ccb948a70a83604641ee7d4c3575a4d5" default)))
+ '(flycheck-c/c++-googlelint-executable (concat user-emacs-directory "/private/cpplint.py"))
+ '(flycheck-google-cpplint-filter "-whitespace,+whitespace/braces")
+ '(flycheck-google-cpplint-linelength "120")
+ '(flycheck-google-cpplint-verbose "3")
  '(git-gutter:added-sign "☀")
  '(git-gutter:deleted-sign "☂")
  '(git-gutter:modified-sign "☁")
@@ -20,11 +27,8 @@
  '(haskell-process-use-presentation-mode t)
  '(haskell-stylish-on-save t)
  '(haskell-tags-on-save nil)
- '(hindent-style "chris-done")
+ '(hindent-style "johan-tibell")
  '(inferior-haskell-find-haddock nil)
- '(package-selected-packages
-   (quote
-    (irony-eldoc flycheck-irony company-irony-c-headers company-irony zerodark-theme zenburn-theme yaml-mode xah-math-input x-path-walker wttrin which-key web-mode web-beautify volatile-highlights visual-regexp virtualenvwrapper vimrc-mode use-package twilight-bright-theme tern-auto-complete tango-plus-theme switch-window sunshine sublime-themes sphinx-doc spacemacs-theme spaceline solarized-theme smart-mode-line-powerline-theme shm rainbow-mode rainbow-identifiers rainbow-delimiters quick-peek python-pylint pydoc-info py-yapf py-autopep8 peep-dired paper-theme ox-reveal ox-html5slide org-tree-slide org-plus-contrib org-easy-img-insert org-download org-bullets org-ac ob-http neotree monokai-theme moe-theme modern-cpp-font-lock material-theme markdown-mode manage-minor-mode majapahit-theme latex-pretty-symbols know-your-http-well key-chord json-navigator json-mode jsfmt js3-mode js2-refactor js2-highlight-vars js-doc jedi import-js imenu-list iedit hindent highlight-symbol highlight-numbers hi2 helm-projectile helm-flycheck helm-describe-modes helm-company helm-clojuredocs helm-cider helm-c-yasnippet haskell-snippets guide-key-tip gruvbox-theme graphviz-dot-mode google-c-style golint golden-ratio go-guru go-eldoc go-autocomplete git-gutter fuzzy flyspell-lazy flymake-python-pyflakes flymake-hlint flymake-google-cpplint flymake-cursor flycheck-ycmd flycheck-tip flycheck-rebar3 flycheck-pos-tip flycheck-plantuml flycheck-mix flycheck-haskell flycheck-elixir flycheck-color-mode-line flycheck-clojure flatui-theme fiplr exec-path-from-shell evil-surround evil-smartparens evil-paredit evil-mc evil-leader evil-indent-textobject esup epresent ensime elpy elixir-yasnippets edts ecb dumb-jump dracula-theme discover-my-major dired-rainbow dired-imenu dired-filter dired-details+ dired+ dim darkokai-theme cyberpunk-theme company-ycmd company-web company-try-hard company-tern company-quickhelp company-math company-jedi company-go company-ghci company-ghc company-flx company-distel company-dict company-cabal company-c-headers color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized color-theme coffee-mode clojure-snippets clojure-mode-extra-font-locking clippy clang-format buffer-move beacon auto-complete-nxml auto-complete-distel auto-complete-clang auto-complete-c-headers airline-themes ace-mc ac-slime ac-js2 ac-haskell-process ac-emmet ac-cider ac-alchemist)))
  '(shm-auto-insert-bangs t)
  '(shm-auto-insert-skeletons t)
  '(shm-use-hdevtools t)
@@ -34,10 +38,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(flycheck-error ((((class color)) (:underline "Red"))))
+ '(flycheck-error ((((class color)) (:underline "Orange"))))
  '(flycheck-warning ((((class color)) (:underline "Green"))))
- '(flymake-errline ((((class color)) (:underline "Red"))))
- '(flymake-warnline ((((class color)) (:underline "Orange"))))
+ '(flymake-errline ((((class color)) (:style wave :underline "Red"))))
+ '(flymake-warnline ((((class color)) (:style wave :underline "Yellow"))))
+ '(flyspell-duplicate ((t (:underline (:color "Blue" :style wave)))))
+ '(flyspell-incorrect ((t (:underline (:color "Purple" :style wave)))))
+ '(header-line ((t (:background "#003366"))))
  '(neo-banner-face ((t :inherit shadow)))
  '(neo-button-face ((t :inherit dired-directory)))
  '(neo-dir-link-face ((t :inherit dired-directory)))

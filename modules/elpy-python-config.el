@@ -7,11 +7,9 @@
 ;;; Filename   : elpy-python-config.el
 ;;; Description: Python configuration for Emacs through ELPY
 ;;;              A full featured python ide and language support for Aquamacs
-;;;=============================================================================
-
 ;;;
 ;;; Code:
-;;;
+;;;=============================================================================
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; start elpy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;; Emacs Python Development Environment  ;;;;;;;;;;;;;;;;;;;;
@@ -20,24 +18,24 @@
 ;; has been working more than satisfactorily... but leaving for now           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; python completion and code checking
-(elpy-enable t)
-;; (with-eval-after-load 'python (elpy-enable))
+;; python auto completion and code checking
+;; (elpy-enable t)
+(after 'python (elpy-enable))
 
 (setq elpy-modules '(
                      elpy-module-company
                      elpy-module-eldoc
-                     ;; elpy-module-flymake
                      elpy-module-pyvenv
-                     elpy-module-highlight-indentation ;breaks older emacs
+                     elpy-module-highlight-indentation  ;; might break older emacs
                      elpy-module-sane-defaults
                      elpy-module-yasnippet
+                     ;; elpy-module-flymake
                      ))
 
 ;; use ipython3 if available
 ;; (elpy-use-ipython)
 (if (executable-find "ipython3")
-    (elpy-use-ipython "/usr/local/bin/ipython3"))
+    (elpy-use-ipython (executable-find "ipython3")))
 
 ;; (setq elpy-rpc-backend "rope")
 (setq elpy-rpc-backend "jedi")
@@ -45,8 +43,8 @@
       elpy-rpc-python-path "/usr/local/lib/python3.6/site-packages"
       flycheck-python-flake8-executable (executable-find "flake8")
       python-check-command (executable-find "pyflakes")
-      ;; python-check-command (concat emacs-dir "/flymake/pyflymake.py"))
-      python-environment-directory "~/.emacs.d/.python-environments")
+      ;; python-check-command (concat user-emacs-directory "/flymake/pyflymake.py")
+      python-environment-directory (concat user-emacs-directory "/.python-environments"))
 
 
 ;; Note

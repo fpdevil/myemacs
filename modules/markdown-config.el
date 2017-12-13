@@ -4,14 +4,13 @@
 ;;; Filename   : markdown-config.el
 ;;; description: elisp code for customizing markdown mode for Emacs
 ;;;
-;;;===========================================================================
-(require 'markdown-mode)
-;;;
 ;;; Code:
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; editing files in markdown mode                                         ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;=============================================================================
+(require 'markdown-mode)
+
+;;------------------------------------------------------------------------------
+;;; editing files in markdown mode
+;;------------------------------------------------------------------------------
 (setq auto-mode-alist
     (append
         (list '("\\.text"     . markdown-mode)
@@ -52,10 +51,9 @@
   (setq imenu-create-index-function 'markdown-imenu-index))
 (add-hook 'markdown-mode-hook 'markdown-mode-hook-setup)
 
-
-;;----------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 ;; Export Markdown to a LaTeX project
-;;----------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 (defun markdown-region-to-latex (start end)
   "START END export the markdown region to latex."
   (interactive "r")
@@ -89,7 +87,16 @@
 	       (setq in-list nil))
 	      (t (goto-char skip-to)))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
+;; using pandoc
+;;------------------------------------------------------------------------------
+(eval-after-load 'markdown-mode
+  '(progn
+     ;; `pandoc' is better than obsolete `markdown'
+     (if (executable-find "pandoc")
+         (setq markdown-command "pandoc -f markdown"))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'markdown-config)
 
 ;; Local Variables:

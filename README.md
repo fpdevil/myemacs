@@ -44,6 +44,28 @@ For the packages which are not yet available through melpa or any repository, we
                                  location)))
 ```
 
+
+#### For creating custom per project definitions and settings use a
+`.dir-locals.el` file as defined here.
+
+Open the root directory of your project in Dired with `C-x d`, and
+then type `M-x` *add-dir-local-variable* RET `c++-mode` RET
+`flycheck-gcc-language-standard` RET `c++11`. This will create a
+`.dir-locals.el` file in the root directory of your project. Emacs
+reads this file whenever you visit a file from this directory or any
+subdirectory, and sets variables according to the rules in this
+file. Specifically, Emacs will now set the language standard for
+Flycheck syntax checking to C++ 11 for all C++ files in your
+project. Here is the content of the just created `dir-locals.el` file.
+
+``` emacs-lisp
+;;; Directory Local Variables
+;;; For more information see (info "(emacs) Directory Variables")
+
+((c++-mode
+  (flycheck-gcc-language-standard . c++11)))
+```
+
 #### References
 * [Elisp Programming] - A wonderful overview of elisp!
 * [Functional Programming] - Functional Programming by Example!

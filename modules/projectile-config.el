@@ -9,8 +9,8 @@
 ;;;
 ;;; elisp code for customizing the projectile settings
 ;;;===========================================================================
-(require 'projectile)             ; load package for projectile
-
+(require-package 'projectile)             ; load package for projectile
+(require-package 'helm-projectile)        ; helm ui for projectile
 ;;;
 ;;; Code:
 ;;;
@@ -31,6 +31,9 @@
 (setq projectile-cache-file (expand-file-name "projectile.cache" cache-dir))
 
 (projectile-global-mode t)
+
+(add-to-list 'projectile-globally-ignored-directories "elpa")
+(add-to-list 'projectile-globally-ignored-directories ".cache")
 
 (provide 'projectile-config)
 

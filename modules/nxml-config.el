@@ -36,7 +36,7 @@
              '("<!DOCTYPE html .+DTD XHTML .+>" . nxml-mode) )
 
 (fset 'xml-mode 'nxml-mode)
-;(fset 'html-mode 'nxml-mode)
+;;(fset 'html-mode 'nxml-mode)
 (require 'rng-loc nil t)
 
 ;; pom files should be treated as xml files
@@ -53,6 +53,17 @@
       nxml-default-buffer-file-coding-system 'utf-8)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; indentation setup for xml ref: https://www.emacswiki.org/emacs/CustomizeAquamacs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ (defun sgml-mode-indent-setup ()
+   (setq sgml-basic-offset 4))
+
+ (defun nxml-mode-indent-setup ()
+   (setq nxml-child-indent 4))
+
+(add-hook 'nxml-mode-hook 'nxml-mode-indent-setup)
+(add-hook 'sgml-mode-hook 'sgml-mode-indent-setup)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; company-nxml
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun my-company-nxml-settings ()
@@ -61,7 +72,8 @@
   (add-to-list (make-local-variable 'company-backends)
     'company-nxml))
 
-(add-hook 'nxml-mode-hook 'my-company-nxml-settings)
+(after 'company
+  (add-hook 'nxml-mode-hook 'my-company-nxml-settings))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; hide show
@@ -77,7 +89,7 @@
                nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; xpath display where are we in buffer
+;; xpath display where are we in buffer
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun nxml-where ()
   "Display the hierarchy of XML elements the point is on as a path, from http://www.emacswiki.org/emacs/NxmlMode."
@@ -104,6 +116,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package x-path-walker
   :ensure t
+  :defer t
   :config
   (dolist (hook '(html-mode-hook
                   web-mode-hook

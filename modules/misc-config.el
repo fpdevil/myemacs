@@ -3,28 +3,80 @@
 ;;; Commentary:
 ;;;
 ;;; Filename   : misc-config.el
-;;; Description: Miscellaneous configuration and customization for Emacs
-;;;              elisp code snippets for customizing Emacs
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; Description: Miscellaneous bootstrap ettings to operate over Emacs and other
+;;; modes as needed
 ;;;
 ;;; Code:
-;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;----------------------------------------------------------------------------
-;; display an initial scratch message & prettify symbols                    ;;
-;;----------------------------------------------------------------------------
+;;; -- use this for conditional loding of the features (credit Schcha Chuha)
+;;; == (@ref https://github.com/bling/dotemacs.git)
+(unless (fboundp 'with-eval-after-load)
+  (defmacro with-eval-after-load (file &rest body)
+    (declare (indent 1))
+    `(eval-after-load ,file (lambda () ,@body))))
+
+(defmacro after (feature &rest body)
+  "Executes BODY after FEATURE has been loaded.
+
+FEATURE may be any one of:
+    'evil            => (with-eval-after-load 'evil BODY)
+    \"evil-autoloads\" => (with-eval-after-load \"evil-autolaods\" BODY)
+    [evil cider]     => (with-eval-after-load 'evil
+                          (with-eval-after-load 'cider
+                            BODY))
+"
+  (declare (indent 1))
+  (cond
+   ((vectorp feature)
+    (let ((prog (macroexp-progn body)))
+      (cl-loop for f across feature
+               do
+               (progn
+                 (setq prog (append `(',f) `(,prog)))
+                 (setq prog (append '(with-eval-after-load) prog))))
+      prog))
+   (t
+    `(with-eval-after-load ,feature ,@body))))
+
+;;; -- load lazily or initialize lazily
+(defmacro lazy-init (&rest body)
+  "Initializae the BODY after being idle for a predetermined amount of time."
+  `(run-with-idle-timer
+    0.5
+    nil
+    (lambda () ,@body)))
+
+;; == shortcut with alphabet
+(setq-default switch-window-shortcut-style 'alphabet)
+;; == control cancel switching after timeout
+(setq-default switch-window-timeout nil)
+;; == usage shortcut for window switch
+(global-set-key (kbd "C-x o") 'switch-window)
+
+
+;;; -- suppress gui features
+(setq use-file-dialog nil)
+(setq use-dialog-box nil)
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-echo-area-message t)
+;; == show a marker in the left fringe for lines not in the buffer
+(setq indicate-empty-lines t)
+
+;;; -- display an initial scratch message & prettify symbols
 (setq-default initial-scratch-message
               (concat "ॐ  Emacs With ❤️ " user-login-name "!\n" "☆ సంపత్ కుమార్ ☆" "\n"))
 
-;; symbol prettify
+;;; -- prettify the symbols
 (when (fboundp 'global-prettify-symbols-mode)
-  (global-prettify-symbols-mode +1))
+  (global-prettify-symbols-mode)
+  ;;(add-hook 'js2-mode-hook
+  ;;          (lambda ()
+  ;;            (push '("function" . 955) prettify-symbols-alist)
+  ;;            (push '("return" . 8592) prettify-symbols-alist)))
+  )
 
-
-;;----------------------------------------------------------------------------
-;; bench marking - check time taken to load each component
-;;----------------------------------------------------------------------------
+;;; -- elisp bench marking - check time taken to load each component
 (defun sanityinc/time-subtract-millis (b a)
   "B - A difference multiplied with 1000."
   (* 1000.0 (float-time (time-subtract b a))))
@@ -47,23 +99,29 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 
 (defun sanityinc/show-init-time ()
   "Show Emacs initialization time in milli seconds."
-  (message "*** init completed in %.2fms ***"
+  (message "[INITIALIZATION] completed in %.2fms"
            (sanityinc/time-subtract-millis after-init-time before-init-time)))
+;; (add-hook 'after-init-hook 'sanityinc/show-init-time)
 
-(add-hook 'after-init-hook 'sanityinc/show-init-time)
+;;; -- activate benchmarking...
+(benchmark-init/activate)
 
-;;----------------------------------------------------------------------------
-;; TAB settings - handle whitespaces
-;;----------------------------------------------------------------------------
+;;;-- [TAB] key settings - handle whitespaces
+(require 'whitespace)
 (setq whitespace-style
       '(face tabs empty trailing))
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
 (setq indent-line-function 'insert-tab)
+(set-face-attribute 'whitespace-line nil
+                    :foreground "#880"
+                    :background nil
+                    :weight 'bold)
+(set-face-attribute 'whitespace-trailing nil
+                    :background "#FDD")
 
-;;----------------------------------------------------------------------------
-;; check the buffer file name
-;;----------------------------------------------------------------------------
+
+;;; -- check the buffer file name
 (defvar load-user-customized-major-mode-hook t)
 (defvar cached-normal-file-full-path nil)
 
@@ -92,9 +150,7 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
       (setq rlt nil)))
     rlt))
 
-;;----------------------------------------------------------------------------
-;; get list of minor modes
-;;----------------------------------------------------------------------------
+;;; -- utility to get list of minor modes
 (defun which-active-modes ()
   "Give a message of which minor modes are enabled in the current buffer."
   (interactive)
@@ -107,9 +163,7 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
     (message "Active modes are %s" active-modes)))
 
 
-;;----------------------------------------------------------------------------
-;; add or disable a specific backend in company-backends
-;;----------------------------------------------------------------------------
+;;; -- add or disable a specific backend in company-backends
 (defun aqua-company-backend-disable (backend mymode)
   "Disable a specific BACKEND in MYMODE in company for a mode."
   (interactive)
@@ -119,7 +173,6 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
         (make-local-variable 'company-backends)
         ;; disable or remove a backend
         (setq company-backends (delete backend company-backends)))))
-
 
 (defun aqua-company-backend-add (backend mymode)
   "Add a specific BACKEND in MYMODE in company for a mode."
@@ -139,9 +192,7 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
       (setq company-idle-delay cdelay
             company-minimum-prefix-length clength)))
 
-;;----------------------------------------------------------------------------
-;; indentation function
-;;----------------------------------------------------------------------------
+;;; -- indentation function
 (defun hindent-reformat-buffer-on-save ()
   "Indent an entire buffer with the default indentation scheme."
   (interactive)
@@ -150,64 +201,22 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
     (indent-region (point-min) (point-max) nil)
     (untabify (point-min) (point-max))))
 
+;;----------------------------------------------------------------------------
+;; do not annoy with those messages about active processes while exitting
+;;----------------------------------------------------------------------------
+(add-hook 'comint-exec-hook
+          (lambda () (set-process-query-on-exit-flag (get-buffer-process (current-buffer)) nil)))
 
 ;;----------------------------------------------------------------------------
-;; display context sensitive help with eldoc for elisp-mode
+;;; -- auto save the undo-tree history
 ;;----------------------------------------------------------------------------
-(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-
-;;----------------------------------------------------------------------------
-;; ibuffer More of the mixed up stuff
-;;----------------------------------------------------------------------------
-(require 'ibuffer)
-
-(setq ibuffer-saved-filter-groups
-      (quote (("default"
-               ("dired" (mode . dired-mode))
-               ("java" (mode . java-mode))
-               ("erlang" (mode . erlang-mode))
-               ("haskell" (mode . haskell-mode))
-               ("javascript" (mode . js-mode))
-               ("python" (mode . python-mode))
-               ("org" (mode . org-mode))
-               ("elisp" (mode . elisp-mode))
-               ("xml" (mode . nxml-mode))))))
-
-(setq ibuffer-show-empty-filter-groups nil)
-
-(add-hook 'ibuffer-mode-hook
-          (lambda ()
-            (ibuffer-switch-to-saved-filter-groups "default")
-            (ibuffer-filter-by-filename "."))) ;; to show only dired and files buffers
-
-;;----------------------------------------------------------------------------
-;; imenu-list settings (invoke With "-bi")
-;;----------------------------------------------------------------------------
-(require 'golden-ratio)
-(golden-ratio-mode 1)
-
-(require 'imenu-list)
-(add-to-list 'golden-ratio-exclude-buffer-regexp "^\\*Ilist\\*")
-(setq imenu-list-focus-after-activation t
-      imenu-list-auto-resize t)
-
-
-;;----------------------------------------------------------------------------
-;; show the name of the current function definition in the modeline
-;;----------------------------------------------------------------------------
-(require 'which-func)
-(which-function-mode 1)
-;; Show the current function name in the header line
-(setq-default header-line-format
-              '((which-func-mode ("" which-func-format " "))))
-(setq mode-line-misc-info
-;;       ;; We remove Which Function Mode from the mode line,
-;;       ;; because it's mostly invisible here anyway.
-      (assq-delete-all 'which-func-mode mode-line-misc-info))
-
-;; remove the ??? when which-func cannot determine name
-(setq which-func-unknown "n/a")
+(require 'undo-tree)
+(global-undo-tree-mode)                         ;; enable undo-tree globally
+(setq undo-tree-history-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq undo-tree-auto-save-history t)
+(setq undo-tree-visualizer-timestamps t)
+(setq undo-tree-visualizer-diff t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

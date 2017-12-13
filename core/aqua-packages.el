@@ -8,23 +8,25 @@
 ;;               for Emacs should be defined as a part of the section defined
 ;;               under required-packages. Any packages not available as ready
 ;;               packages should be in the vendor directory.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;;
 ;;; Code:
-;;;
+;;; Updated    : 17 Nov 2017
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- required default standard libraries
+(eval-when-compile (require 'cl))
 
-;;============================================================================;;
-;;;; defvar is the correct way to declare global variables                  ;;;;
-;;;; setq is supposed to be use just to set variables and not create them.  ;;;;
-;;============================================================================;;
+(message "aqua-package.el %s"  (or load-file-name (buffer-file-name)))
+(message "directory %s" (file-name-directory (or load-file-name (buffer-file-name))))
+
+;;; -- defvar is the correct way to declare global variables
+;;; -- setq is supposed to be use just to set variables and not create them.
 (defvar required-packages
-  '(;;;;;; appearance and visual customization's ;;;;;;
+  '(
+    ;;;;;; appearance and visual customization's ;;;;;;
     powerline                                   ;; powerline smart mode
     smart-mode-line                             ;; powerful and beautiful mode-line
-    smart-mode-line-powerline-theme             ;; sml powerline theme
-    spaceline                                   ;; powerline theme from spacemacs
-    ;delight                                    ;; customize mode names on mode-line
+    smart-mode-line-powerline-theme             ;; powerline theme for sml
+    spaceline                                   ;; powerline theme in spacemacs format
     dim                                         ;; mode-line names of major/minor modes
     rainbow-delimiters                          ;; colorful modes (delimiters and color codes)
     rainbow-mode                                ;; colored identifiers
@@ -32,6 +34,7 @@
     airline-themes                              ;; fancy vim airline themes
     ;;;;;;  color themes for emacs              ;;;;;;
     color-theme                                 ;; install color themes
+    color-theme-molokai                         ;; molokai theme
     sublime-themes                              ;; sublime themes
     darkokai-theme                              ;; dark theme based on monokai
     dracula-theme                               ;; dracula dark theme
@@ -43,6 +46,7 @@
     color-theme-sanityinc-solarized             ;; solarized themes
     solarized-theme                             ;; bozhidaar solarized for emacs
     cyberpunk-theme                             ;; cyberpunk theme for emacs
+    cherry-blossom-theme                        ;; soothing dark theme
     majapahit-theme                             ;; color theme with a dark and light versions
     zerodark-theme                              ;; dark medium-contrast theme
     flatui-theme                                ;; color theme based on flat colors
@@ -51,9 +55,10 @@
     paper-theme                                 ;; minimal color theme
     twilight-bright-theme                       ;; light theme based on twilight
     tango-plus-theme                            ;; light theme based on tango
+    doom-themes                                 ;; pack of modern color-themes
     ;;;;;; project setup and configuration      ;;;;;;
-    projectile                                  ;; Project Interaction Library for Emacs
-    helm-projectile                             ;; Helm UI for Projectile
+    ;; projectile                               ;; Project Interaction Library for Emacs
+    ;; helm-projectile                          ;; Helm UI for Projectile
     ;;;;;; company auto completions frameworks  ;;;;;;
     company                                     ;; cmopany autocompletion modes
     company-try-hard                            ;; get all completions from company backends
@@ -90,7 +95,6 @@
     smartparens                                 ;; parenthesis management
     paredit                                     ;; minor mode for editing parentheses
     ;;;;;; documentation and help               ;;;;;;
-    dumb-jump                                   ;; jump to definition for multiple languages
     markdown-mode                               ;; markdown language support
     ; auctex                                    ;; AUCTEX and LATEX
     graphviz-dot-mode                           ;; dot language graphviz graphs (for erlang .dotfiles)
@@ -109,9 +113,7 @@
     flycheck-plantuml                           ;; flycheck for plantuml automatic syntax errors
     flycheck-rebar3                             ;; flycheck integration for rebar3 projects
     flyspell-lazy                               ;; improve Emacs flyspell responsiveness using idle timers
-    popup                                       ;; show popup for flycheck
     ;;;;;; flymake family                       ;;;;;;
-    flymake-easy                                ;; flymake on the fly syntax checker
     flymake-python-pyflakes                     ;; flymake handler for syntax-checking Python source code using pyflakes or flake8
     flymake-hlint                               ;; linting for haskell language
     flymake-cursor                              ;; show flymake errors in mini buffer
@@ -132,6 +134,7 @@
     org-easy-img-insert                         ;; insert images from web
     ob-http                                     ;; make http request within org-mode babel
     epresent                                    ;; simple presentation mode for Emacs Org-mode
+    htmlize                                     ;; convert buffer text and decorations to HTML
     ;;;;;; git integration                      ;;;;;;
     ;magit                                      ;; git status
     git-gutter                                  ;; Emacs port of GitGutter
@@ -146,11 +149,13 @@
     py-autopep8                                 ;; integrate autopep8 into Emacs
     sphinx-doc                                  ;; sphinx style doc strings for python code
     pydoc-info                                  ;; better python support for info lookup
+    ein                                         ;; Emacs iPython Notebook
     ;;;;;; haskell programming modes            ;;;;;;
     haskell-mode                                ;; haskell language support
     company-ghc                                 ;; haskell company auto-completion
     company-ghci                                ;; a company backend for haskell
     company-cabal                               ;; cabal company support
+    ghci-completion                             ;; completion for GHCi commands in inferior-haskell buffers
     shm                                         ;; structured haskell mode
     haskell-snippets                            ;; haskell language snippets
     hindent                                     ;; haskell code indenting
@@ -180,6 +185,9 @@
     irony                                       ;; a c/c++ minor mode for Emacs powered by libclang
     irony-eldoc                                 ;; eldoc support in irony-mode
     clang-format                                ;; code formatting
+    c-eldoc                                     ;; description of the arguments to C functions
+    function-args                               ;; C++ completion for GNU Emacs
+    cmake-project                               ;; Integrates CMake build process with Emacs
     ;;;;;; yasnippets package                   ;;;;;;
     yasnippet                                   ;; Yet another snippet extension
     helm-c-yasnippet                            ;; Helm source for yasnippet
@@ -235,6 +243,7 @@
     json-navigator                              ;; View and navigate JSON structures
     ;;;;;; window, text and file utilities      ;;;;;;
     popwin                                      ;; popup window manager
+    popup                                       ;; show popup for flycheck
     switch-window                               ;; window switching, the visual way
     clippy                                      ;; show tooltip with function documentation at point
     quick-peek                                  ;; inline window doc popup
@@ -249,6 +258,7 @@
     sunshine                                    ;; weather and forecast information
     manage-minor-mode                           ;; manage minor modes on a dedicated buffer
     know-your-http-well                         ;; Look up the meaning of HTTP metadata
+    benchmark-init                              ;; Benchmark your Emacs initialization
     ;;;;;; vim emulation                        ;;;;;;
     evil                                        ;; Extensible Vi layer for Emacs.
     undo-tree                                   ;; Treat undo history as a tree (evil dependency)
@@ -259,6 +269,15 @@
     evil-smartparens                            ;; evil integration for smartparens
     evil-paredit                                ;; evil extension for paredit
     evil-indent-textobject
+    evil-commentary
+    evil-exchange
+    evil-anzu
+    evil-ediff
+    evil-magit
+    evil-avy
+    evil-matchit
+    evil-visualstar
+    evil-numbers
     ;;;;;; clojure programming modes            ;;;;;;
     clojure-mode                                ;; Emacs support for clojure
     clojure-mode-extra-font-locking             ;; Extra font-locking for Clojure mode
@@ -271,8 +290,6 @@
     flycheck-ycmd                               ;; flycheck integration for ycmd
     ;;;;;; indentation and text editing         ;;;;;;
     ;aggressive-indent                          ;; minor mode for code indentation
-    ;;;;;; package installers                   ;;;;;;
-    use-package                                 ;; use-package declaration
   )
   "A list of packages that will be installed if not present when firing Emacs.")
 
@@ -283,60 +300,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar custom-load-paths
   '(
-    "xslide"                ;; xml and xslt syntax, customization's
-    "xslt-process/lisp"     ;; xslt processor ide
-    "javascript/node-ac"    ;; node-js auto-complete package
-    "dircolors"             ;; colored buffer
-    "elisp/elisp-format"    ;; format elisp code
-    "psgml"                 ;; markup languages...
+    "xslide"                    ;; xml and xslt syntax, customization's
+    "xslt-process/lisp"         ;; xslt processor ide
+    "javascript/node-ac"        ;; node-js auto-complete package
+    "dircolors"                 ;; colored buffer
+    "elisp/elisp-format"        ;; format elisp code
+    "psgml"                     ;; markup languages...
+    "cpp-addon"                 ;; addon to cc-mode
+    "flycheck-google-cpplint"   ;; google c++ style checker for flycheck
     )
   "Custom load paths that do not follow the normal vendor/elisp/module-name.el format.")
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Standard file extensions for which appropriate packages will be automatically
-;; installed if not already present
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defmacro aqua-auto-install-packages (extension package mode)
-   "If a new file with EXTENSION is opened, then the function gets triggered for automatic PACKAGE install.
- The specified PACKAGE will only installed if not already present."
-   `(add-to-list 'auto-mode-alist
-                 `(,extension . (lambda ()
-                                  (unless (package-installed-p ',package)
-                                    (message "installing the missing package %s for extension %s and mode %s" package extension mode)
-                                    (package-install ',package))
-                                  (,mode)))))
-
-(defvar aqua-auto-install-alist
-  '(("CMakeLists\\.txt'" cmake-mode cmake-mode)
-    ("PKGBUILD\\'" pkgbuild-mode pkgbuild-mode)
-    ("\\.elm\\'" elm-mode elm-mode)
-    ("\\.groovy\\'" groovy-mode groovy-mode)
-    ("\\.lua\\'" lua-mode lua-mode)
-    ("\\.cmake\\'" cmake-mode cmake-mode)
-    ("\\.php\\'" php-mode php-mode)
-    ("\\.proto\\'" protobuf-mode protobuf-mode)
-    ("\\.rs\\'" rust-mode rust-mode)
-    ("\\.swift\\'" swift-mode swift-mode)
-    ("\\.yml\\'" yaml-mode yaml-mode)
-    ("\\.yaml\\'" yaml-mode yaml-mode)
-    ("Dockerfile\\'" dockerfile-mode dockerfile-mode))
-  "All extensions of some popular file formats.")
-
-(when (package-installed-p 'pkgbuild-mode)
-  (add-to-list 'auto-mode-alist '("PKGBUILD\\'" . pkgbuild-mode)))
-
-;; for all the mappings for auto-install build
-(mapc
- (lambda (entry)
-   (let ((extension (car entry))
-         (package (cadr entry))
-         (mode (cadr (cdr entry))))
-     (unless (package-installed-p package)
-       (aqua-auto-install-packages extension package mode))))
- aqua-auto-install-alist)
-
-(message "Loaded the aqua-packages...")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'aqua-packages)
 

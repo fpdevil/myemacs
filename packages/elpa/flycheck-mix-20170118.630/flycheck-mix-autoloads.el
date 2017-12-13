@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "flycheck-mix" "flycheck-mix.el" (22965 5920
-;;;;;;  0 0))
+;;;### (autoloads nil "flycheck-mix" "flycheck-mix.el" (23063 38458
+;;;;;;  120900 911000))
 ;;; Generated autoloads from flycheck-mix.el
 
 (autoload 'flycheck-mix-setup "flycheck-mix" "\

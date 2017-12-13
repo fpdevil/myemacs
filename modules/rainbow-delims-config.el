@@ -42,23 +42,34 @@
 ;;
 ; fancy minor mode purely eye candy ((()))
 ;;
-(setq minor-mode-alist
-  `((rainbow-delimiters-mode " ")
-    (rainbow-delimiters-mode #("(" 0 1 (face rainbow-delimiters-depth-1-face)))
-    (rainbow-delimiters-mode #("(" 0 1 (face rainbow-delimiters-depth-2-face)))
-    (rainbow-delimiters-mode #("(" 0 1 (face rainbow-delimiters-depth-3-face)))
-    (rainbow-delimiters-mode #(")" 0 1 (face rainbow-delimiters-depth-3-face)))
-    (rainbow-delimiters-mode #(")" 0 1 (face rainbow-delimiters-depth-2-face)))
-    (rainbow-delimiters-mode #(")" 0 1 (face rainbow-delimiters-depth-1-face)))
-    ,@(assq-delete-all 'rainbow-delimiters-mode minor-mode-alist)))
-;; fancy mode end
+(defun fancy-rbow-modeline ()
+  "A fancy minor mode display of rainbow parenthesis."
+  (interactive)
+  (setq minor-mode-alist
+        `((rainbow-delimiters-mode " ")
+          (rainbow-delimiters-mode #("(" 0 1 (face rainbow-delimiters-depth-1-face)))
+          (rainbow-delimiters-mode #("(" 0 1 (face rainbow-delimiters-depth-2-face)))
+          (rainbow-delimiters-mode #("(" 0 1 (face rainbow-delimiters-depth-3-face)))
+          (rainbow-delimiters-mode #(")" 0 1 (face rainbow-delimiters-depth-3-face)))
+          (rainbow-delimiters-mode #(")" 0 1 (face rainbow-delimiters-depth-2-face)))
+          (rainbow-delimiters-mode #(")" 0 1 (face rainbow-delimiters-depth-1-face)))
+          ,@(assq-delete-all 'rainbow-delimiters-mode minor-mode-alist))))
 
-(add-hook 'python-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'haskell-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'erlang-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'elixir-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'shell-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+;; uncomment below to display ((())) in the mode line
+;; (fancy-rbow-modeline)
+
+;; enable rainbow mode for the below
+;;(add-hook 'python-mode-hook 'rainbow-delimiters-mode)
+;;(add-hook 'c-mode-hook 'rainbow-delimiters-mode)
+;;(add-hook 'c++-mode-hook 'rainbow-delimiters-mode)
+;;(add-hook 'go-mode-hook 'rainbow-delimiters-mode)
+;;(add-hook 'haskell-mode-hook 'rainbow-delimiters-mode)
+;;(add-hook 'erlang-mode-hook 'rainbow-delimiters-mode)
+;;(add-hook 'elixir-mode-hook 'rainbow-delimiters-mode)
+;;(add-hook 'shell-mode-hook 'rainbow-delimiters-mode)
+;;(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 
 (provide 'rainbow-delims-config)
 

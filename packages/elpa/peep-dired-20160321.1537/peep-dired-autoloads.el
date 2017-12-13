@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "peep-dired" "peep-dired.el" (22965 6144 0
-;;;;;;  0))
+;;;### (autoloads nil "peep-dired" "peep-dired.el" (23063 38740 279937
+;;;;;;  640000))
 ;;; Generated autoloads from peep-dired.el
 
 (autoload 'peep-dired "peep-dired" "\

@@ -7,12 +7,11 @@
 ;;;              Beacon — Never lose your cursor again
 ;;;              This is a global minor-mode
 ;;; elisp code for customizing the beacon
-;;;==========================================================================
-(require 'beacon) ;; show the cursor when moving after big movements in the window
 ;;;
 ;;; Code:
 ;;;
-
+;;;==========================================================================
+(require 'beacon) ;; show the cursor when moving after big movements in the window
 (beacon-mode +1)
 
 (provide 'beacon-config)

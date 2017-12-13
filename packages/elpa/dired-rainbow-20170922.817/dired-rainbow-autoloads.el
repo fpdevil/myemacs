@@ -3,7 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil nil ("dired-rainbow.el") (23006 9964 0 0))
+;;;### (autoloads nil nil ("dired-rainbow.el") (23063 38739 662562
+;;;;;;  340000))
 
 ;;;***
 
