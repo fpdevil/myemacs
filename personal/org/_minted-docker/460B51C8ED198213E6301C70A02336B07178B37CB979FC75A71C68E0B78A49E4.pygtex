@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGZdl{} sudo yum\PYGZhy{}config\PYGZhy{}manager \PYGZhy{}\PYGZhy{}enable rhel\PYGZhy{}7\PYGZhy{}server\PYGZhy{}extras\PYGZhy{}rpms
+\PYGZdl{} sudo yum \PYGZhy{}y install docker\PYGZhy{}ee
+\end{Verbatim}

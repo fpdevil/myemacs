@@ -11,19 +11,19 @@
 ;;;
 ;;; Code:
 ;;;
-;;===========================================================================
-(require 'undo-tree)
-
-;;----------------------------------------------------------------------------
-;; auto save the undo-tree history
-;;----------------------------------------------------------------------------
-(with-eval-after-load "undo-tree-autoloads"
-  (setq undo-tree-auto-save-history t)
-  (setq undo-tree-history-directory-alist
-        `(("." . ,(expand-file-name "undo" cache-dir))))
-  (setq undo-tree-visualizer-timestamps t)
-  (setq undo-tree-visualizer-diff t)
-  (global-undo-tree-mode))
+;;=============================================================================
+(lazy-init
+ (require 'undo-tree)
+ ;;----------------------------------------------------------------------------
+ ;; auto save the undo-tree history
+ ;;----------------------------------------------------------------------------
+ (after "undo-tree-autoloads"
+   (setq undo-tree-auto-save-history t)
+   (setq undo-tree-history-directory-alist
+         `(("." . ,(expand-file-name "undo" cache-dir))))
+   (setq undo-tree-visualizer-timestamps t)
+   (setq undo-tree-visualizer-diff t)
+   (global-undo-tree-mode)))
 
 (provide 'undo-tree-config)
 

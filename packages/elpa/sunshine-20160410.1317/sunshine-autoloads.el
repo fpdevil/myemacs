@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "sunshine" "sunshine.el" (23063 38684 429200
-;;;;;;  428000))
+;;;### (autoloads nil "sunshine" "sunshine.el" (23126 26848 730417
+;;;;;;  241000))
 ;;; Generated autoloads from sunshine.el
 
 (autoload 'sunshine-forecast "sunshine" "\

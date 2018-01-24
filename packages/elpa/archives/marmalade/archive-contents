@@ -171,6 +171,9 @@
  (winner-mode-enable .
 		     [(0 0 5)
 		      nil "Enables winner mode if its available" tar])
+ (window-shaper .
+		[(20171218 1222)
+		 nil "A utility to easily resize windows within Emacs" single])
  (window-number .
 		[(1 0 3)
 		 nil "Select windows by numbers." single])
@@ -2223,16 +2226,16 @@
  (lolcode-mode .
 	       [(0 2)
 		nil "Major mode for editing LOLCODE" single])
+ (lognav-mode .
+	      [(0 0 5)
+	       ((emacs
+		 (24 3)))
+	       "Navigate Log Error Messages" single])
  (logito .
 	 [(0 1)
 	  ((eieio
 	    (1 3)))
 	  "logging library for Emacs" single])
- (log-mode .
-	   [(0 0 4)
-	    ((emacs
-	      (24 3)))
-	    "Navigate Log Error Messages" single])
  (load-theme-buffer-local .
 			  [(0 0 2)
 			   nil "Install emacs24 color themes by buffer." single])
@@ -3677,7 +3680,7 @@
 	      [(1 15)
 	       nil "Faster emacs startup through byte-compiling." single])
  (elfeed-web .
-	     [(2 2 0)
+	     [(2 3 0)
 	      ((simple-httpd
 		(1 4 3))
 	       (elfeed
@@ -3686,7 +3689,7 @@
 		(24 1)))
 	      "web interface to Elfeed" tar])
  (elfeed .
-	 [(2 2 0)
+	 [(2 3 0)
 	  ((emacs
 	    (24 3)))
 	  "an Emacs Atom/RSS feed reader" tar])

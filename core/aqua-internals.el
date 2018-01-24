@@ -61,14 +61,24 @@
 (setq cua-remap-control-z nil)
 
 ;;----------------------------------------------------------------------------
+;; some defaults to be set
+;;----------------------------------------------------------------------------
 ;; delete a selection with a single key-press
-;;----------------------------------------------------------------------------
 (delete-selection-mode t)
-
-;;----------------------------------------------------------------------------
-; enable transient mode
-;;----------------------------------------------------------------------------
+;; enable transient mode
 (transient-mark-mode t)
+;; auto revert
+(global-auto-revert-mode t)
+;; pcomplete
+(setq pcomplete-ignore-case t)
+;; indentation
+(setq default-indent-tabs-mode nil)
+;; lock files
+(setq create-lockfiles nil)
+;; deletion
+(setq delete-by-moving-to-trash t)
+;; ignore bell
+(setq ring-bell-function 'ignore)
 
 ;;----------------------------------------------------------------------------
 ;; typing related
@@ -144,10 +154,25 @@
 (setq desktop-save nil)                               ; save without asking
 ;(setq desktop-restore-eager 10)
 
-(setq backup-by-copying t)                            ; do not clobber symbolic links
-;; store all backup and autosave files in the tmp dir
+; (setq backup-by-copying t)                            ; do not clobber symbolic links
+; ;; store all backup and autosave files in the tmp dir
+; (setq backup-directory-alist
+;       `((".*" . ,temporary-file-directory)))
+; (setq auto-save-file-name-transforms
+;       `((".*" ,temporary-file-directory t)))
+
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
+
+(message "Deleting old backup files...")
+(let ((week (* 60 60 24 7))
+      (current (float-time (current-time))))
+  (dolist (file (directory-files temporary-file-directory t))
+    (when (and (backup-file-name-p file)
+               (> (- current (float-time (fifth (file-attributes file))))
+                  week))
+      (message "%s" file)
+      (delete-file file))))
 
 ;;----------------------------------------------------------------------------
 ;; deleting files(when deleting, send it to Thrash rather than use rm)                                        ;;----------------------------------------------------------------------------
@@ -166,8 +191,8 @@
 ;;----------------------------------------------------------------------------
 ;; disable electric indent mode to prevent auto indentation
 ;;----------------------------------------------------------------------------
-;; (when (fboundp 'electric-indent-mode)
-;;   (electric-indent-mode -1))
+(when (fboundp 'electric-indent-mode)
+  (electric-indent-mode -1))
 
 ;;----------------------------------------------------------------------------
 ;; custom keybinding stuff

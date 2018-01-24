@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "iedit" "iedit.el" (23063 38631 156226 350000))
+;;;### (autoloads nil "iedit" "iedit.el" (23126 26804 507924 39000))
 ;;; Generated autoloads from iedit.el
 
 (autoload 'iedit-mode "iedit" "\
@@ -68,8 +68,8 @@ Toggle Iedit mode on current function.
 
 ;;;***
 
-;;;### (autoloads nil "iedit-rect" "iedit-rect.el" (23063 38631 150411
-;;;;;;  21000))
+;;;### (autoloads nil "iedit-rect" "iedit-rect.el" (23126 26804 503793
+;;;;;;  970000))
 ;;; Generated autoloads from iedit-rect.el
 
 (autoload 'iedit-rectangle-mode "iedit-rect" "\
@@ -87,7 +87,7 @@ Commands:
 ;;;***
 
 ;;;### (autoloads nil nil ("iedit-lib.el" "iedit-pkg.el" "iedit-tests.el")
-;;;;;;  (23063 38631 157962 333000))
+;;;;;;  (23126 26804 509430 259000))
 
 ;;;***
 

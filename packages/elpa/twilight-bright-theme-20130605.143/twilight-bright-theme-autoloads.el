@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "twilight-bright-theme" "twilight-bright-theme.el"
-;;;;;;  (23063 38374 132587 820000))
+;;;;;;  (23126 26544 668384 600000))
 ;;; Generated autoloads from twilight-bright-theme.el
 
 (when load-file-name (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))

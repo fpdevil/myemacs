@@ -21,8 +21,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; fancy modeline(s) - powerline, airline and sml
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'powerline)
-(powerline-default-theme)
+; (require 'powerline)
+; (powerline-default-theme)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; define constants for holding the themes
@@ -37,7 +37,6 @@
 
 ;; change the airline themes as required from the below
 (setq aqua-airline-theme 'airline-cool)
-
 
 ;; set smart-mode-line theme
 (setq aqua-sml-theme 'powerline)
@@ -75,13 +74,13 @@
   (load-airline-settings)
   (load-theme aqua-airline-theme t))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; smart-mode-line enable/disable
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun apply-sml ()
   "Apply Smart Mode Line if needed."
   (interactive)
+  (require-package 'smart-mode-line)
   (require 'smart-mode-line)
   (if (require 'smart-mode-line nil 'noerror)
       (progn
@@ -103,7 +102,18 @@
         (setq sml/replacer-regexp-list
               '(("^~/org/" ":O:")
                 ("^~/code/" ":CODE:")
-                ("^~/\\.emacs\\.d/" ":ED:"))))))
+                ("^~/\\.emacs\\.d/" ":ED:")))
+        (after 'evil
+          (defvar dotemacs--original-mode-line-bg (face-background 'mode-line))
+          (defadvice evil-set-cursor-color (after dotemacs activate)
+            (cond ((evil-emacs-state-p)
+                   (set-face-background 'mode-line "#440000"))
+                  ((evil-insert-state-p)
+                   (set-face-background 'mode-line "#002244"))
+                  ((evil-visual-state-p)
+                   (set-face-background 'mode-line "#440044"))
+                  (t
+                   (set-face-background 'mode-line dotemacs--original-mode-line-bg))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; uncomment if airline themes are required (load airline settings)
@@ -119,6 +129,19 @@
 ;; (add-hook 'after-init-hook 'apply-sml)
 (when (eq dotemacs-mode-line 'sml)
  (add-hook 'after-init-hook 'apply-sml))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; uncomment if spaceline mode line is required
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (add-hook 'after-init-hook 'apply-spaceline)
+(when (eq dotemacs-mode-line 'spaceline)
+  (require-package 'spaceline)
+  (require 'spaceline-config)
+  (setq spaceline-highlight-face-func #'spaceline-highlight-face-evil-state)
+  (spaceline-spacemacs-theme)
+  (spaceline-info-mode)
+  (after "helm-autoloads"
+    (spaceline-helm-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; mode line configuration end ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

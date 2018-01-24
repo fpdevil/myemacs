@@ -8,13 +8,13 @@
 ;;;
 ;;; elisp code for customizing the nxml settings
 ;;; http://lgfang.github.io/mynotes/emacs/emacs-xml.html
+;;;
+;;; Code:
+;;;
 ;;;===========================================================================
 (require 'cl)
 (require 'nxml-mode)
 
-;;;
-;;; Code:
-;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; nXML mode
@@ -106,10 +106,44 @@
                        (nxml-backward-up-element) ; always returns nil
                        t)
                    (error nil)))
-          (setq path (cons (xmltok-start-tag-local-name) path)))
+          ;; (setq path (cons (xmltok-start-tag-local-name) path))
+          (setq path
+                (cons
+                 (if (xmltok-start-tag-prefix)
+                     (concat (xmltok-start-tag-prefix) ":"
+                             (xmltok-start-tag-local-name))
+                   (xmltok-start-tag-local-name))
+                 path)))
         (if (called-interactively-p t)
             (message "/%s" (mapconcat 'identity path "/"))
           (format "/%s" (mapconcat 'identity path "/")))))))
+
+
+(after "nxml-mode"
+  '(progn
+     (defun nxml-which-xpath ()
+       (let (path)
+         (save-excursion
+           (save-restriction
+             (widen)
+             (while (condition-case nil
+                        (progn
+                          (nxml-backward-up-element)
+                          t)
+                      (error nil))
+               (push (xmltok-start-tag-local-name) path)))
+           (concat "/" (mapconcat 'identity path "/")))))
+
+     (after "which-func"
+       '(pushnew #'nxml-which-xpath which-func-functions))))
+
+(defun tidy-up-xml()
+  (interactive)
+  (goto-char 0)
+  (replace-string "><" ">
+<")
+  (indent-region (point-min) (point-max)))
+(local-set-key (kbd "C-x t") 'tidy-up-xml)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; [ x-path-walker ] -- navigation for JSON/XML/HTML based on path (imenu like)
@@ -121,11 +155,11 @@
   (dolist (hook '(html-mode-hook
                   web-mode-hook
                   nxml-mode-hook
-                  json-mode-hook
-                  ))
+                  json-mode-hook))
     (add-hook hook
               (lambda ()
                 (local-set-key (kbd "C-c C-j") 'helm-x-path-walker)))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; key-bindings

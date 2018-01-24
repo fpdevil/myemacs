@@ -13,50 +13,46 @@
 
 (lazy-init
 
-  (require 'yasnippet)                    ;; yasnippet
+  ;; -- load the yasnippet library
+  (require 'yasnippet)
 
-
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; yasnippets configuration                                                 ;;
-  ;; this will install and activate it everywhere.                            ;;
-  ;; your snippets are stored in ~/.emacs.d/snippets.                         ;;
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; -- yasnippets configuration
+  ;; this will install and activate it everywhere, snippets are stored in ~/.emacs.d/snippets
   (yas/initialize)
 
-  ;;----------------------------------------------------------------------------
-  ;; yasnippets load directory
-  ;;----------------------------------------------------------------------------
+  ;; -- yasnippets load directory
   (yas-load-directory (expand-file-name "snippets" user-emacs-directory))
   (add-to-list 'yas-snippet-dirs (concat user-emacs-directory "/snippets"))
   (add-hook 'term-mode-hook (lambda()
       (setq yas-dont-activate-functions t)))
 
-  ;;----------------------------------------------------------------------------
-  ;; use C-Tab for snippet expansion
-  ;;----------------------------------------------------------------------------
+  ;; -- use C-Tab for snippet expansion
   (define-key yas-minor-mode-map (kbd "<tab>") nil)
   (define-key yas-minor-mode-map (kbd "TAB") nil)
   (define-key yas-minor-mode-map (kbd "<C-tab>") 'yas-expand)
   (define-key global-map (kbd "C-c o") 'iedit-mode)
 
-
-  ;;----------------------------------------------------------------------------
-  ;; loading the helm-c-yasnippet
-  ;;----------------------------------------------------------------------------
+  ;; -- loading the helm-c-yasnippet
   (global-set-key (kbd "C-c y") 'helm-yas-complete)
 
+  ;; -- function for loading a snippet
   (defun aqua/load-yasnippet ()
     (unless yas-global-mode (yas-global-mode 1))
     (yas-minor-mode 1))
 
+  ;; -- loding the helm snippet lazily
   (defun aqua/helm-yasnippet ()
     "Load the helm-c-yasnippet lazily."
     (interactive)
     (require 'helm-c-yasnippet)
-    (setq helm-yas-space-match-any-greedy t)
+    (setq helm-yas-space-match-any-greedy t
+          helm-yas-display-key-on-candidate t
+          yas-wrap-around-region t
+          yas-triggers-in-field t)
     (call-interactively 'helm-yas-complete))
 
-  ;; handling the prompt
+
+  ;; -- handling the prompt with helm
   (defun yas-helm-prompt (prompt choices &optional display-fn)
     "Use helm to select a snippet."
     (interactive)
@@ -77,14 +73,19 @@
             (cdr (assoc result rmap))))
       nil))
 
-  ;;----------------------------------------------------------------------------
-  ;; enable the yas' specific settings
-  ;;----------------------------------------------------------------------------
+  ;; -- enable the yas' specific settings
   (setq yas-verbosity 0)  ;; be less verbose (trace = 4)
   (setq yas-indent-line 'auto)
   (setq yas-also-auto-indent-first-line t)
-  (setq yas-prompt-functions '(yas-helm-prompt yas-dropdown-prompt))
-  ;;(setq yas-prompt-functions '(yas/completing-prompt))
+
+  ;; setup yasnippet prompt method
+  ;; The yas-prompt-functions variable is only consulted if you expand from a snippet
+  ;; key and there are multiple snippets with the same key, or if you use yas-insert-
+  ;; snippet. If you are using autocomplete to expand snippets, it has no effect
+  (setq yas-prompt-functions '(yas-helm-prompt
+                               yas-completing-prompt
+                               yas-dropdown-prompt))
+
   (setq yas-triggers-in-field t) ;; to allow for nested snippets
   (yas-reload-all)
 

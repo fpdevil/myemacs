@@ -1,0 +1,128 @@
+% Created 2017-12-13 Wed 18:08
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{minted}
+\usepackage{color}
+\usepackage{listings}
+\author{Sampath Singamsetty}
+\date{\today}
+\title{}
+\hypersetup{
+ pdfauthor={Sampath Singamsetty},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 25.1.1 (Org mode 9.1.4)},
+ pdflang={English}}
+\begin{document}
+
+\tableofcontents
+
+\section{Docker Enterprise Edition setup}
+\label{sec:orga56b331}
+\subsection{Get the Docker Repository URL for Enterprise}
+\label{sec:orgcea4a15}
+In order to install the Docker EE version, it's recommended to setup a Docker repository from which the Docker EE can be updated and installed.
+\begin{itemize}
+\item Go to \url{https://store.docker.com/my-content}.
+\item Each subscription or trial you have access to is listed. Click the Setup button for Docker Enterprise Edition for Linux.
+\item Copy the URL from the field labeled Copy and paste this URL to download your Edition.
+\item Export the Repository URL as a variable
+\begin{minted}[]{sh}
+$ export DOCKERURL='<DOCKER-EE-URL>'
+\end{minted}
+\item Store your Docker EE repository URL in a yum variable in \texttt{/etc/yum/vars/}. This command relies on the variable you stored in the previous step.
+\begin{minted}[]{sh}
+$ sudo -E sh -c 'echo "$DOCKERURL/rhel" > /etc/yum/vars/dockerurl'
+\end{minted}
+\item Store your OS version string in \texttt{/etc/yum/vars/dockerosversion}.
+\begin{minted}[]{sh}
+$ sudo sh -c 'echo "7" > /etc/yum/vars/dockerosversion'
+\end{minted}
+\item Install the required packages with yum as below
+\begin{minted}[]{sh}
+$ sudo yum install -y yum-utils \
+device-mapper-persistent-data \
+lvm2
+\end{minted}
+\item Enable the \emph{extras} RHEL repository. This ensures access to the \texttt{container-selinux} package which is required by docker-ee
+\begin{minted}[]{sh}
+$ sudo yum-config-manager --enable rhel-7-server-extras-rpms
+$ sudo yum -y install docker-ee
+\end{minted}
+\end{itemize}
+\subsection{Docker Images and Containers from a Dockerfile}
+\label{sec:org09e6921}
+\subsubsection{Create a Dockerfile}
+\label{sec:org396e3ca}
+
+\begin{itemize}
+\item Create a Dockerfile as below
+\end{itemize}
+\begin{minted}[]{sh}
+FROM node
+MAINTAINER sampath.singamsetty@united.com
+RUN git clone -q https://github.com/docker-in-practice/todo.git
+WORKDIR todo
+RUN npm install > /dev/null
+EXPOSE 8000
+CMD ["npm","start"]
+\end{minted}
+
+\begin{itemize}
+\item Create a build using the below command
+\end{itemize}
+\begin{minted}[]{sh}
+docker build .
+...
+...
+Step 7/7 : CMD npm start
+ ---> Running in c8bfd8c4d502
+ ---> 6ea248b775f5
+Removing intermediate container c8bfd8c4d502
+Successfully built 6ea248b775f5
+\end{minted}
+
+\begin{itemize}
+\item tag the docker image based on the final output of the id
+\end{itemize}
+\begin{minted}[]{sh}
+docker tag 6ea248b775f5 todoapp
+
+# the images can be checked with
+docker ps -a
+\end{minted}
+
+\begin{itemize}
+\item now spin a container with the required settings
+\begin{minted}[]{sh}
+docker run -p 8000:8000 --name example1 todoapp
+
+# press Ctrl+C to exit
+
+# do a diff
+docker diff example1
+\end{minted}
+
+\item starting and stopping the docker container \textbf{example1}
+\begin{minted}[]{sh}
+docker start example1
+
+docker stop example1
+\end{minted}
+\end{itemize}
+\end{document}

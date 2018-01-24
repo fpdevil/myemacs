@@ -1,5 +1,6 @@
-;;; package --- Aquamacs initialization file
-;;; -*- coding: utf-8 -*-
+;; package --- Aquamacs initialization file
+;; -*- coding: utf-8 -*-
+;; -*-no-byte-compile: t; -*-
 ;;;
 ;;;         ███████╗███╗   ███╗ █████╗  ██████╗███████╗
 ;;;         ██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝
@@ -48,14 +49,17 @@
 (eval-when-compile (require 'cl))
 
 ;;; -- get the Emacs initialization time
-(lexical-let ((emacs-start-time (current-time)))
+(lexical-let ((emacs-startup-time (current-time)))
   (add-hook 'emacs-startup-hook
             (lambda ()
-              (let ((elapsed (float-time (time-subtract (current-time) emacs-start-time))))
-                (message "[Emacs Initialization]  %.3fs" elapsed)))))
+              (let ((elapsed-time (float-time (time-subtract (current-time) emacs-startup-time))))
+                (message "$$ Emacs Initialized in %.3fs $$" elapsed-time)))))
+
 
 ;;; -- gc threshold setting
 (setq gc-cons-threshold (* 256 1024 1024))
+(let ((gc-cons-threshold (* 256 1024 1024))
+      (file-name-handler-alist nil)))
 
 ;;; -- define a custom group for .emacs
 (defgroup dotemacs nil
@@ -83,11 +87,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defconst home-dir "~")
 
-(defvar emacs-dir (file-name-directory load-file-name)
-  "Top level Emacs dir.")
+; (defvar emacs-dir (file-name-directory load-file-name)
+;   "Top level Emacs dir.")
 
-(defvar emacs-dir (file-name-directory (concat (getenv "HOME") "/.emacs.d"))
-  "Top level Emacs dir.")
+; (defvar emacs-dir (file-name-directory (concat (getenv "HOME") "/.emacs.d"))
+;   "Top level Emacs dir.")
 
 (defcustom core-dir (expand-file-name "core" user-emacs-directory)
   "Contains core components, which has Emacs/Aquamacs specific information like the packages list, settings etc."
@@ -128,11 +132,21 @@ Under this the elpa directory will be present which houses all the .el packages.
 
 ;;; -- specify which mode line to use
 (defcustom dotemacs-mode-line
- 'sml
+ 'spaceline
  "The default mode line display to be used for all prog modes."
  :type '(radio
-         (const :tag "airline-mode-line" airline)
-         (const :tag "sml-mode-line" sml))
+         (const :tag "airline mode line" airline)
+         (const :tag "spaceline" spaceline)
+         (const :tag "sml mode line" sml))
+ :group 'dotemacs-visual)
+
+;;; -- specify which color identifiers mode to use
+(defcustom dotemacs-clr-identifiers
+ 'color-identifiers
+ "The default color identifiers mode display to be used for all prog modes."
+ :type '(radio
+         (const :tag "rainbow-identifiers-mode" rbow-identifiers)
+         (const :tag "color-identifiers-mode" color-identifiers))
  :group 'dotemacs)
 
 ;;; --  load core package, custom methods and internal settings for Aquamacs
@@ -194,9 +208,17 @@ Under this the elpa directory will be present which houses all the .el packages.
   (add-to-list 'exec-path dir))
 
 ;;; == environment
-  (setq exec-path-from-shell-arguments '("-l"))
-  (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
-  (setq exec-path (append exec-path '("/usr/local/bin")))
+(setq exec-path-from-shell-arguments '("-l"))
+(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
+(setq exec-path (append exec-path '("/usr/local/bin")))
+
+;; path setting needed for identifying the ghc-mod package
+(let ((my-cabal-path (expand-file-name (concat (getenv "HOME") "/Library/Haskell/bin"))))
+  ; setup the cabal path and put into classpath
+  (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
+  (message "**** cabal-path %s ****" my-cabal-path)
+  (add-to-list 'exec-path my-cabal-path))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;; custom init settings completed ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -205,7 +227,6 @@ Under this the elpa directory will be present which houses all the .el packages.
 ;; Local Variables:
 ;; coding: utf-8
 ;; mode: emacs-lisp
-;; no-byte-compile t
 ;; End:
 
 ;;; init.el ends here

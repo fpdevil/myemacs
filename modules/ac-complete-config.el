@@ -22,6 +22,7 @@
 (when (require 'auto-complete-config nil 'noerror)
   (add-to-list 'ac-dictionary-directories (concat cache-dir "/auto-complete/ac-dict"))
   (setq ac-comphist-file (concat cache-dir "/auto-complete/ac-comphist.dat"))
+  (setq ac-dictionary-files (concat cache-dir "/auto-complete/.dict"))
   ;; some default global values for ac completions
   (setq ac-auto-show-menu t)
   (setq ac-delay 0.5)
@@ -36,7 +37,6 @@
   (setq ac-fuzzy-enable t)
   (setq ac-dwim t)
   (setq ac-stop-words (quote ("/" "//" "/*" "//*" "///" "////")))
-  ;; (setq ac-dictionary-files (concat  cache-dir "/auto-complete/.dict"))
   (ac-config-default))
 
 ;; show the menu
@@ -48,7 +48,24 @@
 ;; "real" TAB character.  If `complete', TAB first tries to indent the current
 ;; line, and if the line was already indented, then try to complete the thing at
 ;; point.
-(setq tab-always-indent 'complete)
+; (setq tab-always-indent 'complete)
+
+;; to enable auto-complete globally
+;; (global-auto-complete-mode t)
+; (setq ac-trigger-commands
+;       (cons 'backward-delete-char-untabify ac-trigger-commands))
+
+;; completion keys
+; (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
+; (define-key ac-completing-map "\r" nil)
+; (define-key ac-completing-map "\t" 'ac-complete)
+; (global-set-key (kbd "C-M-Z") 'ac-fuzzy-complete)
+
+;;; set the trigger key so that it can work together with yasnippet on tab key,
+;;; if the word exists in yasnippet, pressing tab will cause yasnippet to
+;;; activate, otherwise, auto-complete will
+;; (ac-set-trigger-key "TAB")
+;; (ac-set-trigger-key "<tab>")
 
 ;; c-tab-always-indent:
 ;; If t, hitting TAB always just indents the current line.  If nil, hitting TAB
@@ -60,17 +77,24 @@
 (setq c-tab-always-indent nil
       c-insert-tab-function 'indent-for-tab-command)
 
+;;-----------------------------------------------------------------------------
+;; hook AC into completion-at-point
+(defun auto-complete-at-point ()
+  (when (and (not (minibufferp))
+       (fboundp 'auto-complete-mode)
+       auto-complete-mode)
+    (auto-complete)))
 
-;; to enable auto-complete globally
-;; (global-auto-complete-mode t)
-(setq ac-trigger-commands
-      (cons 'backward-delete-char-untabify ac-trigger-commands))
+(defun never-indent ()
+  (set (make-local-variable 'indent-line-function) (lambda () 'noindent)))
 
-(define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
-(define-key ac-completing-map "\t" 'ac-complete)
-(define-key ac-completing-map "\r" nil)
-(global-set-key (kbd "C-M-Z") 'ac-fuzzy-complete)
+(defun set-auto-complete-as-completion-at-point-function ()
+  (setq completion-at-point-functions
+        (cons 'auto-complete-at-point
+              (remove 'auto-complete-at-point completion-at-point-functions))))
 
+(add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
+;;-----------------------------------------------------------------------------
 
 ;;; -- linum mode for displaying line numbers for current buffer
 (after 'linum
@@ -84,15 +108,6 @@
     (when (yas-expand)
       (ac-stop))))
 
-;;; -- set the default sources for auto completion
-;; (setq-default ac-sources '(ac-source-dictionary
-;;                            ac-source-words-in-buffer
-;;                            ac-source-words-in-all-buffer
-;;                            ac-source-functions
-;;                            ac-source-yasnippet
-;;                            ac-source-abbrev
-;;                            ac-source-words-in-same-mode-buffers))
-
 ;;; -- define the ac sources using function
 (defvar aqua/ac-sources-default
   "Default ac completion sources."
@@ -100,10 +115,10 @@
     ac-source-filename
     ac-source-abbrev
     ac-source-dictionary
-    ac-source-words-in-buffer
-    ac-source-words-in-all-buffer
     ac-source-functions
     ac-source-yasnippet
+    ac-source-words-in-buffer
+    ac-source-words-in-all-buffer
     ac-source-words-in-same-mode-buffers))
 
 (setq-default ac-sources aqua/ac-sources-default)

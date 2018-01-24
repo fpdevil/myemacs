@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ac-etags" "ac-etags.el" (23063 38746 719990
-;;;;;;  814000))
+;;;### (autoloads nil "ac-etags" "ac-etags.el" (23126 26902 291609
+;;;;;;  116000))
 ;;; Generated autoloads from ac-etags.el
 
 (autoload 'ac-etags-ac-setup "ac-etags" "\

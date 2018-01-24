@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "dired-details+" "dired-details+.el" (23063
-;;;;;;  38737 206241 54000))
+;;;### (autoloads nil "dired-details+" "dired-details+.el" (23141
+;;;;;;  31248 711574 293000))
 ;;; Generated autoloads from dired-details+.el
 
 (defvar dired-details-hidden-string "" "\

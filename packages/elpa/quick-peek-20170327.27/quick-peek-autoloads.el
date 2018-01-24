@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "quick-peek" "quick-peek.el" (23063 38675 263593
-;;;;;;  95000))
+;;;### (autoloads nil "quick-peek" "quick-peek.el" (23126 26840 460678
+;;;;;;  341000))
 ;;; Generated autoloads from quick-peek.el
 
 (autoload 'quick-peek-overlay-at "quick-peek" "\

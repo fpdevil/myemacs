@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "x-path-walker" "x-path-walker.el" (23063 38749
-;;;;;;  402967 142000))
+;;;### (autoloads nil "x-path-walker" "x-path-walker.el" (23137 40371
+;;;;;;  227470 977000))
 ;;; Generated autoloads from x-path-walker.el
 
 (autoload 'helm-x-path-walker "x-path-walker" "\
@@ -14,8 +14,8 @@
 
 ;;;***
 
-;;;### (autoloads nil nil ("x-path-walker-pkg.el") (23063 38749 411134
-;;;;;;  913000))
+;;;### (autoloads nil nil ("x-path-walker-pkg.el") (23137 40371 232165
+;;;;;;  634000))
 
 ;;;***
 

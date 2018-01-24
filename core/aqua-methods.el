@@ -8,11 +8,19 @@
 ;;; Updated    : 02 Dec 2016
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; -- load lazily or initialize lazily
+(defmacro lazy-init (&rest body)
+  "Initializae the BODY after being idle for a predetermined amount of time."
+  `(run-with-idle-timer
+    0.5
+    nil
+    (lambda () ,@body)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; identify unnecessary whitespace is in all programming modes            ;;;
 ;;; whitespace-cleanup command for clearing trailing white spaces          ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'whitespace)                    ;; this is an internal package
+(require 'whitespace)                           ;; this is an internal package
 (setq-default show-trailing-whitespace t)
 (set-default 'indent-tabs-mode nil)
 

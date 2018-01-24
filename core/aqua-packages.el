@@ -56,6 +56,8 @@
     twilight-bright-theme                       ;; light theme based on twilight
     tango-plus-theme                            ;; light theme based on tango
     doom-themes                                 ;; pack of modern color-themes
+    afternoon-theme                             ;; dark theme with deep blue background
+    badger-theme                                ;; dark theme for Emacs
     ;;;;;; project setup and configuration      ;;;;;;
     ;; projectile                               ;; Project Interaction Library for Emacs
     ;; helm-projectile                          ;; Helm UI for Projectile
@@ -149,7 +151,6 @@
     py-autopep8                                 ;; integrate autopep8 into Emacs
     sphinx-doc                                  ;; sphinx style doc strings for python code
     pydoc-info                                  ;; better python support for info lookup
-    ein                                         ;; Emacs iPython Notebook
     ;;;;;; haskell programming modes            ;;;;;;
     haskell-mode                                ;; haskell language support
     company-ghc                                 ;; haskell company auto-completion
@@ -302,7 +303,7 @@
   '(
     "xslide"                    ;; xml and xslt syntax, customization's
     "xslt-process/lisp"         ;; xslt processor ide
-    "javascript/node-ac"        ;; node-js auto-complete package
+    ;;"javascript/node-ac"        ;; node-js auto-complete package
     "dircolors"                 ;; colored buffer
     "elisp/elisp-format"        ;; format elisp code
     "psgml"                     ;; markup languages...

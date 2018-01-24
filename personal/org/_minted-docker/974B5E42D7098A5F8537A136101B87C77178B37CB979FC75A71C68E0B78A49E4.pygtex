@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+FROM node
+MAINTAINER sampath.singamsetty@united.com
+RUN git clone \PYGZhy{}q https://github.com/docker\PYGZhy{}in\PYGZhy{}practice/todo.git
+WORKDIR todo
+RUN npm install \PYGZgt{} /dev/null
+EXPOSE \PYG{l+m}{8000}
+CMD \PYG{o}{[}\PYG{l+s+s2}{\PYGZdq{}npm\PYGZdq{}},\PYG{l+s+s2}{\PYGZdq{}start\PYGZdq{}}\PYG{o}{]}
+\end{Verbatim}

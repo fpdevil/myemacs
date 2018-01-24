@@ -120,7 +120,9 @@ FEATURE may be any one of:
   (package-install 'use-package))
 
 (setq use-package-verbose t
-      use-package-always-ensure t)
+      use-package-always-defer t
+      use-package-always-ensure t
+      use-package-enable-imenu-support t)
 
 (eval-when-compile
   (require 'use-package))

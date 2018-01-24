@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGZdl{} sudo \PYGZhy{}E sh \PYGZhy{}c \PYG{l+s+s1}{\PYGZsq{}echo \PYGZdq{}\PYGZdl{}DOCKERURL/rhel\PYGZdq{} \PYGZgt{} /etc/yum/vars/dockerurl\PYGZsq{}}
+\end{Verbatim}

@@ -13,15 +13,15 @@
 (require 'ibuffer)
 (setq ibuffer-saved-filter-groups
       (quote (("default"
-               ("dired" (mode . dired-mode))
-               ("java" (mode . java-mode))
-               ("erlang" (mode . erlang-mode))
-               ("haskell" (mode . haskell-mode))
+               ("dired"      (mode . dired-mode))
+               ("java"       (mode . java-mode))
+               ("erlang"     (mode . erlang-mode))
+               ("haskell"    (mode . haskell-mode))
                ("javascript" (mode . js-mode))
-               ("python" (mode . python-mode))
-               ("org" (mode . org-mode))
-               ("elisp" (mode . elisp-mode))
-               ("xml" (mode . nxml-mode))))))
+               ("python"     (mode . python-mode))
+               ("org"        (mode . org-mode))
+               ("elisp"      (mode . elisp-mode))
+               ("xml"        (mode . nxml-mode))))))
 
 (setq ibuffer-show-empty-filter-groups nil)
 

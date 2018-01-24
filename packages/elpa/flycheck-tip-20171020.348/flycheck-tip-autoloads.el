@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "error-tip" "error-tip.el" (23063 38453 558529
-;;;;;;  968000))
+;;;### (autoloads nil "error-tip" "error-tip.el" (23126 26619 564602
+;;;;;;  419000))
 ;;; Generated autoloads from error-tip.el
 
 (autoload 'error-tip-error-p "error-tip" "\
@@ -28,8 +28,8 @@ Same as ‘error-tip-cycle-dwim’, but it jumps to inverse direction.
 
 ;;;***
 
-;;;### (autoloads nil "flycheck-tip" "flycheck-tip.el" (23063 38453
-;;;;;;  550724 706000))
+;;;### (autoloads nil "flycheck-tip" "flycheck-tip.el" (23126 26619
+;;;;;;  554825 747000))
 ;;; Generated autoloads from flycheck-tip.el
 
 (autoload 'flycheck-tip-cycle "flycheck-tip" "\
@@ -51,8 +51,8 @@ Do `flycheck-tip-cycle by reverse order.
 
 ;;;***
 
-;;;### (autoloads nil "flymake-tip" "flymake-tip.el" (23063 38453
-;;;;;;  554626 109000))
+;;;### (autoloads nil "flymake-tip" "flymake-tip.el" (23126 26619
+;;;;;;  560459 509000))
 ;;; Generated autoloads from flymake-tip.el
 
 (autoload 'flymake-tip-cycle "flymake-tip" "\
@@ -67,8 +67,8 @@ Do `flycheck-tip-cycle by reverse order.
 
 ;;;***
 
-;;;### (autoloads nil nil ("flycheck-tip-pkg.el") (23063 38453 556636
-;;;;;;  412000))
+;;;### (autoloads nil nil ("flycheck-tip-pkg.el") (23126 26619 562495
+;;;;;;  54000))
 
 ;;;***
 

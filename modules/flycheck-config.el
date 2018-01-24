@@ -13,11 +13,10 @@
 ;;; Code:
 ;;;
 ;;;============================================================================
-(require 'flycheck)                   ;; flycheck lib
-(require 'helm-flycheck)              ;; flycheck helm integration
-(require 'flycheck-color-mode-line)   ;; flycheck color mode line
-(require 'flycheck-tip)               ;; show flycheck/flymake errors indent tooltip
-(require 'flycheck-pos-tip)           ;; flycheck errors display in tooltip
+(require-package 'flycheck)                   ;; flycheck lib
+(require-package 'flycheck-color-mode-line)   ;; flycheck color mode line
+(require-package 'flycheck-tip)               ;; show flycheck/flymake errors indent tooltip
+(require-package 'flycheck-pos-tip)           ;; flycheck errors display in tooltip
 
 ;;-----------------------------------------------------------------------------
 ;; custom function for enabling flycheck on demand
@@ -36,31 +35,37 @@ true."
 ;;; == usage example ...
 ;; (add-flycheck-hook 'erlang-mode)
 
-
 ;;-----------------------------------------------------------------------------
 ;; additional flycheck options
 ;;-----------------------------------------------------------------------------
-(after "flycheck"
-  '(progn
-     ;; (setq flycheck-highlighting-mode nil)
-     ;; (setq flycheck-highlighting-mode 'symbols)
-     ;; highlight the whole line, as it’s much faster
-     (setq flycheck-highlighting-mode 'lines)
-     ;; enable flycheck globally
-     (add-hook 'after-init-hook #'global-flycheck-mode)
-     ;; helm based flycheck
-     (define-key flycheck-mode-map (kbd "C-c ! h") 'helm-flycheck)
-     ;; indicate syntax errors/warnings in the left-fringe.
-     (setq flycheck-indication-mode 'left-fringe)
-     (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
-     (setq flycheck-highlighting-mode 'symbols)
-     (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages)
-     (setq flycheck-check-syntax-automatically
-       '(save
-         new-line
-         idle-change
-         mode-enabled))))
 
+;; (setq flycheck-highlighting-mode nil)
+;; (setq flycheck-highlighting-mode 'symbols)
+;; highlight the whole line, as it’s much faster
+(setq flycheck-highlighting-mode 'lines)
+;; indicate syntax errors/warnings in the left-fringe.
+(setq flycheck-indication-mode 'left-fringe)
+(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
+(setq flycheck-highlighting-mode 'symbols)
+;; add on option for error messages
+(setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages)
+;; (setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)
+
+;; Removing newline checks, as they would trigger an immediate check
+;; when we want the idle-change-delay to be in effect while editing.
+(setq flycheck-check-syntax-automatically
+ '(save
+   ;; new-line
+   idle-change
+   mode-enabled))
+
+;; enable flycheck globally
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+;; helm based flycheck
+(require-package 'helm-flycheck) ;; Not necessary if using ELPA package
+(eval-after-load 'flycheck
+  '(define-key flycheck-mode-map (kbd "C-c ! h") 'helm-flycheck))
 
 (defun aqua/adjust-flycheck-automatic-syntax-eagerness ()
   "Adjust how often we check for errors based on if there are any.
@@ -77,30 +82,28 @@ clean buffer we're an order of magnitude laxer about checking."
           'aqua/adjust-flycheck-automatic-syntax-eagerness)
 
 ;;-----------------------------------------------------------------------------
-;; use an italic face for the checker name
-;;-----------------------------------------------------------------------------
-(set-face-attribute 'flycheck-error-list-checker-name nil
-                    :inherit 'italic)
-
-;;-----------------------------------------------------------------------------
 ;; style flycheck errors consistently with flymake
 ;;-----------------------------------------------------------------------------
-(custom-set-faces
- '(flycheck-error ((((class color)) (:underline "Orange"))))
- '(flycheck-warning ((((class color)) (:underline "Green")))))
+(eval-after-load 'flycheck
+    '(progn
+      ;; use an italic face for the checker name
+      ;; (set-face-attribute 'flycheck-error-list-checker-name nil :inherit 'italic)
+      (set-face-attribute 'flycheck-warning nil :foreground "OrangeRed2" :background "azure1")))
 
+(custom-set-faces
+ '(flycheck-error ((((class color)) (:underline "red"))))
+ '(flycheck-info ((((class color)) (:underline "green")))))
 
 ;;-----------------------------------------------------------------------------
 ;; for flycheck-pos-tip
 ;;-----------------------------------------------------------------------------
-(with-eval-after-load 'flycheck
+(after 'flycheck
   (flycheck-pos-tip-mode))
 
-;;-----------------------------------------------------------------------------
-;; add on option for error messages
-;;-----------------------------------------------------------------------------
-(setq flycheck-display-errors-function
-      #'flycheck-display-error-messages-unless-error-list)
+;; flycheck inline messages
+(require-package 'flycheck-inline)
+(with-eval-after-load 'flycheck-inline
+  (flycheck-inline-mode))
 
 ;;-----------------------------------------------------------------------------
 ;; toggle flycheck window

@@ -1,13 +1,13 @@
-pwd
-cd
-clear
-
-pwd
+k
+ls -a
 brew -v update
 brew -v outdated
-ll
-alias
-ls -latr
-ls -a
-ls -R .vim
+brew cask outdated
 exit
+ls -ltra
+rm hello.c 
+brew -v update
+brew -v outdated
+brew -v upgrade cmake
+exit
+which ghc-mod

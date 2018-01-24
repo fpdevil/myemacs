@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "golint" "golint.el" (23063 38597 229023 752000))
+;;;### (autoloads nil "golint" "golint.el" (23126 26767 562783 723000))
 ;;; Generated autoloads from golint.el
 
 (autoload 'golint "golint" "\

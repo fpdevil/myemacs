@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+docker tag 6ea248b775f5 todoapp
+
+\PYG{c+c1}{\PYGZsh{} the images can be checked with}
+docker ps \PYGZhy{}a
+\end{Verbatim}

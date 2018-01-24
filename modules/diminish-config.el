@@ -1,7 +1,7 @@
 ;;; package  --- diminish-config.el
 ;;;
 ;;; Commentary:
-;;; Diminished modes are minor modes with no modeline display
+;;; Diminished modes are minor modes with no mode line display
 ;;; hide a minor mode that you know are always enabled using this
 ;;; http://www.eskimo.com/~seldon/diminish.el
 ;;;
@@ -13,31 +13,33 @@
 ;;;
 ;;; Code:
 ;;;
-;;;============================================================================
+;;;=============================================================================
 (require 'dim)      ;; customize mode-line names of major/minor modes
 (require 'diminish) ;; diminish minor mode displays
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; dim - for customizing the mode names displayed on modeline               ;;
-;; https://github.com/alezost/dim.el                                        ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; dim - for customizing the mode names displayed on mode line                ;;
+;; https://github.com/alezost/dim.el                                          ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (dim-major-names '(
-                    (outline-mode             " Ⓞ")
-                    (calendar-mode            " 📆")))
+                    (outline-mode            " Ⓞ")
+                    (calendar-mode           " 📆")))
 (dim-minor-names '(
-                   (company-mode             " ℂ" company)
-                    (git-gutter-mode          " Ⓖ" git-gutter)
-                    (visual-line-mode         " Ⓥ")
-                    (yas-minor-mode           " Ⓨ")
-                    (auto-fill-function       " ℱ")
-                    ;;(undo-tree-mode           " ፕ")
-                    (paredit-mode             " {ק}" paredit)
-                    (helm-mode                " Ⓗ")
-                    (rainbow-mode             " 🌈")))
+                   (flymake-mode               " FlyM")
+                   ;;(rainbow-mode             " 🌈")
+                   (rainbow-mode               " 🌈")
+                   (company-mode               " ℂ" company)
+                   (git-gutter-mode            " Ⓖ" git-gutter)
+                   (yas-minor-mode             " Ⓨ")
+                   (auto-fill-function         " ℱ")
+                   (visual-line-mode           " Ⓥ")
+                   ;;(undo-tree-mode           " ፕ")
+                   (paredit-mode               " {ק}" paredit)
+                   (helm-mode                  " Ⓗ")))
 
-;;----------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 ;; diminish unneeded minor modes from mode line
-;;----------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 (diminish 'visual-line-mode)
 (after 'which-key (diminish 'which-key-mode))
 (after 'guide-key (diminish 'guide-key-mode))
@@ -59,8 +61,12 @@
 (after 'page-break-lines (diminish 'page-break-lines-mode))
 (after 'counsel (diminish #'counsel-mode))
 (after 'rich-minority-mode (diminish 'rich-minority-mode))
+(after 'projectile (diminish 'projectile-mode))
+(after 'beacon (diminish 'beacon-mode))
+(after 'color-identifiers-mode (diminish 'color-identifiers-mode))
+(after 'haskell-interactive-mode (diminish 'interactive-haskell-mode " IntHS"))
 
-;;----------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 
 (provide 'diminish-config)
 

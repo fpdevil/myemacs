@@ -12,6 +12,7 @@
 ;;; Code:
 ;;;
 ;;===============================================================================
+(require 'color-theme)
 
 ;;-------------------------------------------------------------------------------
 ;; setting default color theme to required (from Steve Purcell .emacs)
@@ -19,10 +20,13 @@
 (setq-default custom-enabled-themes '(
                                       ;;darkokai
                                       ;;majapahit-light
-                                      ;;paper
                                       ;;whiteboard
                                       ;;deeper-blue
-                                      material
+                                      ;;material
+                                      ;;material-light
+                                      ;;spolsky
+                                      ;;wheatgrass
+                                      badger
                                       ))
 
 ;;-------------------------------------------------------------------------------
@@ -43,7 +47,6 @@
   (interactive)
   (mapc #'disable-theme custom-enabled-themes))
 
-
 ;;-------------------------------------------------------------------------------
 ;; Toggle between light and dark solarized themes
 ;;-------------------------------------------------------------------------------
@@ -58,6 +61,22 @@
   (interactive)
   (require 'color-theme-sanityinc-tomorrow)
   (color-theme-sanityinc-solarized-dark))
+
+;;-------------------------------------------------------------------------------
+;; enable the zerodark theme
+;;-------------------------------------------------------------------------------
+(defun zerodark ()
+  "Enable the `Zerodark' theme."
+  (interactive)
+  ;;(require 'zerodark-theme)
+  (let ((frame-name (cdr (assq 'name (frame-parameters (selected-frame))))))
+    (call-process-shell-command
+     (format
+      "xprop -f _GTK_THEME_VARIANT 8u -set _GTK_THEME_VARIANT 'dark' -name '%s'"
+      frame-name)))
+  (load-theme 'zerodark t)
+  (zerodark-setup-modeline-format)
+  (set-selected-frame-dark))
 
 ;;-------------------------------------------------------------------------------
 ;; Toggle between prelude's light and dark solarized themes

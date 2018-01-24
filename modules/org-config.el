@@ -92,14 +92,15 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq org-todo-keyword-faces
-      '(("IDEA"      . (:foreground "GoldenRod" :weight bold))
-        ("NEXT"      . (:foreground "IndianRed1" :weight bold))
+      '(("TODO"      . (:foreground "green"        :weight bold))
+        ("IDEA"      . (:foreground "GoldenRod"    :weight bold))
+        ("NEXT"      . (:foreground "IndianRed1"   :weight bold))
         ("DONE"      . (:foreground "forest green" :weight bold))
-        ("STARTED"   . (:foreground "OrangeRed" :weight bold))
-        ("WAITING"   . (:foreground "IndianRed1" :weight bold))
-        ("HOLD"      . (:foreground "magenta" :weight bold))
-        ("CANCELLED" . (:foreground "LimeGreen" :weight bold))
-        ("POSTPONED" . (:foreground "LimeGreen" :weight bold))
+        ("STARTED"   . (:foreground "OrangeRed"    :weight bold))
+        ("WAITING"   . (:foreground "IndianRed1"   :weight bold))
+        ("HOLD"      . (:foreground "magenta"      :weight bold))
+        ("CANCELLED" . (:foreground "LimeGreen"    :weight bold))
+        ("POSTPONED" . (:foreground "LimeGreen"    :weight bold))
         ("MEETING"   . (:foreground "forest green" :weight bold))
         ("PHONE"     . (:foreground "forest green" :weight bold))))
 

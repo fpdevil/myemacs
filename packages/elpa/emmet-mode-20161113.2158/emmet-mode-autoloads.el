@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "emmet-mode" "emmet-mode.el" (23063 38668 366698
-;;;;;;  820000))
+;;;### (autoloads nil "emmet-mode" "emmet-mode.el" (23126 26834 596568
+;;;;;;  7000))
 ;;; Generated autoloads from emmet-mode.el
 
 (autoload 'emmet-expand-line "emmet-mode" "\

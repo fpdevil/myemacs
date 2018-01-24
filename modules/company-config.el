@@ -24,32 +24,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;            company mode (for company based completions)                  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-; use company-mode in all buffers globally
-;;
+;; use company-mode in all buffers globally
 (add-hook 'after-init-hook 'global-company-mode)
 
-;; do not use company completion in xml, nxml modes
-(setq company-global-modes
-      '(
-        not xml-mode nxml-mode inferior-emacs-lisp-mode xsl-mode xslt-process-mode))
 
-;; (if (fboundp 'evil-declare-change-repeat)
-;;     (mapc #'evil-declare-change-repeat
-;;           '(company-complete-common
-;;             company-select-next
-;;             company-select-previous
-;;             company-complete-selection
-;;             company-complete-number
-;;             )))
-
-;;
-; company options and backends
-;;
+;;-----------------------------------------------------------------------------
+;; company options - frontends and backends
+;;-----------------------------------------------------------------------------
 (after 'company
   '(progn
     (lazy-init
-      ;; sort completions by usage frequency
+      ;; sort the completions by their usage frequency
       (require-package 'company-statistics)
       (setq company-statistics-file (expand-file-name "company-statistics-cache.el" cache-dir))
       (company-statistics-mode))
@@ -62,8 +47,8 @@
      (setq company-backends
            '((
               company-yasnippet
-              company-nxml
-              company-gtags
+              ;; company-nxml
+              ;; company-gtags
               company-cmake
               company-c-headers
               company-files
@@ -74,6 +59,7 @@
        (company-abbrev company-dabbrev)
        (company-math-symbols-latex company-math-symbols-unicode)))
 
+     ;; remove unused backends
      (setq company-backends (delete 'company-ropemacs company-backends))
 
      (setq company-auto-complete nil         ;;  this will accept highlighted item with SPC if t
@@ -82,6 +68,7 @@
            company-selection-wrap-around t
            company-show-numbers t
            company-require-match nil
+           company-etags-ignore-case t
 
            company-dabbrev-downcase nil
            company-dabbrev-ignore-case t                ;; case sensitive completion
@@ -100,7 +87,7 @@
            company-begin-commands '(self-insert-command))       ;; start autocompletion only after typing
            company-dict-dir (expand-file-name "dict" cache-dir) ;; look for dictionary files
 
-           ;; From Steve Purcell's configuration
+           ;; From Chen's configuration
            ;; @see https://github.com/redguardtoo/emacs.d/commit/2ff305c1ddd7faff6dc9fa0869e39f1e9ed1182d
            (defadvice company-in-string-or-comment (around company-in-string-or-comment-hack activate)
              ;; you can use (ad-get-arg 0) and (ad-set-arg 0) to tweak the arguments
@@ -108,58 +95,44 @@
                  (setq ad-return-value nil)
                ad-do-it))
 
-           ;; do not load company-mode for certain major modes
+           ;; Tern mode javascript completion
+           (when (executable-find "tern")
+             (after "company-tern-autoloads"
+               (add-to-list 'company-backends 'company-tern)))
+
+           ;; do not use company completion for certain modes like xml, xsl, nxml modes
            (setq company-global-modes
                  '(not
                    eshell-mode
-             comint-mode
-             erc-mode
-             gud-mode
-             rcirc-mode
-             minibuffer-inactive-mode))))
+                   comint-mode
+                   erc-mode
+                   gud-mode
+                   rcirc-mode
+                   minibuffer-inactive-mode
+                   xml-mode
+                   nxml-mode
+                   inferior-emacs-lisp-mode
+                   xsl-mode
+                   xslt-process-mode))))
 
-;;
-;; (auto-complete-mode 1)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; dabbrev-like company-mode back-end for code.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(with-eval-after-load "company-dabbrev-code"
-  ;; Search all other buffers
-  ;; (setq company-dabbrev-code-other-buffers 'all)
-  ;; if below is t it offers completions in comments and strings.
-  (setq company-dabbrev-code-everywhere nil
-        company-dabbrev-downcase 0)
-  ;; Ignore case when collecting completion candidates.
-  (setq company-dabbrev-code-ignore-case t
-        company-dabbrev-ignore-case nil))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;-----------------------------------------------------------------------------
 ;; adds fuzzy matching to company
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(with-eval-after-load 'company
+;;-----------------------------------------------------------------------------
+(after 'company
   (company-flx-mode +1))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; helm interface for company-mode
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(eval-after-load 'company
-  '(progn
-     (define-key company-mode-map (kbd "C-:") 'helm-company)
-     (define-key company-active-map (kbd "C-:") 'helm-company)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;-----------------------------------------------------------------------------
 ;; ESC - exit evils insert state and also the popup
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;-----------------------------------------------------------------------------
 ;; use function from core/aqua-methods
-(with-eval-after-load 'company
+(after 'company
   (define-key company-active-map (kbd "<escape>") 'aqua-company-abort)
   (define-key company-search-map (kbd "<escape>") 'company-search-abort))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;-----------------------------------------------------------------------------
 ;; prevent space to complete automatically during company completions
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(with-eval-after-load 'company
+;;-----------------------------------------------------------------------------
+(after 'company
   (define-key company-active-map (kbd "SPC") #'aqua/company-stop-on-space))
 
 (defun aqua/company-stop-on-space ()
@@ -168,9 +141,9 @@
   (company-abort)
   (insert " "))
 
-;;
-; company math mode
-;;
+;;-----------------------------------------------------------------------------
+;; company math mode
+;;-----------------------------------------------------------------------------
 ;; (with-eval-after-load 'company
 ;;   (add-to-list 'company-math-symbols-unicode)
 ;;   (add-to-list 'company-math-symbols-latex))
@@ -200,61 +173,51 @@
 ;; do not turn on company ispell for org mode
 (add-hook 'org-mode-hook 'company-ispell-setup)
 
-(eval-after-load 'company-etags
+(after 'company-etags
   '(progn
      ;; insert major-mode not inherited from prog-mode
      ;; to make company-etags work
      (add-to-list 'company-etags-modes 'web-mode)
      (add-to-list 'company-etags-modes 'lua-mode)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Function for Company mode with YaSnippet
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun company-mode/backend-with-yas (backend)
-  "Company YaSnippet Integration."
-  (interactive)
-  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-      backend
-    (append (if (consp backend) backend (list backend))
-            '(:with company-yasnippet))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;-----------------------------------------------------------------------------
 ;;                  documentation popup for company
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;-----------------------------------------------------------------------------
 ;(company-quickhelp-mode 1)
 
 ;; unset M-h key
 ;; (global-set-key (kbd "M-h") nil)
-(with-eval-after-load 'company
+(after 'company
   (company-quickhelp-mode 1)
   (setq company-quickhelp-use-propertized-text t)
   (setq company-frontends (delq 'company-echo-metadata-frontend company-frontends))
   '(define-key company-active-map (kbd "M-h") #'company-quickhelp-manual-begin))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;-----------------------------------------------------------------------------
 ;; highlight annotation when selected, match the search face when selected
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(set-face-background 'company-tooltip-annotation-selection
-                     (face-background 'company-tooltip-selection))
+;;-----------------------------------------------------------------------------
+(after 'company
+  (set-face-background 'company-tooltip-annotation-selection
+                       (face-background 'company-tooltip-selection))
+  (set-face-foreground 'company-tooltip-search-selection
+                       (face-foreground 'company-tooltip-search)))
 
-(set-face-foreground 'company-tooltip-search-selection
-                     (face-foreground 'company-tooltip-search))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;-----------------------------------------------------------------------------
 ;; A company-complete alternative that tries much harder to find completions.
 ;; If none of the current completions look good, call the command again to try
 ;; the next backend
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;-----------------------------------------------------------------------------
 (require 'company-try-hard)      ; get all completions from company backends
 
 ;;----------------------------------------------------------------------------
-;; add yasnippet support for all company backends
+;; add company-yasnippet support for all the company backends
 ;; https://github.com/syl20bnr/spacemacs
 ;;----------------------------------------------------------------------------
 (defvar company-mode/enable-yas t
   "Enable yasnippet for all backends.")
 
 (defun company-mode/backend-with-yas (backend)
+  "Company YaSnippet Integration."
   (if (or (not company-mode/enable-yas)
           (and (listp backend)
                (member 'company-yasnippet backend)))
@@ -262,16 +225,8 @@
     (append (if (consp backend) backend (list backend))
             '(:with company-yasnippet))))
 
-(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
-
-(setq helm-yas-space-match-any-greedy t
-      helm-yas-display-key-on-candidate t
-      yas-wrap-around-region t
-      yas-triggers-in-field t)
-
-;; setup yasnippet prompt method
-(setq yas-prompt-functions '(yas-completing-prompt
-                             yas-dropdown-prompt))
+;; uncomment the below to add :with company-yasnippet to all backends
+;; (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Company mode and YASnippet step on each other toes. These functions are  ;;

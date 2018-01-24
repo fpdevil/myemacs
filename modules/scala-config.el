@@ -26,8 +26,8 @@
 
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
-(setq ensime-sbt-command "/usr/local/bin/sbt"
-      sbt:program-name "/usr/local/bin/sbt")
+(setq ensime-sbt-command (executable-find "sbt")
+      sbt:program-name (executable-find "sbt"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; scala pretty fonts                                                       ;;
@@ -63,6 +63,31 @@
     (prettify-symbols-mode)
     (define-key scala-mode-map (kbd "C-x M-e") 'ensime-fully-reload)
   ))
+
+(setq ensime-sem-high-faces
+      '(
+        (implicitConversion nil)
+        (var . (:foreground "#ff2222"))
+        (val . (:foreground "#dddddd"))
+        (varField . (:foreground "#ff3333"))
+        (valField . (:foreground "#dddddd"))
+        (functionCall . (:foreground "#dc9157"))
+        (param . (:foreground "#ffffff"))
+        (object . (:foreground "#D884E3"))
+        (class . (:foreground "green"))
+        (trait . (:foreground "#009933")) ;; "#084EA8"))
+        (operator . (:foreground "#cc7832"))
+        (object . (:foreground "#6897bb" :slant italic))
+        (package . (:foreground "yellow"))
+        (implicitConversion . (:underline (:style wave :color "blue")))
+        (implicitParams . (:underline (:style wave :color "blue")))
+        (deprecated . (:strike-through "#a9b7c6"))
+        (implicitParams nil))
+        ;; ensime-completion-style 'company
+        ;; ensime-sem-high-enabled-p nil ;; disable semantic highlighting
+        ensime-tooltip-hints t ;; disable type-inspecting tooltips
+        ensime-tooltip-type-hints t ;; disable typeinspecting tooltips
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Ensime                                                                   ;;
@@ -103,14 +128,13 @@
 
 (defun compile-sbt-project ()
   "Compile the sbt project."
-  (sbt-command "test:compile")
-  )
+  (sbt-command "test:compile"))
 
 (add-hook 'scala-mode-hook
           (lambda ()
             (add-hook 'after-save-hook 'compile-sbt-project)))
 
-;;---------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 
 (provide 'scala-config)
 

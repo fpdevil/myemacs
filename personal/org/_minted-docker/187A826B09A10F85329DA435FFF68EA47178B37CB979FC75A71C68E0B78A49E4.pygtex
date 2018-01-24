@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGZdl{} sudo yum install \PYGZhy{}y yum\PYGZhy{}utils \PYG{l+s+se}{\PYGZbs{}}
+device\PYGZhy{}mapper\PYGZhy{}persistent\PYGZhy{}data \PYG{l+s+se}{\PYGZbs{}}
+lvm2
+\end{Verbatim}

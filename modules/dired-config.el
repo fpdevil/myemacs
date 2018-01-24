@@ -17,22 +17,25 @@
 ;;-----------------------------------------------------------------------------
 (use-package dired+
   :ensure t
-  ;; :defer t
+  ;;:defer t
   :config
   (setq diredp-hide-details-initially-flag nil)
   (setq diredp-hide-details-propagate-flag nil))
+
 
 ;; http://truongtx.me/2013/04/24/dired-as-default-file-manager-1-introduction
 
 (use-package dired-details+
   :ensure t
-  :defer t)
+  ;;:defer t
+  )
 
 ;;-----------------------------------------------------------------------------
 ;;  Ibuffer like filtering for dired
 ;;-----------------------------------------------------------------------------
 (use-package dired-filter
   :ensure t
+  :defer t
   :init
    (setq dired-filter-show-filters 'nil))
 

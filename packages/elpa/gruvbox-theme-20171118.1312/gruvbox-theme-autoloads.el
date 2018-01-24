@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "gruvbox" "gruvbox.el" (23063 38371 555688
-;;;;;;  959000))
+;;;### (autoloads nil "gruvbox" "gruvbox.el" (23126 26542 585343
+;;;;;;  139000))
 ;;; Generated autoloads from gruvbox.el
 
 (and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
@@ -12,7 +12,7 @@
 ;;;***
 
 ;;;### (autoloads nil "gruvbox-dark-hard-theme" "gruvbox-dark-hard-theme.el"
-;;;;;;  (23063 38371 565235 243000))
+;;;;;;  (23126 26542 591775 410000))
 ;;; Generated autoloads from gruvbox-dark-hard-theme.el
 
 (and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
@@ -20,7 +20,7 @@
 ;;;***
 
 ;;;### (autoloads nil "gruvbox-dark-medium-theme" "gruvbox-dark-medium-theme.el"
-;;;;;;  (23063 38371 563217 149000))
+;;;;;;  (23126 26542 590210 261000))
 ;;; Generated autoloads from gruvbox-dark-medium-theme.el
 
 (and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
@@ -28,7 +28,7 @@
 ;;;***
 
 ;;;### (autoloads nil "gruvbox-dark-soft-theme" "gruvbox-dark-soft-theme.el"
-;;;;;;  (23063 38371 567104 382000))
+;;;;;;  (23126 26542 593401 798000))
 ;;; Generated autoloads from gruvbox-dark-soft-theme.el
 
 (and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
@@ -36,7 +36,7 @@
 ;;;***
 
 ;;;### (autoloads nil "gruvbox-light-hard-theme" "gruvbox-light-hard-theme.el"
-;;;;;;  (23063 38371 558321 631000))
+;;;;;;  (23126 26542 586973 331000))
 ;;; Generated autoloads from gruvbox-light-hard-theme.el
 
 (and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
@@ -44,7 +44,7 @@
 ;;;***
 
 ;;;### (autoloads nil "gruvbox-light-medium-theme" "gruvbox-light-medium-theme.el"
-;;;;;;  (23063 38371 569076 295000))
+;;;;;;  (23126 26542 595002 385000))
 ;;; Generated autoloads from gruvbox-light-medium-theme.el
 
 (and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
@@ -52,23 +52,23 @@
 ;;;***
 
 ;;;### (autoloads nil "gruvbox-light-soft-theme" "gruvbox-light-soft-theme.el"
-;;;;;;  (23063 38371 561042 12000))
+;;;;;;  (23126 26542 588547 706000))
 ;;; Generated autoloads from gruvbox-light-soft-theme.el
 
 (and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
 
 ;;;***
 
-;;;### (autoloads nil "gruvbox-theme" "gruvbox-theme.el" (23063 38371
-;;;;;;  553409 863000))
+;;;### (autoloads nil "gruvbox-theme" "gruvbox-theme.el" (23126 26542
+;;;;;;  583790 258000))
 ;;; Generated autoloads from gruvbox-theme.el
 
 (and load-file-name (boundp 'custom-theme-load-path) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
 
 ;;;***
 
-;;;### (autoloads nil nil ("gruvbox-theme-pkg.el") (23063 38371 549869
-;;;;;;  811000))
+;;;### (autoloads nil nil ("gruvbox-theme-pkg.el") (23126 26542 582104
+;;;;;;  431000))
 
 ;;;***
 

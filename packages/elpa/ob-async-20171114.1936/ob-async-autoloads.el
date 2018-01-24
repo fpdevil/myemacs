@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ob-async" "ob-async.el" (23087 57057 543421
-;;;;;;  498000))
+;;;### (autoloads nil "ob-async" "ob-async.el" (23126 27200 843108
+;;;;;;  388000))
 ;;; Generated autoloads from ob-async.el
 
 (defalias 'org-babel-execute-src-block:async 'ob-async-org-babel-execute-src-block)

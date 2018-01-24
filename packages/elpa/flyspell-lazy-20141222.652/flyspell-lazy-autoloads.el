@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "flyspell-lazy" "flyspell-lazy.el" (23063 38461
-;;;;;;  340372 296000))
+;;;### (autoloads nil "flyspell-lazy" "flyspell-lazy.el" (23126 26627
+;;;;;;  58999 215000))
 ;;; Generated autoloads from flyspell-lazy.el
 
 (let ((loads (get 'flyspell-lazy 'custom-loads))) (if (member '"flyspell-lazy" loads) nil (put 'flyspell-lazy 'custom-loads (cons '"flyspell-lazy" loads))))

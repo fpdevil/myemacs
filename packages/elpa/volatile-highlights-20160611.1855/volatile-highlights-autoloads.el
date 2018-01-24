@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "volatile-highlights" "volatile-highlights.el"
-;;;;;;  (23063 38622 417018 317000))
+;;;;;;  (23126 26796 404352 632000))
 ;;; Generated autoloads from volatile-highlights.el
 
 (defvar volatile-highlights-mode nil "\

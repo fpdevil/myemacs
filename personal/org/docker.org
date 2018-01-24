@@ -27,3 +27,69 @@ In order to install the Docker EE version, it's recommended to setup a Docker re
   $ sudo yum-config-manager --enable rhel-7-server-extras-rpms
   $ sudo yum -y install docker-ee
   #+END_SRC
+** Docker Images and Containers from a Dockerfile
+*** Create a Dockerfile
+
+- Create a Dockerfile as below
+#+begin_src sh
+FROM node
+MAINTAINER sampath.singamsetty@united.com
+RUN git clone -q https://github.com/docker-in-practice/todo.git
+WORKDIR todo
+RUN npm install > /dev/null
+EXPOSE 8000
+CMD ["npm","start"]
+#+end_src
+
+- Create a build using the below command
+#+begin_src sh
+docker build .
+...
+...
+Step 7/7 : CMD npm start
+ ---> Running in c8bfd8c4d502
+ ---> 6ea248b775f5
+Removing intermediate container c8bfd8c4d502
+Successfully built 6ea248b775f5
+#+end_src
+
+- tag the docker image based on the final output of the id
+#+begin_src sh
+docker tag 6ea248b775f5 todoapp
+
+# the images can be checked with
+docker ps -a
+#+end_src
+
+- now spin a container with the required settings
+  #+begin_src sh
+docker run -p 8000:8000 --name example1 todoapp
+
+# press Ctrl+C to exit
+
+# do a diff
+docker diff example1
+  #+end_src
+
+- starting and stopping the docker container *example1*
+  #+begin_src sh
+docker start example1
+
+docker stop example1
+  #+end_src
+
+- Cleaning up of the images
+  #+begin_src sh
+# List all containers (only IDs)
+docker ps -aq
+
+# Stop all running containers
+docker stop $(docker ps -aq)
+
+# Remove all containers
+docker rm $(docker ps -aq)
+
+# Remove all images
+docker rmi $(docker images -q)
+  #+end_src
+  

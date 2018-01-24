@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "ac-haskell-process" "ac-haskell-process.el"
-;;;;;;  (23063 38424 180243 153000))
+;;;;;;  (23136 40364 685442 69000))
 ;;; Generated autoloads from ac-haskell-process.el
 
 (defconst ac-source-haskell-process '((available . ac-haskell-process-available-p) (candidates . ac-haskell-process-candidates) (document . ac-haskell-process-doc) (symbol . "h")) "\

@@ -3,34 +3,8 @@
 (semanticdb-project-database-file "semanticdb-project-database-file"
   :tables
   (list
-    (semanticdb-table "semanticdb-table"
-      :major-mode c++-mode
-      :tags 
-        '( ("iostream" include (:system-flag t) nil [1 20])
-            ("print" function
-               (:arguments 
-                  ( ("a" variable
-                       (:dereference 1
-                        :type "int")
-                        (reparse-symbol arg-sub-list) [33 41])
-                    ("n" variable (:type "int") (reparse-symbol arg-sub-list) [42 48]))                  
-                :type "void")
-                nil [22 139])
-            ("sum" function
-               (:arguments 
-                  ( ("a" variable
-                       (:dereference 1
-                        :type "int")
-                        (reparse-symbol arg-sub-list) [149 157])
-                    ("n" variable (:type "int") (reparse-symbol arg-sub-list) [158 164]))                  
-                :type "int")
-                nil [141 259])
-            ("main" function (:type "int") nil [261 467]))          
-      :file "myprog.cpp"
-      :pointmax 468
-      :fsize 467
-      :lastmodtime '(23077 30153 223690 902000)
-      :unmatched-syntax nil))
+
+)
   :file "!private!tmp!semantic.cache"
   :semantic-tag-version "2.0"
   :semanticdb-version "2.2")

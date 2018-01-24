@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "evil-avy" "evil-avy.el" (23063 38713 43309
-;;;;;;  600000))
+;;;### (autoloads nil "evil-avy" "evil-avy.el" (23139 20152 989334
+;;;;;;  660000))
 ;;; Generated autoloads from evil-avy.el
 
 (defvar evil-avy-mode nil "\

@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ghc-core" "ghc-core.el" (23063 38418 229024
-;;;;;;  130000))
+;;;### (autoloads nil "ghc-core" "ghc-core.el" (23136 40361 379974
+;;;;;;  467000))
 ;;; Generated autoloads from ghc-core.el
 
 (let ((loads (get 'ghc-core 'custom-loads))) (if (member '"ghc-core" loads) nil (put 'ghc-core 'custom-loads (cons '"ghc-core" loads))))
@@ -25,8 +25,8 @@ Major mode for GHC Core files.
 
 ;;;***
 
-;;;### (autoloads nil "ghci-script-mode" "ghci-script-mode.el" (23063
-;;;;;;  38418 210000 970000))
+;;;### (autoloads nil "ghci-script-mode" "ghci-script-mode.el" (23136
+;;;;;;  40361 365549 135000))
 ;;; Generated autoloads from ghci-script-mode.el
 
 (autoload 'ghci-script-mode "ghci-script-mode" "\
@@ -38,8 +38,8 @@ Major mode for working with .ghci files.
 
 ;;;***
 
-;;;### (autoloads nil "haskell" "haskell.el" (23063 38418 235040
-;;;;;;  252000))
+;;;### (autoloads nil "haskell" "haskell.el" (23136 40361 384577
+;;;;;;  610000))
 ;;; Generated autoloads from haskell.el
 
 (autoload 'interactive-haskell-mode "haskell" "\
@@ -153,7 +153,7 @@ Dump minimal imports.
 ;;;***
 
 ;;;### (autoloads nil "haskell-align-imports" "haskell-align-imports.el"
-;;;;;;  (23063 38418 282435 77000))
+;;;;;;  (23136 40361 422013 604000))
 ;;; Generated autoloads from haskell-align-imports.el
 
 (autoload 'haskell-align-imports "haskell-align-imports" "\
@@ -163,8 +163,8 @@ Align all the imports in the buffer.
 
 ;;;***
 
-;;;### (autoloads nil "haskell-c2hs" "haskell-c2hs.el" (23063 38418
-;;;;;;  240542 162000))
+;;;### (autoloads nil "haskell-c2hs" "haskell-c2hs.el" (23136 40361
+;;;;;;  389028 14000))
 ;;; Generated autoloads from haskell-c2hs.el
 
 (add-to-list 'auto-mode-alist '("\\.chs\\'" . haskell-c2hs-mode))
@@ -176,8 +176,8 @@ Mode for editing *.chs files of the c2hs haskell tool.
 
 ;;;***
 
-;;;### (autoloads nil "haskell-cabal" "haskell-cabal.el" (23063 38418
-;;;;;;  263215 706000))
+;;;### (autoloads nil "haskell-cabal" "haskell-cabal.el" (23136 40361
+;;;;;;  407883 682000))
 ;;; Generated autoloads from haskell-cabal.el
 
 (add-to-list 'auto-mode-alist '("\\.cabal\\'" . haskell-cabal-mode))
@@ -216,8 +216,8 @@ OTHER-WINDOW use `find-file-other-window'.
 
 ;;;***
 
-;;;### (autoloads nil "haskell-collapse" "haskell-collapse.el" (23063
-;;;;;;  38418 215141 276000))
+;;;### (autoloads nil "haskell-collapse" "haskell-collapse.el" (23136
+;;;;;;  40361 368848 436000))
 ;;; Generated autoloads from haskell-collapse.el
 
 (autoload 'haskell-collapse-mode "haskell-collapse" "\
@@ -227,8 +227,8 @@ Minor mode to collapse and expand haskell expressions
 
 ;;;***
 
-;;;### (autoloads nil "haskell-commands" "haskell-commands.el" (23063
-;;;;;;  38418 280080 309000))
+;;;### (autoloads nil "haskell-commands" "haskell-commands.el" (23136
+;;;;;;  40361 420361 495000))
 ;;; Generated autoloads from haskell-commands.el
 
 (autoload 'haskell-process-restart "haskell-commands" "\
@@ -352,8 +352,8 @@ Find use cases of the identifier at point and highlight them all.
 
 ;;;***
 
-;;;### (autoloads nil "haskell-compile" "haskell-compile.el" (23063
-;;;;;;  38418 268532 95000))
+;;;### (autoloads nil "haskell-compile" "haskell-compile.el" (23136
+;;;;;;  40361 411336 985000))
 ;;; Generated autoloads from haskell-compile.el
 
 (let ((loads (get 'haskell-compile 'custom-loads))) (if (member '"haskell-compile" loads) nil (put 'haskell-compile 'custom-loads (cons '"haskell-compile" loads))))
@@ -384,7 +384,7 @@ node `(haskell-mode)compilation' for more details.
 ;;;***
 
 ;;;### (autoloads nil "haskell-completions" "haskell-completions.el"
-;;;;;;  (23063 38418 276005 413000))
+;;;;;;  (23136 40361 417320 296000))
 ;;; Generated autoloads from haskell-completions.el
 
 (let ((loads (get 'haskell-completions 'custom-loads))) (if (member '"haskell-completions" loads) nil (put 'haskell-completions 'custom-loads (cons '"haskell-completions" loads))))
@@ -400,7 +400,7 @@ GHC's options, and language extensions, but not identifiers.
 ;;;***
 
 ;;;### (autoloads nil "haskell-customize" "haskell-customize.el"
-;;;;;;  (23063 38418 266311 906000))
+;;;;;;  (23136 40361 409637 362000))
 ;;; Generated autoloads from haskell-customize.el
 
 (let ((loads (get 'haskell 'custom-loads))) (if (member '"haskell-customize" loads) nil (put 'haskell 'custom-loads (cons '"haskell-customize" loads))))
@@ -409,8 +409,8 @@ GHC's options, and language extensions, but not identifiers.
 
 ;;;***
 
-;;;### (autoloads nil "haskell-debug" "haskell-debug.el" (23063 38418
-;;;;;;  207567 882000))
+;;;### (autoloads nil "haskell-debug" "haskell-debug.el" (23136 40361
+;;;;;;  363895 243000))
 ;;; Generated autoloads from haskell-debug.el
 
 (let ((loads (get 'haskell-debug 'custom-loads))) (if (member '"haskell-debug" loads) nil (put 'haskell-debug 'custom-loads (cons '"haskell-debug" loads))))
@@ -436,7 +436,7 @@ Face for muteds." :group (quote haskell-debug))
 ;;;***
 
 ;;;### (autoloads nil "haskell-decl-scan" "haskell-decl-scan.el"
-;;;;;;  (23063 38418 299840 850000))
+;;;;;;  (23136 40361 439084 567000))
 ;;; Generated autoloads from haskell-decl-scan.el
 
 (let ((loads (get 'haskell-decl-scan 'custom-loads))) (if (member '"haskell-decl-scan" loads) nil (put 'haskell-decl-scan 'custom-loads (cons '"haskell-decl-scan" loads))))
@@ -493,8 +493,8 @@ Invokes `haskell-decl-scan-mode-hook' on activation.
 
 ;;;***
 
-;;;### (autoloads nil "haskell-doc" "haskell-doc.el" (23063 38418
-;;;;;;  230897 52000))
+;;;### (autoloads nil "haskell-doc" "haskell-doc.el" (23136 40361
+;;;;;;  381450 299000))
 ;;; Generated autoloads from haskell-doc.el
 
 (let ((loads (get 'haskell-doc 'custom-loads))) (if (member '"haskell-doc" loads) nil (put 'haskell-doc 'custom-loads (cons '"haskell-doc" loads))))
@@ -527,7 +527,7 @@ current buffer.
 ;;;***
 
 ;;;### (autoloads nil "haskell-font-lock" "haskell-font-lock.el"
-;;;;;;  (23063 38418 250877 697000))
+;;;;;;  (23136 40361 397286 423000))
 ;;; Generated autoloads from haskell-font-lock.el
 
 (let ((loads (get 'haskell-appearance 'custom-loads))) (if (member '"haskell-font-lock" loads) nil (put 'haskell-appearance 'custom-loads (cons '"haskell-font-lock" loads))))
@@ -556,8 +556,8 @@ Inherit from `default' to avoid fontification of them." :group (quote haskell-ap
 
 ;;;***
 
-;;;### (autoloads nil "haskell-hoogle" "haskell-hoogle.el" (23063
-;;;;;;  38418 233089 935000))
+;;;### (autoloads nil "haskell-hoogle" "haskell-hoogle.el" (23136
+;;;;;;  40361 383141 888000))
 ;;; Generated autoloads from haskell-hoogle.el
 
 (autoload 'haskell-hoogle "haskell-hoogle" "\
@@ -586,8 +586,8 @@ Do a Hayoo search for QUERY.
 
 ;;;***
 
-;;;### (autoloads nil "haskell-indent" "haskell-indent.el" (23063
-;;;;;;  38418 289110 474000))
+;;;### (autoloads nil "haskell-indent" "haskell-indent.el" (23136
+;;;;;;  40361 428218 359000))
 ;;; Generated autoloads from haskell-indent.el
 
 (let ((loads (get 'haskell-indent 'custom-loads))) (if (member '"haskell-indent" loads) nil (put 'haskell-indent 'custom-loads (cons '"haskell-indent" loads))))
@@ -629,7 +629,7 @@ Invokes `haskell-indent-hook' if not nil.
 ;;;***
 
 ;;;### (autoloads nil "haskell-indentation" "haskell-indentation.el"
-;;;;;;  (23063 38418 242536 925000))
+;;;;;;  (23136 40361 390916 390000))
 ;;; Generated autoloads from haskell-indentation.el
 
 (let ((loads (get 'haskell-indentation 'custom-loads))) (if (member '"haskell-indentation" loads) nil (put 'haskell-indentation 'custom-loads (cons '"haskell-indentation" loads))))
@@ -649,7 +649,7 @@ Turn on the haskell-indentation minor mode.
 ;;;***
 
 ;;;### (autoloads nil "haskell-interactive-mode" "haskell-interactive-mode.el"
-;;;;;;  (23063 38418 212553 547000))
+;;;;;;  (23136 40361 367100 198000))
 ;;; Generated autoloads from haskell-interactive-mode.el
 
 (defface haskell-interactive-face-prompt '((t :inherit font-lock-function-name-face)) "\
@@ -690,8 +690,8 @@ function `haskell-presentation-present', depending on variable
 
 ;;;***
 
-;;;### (autoloads nil "haskell-load" "haskell-load.el" (23063 38418
-;;;;;;  200547 914000))
+;;;### (autoloads nil "haskell-load" "haskell-load.el" (23136 40361
+;;;;;;  262204 318000))
 ;;; Generated autoloads from haskell-load.el
 
 (defface haskell-error-face '((((supports :underline (:style wave))) :underline (:style wave :color "#dc322f")) (t :inherit error)) "\
@@ -716,8 +716,8 @@ running context across :load/:reloads in GHCi.
 
 ;;;***
 
-;;;### (autoloads nil "haskell-menu" "haskell-menu.el" (23063 38418
-;;;;;;  257148 813000))
+;;;### (autoloads nil "haskell-menu" "haskell-menu.el" (23136 40361
+;;;;;;  403194 186000))
 ;;; Generated autoloads from haskell-menu.el
 
 (autoload 'haskell-menu "haskell-menu" "\
@@ -727,8 +727,8 @@ Launch the Haskell sessions menu.
 
 ;;;***
 
-;;;### (autoloads nil "haskell-mode" "haskell-mode.el" (23063 38418
-;;;;;;  284660 532000))
+;;;### (autoloads nil "haskell-mode" "haskell-mode.el" (23136 40361
+;;;;;;  424496 992000))
 ;;; Generated autoloads from haskell-mode.el
 
 (autoload 'haskell-version "haskell-mode" "\
@@ -840,8 +840,8 @@ generated.
 
 ;;;***
 
-;;;### (autoloads nil "haskell-modules" "haskell-modules.el" (23063
-;;;;;;  38418 293184 714000))
+;;;### (autoloads nil "haskell-modules" "haskell-modules.el" (23136
+;;;;;;  40361 432927 297000))
 ;;; Generated autoloads from haskell-modules.el
 
 (autoload 'haskell-session-installed-modules "haskell-modules" "\
@@ -864,7 +864,7 @@ If DONTCREATE is non-nil don't create a new session.
 ;;;***
 
 ;;;### (autoloads nil "haskell-move-nested" "haskell-move-nested.el"
-;;;;;;  (23063 38418 287089 706000))
+;;;;;;  (23136 40361 426382 433000))
 ;;; Generated autoloads from haskell-move-nested.el
 
 (autoload 'haskell-move-nested "haskell-move-nested" "\
@@ -898,7 +898,7 @@ of the region instead.
 ;;;***
 
 ;;;### (autoloads nil "haskell-navigate-imports" "haskell-navigate-imports.el"
-;;;;;;  (23063 38418 295182 567000))
+;;;;;;  (23136 40361 435040 578000))
 ;;; Generated autoloads from haskell-navigate-imports.el
 
 (autoload 'haskell-navigate-imports "haskell-navigate-imports" "\
@@ -919,8 +919,8 @@ Return to the non-import point we were at before going to the module list.
 
 ;;;***
 
-;;;### (autoloads nil "haskell-session" "haskell-session.el" (23063
-;;;;;;  38418 244741 445000))
+;;;### (autoloads nil "haskell-session" "haskell-session.el" (23136
+;;;;;;  40361 392710 706000))
 ;;; Generated autoloads from haskell-session.el
 
 (autoload 'haskell-session-maybe "haskell-session" "\
@@ -936,7 +936,7 @@ Get the session process.
 ;;;***
 
 ;;;### (autoloads nil "haskell-sort-imports" "haskell-sort-imports.el"
-;;;;;;  (23063 38418 261118 411000))
+;;;;;;  (23136 40361 406442 921000))
 ;;; Generated autoloads from haskell-sort-imports.el
 
 (autoload 'haskell-sort-imports "haskell-sort-imports" "\
@@ -951,7 +951,7 @@ within that region.
 ;;;***
 
 ;;;### (autoloads nil "haskell-unicode-input-method" "haskell-unicode-input-method.el"
-;;;;;;  (23063 38418 223533 700000))
+;;;;;;  (23136 40361 375269 135000))
 ;;; Generated autoloads from haskell-unicode-input-method.el
 
 (autoload 'turn-on-haskell-unicode-input-method "haskell-unicode-input-method" "\
@@ -962,7 +962,7 @@ Set input method `haskell-unicode'.
 ;;;***
 
 ;;;### (autoloads nil "highlight-uses-mode" "highlight-uses-mode.el"
-;;;;;;  (23063 38418 272633 53000))
+;;;;;;  (23136 40361 415669 858000))
 ;;; Generated autoloads from highlight-uses-mode.el
 
 (autoload 'highlight-uses-mode "highlight-uses-mode" "\
@@ -972,8 +972,8 @@ Minor mode for highlighting and jumping between uses.
 
 ;;;***
 
-;;;### (autoloads nil "inf-haskell" "inf-haskell.el" (23063 38418
-;;;;;;  205178 623000))
+;;;### (autoloads nil "inf-haskell" "inf-haskell.el" (23136 40361
+;;;;;;  359257 964000))
 ;;; Generated autoloads from inf-haskell.el
 
 (let ((loads (get 'inferior-haskell 'custom-loads))) (if (member '"inf-haskell" loads) nil (put 'inferior-haskell 'custom-loads (cons '"inf-haskell" loads))))
@@ -987,8 +987,8 @@ Show the inferior-haskell buffer.  Start the process if needed.
 
 ;;;***
 
-;;;### (autoloads nil "w3m-haddock" "w3m-haddock.el" (23063 38418
-;;;;;;  278198 759000))
+;;;### (autoloads nil "w3m-haddock" "w3m-haddock.el" (23136 40361
+;;;;;;  418890 408000))
 ;;; Generated autoloads from w3m-haddock.el
 
 (defface w3m-haddock-heading-face '((((class color)) :inherit highlight)) "\
@@ -1000,7 +1000,7 @@ Face for quarantines." :group (quote haskell))
 ;;;;;;  "haskell-ghc-support.el" "haskell-lexeme.el" "haskell-mode-pkg.el"
 ;;;;;;  "haskell-presentation-mode.el" "haskell-process.el" "haskell-repl.el"
 ;;;;;;  "haskell-sandbox.el" "haskell-string.el" "haskell-utils.el")
-;;;;;;  (23063 38418 297414 707000))
+;;;;;;  (23136 40361 436827 596000))
 
 ;;;***
 

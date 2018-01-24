@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "evil-indent-textobject" "evil-indent-textobject.el"
-;;;;;;  (23063 38707 206348 834000))
+;;;;;;  (23139 20147 251103 300000))
 ;;; Generated autoloads from evil-indent-textobject.el
 
 (eval-after-load 'evil '(progn (autoload 'evil-indent-i-indent "evil-indent-textobject" nil t) (autoload 'evil-indent-a-indent "evil-indent-textobject" nil t) (autoload 'evil-indent-a-indent-lines "evil-indent-textobject" nil t) (define-key evil-inner-text-objects-map "i" 'evil-indent-i-indent) (define-key evil-outer-text-objects-map "i" 'evil-indent-a-indent) (define-key evil-outer-text-objects-map "I" 'evil-indent-a-indent-lines)))

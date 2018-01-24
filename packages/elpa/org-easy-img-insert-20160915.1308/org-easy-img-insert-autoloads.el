@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "org-easy-img-insert" "org-easy-img-insert.el"
-;;;;;;  (23063 38530 971186 314000))
+;;;;;;  (23126 26999 97200 776000))
 ;;; Generated autoloads from org-easy-img-insert.el
 
 (autoload 'org-easy-img-insert "org-easy-img-insert" "\

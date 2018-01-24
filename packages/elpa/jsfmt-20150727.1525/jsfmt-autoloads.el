@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "jsfmt" "jsfmt.el" (23063 38651 157089 222000))
+;;;### (autoloads nil "jsfmt" "jsfmt.el" (23126 26822 769419 154000))
 ;;; Generated autoloads from jsfmt.el
 
 (autoload 'jsfmt "jsfmt" "\

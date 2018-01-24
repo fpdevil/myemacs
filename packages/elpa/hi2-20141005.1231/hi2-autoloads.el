@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "hi2" "hi2.el" (23063 38563 966253 297000))
+;;;### (autoloads nil "hi2" "hi2.el" (23126 26737 376863 803000))
 ;;; Generated autoloads from hi2.el
 
 (autoload 'hi2-mode "hi2" "\

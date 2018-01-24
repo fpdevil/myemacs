@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "cherry-blossom-theme" "cherry-blossom-theme.el"
-;;;;;;  (23063 38340 614908 191000))
+;;;;;;  (23126 26525 659521 612000))
 ;;; Generated autoloads from cherry-blossom-theme.el
 
 (when (and (boundp 'custom-theme-load-path) load-file-name) (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))

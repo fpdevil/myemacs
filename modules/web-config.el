@@ -45,10 +45,10 @@
 (add-to-list 'auto-mode-alist '("/\\(views\\|html\\|templates\\)/.*\\.php\\'" . web-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; some customizations for the web-mode                                     ;;
+;; some customization for the web-mode                                     ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun my-web-mode-hook ()
-  "Customizations for the web mode components."
+  "Customization for the web mode components."
   (setq web-mode-enable-auto-pairing t
         web-mode-enable-auto-opening t
         web-mode-enable-auto-indentation t
@@ -63,6 +63,7 @@
         web-mode-markup-indent-offset 2
         web-mode-css-indent-offset 2
         web-mode-code-indent-offset 2
+        web-mode-attr-indent-offset 2
         web-mode-style-padding 2
         web-mode-script-padding 2
         web-mode-block-padding 0
@@ -77,7 +78,8 @@
        (not (or (get-text-property (point) 'part-side)
                 (get-text-property (point) 'block-side)))))
 
-(sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context))
+(after 'smartparens
+  (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -150,6 +152,15 @@
 ;; auto complete with ac-emmet through auto-complete and emmet
 (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
 (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
+
+;; css indentation
+(setq-default css-indent-offset 2)
+;; 2 space indent also for element’s attributes, concatenations
+;; and contiguous function calls
+(with-eval-after-load 'web-mode
+  (add-to-list 'web-mode-indentation-params '("lineup-args" . nil))
+  (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
+  (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; snippet and auto-completions                                             ;;

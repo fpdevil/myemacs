@@ -1,2 +1,2 @@
 ;;; -*- no-byte-compile: t -*-
-(define-package "golint" "20150414.1730" "lint for the Go source code" 'nil :commit "6aaf7c34af0f4c36a57e0c429bace4d706d8e931" :url "https://github.com/golang/lint")
+(define-package "golint" "20150414.1730" "lint for the Go source code" 'nil :commit "e14d9b0f1d332b1420c1ffa32562ad2dc84d645d" :url "https://github.com/golang/lint")

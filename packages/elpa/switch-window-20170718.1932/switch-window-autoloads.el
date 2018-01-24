@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "switch-window" "switch-window.el" (23063 38673
-;;;;;;  947633 516000))
+;;;### (autoloads nil "switch-window" "switch-window.el" (23126 26839
+;;;;;;  181059 271000))
 ;;; Generated autoloads from switch-window.el
 
 (autoload 'switch-window-then-delete "switch-window" "\
@@ -53,7 +53,7 @@ Select a window then swap it buffer with current window's buffer.
 ;;;***
 
 ;;;### (autoloads nil nil ("switch-window-asciiart.el" "switch-window-mvborder.el"
-;;;;;;  "switch-window-pkg.el") (23063 38673 950211 629000))
+;;;;;;  "switch-window-pkg.el") (23126 26839 183186 869000))
 
 ;;;***
 

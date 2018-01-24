@@ -7,56 +7,31 @@
 ;;;              Haskell syntax checking with flymake & flycheck
 ;;;
 ;;; elisp code for haskell helpers
-;;===========================================================================
-
 ;;;
 ;;; Code:
 ;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; flymake handler for checking Haskell source code with hlint.            ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-hook 'haskell-mode-hook 'flymake-hlint-load)
-(add-hook 'haskell-mode-hook (lambda () (ghc-init) (flymake-mode)))
+;;==============================================================================
+(require 'flycheck-haskell)           ;; improved flycheck support for Haskell
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; flcheck handler for checking Haskell source code with hlint.            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(eval-after-load 'flycheck
-  '(progn
-     (flycheck-mode)
-     (setq flycheck-haskell-hlint-executable
-           (concat (getenv "HOME") "/Library/Haskell/bin/hlint"))
-     ;; (setq flycheck-check-syntax-automatically '(save))
-     (add-hook 'haskell-mode-hook
-               '(lambda ()
-                  (setq flycheck-checker 'haskell-hlint)
-                  (setq flycheck-disabled-checkers '(haskell-ghc))
-                  ;(flycheck-mode 1)
-                  ))
-     (add-hook 'flycheck-mode-hook #'flycheck-haskell-setup)
-     (add-hook 'haskell-mode-hook 'flycheck-mode)))
+; (after 'flycheck
+;   '(progn
+;      ;; (flycheck-mode)
+;      (setq flycheck-haskell-hlint-executable (executable-find "hlint"))
+;      (setq flycheck-check-syntax-automatically '(save idle-change new-line mode-enabled))
+;      ;; (setq flycheck-check-syntax-automatically '(save))
+;      (add-hook 'flycheck-mode-hook #'flycheck-haskell-setup)
+;      (add-hook 'haskell-mode-hook 'flycheck-mode)
+;      (add-hook 'haskell-mode-hook
+;                '(lambda ()
+;                   (setq flycheck-checker 'haskell-hlint)
+;                   (setq flycheck-disabled-checkers '(haskell-ghc))))))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; which-function-mode for Haskell buffers
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(which-function-mode)
-(eval-after-load "which-func"
-  '(add-to-list 'which-func-modes 'haskell-mode))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; intero (not used, so commented)                                            ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; (defun haskell-process-cabal-build-and-restart ()
-;   "Build and restart the Cabal project."
-;   (interactive)
-;   (intero-devel-reload))
-;
-; (add-hook 'haskell-mode-hook 'intero-mode)
-; ;; key map
-; (define-key intero-mode-map (kbd "C-`") 'flycheck-list-errors)
-; (define-key intero-mode-map [f12] 'intero-devel-reload)
+(after 'flycheck
+  '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
+(setq flycheck-haskell-hlint-executable (executable-find "hlint"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; DOC Strings                                                                ;;
@@ -81,9 +56,9 @@
   " -}\n"
   "module " v1 " where\n\n")
 
-;; uncomment the below line to insert module docstring as defined in haskell-module-skeleton
+;; un-comment the below line to insert module docstring as defined in haskell-module-skeleton
 ;; (add-to-list 'auto-insert-alist '("\\.hs\\|.lhs\\'" . haskell-module-skeleton))
-
+(add-hook 'haskell-mode-hook 'haskell-auto-insert-module-template)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; insert comment doc with C-c C-a
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -138,6 +113,87 @@
 
 ;; in order to use the above to insert doc string, uncomment below
 (add-hook 'haskell-mode-hook 'haskell-insert-docstring)
+
+
+;; A function used to change the behaviour of return.  If you press it at
+;; the start of a line, it will just move the code down a line.  If you
+;; press it anywhere else, you get automatic indentation.
+; (defun haskell-ret()
+;   "Return"
+;   (interactive)
+;   (if (bolp) (newline) (newline-and-indent)))
+; (add-hook 'haskell-mode-hook (lambda () (local-set-key (kbd "RET") 'haskell-ret)))
+
+
+(defun set-newline-and-indent ()
+  (local-set-key (kbd "RET") 'newline-and-indent))
+(add-hook 'haskell-mode-hook 'set-newline-and-indent)
+
+;; set tab width to 2
+(add-hook 'haskell-mode-hook
+          (lambda ()
+            ;; use spaces instead of tabs when indenting
+            (setq indent-tabs-mode nil)
+            (setq tab-width 2)
+            (setq whitespace-tab-width 2)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flymake handler for checking Haskell source code with hlint.              ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'flymake-hlint)              ;; flymake handler for checking Haskell source with hlint
+(add-hook 'haskell-mode-hook 'flymake-hlint-load)
+
+;; haskell flymake configuration
+(when (load "flymake" t)
+  (defun flymake-hslint-init ()
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                     'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
+      (list "~/.emacs.d/flycheck/hslint" (list local-file))))
+
+  (add-to-list 'flymake-allowed-file-name-masks '("\\.hs$\\'" flymake-hslint-init))
+  (add-to-list 'flymake-allowed-file-name-masks '("\\.lhs$\\'" flymake-hslint-init)))
+
+;; flymake-mode for Haskell with the Perl script flymake_haskell.pl
+; (when (load "flymake" t)
+;   ;; (add-hook 'haskell-mode-hook 'flymake-hlint-load)
+;   (add-hook 'haskell-mode-hook (lambda () (ghc-init) (flymake-mode)))
+;   (defun flymake-haskell-init (&optional trigger-type)
+;     "Return the command to run Python checks with pyflymake.py"
+;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;                        'flymake-create-temp-inplace))
+;            (local-file (file-relative-name
+;                         temp-file
+;                         (file-name-directory buffer-file-name)))
+;            (options (when trigger-type (list "--trigger-type" trigger-type))))
+;       ;; after an extended check, disable check-on-edit
+;       (when (member trigger-type '("save" "force"))
+;         (setq flymake-no-changes-timeout 18600))
+;       (list "~/.emacs.d/flymake/flymake_haskell.pl" (append options (list local-file)))))
+
+;   (push '(".+\\hs$" flymake-haskell-init) flymake-allowed-file-name-masks)
+;   (push '(".+\\lhs$" flymake-haskell-init) flymake-allowed-file-name-masks)
+;   (push
+;    '("^\\(\.+\.hs\\|\.lhs\\):\\([0-9]+\\):\\([0-9]+\\):\\(.+\\)"
+;      1 2 3 4) flymake-err-line-patterns))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; intero (not used, so commented)                                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; (require-package 'intero)
+; (require 'intero)                   ;; complete development mode for haskell
+; (defun haskell-process-cabal-build-and-restart ()
+;   "Build and restart the Cabal project."
+;   (interactive)
+;   (intero-devel-reload))
+;
+; (add-hook 'haskell-mode-hook 'intero-mode)
+; ;; key map
+; (define-key intero-mode-map (kbd "C-`") 'flycheck-list-errors)
+; (define-key intero-mode-map [f12] 'intero-devel-reload)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'haskell-helper-config)

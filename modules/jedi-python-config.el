@@ -9,7 +9,10 @@
 ;;;              A full featured python ide and language support for Aquamacs
 ;;; https://github.com/wernerandrew/jedi-starter/blob/master/jedi-starter.el
 ;;; http://wikemacs.org/wiki/Python
+;;;
+;;; Code:
 ;;;=============================================================================
+(require 'jedi)                 ; a Python auto-completion for Emacs
 
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)
@@ -61,16 +64,16 @@
     (require 'auto-complete-config)
     (ac-config-default))
 
+;; -- company integration for jedi
 (after 'company
     (require 'company-jedi)
     (defun my-python-hooks()
-        (eval-after-load "company"
-            '(progn
-                (unless (member 'company-jedi (car company-backends))
-                    (setq comp-back (car company-backends))
-                    (push 'company-jedi comp-back)
-                    (setq company-backends (list comp-back)))
-                )))
+        '(progn
+            (unless (member 'company-jedi (car company-backends))
+                (setq comp-back (car company-backends))
+                (push 'company-jedi comp-back)
+                (setq company-backends (list comp-back))
+                (setq company-backends (delete 'company-bbdb company-backends)))))
     (add-hook 'python-mode-hook 'my-python-hooks))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

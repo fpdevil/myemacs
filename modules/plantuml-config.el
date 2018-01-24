@@ -13,10 +13,21 @@
 ;;;              https://github.com/zweifisch/ob-http
 ;;;
 ;;; elisp code for org support and handling
+;;; examples @href http://plantuml.com/
 ;;;
 ;;; Code:
 ;;;
 ;;;============================================================================
+
+;; file mode enable
+(add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+(add-to-list 'auto-mode-alist '("\\.uml\\'"      . plantuml-mode))
+
+;; disable electric indent mode
+(add-hook 'electric-indent-mode-hook (lambda () (electric-indent-local-mode -1)))
+;; to restore
+(add-hook 'electric-indent-mode-hook
+          (lambda () (local-set-key (kbd "C-j") #'newline-and-indent)))
 
 ;;-----------------------------------------------------------------------------
 ;;; plantuml configuration
@@ -106,6 +117,32 @@
 (after 'flycheck
   (require 'flycheck-plantuml)
   (flycheck-plantuml-setup))
+
+;;------------------------------------------------------------------------------
+;; Save png image in plantuml-mode
+;;------------------------------------------------------------------------------
+;; If you want to save png file while saving .plantuml file, comment in here
+;; (add-hook 'plantuml-mode-hook
+;;    (lambda () (add-hook 'after-save-hook 'plantuml-save-png)))
+(defun plantuml-save-png ()
+  "Save the plantuml image."
+  (interactive)
+  (when (buffer-modified-p)
+    (map-y-or-n-p "Save this buffer before executing PlantUML?"
+      'save-buffer (list (current-buffer))))
+  (let ((code (buffer-string))
+         out-file
+         cmd)
+    (when (string-match "^\\s-*@startuml\\s-+\\(\\S-+\\)\\s*$" code)
+      (setq out-file (match-string 1 code)))
+    (setq cmd (concat
+                "java -Djava.awt.headless=true -jar " plantuml-java-options " "
+                (shell-quote-argument plantuml-jar-path) " "
+                (and out-file (concat "-t" (file-name-extension out-file))) " "
+                plantuml-options " "
+                (buffer-file-name)))
+    (message cmd)
+    (call-process-shell-command cmd nil 0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

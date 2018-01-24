@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "highlight-symbol" "highlight-symbol.el" (23063
-;;;;;;  38623 236806 140000))
+;;;### (autoloads nil "highlight-symbol" "highlight-symbol.el" (23126
+;;;;;;  26797 255020 173000))
 ;;; Generated autoloads from highlight-symbol.el
 
 (autoload 'highlight-symbol-mode "highlight-symbol" "\

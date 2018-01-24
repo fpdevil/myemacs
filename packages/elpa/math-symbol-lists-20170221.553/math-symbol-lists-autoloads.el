@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil nil ("math-symbol-lists-pkg.el" "math-symbol-lists.el"
-;;;;;;  "msl-build.el") (23063 38404 339802 392000))
+;;;;;;  "msl-build.el") (23126 26570 419569 799000))
 
 ;;;***
 

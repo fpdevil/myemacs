@@ -7,11 +7,10 @@
 ;;; Description: Emacs color theme config
 ;;;
 ;;; elisp code for customizing the color theme
-;;===============================================================================
-
 ;;;
 ;;; Code:
 ;;;
+;;===============================================================================
 
 (require 'color-theme)
 

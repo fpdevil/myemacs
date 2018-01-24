@@ -5,11 +5,12 @@
 ;;; Filename   : rbow-config.el
 ;;; Description: rainbow-mode is a minor mode for Emacs which displays strings
 ;;;              representing colors with color they represent as background.
-;;;===========================================================================
-(require 'rainbow-mode)    ;; Colorize color names in buffers
 ;;;
 ;;; Code:
 ;;;
+;;;===========================================================================
+(require 'rainbow-mode)    ;; Colorize color names in buffers
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; fancy stuff, for colorizing names in buffer with rainbow mode            ;;
 ;; adds Rbow to the mode line for displaying status                         ;;

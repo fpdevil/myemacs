@@ -218,6 +218,7 @@
   "Auto completion using ac."
   (require 'auto-complete-c-headers)      ;; auto-complete source for C/C++ header files
   (add-to-list 'ac-sources 'ac-source-c-headers)
+  (add-to-list 'ac-sources 'ac-source-c-header-symbols t)
   ;; execute command `gcc -xc++ -E -v -` to find the header directories
   (add-to-list 'achead:include-directories '"/usr/include")
   (add-to-list 'achead:include-directories '"/usr/local/include")
@@ -259,11 +260,8 @@
             (add-to-list
              'company-c-headers-path-system item))
           '("/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"
-            "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include"
+            "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/9.0.0/include"
             "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"
-            "/usr/local/opt/gcc/include/c++/6.3.0"
-            "/usr/include/c++/4.2.1"
-            "/usr/local/opt/opencv3/include"
             "/usr/local/include"
             "/usr/include"
            )))
@@ -331,30 +329,44 @@ build directory."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; flycheck syntax checking
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(after 'flycheck
-(add-hook 'c++-mode-hook
-          (lambda ()
-            (setq flycheck-clang-language-standard "c++11")
-            (setq flycheck-clang-include-path (list "/usr/local/include" "/usr/include"))
-            (setq flycheck-c/c++-gcc-executable (executable-find "clang++"))
-            )))
-
-
 ;;; clang include paths for flycheck
-(setq flycheck-clang-include-path
-  (append (mapcar
-            (lambda (item)
-              (concat "-I" item))
-            (split-string
-              "
-                /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1
-                /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include
-                /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include
-                ;;/usr/local/opt/opencv3/include
-                /usr/local/include
-                /usr/include
-                "))
-    flycheck-clang-include-path))
+; (setq flycheck-clang-include-path
+;   (append (mapcar
+;             (lambda (item)
+;               (concat "-I" item))
+;             (split-string
+;               "
+;                 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1
+;                 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/9.0.0/include
+;                 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include
+;                 ;;/usr/local/opt/opencv3/include
+;                 /usr/local/include
+;                 /usr/include
+;                 "))
+;     flycheck-clang-include-path))
+
+(defvar include-path
+    (mapcar
+        (lambda (item)
+          (concat "-I" item))
+        (split-string
+          "
+            /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1
+            /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/9.0.0/include
+            /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include
+            ;;/usr/local/opt/opencv3/include
+            /usr/local/include
+            /usr/include
+            ")))
+
+(after 'flycheck
+  (add-hook 'c++-mode-hook
+            (lambda ()
+              (setq flycheck-clang-language-standard "c++11")
+              ;; (setq flycheck-clang-include-path (list "/usr/local/include" "/usr/include"))
+              (setq flycheck-clang-include-path include-path)
+              (setq flycheck-c/c++-gcc-executable (executable-find "clang++"))
+              )))
 
 ;;-----------------------------------------------------------------------------
 ;;; [ modern-cpp-font-lock ] -- font-locking for C++ mode

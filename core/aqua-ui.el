@@ -37,7 +37,7 @@
 (setq font-lock-maximum-decoration t)
 
 ;;-----------------------------------------------------------------------------
-;; add proper word wrapping                                                ;;
+;; add proper word wrapping
 ;;-----------------------------------------------------------------------------
 (global-visual-line-mode t)
 
@@ -49,7 +49,7 @@
 (size-indication-mode t)
 
 ;;-----------------------------------------------------------------------------
-;; for pdf viewing                                                         ;;
+;; for pdf viewing
 ;;-----------------------------------------------------------------------------
 (setq doc-view-continuous t)
 
@@ -83,6 +83,7 @@
                       :width 'normal
                       :height 115
                       :weight 'light)
+
   ;;
   ;;(set-face-attribute 'default nil
   ;;                    :family "Monaco for Powerline"

@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "python-pylint" "python-pylint.el" (23086 33641
-;;;;;;  279563 92000))
+;;;### (autoloads nil "python-pylint" "python-pylint.el" (23126 26699
+;;;;;;  308184 616000))
 ;;; Generated autoloads from python-pylint.el
 
 (autoload 'python-pylint "python-pylint" "\
