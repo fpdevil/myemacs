@@ -5,3 +5,8 @@ games/
 .DS_Store
 .*
 !/.gitignore
+private/ycmd
+edts/
+./network-security.data
+eshell
+backup
