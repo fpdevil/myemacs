@@ -1,0 +1,68 @@
+#+TITLE: Beamer sample presentations
+#+AUTHOR: Sampath Singamsetty
+#+DESCRIPTION: Walktrough of Beamer
+#+OPTIONS: H:2 num:nil
+#+OPTIONS: ^:{} # make super/subscripts only when wrapped in {}
+#+OPTIONS: toc:nil # suppress toc, so we can put it where we want
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+COLUMNS: %45ITEM %10BEAMER_env(Env) %10BEAMER_act(Act) %4BEAMER_col(Col) %8BEAMER_opt(Opt)
+#+BEAMER_THEME: PaloAlto [height=20pt]
+#+BEAMER_COLOR_THEME: spruce
+
+* Secret page                                 :noexport:
+
+** This is where todos and notes can go!
+
+it isn't exported because of the EXCLUDE_TAGS above
+
+*** TODO work how dogs > cats into the PRESENTATION
+
+*** DONE write a quick blog post
+
+* Introduction
+
+** This is an intro page
+
+Org mode is neat, and org-exports are neat, TOO.
+
+- There are lots of keybinds to make things easy
+
+- There are menus and tons of blogs all over
+
+- Plus, did no one mention the LISP?!
+
+- Themes are located at /usr/local/texlive/2016/texmf-dist/tex/latex/beamer/themes/theme
+
+* Page two
+
+** Because a second page always helps
+
+*** Idea block one
+
+- don't you want more posts?
+
+  - like one on images
+
+  - or one on pictures
+
+  - With S_{u}b_{t}e_{x}t[fn:: Foot Notes]
+
+  - Formulas \(a=b+c-d\)
+
+*** Idea block two
+
+#+begin_src python
+from ideas import new_ideas
+
+def fun(idea):
+   new_ideas.append(idea)
+#+end_src
+
+*** Idea block three
+
+- Get more themes from https://latex.simon04.net/
+* By the way
+
+** You too can import an image
+[[.//example.jpg]]

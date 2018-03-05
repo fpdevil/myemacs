@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "company-try-hard" "company-try-hard.el" (23126
-;;;;;;  26552 959236 525000))
+;;;### (autoloads nil "company-try-hard" "company-try-hard.el" (23196
+;;;;;;  55701 996538 856000))
 ;;; Generated autoloads from company-try-hard.el
 
 (autoload 'company-try-hard "company-try-hard" "\

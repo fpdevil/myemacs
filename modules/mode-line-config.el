@@ -137,7 +137,8 @@
 (when (eq dotemacs-mode-line 'spaceline)
   (require-package 'spaceline)
   (require 'spaceline-config)
-  (setq spaceline-highlight-face-func #'spaceline-highlight-face-evil-state)
+  (setq spaceline-highlight-face-func #'spaceline-highlight-face-evil-state
+        spaceline-minor-modes-separator nil)
   (spaceline-spacemacs-theme)
   (spaceline-info-mode)
   (after "helm-autoloads"

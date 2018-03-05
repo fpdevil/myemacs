@@ -6,38 +6,50 @@
 ;;;
 ;;; Filename   : dired-config.el
 ;;; Description: file explorer operations through dired [C-U C-X d]
-;;;============================================================================
-(when (eq system-type 'darwin)
-  (require 'ls-lisp)
-  (setq ls-lisp-use-insert-directory-program nil
-        ls-lisp-dirs-first t))
-
+;; ;;;============================================================================
+;; (when (eq system-type 'darwin)
+;;   (require 'ls-lisp)
+;;   (setq ls-lisp-use-insert-directory-program nil
+;;         ls-lisp-dirs-first t))
+;;
 ;;-----------------------------------------------------------------------------
 ;; http://www.emacswiki.org/DiredPlus
 ;;-----------------------------------------------------------------------------
 (use-package dired+
-  :ensure t
-  ;;:defer t
-  :config
-  (setq diredp-hide-details-initially-flag nil)
-  (setq diredp-hide-details-propagate-flag nil))
+             :ensure t
+             ;;:defer t
+             :config
+             (setq diredp-hide-details-initially-flag nil)
+             (setq diredp-hide-details-propagate-flag nil)
+             (defalias 'dired-find-file 'diredp-find-file)
+             (defalias 'dired-get-filename 'diredp-get-filename)
+             (defalias 'dired-goto-file 'diredp-goto-file)
+             (defalias 'dired-insert-directory 'diredp-insert-directory)
+             (defalias 'dired-insert-set-properties 'diredp-insert-set-properties)
+             (defalias 'dired-mark-files-regexp 'diredp-mark-files-regexp)
+             (defalias 'dired-mark-pop-up 'diredp-mark-pop-up)
+             (defalias 'dired-pop-to-buffer 'diredp-pop-to-buffer)
+             (defalias 'dired-revert 'diredp-revert)
+             (defalias 'dired-switches-escape-p 'diredp-switches-escape-p)
+             (defalias 'dired-up-directory 'diredp-up-directory)
+             )
 
 
 ;; http://truongtx.me/2013/04/24/dired-as-default-file-manager-1-introduction
 
 (use-package dired-details+
-  :ensure t
-  ;;:defer t
-  )
+             :ensure t
+             ;;:defer t
+             )
 
 ;;-----------------------------------------------------------------------------
 ;;  Ibuffer like filtering for dired
 ;;-----------------------------------------------------------------------------
 (use-package dired-filter
-  :ensure t
-  :defer t
-  :init
-   (setq dired-filter-show-filters 'nil))
+             :ensure t
+             :defer t
+             :init
+             (setq dired-filter-show-filters 'nil))
 
 ;;---------------------------------------------------------------------------
 ;; for handling dired collection
@@ -71,51 +83,51 @@
   "Dired Audio files extensions")
 
 (defconst dired-video-files-extensions
-    '("vob" "VOB" "mkv" "MKV" "mpe" "mpg" "MPG" "mp4" "MP4" "ts" "TS" "m2ts"
-      "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
-    "Dired Video files extensions")
+  '("vob" "VOB" "mkv" "MKV" "mpe" "mpg" "MPG" "mp4" "MP4" "ts" "TS" "m2ts"
+    "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
+  "Dired Video files extensions")
 
 (use-package dired-rainbow
-  :defer t
-  :config
-  (progn
-    (dired-rainbow-define html "#4e9a06" ("htm" "html" "xhtml"))
-    (dired-rainbow-define xml "#b4fa70" ("xml" "xsd" "xsl" "xslt" "wsdl"))
+             :defer t
+             :config
+             (progn
+               (dired-rainbow-define html "#4e9a06" ("htm" "html" "xhtml"))
+               (dired-rainbow-define xml "#b4fa70" ("xml" "xsd" "xsl" "xslt" "wsdl"))
 
-    (dired-rainbow-define document "#fce94f" ("doc" "docx" "odt" "pdb" "pdf" "ps" "rtf" "djvu" "epub"))
-    (dired-rainbow-define excel "#3465a4" ("xlsx"))
+               (dired-rainbow-define document "#fce94f" ("doc" "docx" "odt" "pdb" "pdf" "ps" "rtf" "djvu" "epub"))
+               (dired-rainbow-define excel "#3465a4" ("xlsx"))
 
-    (dired-rainbow-define log "#c17d11" (".*\\.log"))
-    (dired-rainbow-define sourcefile "#fcaf3e" ("py" "c" "cc" "h" "java" "pl" "rb" "R" "php"))
+               (dired-rainbow-define log "#c17d11" (".*\\.log"))
+               (dired-rainbow-define sourcefile "#fcaf3e" ("py" "c" "cc" "h" "java" "pl" "rb" "R" "php"))
 
-    (dired-rainbow-define executable "#8cc4ff" ("exe" "msi"))
-    (dired-rainbow-define compressed "#ad7fa8" ("zip" "bz2" "tgz" "txz" "gz" "xz" "z" "Z" "jar" "war" "ear" "rar" "sar" "xpi" "apk" "xz" "tar"))
-    (dired-rainbow-define packaged "#e6a8df" ("deb" "rpm"))
-    (dired-rainbow-define encrypted "LightBlue" ("gpg" "pgp"))
+               (dired-rainbow-define executable "#8cc4ff" ("exe" "msi"))
+               (dired-rainbow-define compressed "#ad7fa8" ("zip" "bz2" "tgz" "txz" "gz" "xz" "z" "Z" "jar" "war" "ear" "rar" "sar" "xpi" "apk" "xz" "tar"))
+               (dired-rainbow-define packaged "#e6a8df" ("deb" "rpm"))
+               (dired-rainbow-define encrypted "LightBlue" ("gpg" "pgp"))
 
-    (dired-rainbow-define-chmod executable-unix "Green" "-[rw-]+x.*")
+               (dired-rainbow-define-chmod executable-unix "Green" "-[rw-]+x.*")
 
-    (dired-rainbow-define image "#ff4b4b" ("jpg" "png" "jpeg" "gif"))
-    (dired-rainbow-define audio "#329EE8" dired-audio-files-extensions)
-    (dired-rainbow-define video "#B3CCFF" dired-video-files-extensions)))
+               (dired-rainbow-define image "#ff4b4b" ("jpg" "png" "jpeg" "gif"))
+               (dired-rainbow-define audio "#329EE8" dired-audio-files-extensions)
+               (dired-rainbow-define video "#B3CCFF" dired-video-files-extensions)))
 
 ;;-----------------------------------------------------------------------------
 ;; addons for dired
 ;;-----------------------------------------------------------------------------
 (use-package find-dired
-   :ensure t
-   :init (setq find-ls-option '("-print0 | xargs -0 ls -od" . "-od")))
+             :ensure t
+             :init (setq find-ls-option '("-print0 | xargs -0 ls -od" . "-od")))
 
 ;;-----------------------------------------------------------------------------
 ;; peep at files in another window from dired buffers
 ;;-----------------------------------------------------------------------------
 (use-package peep-dired
-  :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
-  :init
-  (setq peep-dired-cleanup-on-disable t)
-  (setq peep-dired-enable-on-directories t)
-  :bind (:map dired-mode-map
-              ("P" . peep-dired)))
+             :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
+             :init
+             (setq peep-dired-cleanup-on-disable t)
+             (setq peep-dired-enable-on-directories t)
+             :bind (:map dired-mode-map
+                         ("P" . peep-dired)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

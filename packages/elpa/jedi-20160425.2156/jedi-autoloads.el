@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "jedi" "jedi.el" (23126 26686 765853 572000))
+;;;### (autoloads nil "jedi" "jedi.el" (23196 55874 495387 722000))
 ;;; Generated autoloads from jedi.el
 
 (autoload 'jedi:ac-setup "jedi" "\

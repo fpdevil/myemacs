@@ -1,12 +1,16 @@
-;;; package  --- javascript-config.el
+;;; package  --- js-config.el
 ;;; -*- coding: utf-8 -*-
 ;;;
 ;;; Commentary:
 ;;;
-;;; Filename   : javascript-config.el
+;;; Filename   : js-config.el
 ;;; Description: Emacs configuration for javascript development support
 ;;; ref: http://codewinds.com/blog/2015-04-02-emacs-flycheck-eslint-jsx.html
 ;;; elisp code for customizing the js development settings
+;;; -- flycheck --
+;;; javascript-eslint is  part of flycheck, it  will fallback to it  as we
+;;; have  disabled  priority   one  javascript-jshint  and  json-json-lint
+;;; checkers
 ;;;
 ;;; Code:
 ;;;
@@ -16,16 +20,19 @@
 (require 'js-doc)                   ;; insert JsDoc style comment easily
 (require 'js2-mode)                 ;; js2 javascript mode
 (require 'jsfmt)                    ;; formatting with jsfmt
-(require 'node-ac-mode)             ;; nodejs auto-completion
 (require 'json-mode)                ;; for json
 (require 'json-navigator)           ;; view json docs (M-x json-navigator)
+
+;;(require 'tern-context-coloring)
+;;(require 'simple-httpd)           ;; required and fulfilled by js2-mode
 
 ;;------------------------------------------------------------------------------
 ;; Change some defaults: customize them to override (js-mode indentation levels)
 ;;------------------------------------------------------------------------------
-(defconst preferred-javascript-indent-level 2)
-(setq-default js-indent-level preferred-javascript-indent-level)
-(setq-default js2-basic-offset preferred-javascript-indent-level)
+(defconst preferred-javascript-indent-level 4)
+(setq-local js-indent-level preferred-javascript-indent-level)
+(setq-local js2-basic-offset preferred-javascript-indent-level)
+(setq-local javascipt-indent-level preferred-javascript-indent-level)
 
 ;;------------------------------------------------------------------------------
 ;; json-mode indentation settings
@@ -47,17 +54,21 @@
 (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
 
 (defun my-create-newline-and-enter-sexp (&rest _ignored)
-  "Open a new brace or bracket expression, with relevant newlines and indent. "
+  "Open a new brace or bracket expression, with relevant newlines and indent."
   (newline)
   (indent-according-to-mode)
   (forward-line -1)
   (indent-according-to-mode))
+
+;; make return key also do indent, for current buffer only
+(electric-indent-local-mode 1)
 
 ;;------------------------------------------------------------------------------
 ;; file modes association and auto lists
 ;;------------------------------------------------------------------------------
 (add-to-list 'auto-mode-alist '("\\.js\\'"       . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.js$"         . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'"      . js2-mode))    ;; for jsx
 (add-to-list 'auto-mode-alist '("\\.eslintrc.*$" . json-mode))
 (add-to-list 'auto-mode-alist '("\\.babelrc$"    . json-mode))
 
@@ -82,7 +93,7 @@
   '(add-hook 'js2-mode-hook (lambda () (js2-highlight-vars-mode))))
 
 ;;------------------------------------------------------------------------------
-;; js2 customization - syntax specific and key binding settings
+;; js2 customizations - syntax specific and key binding settings
 ;;------------------------------------------------------------------------------
 (setq ac-js2-evaluate-calls t)
 (setq js2-highlight-level 3        ;; amount of syntax highlighting to perform
@@ -104,33 +115,58 @@
                                "setInterval" "clearInterval" "location"
                                "__dirname" "console" "JSON" "jQuery" "$" "angular"))
 
-;; javascript refactoring library for Emacs
-(require-package 'js2-refactor)
-(require 'js2-refactor)
-(add-hook 'js2-mode-hook #'js2-refactor-mode)
-(setq js2-skip-preprocessor-directives t)
-(define-key js2-mode-map (kbd "C-k") #'js2r-kill)
-
-;; jump to references/definitions using ag & js2-mode's AST in Emacs
-(require-package 'xref-js2)
-(require 'xref-js2)
-;; js-mode (which js2 is based on) binds "M-." which conflicts with xref, so
-;; unbind it.
-(define-key js-mode-map (kbd "M-.") nil)
-
-(add-hook 'js2-mode-hook (lambda ()
-  (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))
-
 ;;------------------------------------------------------------------------------
 ;; tern - intelligent javascript tooling
 ;; first install with npm - install -g tern
 ;;------------------------------------------------------------------------------
-(add-hook 'js-mode-hook (lambda () (tern-mode t)))
-(eval-after-load 'tern
-   '(progn
-      (require 'tern-auto-complete)
-      (tern-ac-setup)))
+(after "js2-mode-autoloads"
+  ;; javascript code refactoring
+  ;; https://github.com/magnars/js2-refactor.el
+  (require-package 'js2-refactor)
+  (after 'js2-refactor
+    ;; kbd prefix as C-c C-m (extract function with `C-c C-m ef`)
+    (js2r-add-keybindings-with-prefix "C-c C-m"))
 
+  (add-hook 'js2-mode-hook #'js2-refactor-mode)
+  (add-hook 'js2-minor-mode-hook #'js2-refactor-mode)
+
+  (when (executable-find "tern")
+    (require-package 'tern)
+    (after 'tern
+      (after 'auto-complete
+        (require-package 'tern-auto-complete)
+        (tern-ac-setup))
+      (after 'company-mode
+             (require-package 'company-tern)
+             (add-to-list 'company-backends 'company-tern)
+             (add-hook 'js2-mode-hook (lambda ()
+                                        (tern-mode)
+                                        (company-mode)))
+             ))
+
+    (add-hook 'js2-mode-hook #'tern-mode)
+    (add-hook 'js2-minor-mode-hook #'tern-mode)))
+
+(add-hook 'js-mode-hook
+  (lambda ()
+    (tern-mode t)))
+
+;; company auto completion integration with tern
+;; (after 'company
+;;   (when (executable-find "tern")
+;;     (after "company-tern-autoloads"
+;;       (add-to-list (make-local-variable 'company-backends) 'company-tern))))
+
+;; tern completion with auto complete mode
+;; (after "auto-complete"
+;;    '(progn
+;;       (require 'tern-auto-complete)
+;;       (tern-ac-setup)))
+
+
+;; (add-hook 'js2-mode-hook
+;;   (lambda ()
+;;     (tern-mode t)))
 
 ;;------------------------------------------------------------------------------
 ;; Force restart of tern in new projects (M-x delete-tern-process)
@@ -212,17 +248,20 @@
                                 lines
                                 space-before-tab::tab newline
                                 indentation::tab empty
-                                space-after-tab::tab space-mark tab-mark newline-mark)))
-            (linum-mode 1))
+                                space-after-tab::tab space-mark tab-mark newline-mark))))
 (add-to-list 'ac-modes 'js3-mode)
 
 ;;------------------------------------------------------------------------------
-;; live loading with skewer (for front-end)
+;; [ skewer ] - live loading with skewer (for front-end)
+;; [ livid ] - Live browser eval of JavaScript every time a buffer changes
 ;;------------------------------------------------------------------------------
 (after "skewer-mode"
   (add-hook 'js2-mode-hook 'skewer-mode)
   (add-hook 'css-mode-hook 'skewer-css-mode)
   (add-hook 'html-mode-hook 'skewer-html-mode))
+
+(require-package 'livid-mode)
+(require 'livid-mode)
 
 ;;------------------------------------------------------------------------------
 ;; jsfmt For formatting, searching, and rewriting javascript
@@ -279,8 +318,10 @@
 ;;------------------------------------------------------------------------------
 ;; key bindings for node-ac node js auto-completion for emacs
 ;;------------------------------------------------------------------------------
-(setq node-ac-node-modules-path "/usr/local/lib/node_modules")
+; (require 'node-ac-mode)             ;; nodejs auto-completion
+; (setq node-ac-node-modules-path "/usr/local/lib/node_modules")
 
+;; [optional] - key bindings
 ;; (add-hook 'js2-mode-hook
 ;;           (lambda ()
 ;;        (local-set-key (kbd "C-.") 'node-ac-auto-complete)
@@ -390,17 +431,22 @@ See URL `https://github.com/tensor5/JSLinter'."
   :modes (js-mode js2-mode js3-mode))
 
 ;;------------------------------------------------------------------------------
-;; flycheck syntax checking
+;; [ flycheck ] syntax checker
 ;;------------------------------------------------------------------------------
 (add-hook 'js-mode-hook
           (lambda () (flycheck-mode t)))
 
 ;;------------------------------------------------------------------------------
+;; [ flymake ] syntax checker for json  mode
+;;------------------------------------------------------------------------------
+(require-package 'flymake-json)
+(add-hook 'json-mode 'flymake-json-load)
+
+;;------------------------------------------------------------------------------
 ;;; [ import-js ] -- A tool to simplify importing of JS modules.
 ;;------------------------------------------------------------------------------
-(use-package import-js
-  :ensure t
-  :defer t)
+(require-package 'import-js)
+(require 'import-js)
 
 ;;------------------------------------------------------------------------------
 ;; prettify symbols in javascript
@@ -444,11 +490,11 @@ See URL `https://github.com/tensor5/JSLinter'."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(provide 'javascript-config)
+(provide 'js-config)
 
 ;; Local Variables:
 ;; coding: utf-8
 ;; mode: emacs-lisp
 ;; End:
 
-;;; javascript-config.el ends here
+;;; js-config.el ends here

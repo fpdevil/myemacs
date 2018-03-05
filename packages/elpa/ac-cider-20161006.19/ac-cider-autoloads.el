@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ac-cider" "ac-cider.el" (23126 26598 592931
-;;;;;;  934000))
+;;;### (autoloads nil "ac-cider" "ac-cider.el" (23196 55758 246665
+;;;;;;  52000))
 ;;; Generated autoloads from ac-cider.el
 
 (defface ac-cider-candidate-face '((t (:inherit ac-candidate-face))) "\

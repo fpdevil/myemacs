@@ -143,8 +143,8 @@
 ;;-------------------------------------------------------------------------------
 ;;; which function mode for displaying function names
 ;;-------------------------------------------------------------------------------
-(eval-after-load "which-func"
-  '(add-to-list 'which-func-modes 'elisp-mode))
+;;(eval-after-load "which-func"
+;;  '(add-to-list 'which-func-modes 'elisp-mode))
 
 ;;-------------------------------------------------------------------------------
 ;;; search lisp doc under the cursor

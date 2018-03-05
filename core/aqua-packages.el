@@ -114,7 +114,9 @@
     flycheck-irony                              ;; flycheck c/c++ support via Irony
     flycheck-plantuml                           ;; flycheck for plantuml automatic syntax errors
     flycheck-rebar3                             ;; flycheck integration for rebar3 projects
+    ;;;;;; spell checking                       ;;;;;;
     flyspell-lazy                               ;; improve Emacs flyspell responsiveness using idle timers
+    helm-flyspell                               ;; helm extension for correcting words with flyspell
     ;;;;;; flymake family                       ;;;;;;
     flymake-python-pyflakes                     ;; flymake handler for syntax-checking Python source code using pyflakes or flake8
     flymake-hlint                               ;; linting for haskell language
@@ -259,7 +261,6 @@
     sunshine                                    ;; weather and forecast information
     manage-minor-mode                           ;; manage minor modes on a dedicated buffer
     know-your-http-well                         ;; Look up the meaning of HTTP metadata
-    benchmark-init                              ;; Benchmark your Emacs initialization
     ;;;;;; vim emulation                        ;;;;;;
     evil                                        ;; Extensible Vi layer for Emacs.
     undo-tree                                   ;; Treat undo history as a tree (evil dependency)

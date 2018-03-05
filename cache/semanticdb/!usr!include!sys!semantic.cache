@@ -99,7 +99,7 @@
       :file "cdefs.h"
       :pointmax 28111
       :fsize 28110
-      :lastmodtime '(22990 62086 0 0)
+      :lastmodtime '(23045 2571 0 0)
       :unmatched-syntax nil
       :lexical-table 
         '(("const" . ((symbol "__const" 5786 . 5793)))
@@ -236,89 +236,93 @@
             ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_10_3" variable (:constant-flag t) nil [8494 8538])
             ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_11_0" variable (:constant-flag t) nil [8742 8786])
             ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_11_1" variable (:constant-flag t) nil [8990 9034])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_0" variable (:constant-flag t) nil [9170 9208])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_1" variable (:constant-flag t) nil [9402 9440])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_2" variable (:constant-flag t) nil [9634 9672])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_3" variable (:constant-flag t) nil [9866 9904])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_4" variable (:constant-flag t) nil [10098 10136])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_5" variable (:constant-flag t) nil [10330 10368])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_6" variable (:constant-flag t) nil [10562 10600])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_7" variable (:constant-flag t) nil [10794 10832])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_8" variable (:constant-flag t) nil [11026 11064])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_9" variable (:constant-flag t) nil [11258 11296])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_10" variable (:constant-flag t) nil [11492 11531])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_10_2" variable (:constant-flag t) nil [11728 11769])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_10_3" variable (:constant-flag t) nil [11968 12009])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_11" variable (:constant-flag t) nil [12208 12247])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_11_2" variable (:constant-flag t) nil [12444 12485])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_11_3" variable (:constant-flag t) nil [12684 12725])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_11_4" variable (:constant-flag t) nil [12924 12965])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_12" variable (:constant-flag t) nil [13164 13203])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_12_1" variable (:constant-flag t) nil [13400 13441])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_12_2" variable (:constant-flag t) nil [13640 13681])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_12_4" variable (:constant-flag t) nil [13880 13921])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_13" variable (:constant-flag t) nil [14120 14159])
-            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_13_1" variable (:constant-flag t) nil [14417 14458]))          
+            ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_11_2" variable (:constant-flag t) nil [9238 9282])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_0" variable (:constant-flag t) nil [9476 9514])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_1" variable (:constant-flag t) nil [9708 9746])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_2" variable (:constant-flag t) nil [9940 9978])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_3" variable (:constant-flag t) nil [10172 10210])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_4" variable (:constant-flag t) nil [10404 10442])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_5" variable (:constant-flag t) nil [10636 10674])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_6" variable (:constant-flag t) nil [10868 10906])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_7" variable (:constant-flag t) nil [11100 11138])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_8" variable (:constant-flag t) nil [11332 11370])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_9" variable (:constant-flag t) nil [11564 11602])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_10" variable (:constant-flag t) nil [11799 11838])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_10_2" variable (:constant-flag t) nil [12037 12078])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_10_3" variable (:constant-flag t) nil [12277 12318])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_11" variable (:constant-flag t) nil [12515 12554])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_11_2" variable (:constant-flag t) nil [12753 12794])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_11_3" variable (:constant-flag t) nil [12993 13034])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_11_4" variable (:constant-flag t) nil [13233 13274])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_12" variable (:constant-flag t) nil [13471 13510])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_12_1" variable (:constant-flag t) nil [13709 13750])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_12_2" variable (:constant-flag t) nil [13949 13990])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_12_4" variable (:constant-flag t) nil [14189 14230])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_13" variable (:constant-flag t) nil [14427 14466])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_13_1" variable (:constant-flag t) nil [14665 14706])
+            ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_13_2" variable (:constant-flag t) nil [14905 14946]))          
       :file "_symbol_aliasing.h"
-      :pointmax 14470
-      :fsize 14469
-      :lastmodtime '(22990 62102 0 0)
+      :pointmax 14958
+      :fsize 14957
+      :lastmodtime '(23045 2584 0 0)
       :unmatched-syntax '((string 1350 . 1424) (symbol 1344 . 1349) (punctuation 1342 . 1343))
       :lexical-table 
         '(("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_2_2" (spp-arg-list ("x") 2156 . 2159))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_5_1" (spp-arg-list ("x") 4361 . 4364))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_8_0" (spp-arg-list ("x") 5586 . 5589))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_11_0" (spp-arg-list ("x") 8786 . 8789))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_7" (spp-arg-list ("x") 10832 . 10835) . ((symbol "x" 10836 . 10837)))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_10_2" (spp-arg-list ("x") 11769 . 11772) . ((symbol "x" 11773 . 11774)))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_13_1" (spp-arg-list ("x") 14458 . 14461))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_7" (spp-arg-list ("x") 11138 . 11141))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_10_2" (spp-arg-list ("x") 12078 . 12081))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_13_1" (spp-arg-list ("x") 14706 . 14709))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_8_1" (spp-arg-list ("x") 5831 . 5834))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_11_1" (spp-arg-list ("x") 9034 . 9037))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_8" (spp-arg-list ("x") 11064 . 11067) . ((symbol "x" 11068 . 11069)))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_10_3" (spp-arg-list ("x") 12009 . 12012) . ((symbol "x" 12013 . 12014)))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_8" (spp-arg-list ("x") 11370 . 11373))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_10_3" (spp-arg-list ("x") 12318 . 12321))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_13_2" (spp-arg-list ("x") 14946 . 14949))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_8_2" (spp-arg-list ("x") 6076 . 6079))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_9" (spp-arg-list ("x") 11296 . 11299) . ((symbol "x" 11300 . 11301)))
+          ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_11_2" (spp-arg-list ("x") 9282 . 9285))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_9" (spp-arg-list ("x") 11602 . 11605))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_4_0" (spp-arg-list ("x") 3136 . 3139))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_8_3" (spp-arg-list ("x") 6321 . 6324))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_4_1" (spp-arg-list ("x") 3381 . 3384))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_7_0" (spp-arg-list ("x") 5096 . 5099))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_8_4" (spp-arg-list ("x") 6566 . 6569))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_10_0" (spp-arg-list ("x") 7794 . 7797))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_12_1" (spp-arg-list ("x") 13441 . 13444) . ((symbol "x" 13445 . 13446)))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_12_1" (spp-arg-list ("x") 13750 . 13753))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_4_2" (spp-arg-list ("x") 3626 . 3629))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_7_1" (spp-arg-list ("x") 5341 . 5344))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_10_1" (spp-arg-list ("x") 8042 . 8045))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_12_2" (spp-arg-list ("x") 13681 . 13684) . ((symbol "x" 13685 . 13686)))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_12_2" (spp-arg-list ("x") 13990 . 13993))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_4_3" (spp-arg-list ("x") 3871 . 3874))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_10_2" (spp-arg-list ("x") 8290 . 8293))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_0" (spp-arg-list ("x") 9208 . 9211) . ((symbol "x" 9212 . 9213)))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_0" (spp-arg-list ("x") 9514 . 9517))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_3_0" (spp-arg-list ("x") 2401 . 2404))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_10_3" (spp-arg-list ("x") 8538 . 8541))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_1" (spp-arg-list ("x") 9440 . 9443) . ((symbol "x" 9444 . 9445)))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_12_4" (spp-arg-list ("x") 13921 . 13924) . ((symbol "x" 13925 . 13926)))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_1" (spp-arg-list ("x") 9746 . 9749))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_12_4" (spp-arg-list ("x") 14230 . 14233))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_3_1" (spp-arg-list ("x") 2646 . 2649))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_6_0" (spp-arg-list ("x") 4606 . 4609))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_2" (spp-arg-list ("x") 9672 . 9675) . ((symbol "x" 9676 . 9677)))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_10" (spp-arg-list ("x") 11531 . 11534) . ((symbol "x" 11535 . 11536)))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_2" (spp-arg-list ("x") 9978 . 9981))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_10" (spp-arg-list ("x") 11838 . 11841))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_3_2" (spp-arg-list ("x") 2891 . 2894))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_6_1" (spp-arg-list ("x") 4851 . 4854))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_9_0" (spp-arg-list ("x") 6811 . 6814))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_3" (spp-arg-list ("x") 9904 . 9907) . ((symbol "x" 9908 . 9909)))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_11" (spp-arg-list ("x") 12247 . 12250) . ((symbol "x" 12251 . 12252)))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_11_2" (spp-arg-list ("x") 12485 . 12488) . ((symbol "x" 12489 . 12490)))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_3" (spp-arg-list ("x") 10210 . 10213))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_11" (spp-arg-list ("x") 12554 . 12557))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_11_2" (spp-arg-list ("x") 12794 . 12797))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_9_1" (spp-arg-list ("x") 7056 . 7059))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_4" (spp-arg-list ("x") 10136 . 10139) . ((symbol "x" 10140 . 10141)))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_11_3" (spp-arg-list ("x") 12725 . 12728) . ((symbol "x" 12729 . 12730)))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_12" (spp-arg-list ("x") 13203 . 13206) . ((symbol "x" 13207 . 13208)))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_4" (spp-arg-list ("x") 10442 . 10445))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_11_3" (spp-arg-list ("x") 13034 . 13037))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_12" (spp-arg-list ("x") 13510 . 13513))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_2_0" (spp-arg-list ("x") 1666 . 1669))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_9_2" (spp-arg-list ("x") 7301 . 7304))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_5" (spp-arg-list ("x") 10368 . 10371) . ((symbol "x" 10372 . 10373)))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_11_4" (spp-arg-list ("x") 12965 . 12968) . ((symbol "x" 12969 . 12970)))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_13" (spp-arg-list ("x") 14159 . 14162) . ((symbol "x" 14163 . 14164)))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_5" (spp-arg-list ("x") 10674 . 10677))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_11_4" (spp-arg-list ("x") 13274 . 13277))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_13" (spp-arg-list ("x") 14466 . 14469))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_2_1" (spp-arg-list ("x") 1911 . 1914))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_5_0" (spp-arg-list ("x") 4116 . 4119))
           ("__DARWIN_ALIAS_STARTING_IPHONE___IPHONE_9_3" (spp-arg-list ("x") 7546 . 7549))
-          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_6" (spp-arg-list ("x") 10600 . 10603) . ((symbol "x" 10604 . 10605)))
+          ("__DARWIN_ALIAS_STARTING_MAC___MAC_10_6" (spp-arg-list ("x") 10906 . 10909))
           )
 )
     (semanticdb-table "semanticdb-table"
@@ -413,7 +417,7 @@
       :file "_types.h"
       :pointmax 3717
       :fsize 3716
-      :lastmodtime '(22990 62100 0 0)
+      :lastmodtime '(23045 2583 0 0)
       :unmatched-syntax nil
       :lexical-table 
         '(("__offsetof" (spp-arg-list ("type" "field") 3525 . 3538) . ((symbol "__builtin_offsetof" 3539 . 3557) (semantic-list "(type, field)" 3557 . 3570)))
@@ -434,7 +438,7 @@
       :file "_posix_availability.h"
       :pointmax 2906
       :fsize 2905
-      :lastmodtime '(22990 62102 0 0)
+      :lastmodtime '(23045 2584 0 0)
       :unmatched-syntax nil
       :lexical-table 
         '(("___POSIX_C_DEPRECATED_STARTING_199506L")
@@ -454,7 +458,7 @@
       :file "stdio.h"
       :pointmax 2163
       :fsize 2162
-      :lastmodtime '(22990 62096 0 0)
+      :lastmodtime '(23045 2579 0 0)
       :unmatched-syntax nil
       :lexical-table 
         '(("_SYS_STDIO_H_")
@@ -560,7 +564,7 @@
       :file "unistd.h"
       :pointmax 8969
       :fsize 8968
-      :lastmodtime '(22990 62099 0 0)
+      :lastmodtime '(23045 2581 0 0)
       :unmatched-syntax '((number 7956 . 7959) (semantic-list 7929 . 7935) (symbol 7913 . 7929) (number 7930 . 7934) (semantic-list 7906 . 7912) (symbol 7891 . 7906) (number 7907 . 7911) (semantic-list 7883 . 7890) (symbol 7868 . 7883) (number 7884 . 7889) (semantic-list 7814 . 7867) (symbol 7801 . 7814) (INT 7797 . 7800) (semantic-list 7685 . 7743) (symbol 7672 . 7685) (INT 7668 . 7671) (semantic-list 7575 . 7614) (symbol 7560 . 7575) (INT 7556 . 7559))
       :lexical-table 
         '(("_READ_OK" . ((semantic-list "(1<<9)" 4403 . 4409)))
@@ -637,7 +641,7 @@
       :file "appleapiopts.h"
       :pointmax 2071
       :fsize 2070
-      :lastmodtime '(22990 62085 0 0)
+      :lastmodtime '(23045 2571 0 0)
       :unmatched-syntax nil
       :lexical-table 
         '(("__APPLE_API_STANDARD")
@@ -707,7 +711,7 @@
       :file "select.h"
       :pointmax 5363
       :fsize 5362
-      :lastmodtime '(22990 62095 0 0)
+      :lastmodtime '(23045 2578 0 0)
       :unmatched-syntax nil
       :lexical-table 
         '(("_SYS_SELECT_H_")
@@ -744,7 +748,7 @@
       :file "syslimits.h"
       :pointmax 5533
       :fsize 5532
-      :lastmodtime '(22990 62097 0 0)
+      :lastmodtime '(23045 2580 0 0)
       :unmatched-syntax nil
       :lexical-table 
         '(("GID_MAX" . ((symbol "2147483647U" 3732 . 3743)))

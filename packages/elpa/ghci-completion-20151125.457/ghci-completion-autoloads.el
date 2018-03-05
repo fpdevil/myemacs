@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ghci-completion" "ghci-completion.el" (23136
-;;;;;;  40371 548298 343000))
+;;;### (autoloads nil "ghci-completion" "ghci-completion.el" (23196
+;;;;;;  55890 351933 269000))
 ;;; Generated autoloads from ghci-completion.el
 
 (autoload 'turn-on-ghci-completion "ghci-completion" "\

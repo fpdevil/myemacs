@@ -1,108 +1,250 @@
-((("rest" .
-   [2 0 0 0])
-  ("setq-local" .
-   [1 0 0 0 0 0 0 0 0 0])
-  ("tramp-use-ssh-controlmaster-options" .
-   [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
-  ("console" .
-   [2 0 0 0 1 0 0])
-  ("forEach" .
+((("width" .
+   [1 0 0 0 0])
+  ("detector" .
+   [1 0 0 0 0 0 0 1])
+  ("COLOR_BGR2GRAY" .
+   [0 0 0 0 0 0 0 0 0 2 0 0 0 0])
+  ("resize" .
+   [0 0 1 0 0 0])
+  ("imread" .
+   [0 0 1 0 0 0])
+  ("predictor" .
+   [1 0 0 0 0 0 0 0 0])
+  ("f" .
+   [1])
+  ("parse_args" .
+   [0 1 0 0 0 0 0 0 0 0])
+  ("ap" .
+   [2 0])
+  ("vars" .
+   [0 0 1 0])
+  ("add_argument" .
+   [0 0 0 0 0 0 0 0 0 0 0 4])
+  ("ArgumentParser" .
+   [0 0 0 1 0 0 0 0 0 0 0 0 0 4])
+  ("dlib" .
+   [1 0 0 1])
+  ("imutils" .
+   [1 0 0 1 0 0 0])
+  ("argparse" .
+   [0 0 0 2 2 0 0 0])
+  ("arg" .
+   [1 0 0])
+  ("leuven" .
+   [0 0 0 0 1 0])
+  ("temphandle" .
+   [0 0 0 0 0 1 0 0 0 0])
+  ("tempfile" .
+   [1 0 0 0 0 1 0 0])
+  ("finally" .
    [0 0 0 1 0 0 0])
-  ("args" .
-   [1 0 0 0])
-  ("splice" .
-   [1 0 0 0 0 0])
-  ("clr-identifiers-config" .
-   [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
-  ("nxml-where" .
-   [1 0 0 0 0 0 0 0 0 0])
-  ("contents" .
-   [3 0 0 0 0 0 0 0])
-  ("chown" .
-   [0 0 0 0 1])
-  ("evil-emacs-state" .
-   [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
-  ("fs" .
-   [2 0])
-  ("function" .
-   [1 0 0 0 0 0 0 0])
-  ("emacs-lisp" .
-   [1 0 0 0 0 0 0 0 0 0])
-  ("nil" .
-   [1 0 0])
-  ("exec-path" .
-   [2 0 0 0 0 0 0 0 0])
-  ("setq" .
-   [1 0 0 0])
-  ("after" .
+  ("pattern" .
+   [1 0 0 0 0 0 0])
+  ("tempdir" .
+   [0 0 0 0 1 0 0])
+  ("withTempFile" .
+   [0 0 0 0 1 0 1 0 0 0 0 0])
+  ("ICalState" .
+   [0 0 0 0 1 0 0 0 0])
+  ("push" .
+   [1 0 0 1])
+  ("In" .
+   [1 0])
+  ("company-ghc" .
+   [1 0 0 0 0 0 0 0 0 0 0])
+  ("Error" .
    [1 0 0 0 0])
-  ("xxx" .
-   [1 0 0])
-  ("javascript" .
-   [1 0 0 0 0 0 0 0 0 0])
-  ("instance" .
-   [0 0 0 0 0 0 0 3])
-  ("Functor" .
-   [0 0 1 0 0 0 0])
-  ("left" .
-   [1 0 0 0])
-  ("progName" .
-   [1 0 0 0 0 0 0 0])
-  ("undefined" .
+  ("parse" .
+   [0 0 0 0 1])
+  ("stringify" .
    [0 0 0 0 0 0 0 0 1])
-  ("regex" .
-   [1 0 0 0 0])
-  ("realpath" .
-   [0 0 1 0 0 0 0 0])
-  ("log" .
-   [0 1 3])
-  ("close" .
-   [0 0 0 0 1])
-  ("t" .
-   [2])
-  ("initialDir" .
-   [0 0 0 0 0 0 0 2 0 0])
-  ("result" .
+  ("on" .
+   [0 1])
+  ("setcdr" .
    [1 0 0 0 0 0])
-  ("secondaryDir" .
-   [0 0 0 0 0 0 0 0 0 1 0 0])
-  ("KnightPos" .
-   [0 0 0 0 0 0 0 1 0])
-  ("allKnightMoves" .
-   [1 0 0 0 0 0 0 0 0 0 0 0 0 0])
-  ("type" .
-   [0 0 0 1])
-  ("inCheckWith" .
-   [0 0 0 0 1 1 0 0 0 0 0])
-  ("isDiagonalWith" .
-   [0 0 0 0 1 0 0 0 0 0 0 0 0 0])
-  ("duplicateDiagonals" .
-   [0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0])
-  ("row" .
-   [2 0 0])
-  ("colDistance" .
-   [0 0 0 0 1 0 0 0 0 0 0])
-  ("qs" .
-   [2 0])
-  ("groupByN" .
-   [2 0 0 0 0 1 0 1])
-  ("i" .
-   [2])
-  ("inst" .
+  ("set" .
+   [1 0 0])
+  ("list-diminished-modes" .
+   [0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0])
+  ("cell" .
+   [3 0 0 0])
+  ("mode" .
    [1 0 0 0])
-  ("Applicative" .
-   [0 0 0 0 0 1 0 0 0 0 0])
-  ("Parser" .
-   [1 0 0 0 0 0])
-  ("parserfunc" .
-   [1 0 0 0 0 0 0 0 0 0])
+  ("haskell-doc-mode" .
+   [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("haskell-doc" .
+   [1 0 0 0 0 0 0 0 0 0 0])
+  ("x" .
+   [1])
+  ("powerOf" .
+   [0 0 0 0 0 2 1])
+  ("n" .
+   [1])
+  ("needed" .
+   [0 1 0 0 0 0])
+  ("steps" .
+   [1 0 0 0 0])
+  ("getMoves" .
+   [0 0 0 0 1 0 0 0])
+  ("binPow" .
+   [0 0 0 1 0 0])
+  ("coin" .
+   [2 0 0 0])
+  ("safeFileReader" .
+   [0 0 0 0 0 1 0 0 0 0 0 0 0 0])
+  ("cv2" .
+   [8 0 0])
+  ("shape_predictor" .
+   [0 1 0 1 0 0 0 0 0 0 0 0 0 0 0])
+  ("get_frontal_face_detector" .
+   [0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("import" .
+   [0 0 3 0 1 0])
   ("input" .
    [2 0 0 0 0])
-  ("import" .
-   [0 0 1 0 0 0])
-  ("get_frontal_face_detector" .
-   [0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
-  ("shape_predictor" .
-   [0 1 0 0 0 0 0 0 0 0 0 0 0 0 0])
-  ("cv2" .
-   [2 0 0])))
+  ("parserfunc" .
+   [1 0 0 0 0 0 0 0 0 0])
+  ("Parser" .
+   [1 0 0 0 0 0])
+  ("Applicative" .
+   [0 0 0 0 0 1 0 0 0 0 0])
+  ("inst" .
+   [1 0 0 0])
+  ("i" .
+   [2])
+  ("groupByN" .
+   [2 0 0 0 0 1 0 1])
+  ("qs" .
+   [2 0])
+  ("colDistance" .
+   [0 0 0 0 1 0 0 0 0 0 0])
+  ("row" .
+   [2 0 0])
+  ("duplicateDiagonals" .
+   [0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0])
+  ("isDiagonalWith" .
+   [0 0 0 0 1 0 0 0 0 0 0 0 0 0])
+  ("inCheckWith" .
+   [0 0 0 0 1 1 0 0 0 0 0])
+  ("type" .
+   [0 0 0 1])
+  ("allKnightMoves" .
+   [1 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("KnightPos" .
+   [0 0 0 0 0 0 0 1 0])
+  ("secondaryDir" .
+   [0 0 0 0 0 0 0 0 0 1 0 0])
+  ("result" .
+   [1 0 0 0 0 0])
+  ("initialDir" .
+   [0 0 0 0 0 0 0 2 0 0])
+  ("t" .
+   [2])
+  ("close" .
+   [0 0 0 0 1])
+  ("log" .
+   [0 1 4])
+  ("realpath" .
+   [0 0 1 0 0 0 0 0])
+  ("regex" .
+   [1 0 0 0 0])
+  ("undefined" .
+   [0 0 0 0 0 0 0 0 1])
+  ("progName" .
+   [1 0 0 0 0 0 0 0])
+  ("left" .
+   [1 0 0 0])
+  ("Functor" .
+   [0 0 1 0 0 0 0])
+  ("instance" .
+   [0 0 0 0 0 0 0 3])
+  ("javascript" .
+   [1 0 0 0 0 0 0 0 0 0])
+  ("xxx" .
+   [1 0 0])
+  ("after" .
+   [1 0 0 0 0])
+  ("setq" .
+   [1 0 0 0])
+  ("exec-path" .
+   [2 0 0 0 0 0 0 0 0])
+  ("nil" .
+   [2 0 0])
+  ("emacs-lisp" .
+   [1 0 0 0 0 0 0 0 0 0])
+  ("function" .
+   [1 0 0 0 0 0 0 0])
+  ("fs" .
+   [3 0])
+  ("evil-emacs-state" .
+   [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("chown" .
+   [0 0 0 0 1])
+  ("contents" .
+   [3 0 0 0 0 0 0 0])
+  ("nxml-where" .
+   [1 0 0 0 0 0 0 0 0 0])
+  ("clr-identifiers-config" .
+   [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("splice" .
+   [1 0 0 0 0 0])
+  ("args" .
+   [2 0 0 0])
+  ("forEach" .
+   [0 0 0 1 0 0 0])
+  ("console" .
+   [2 0 0 0 1 0 0])
+  ("tramp-use-ssh-controlmaster-options" .
+   [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("setq-local" .
+   [1 0 0 0 0 0 0 0 0 0])
+  ("rest" .
+   [2 0 0 0])
+  ("newLog" .
+   [0 0 0 0 1 0])
+  ("applyLog" .
+   [0 0 0 0 0 1 0 0])
+  ("*Rescan*" .
+   [0 0 0 0 0 0 0 1])
+  ("os" .
+   [0 1])
+  ("Application" .
+   [0 0 0 0 0 0 0 0 0 0 1])
+  ("auto-complete-mode" .
+   [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("events" .
+   [1 0 0 0 0 0])
+  ("LDJClient" .
+   [1 0 0 0 0 0 0 0 0])
+  ("EventEmitter" .
+   [0 0 0 0 0 0 0 0 0 0 0 3])
+  ("require" .
+   [0 0 5 0 0 0 0])
+  ("var" .
+   [4 0 0])
+  ("lp" .
+   [1 0])
+  ("shift-right" .
+   [0 0 0 0 0 0 0 0 1 0 0])
+  ("with" .
+   [1 0 0 0])
+  ("myAction" .
+   [1 0 0 0 0 0 0 0])
+  ("fboundp" .
+   [1 0 0 0 0 0 0])
+  ("prog-mode" .
+   [1 0 0 0 0 0 0 0 0])
+  ("flyspell-prog-mode" .
+   [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("add-hook" .
+   [1 0 0 0 0 0 0 0])
+  ("log-edit-mode" .
+   [0 0 0 0 0 0 0 0 1 0 0 0 0])
+  ("toUpper" .
+   [1 0 1 0 0 0 0])
+  ("isDividedBy" .
+   [0 0 0 0 0 0 0 0 0 1 0])
+  ("fizzbuzz" .
+   [2 0 0 0 0 0 0 0])
+  ("solveRPN" .
+   [0 0 0 0 0 0 1 0])))

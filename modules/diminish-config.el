@@ -17,6 +17,19 @@
 (require 'dim)      ;; customize mode-line names of major/minor modes
 (require 'diminish) ;; diminish minor mode displays
 
+(defvar list-diminished-modes nil
+  "A list of diminished modes to either unicode or ascii values.")
+
+(defmacro diminished-mode-symbol (mode &optional unicode ascii)
+  "Diminish MODE name in the mode line to either UNICODE or ASCII based on the
+support for UNICODE character symbols.
+If ASCII is not provided then UNICODE will be used. If neither of them are
+provided, mode will not be shown in the mode line."
+  (let ((cell (assq ',mode list-diminished-modes)))
+    (if cell
+        (setcdr cell '(,unicode ,ascii))
+      (push '(,mode ,unicode ,ascii) list-diminished-modes))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; dim - for customizing the mode names displayed on mode line                ;;
 ;; https://github.com/alezost/dim.el                                          ;;
@@ -25,17 +38,17 @@
                     (outline-mode            " Ⓞ")
                     (calendar-mode           " 📆")))
 (dim-minor-names '(
-                   (flymake-mode               " FlyM")
-                   ;;(rainbow-mode             " 🌈")
-                   (rainbow-mode               " 🌈")
-                   (company-mode               " ℂ" company)
-                   (git-gutter-mode            " Ⓖ" git-gutter)
-                   (yas-minor-mode             " Ⓨ")
-                   (auto-fill-function         " ℱ")
-                   (visual-line-mode           " Ⓥ")
-                   ;;(undo-tree-mode           " ፕ")
-                   (paredit-mode               " {ק}" paredit)
-                   (helm-mode                  " Ⓗ")))
+                   (flymake-mode               "FlyM")
+                   (flyspell-mode              "FlyS")
+                   (rainbow-mode               "Ⓡ")
+                   (company-mode               "Ⓒ" company)
+                   (auto-complete-mode         "Ⓐ")
+                   (git-gutter-mode            "Ⓖ" git-gutter)
+                   (yas-minor-mode             "Ⓨ")
+                   (visual-line-mode           "Ⓥ")
+                   (paredit-mode               "{ק}" paredit)
+                   (helm-mode                  "Ⓗ")))
+
 
 ;;------------------------------------------------------------------------------
 ;; diminish unneeded minor modes from mode line
@@ -64,7 +77,10 @@
 (after 'projectile (diminish 'projectile-mode))
 (after 'beacon (diminish 'beacon-mode))
 (after 'color-identifiers-mode (diminish 'color-identifiers-mode))
+(after 'auto-fill-function (diminish 'auto-fill-mode))
 (after 'haskell-interactive-mode (diminish 'interactive-haskell-mode " IntHS"))
+(after 'haskell-doc (diminish 'haskell-doc-mode))
+(after 'checkdoc (diminish 'checkdoc-minor-mode))
 
 ;;------------------------------------------------------------------------------
 

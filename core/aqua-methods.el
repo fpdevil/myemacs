@@ -98,6 +98,13 @@ With two prefix arguments, write out the day and month name."
          (get-char-property pos 'face)
          (plist-get (text-properties-at pos) 'face))))
 
+;; function to check if a name font is available
+(defun font-existsp (font)
+  "Check if the specified FONT is available."
+  (interactive)
+  (if (null (x-list-fonts font))
+      nil t))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; print the face found at the current point

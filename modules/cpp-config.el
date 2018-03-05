@@ -91,6 +91,8 @@
 
   ;; wxWidgets setup
   (c-set-offset 'topmost-intro-cont 'c-wx-lineup-topmost-intro-cont)
+  (c-set-offset 'substatement-open 0)   ; Curly braces alignment
+  (c-set-offset 'case-label 4)          ; Switch case statements alignment
   ;; make a #define be left-aligned
   (setq c-electric-pound-behavior (quote (alignleft)))
   ;; flymake buffer check

@@ -41,12 +41,15 @@ true."
 
 ;; (setq flycheck-highlighting-mode nil)
 ;; (setq flycheck-highlighting-mode 'symbols)
+
 ;; highlight the whole line, as it’s much faster
 (setq flycheck-highlighting-mode 'lines)
+
 ;; indicate syntax errors/warnings in the left-fringe.
 (setq flycheck-indication-mode 'left-fringe)
 (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
 (setq flycheck-highlighting-mode 'symbols)
+
 ;; add on option for error messages
 (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages)
 ;; (setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)

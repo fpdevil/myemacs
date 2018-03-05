@@ -75,8 +75,6 @@
 (setq default-indent-tabs-mode nil)
 ;; lock files
 (setq create-lockfiles nil)
-;; deletion
-(setq delete-by-moving-to-trash t)
 ;; ignore bell
 (setq ring-bell-function 'ignore)
 
@@ -152,15 +150,6 @@
 ;; file backup and saving Emacs sessions
 ;;----------------------------------------------------------------------------
 (setq desktop-save nil)                               ; save without asking
-;(setq desktop-restore-eager 10)
-
-; (setq backup-by-copying t)                            ; do not clobber symbolic links
-; ;; store all backup and autosave files in the tmp dir
-; (setq backup-directory-alist
-;       `((".*" . ,temporary-file-directory)))
-; (setq auto-save-file-name-transforms
-;       `((".*" ,temporary-file-directory t)))
-
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
 
@@ -173,10 +162,6 @@
                   week))
       (message "%s" file)
       (delete-file file))))
-
-;;----------------------------------------------------------------------------
-;; deleting files(when deleting, send it to Thrash rather than use rm)                                        ;;----------------------------------------------------------------------------
-(setq delete-by-moving-to-trash t)
 
 ;;----------------------------------------------------------------------------
 ;; electric pair mode (currently disabled)                                 ;;
@@ -197,17 +182,8 @@
 ;;----------------------------------------------------------------------------
 ;; custom keybinding stuff
 ;;----------------------------------------------------------------------------
-(global-set-key (kbd "<C-S-up>")     'windmove-up)
-(global-set-key (kbd "<C-S-down>")   'windmove-down)
-(global-set-key (kbd "<C-S-left>")   'windmove-left)
-(global-set-key (kbd "<C-S-right>")  'windmove-right)
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
-; (global-set-key (kbd "RET") 'newline-and-indent)
-; (global-set-key (kbd "C-;") 'comment-or-uncomment-region)
-; (global-set-key (kbd "M-/") 'hippie-expand)
-; (global-set-key (kbd "C-c C-k") 'compile)
-; (global-set-key (kbd "C-x g") 'magit-status)
 
 ;;----------------------------------------------------------------------------
 ;; get default timestamp format
@@ -317,6 +293,16 @@ This command does the inverse of `fill-region'."
   ;; Enable emoji, and stop the UI from freezing when trying to display them.
   (if (fboundp 'set-fontset-font)
       (set-fontset-font t 'unicode "Apple Color Emoji" nil 'prepend)))
+
+;; os x specific settings
+(when (string-equal system-type "darwin")
+  ;; Don't make new frames when opening a new file with Emacs
+  (setq ns-pop-up-frames nil)
+  ;; set the Fn key as the hyper key
+  (setq ns-function-modifier 'hyper)
+  ;; Not going to use these commands
+  (put 'ns-print-buffer 'disabled t)
+  (put 'suspend-frame 'disabled t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

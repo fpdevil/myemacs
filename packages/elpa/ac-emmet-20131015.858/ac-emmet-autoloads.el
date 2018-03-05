@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ac-emmet" "ac-emmet.el" (23126 26835 474693
-;;;;;;  640000))
+;;;### (autoloads nil "ac-emmet" "ac-emmet.el" (23196 56032 991882
+;;;;;;  878000))
 ;;; Generated autoloads from ac-emmet.el
 
 (defface ac-emmet-candidate-face '((t (:inherit ac-candidate-face))) "\

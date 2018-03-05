@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ensime" "ensime.el" (23126 26758 354038 460000))
+;;;### (autoloads nil "ensime" "ensime.el" (23196 55927 87473 98000))
 ;;; Generated autoloads from ensime.el
 
 (autoload 'ensime "ensime" "\
@@ -19,7 +19,7 @@ Read config file for settings. Then connect to an existing ENSIME server.
 ;;;***
 
 ;;;### (autoloads nil "ensime-auto-complete" "ensime-auto-complete.el"
-;;;;;;  (23126 26758 357761 431000))
+;;;;;;  (23196 55927 92422 591000))
 ;;; Generated autoloads from ensime-auto-complete.el
 
 (autoload 'ensime-ac-enable "ensime-auto-complete" "\
@@ -29,8 +29,8 @@ Read config file for settings. Then connect to an existing ENSIME server.
 
 ;;;***
 
-;;;### (autoloads nil "ensime-company" "ensime-company.el" (23126
-;;;;;;  26758 314496 410000))
+;;;### (autoloads nil "ensime-company" "ensime-company.el" (23196
+;;;;;;  55927 35414 454000))
 ;;; Generated autoloads from ensime-company.el
 
 (autoload 'ensime-company-enable "ensime-company" "\
@@ -40,8 +40,8 @@ Read config file for settings. Then connect to an existing ENSIME server.
 
 ;;;***
 
-;;;### (autoloads nil "ensime-ivy" "ensime-ivy.el" (23126 26758 295485
-;;;;;;  135000))
+;;;### (autoloads nil "ensime-ivy" "ensime-ivy.el" (23196 55927 8622
+;;;;;;  726000))
 ;;; Generated autoloads from ensime-ivy.el
 
 (autoload 'ensime-search-ivy "ensime-ivy" "\
@@ -51,8 +51,8 @@ Search ensime with ivy.
 
 ;;;***
 
-;;;### (autoloads nil "ensime-mode" "ensime-mode.el" (23126 26758
-;;;;;;  333840 769000))
+;;;### (autoloads nil "ensime-mode" "ensime-mode.el" (23196 55927
+;;;;;;  62354 318000))
 ;;; Generated autoloads from ensime-mode.el
 
 (autoload 'ensime-mode "ensime-mode" "\
@@ -73,8 +73,8 @@ ENSIME: The ENhanced Scala Interaction Mode for Emacs (minor-mode).
 ;;;;;;  "ensime-overlay.el" "ensime-pkg.el" "ensime-popup.el" "ensime-refactor.el"
 ;;;;;;  "ensime-sbt.el" "ensime-search.el" "ensime-semantic-highlight.el"
 ;;;;;;  "ensime-stacktrace.el" "ensime-startup.el" "ensime-ui.el"
-;;;;;;  "ensime-undo.el" "ensime-util.el" "ensime-vars.el") (23126
-;;;;;;  26758 370145 491000))
+;;;;;;  "ensime-undo.el" "ensime-util.el" "ensime-vars.el") (23196
+;;;;;;  55927 104681 818000))
 
 ;;;***
 

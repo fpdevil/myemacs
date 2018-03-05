@@ -3,8 +3,22 @@
 (semanticdb-project-database-file "semanticdb-project-database-file"
   :tables
   (list
-
-)
+    (semanticdb-table "semanticdb-table"
+      :major-mode c++-mode
+      :tags 
+        '( ("iostream" include (:system-flag t) nil [270 289])
+            ("cmath" include (:system-flag t) nil [290 306])
+            ("tree" function
+               (:arguments 
+                  ( ("height" variable (:type "int") (reparse-symbol arg-sub-list) [318 329]))                  
+                :type "void")
+                nil [308 671])
+            ("main" function (:type "int") nil [673 784]))          
+      :file "primef.cpp"
+      :pointmax 785
+      :fsize 785
+      :lastmodtime '(23186 27460 246477 347000)
+      :unmatched-syntax nil))
   :file "!private!tmp!semantic.cache"
   :semantic-tag-version "2.0"
   :semanticdb-version "2.2")

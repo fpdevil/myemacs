@@ -33,11 +33,11 @@
                      ;; elpy-module-flymake
                      ))
 
-;; use ipython3 if available
-;; (elpy-use-ipython)
-(if (executable-find "ipython3")
-    (elpy-use-ipython (executable-find "ipython3")))
+;; use ipython3 if available (deprecated so commented out)
+;;(if (executable-find "ipython3")
+;;    (elpy-use-ipython (executable-find "ipython3")))
 
+;; -- set the appropriate backend for Elpy
 ;; (setq elpy-rpc-backend "rope")
 (setq elpy-rpc-backend "jedi")
 (setq elpy-rpc-python-command (executable-find "python3")
@@ -48,7 +48,7 @@
       python-environment-directory (concat user-emacs-directory "/.python-environments"))
 
 
-;; Note
+;; -- Note
 ;; elpy auto-completion can be manually triggered using M-Tab (elpy-company-backend) as
 ;; per the documentation https://elpy.readthedocs.io/en/latest/ide.html#completion
 ;; make sure elpy python completions don't start automatically (if not needed)
@@ -57,7 +57,7 @@
              (setq company-idle-delay nil)
              'elpy-mode-hook 'py-autopep8-enable-on-save))
 
-;; flymake integration
+;; flymake integration if flycheck is not present
 (if (require 'flycheck nil t)
     (lambda ()
       (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
@@ -66,17 +66,9 @@
           '(lambda ()
              (progn
                (add-to-list 'flymake-err-line-patterns '("\\([^|]+\\)| \\([^:]+\\):\\([0-9]+\\)$" 2 3 nil 1))
-                (set (make-local-variable 'flymake-warning-predicate) "^.[^EF]")
-                ))))
+                (set (make-local-variable 'flymake-warning-predicate) "^.[^EF]")))))
 
-
-; (add-hook 'elpy-mode-hook
-;           '(lambda ()
-;              (progn
-;                (add-to-list 'flymake-err-line-patterns '("\\([^|]+\\)| \\([^:]+\\):\\([0-9]+\\)$" 2 3 nil 1))
-;                 (set (make-local-variable 'flymake-warning-predicate) "^.[^EF]")
-;                 )))
-
+;; --
 ;; visual clue on how the code is indented
 ; (require 'highlight-indentation)
 ; (add-hook 'python-mode-hook 'highlight-indentation)

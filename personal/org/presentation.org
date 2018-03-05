@@ -1,0 +1,34 @@
+#+TITLE: A Sample Beamer presentations in org-mode
+#+AUTHOR: Sampath Singamsetty
+#+startup: beamer
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [bigger]
+#+BEAMER_FRAME_LEVEL: 2
+#+OPTIONS: ^:{} # make super/subscripts only when wrapped in {}
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
+#+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:https://orgmode.org/org-info.js
+
+
+* This is the first structural section
+
+** Frame 1
+*** Thanks to Eric Fraga                                           :B_block:
+    :PROPERTIES:
+    :BEAMER_COL: 0.48
+    :BEAMER_ENV: block
+    :END:
+    for the first viable Beamer setup in Org
+*** Thanks to everyone else                                        :B_block:
+    :PROPERTIES:
+    :BEAMER_COL: 0.48
+    :BEAMER_ACT: <2->
+    :BEAMER_ENV: block
+    :END:
+    for contributing to the discussion
+**** This will be formatted as a beamer note                       :B_note:
+     :PROPERTIES:
+     :BEAMER_env: note
+     :END:
+** Frame 2 (where we will not use columns)
+*** Request
+    Please test this stuff!

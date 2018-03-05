@@ -16,6 +16,8 @@
   ;; -- load the yasnippet library
   (require 'yasnippet)
 
+  (setq yas/trigger-key "<C-tab>") ;; make sure this is before yas/initialize
+
   ;; -- yasnippets configuration
   ;; this will install and activate it everywhere, snippets are stored in ~/.emacs.d/snippets
   (yas/initialize)

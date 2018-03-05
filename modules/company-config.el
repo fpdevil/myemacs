@@ -37,12 +37,20 @@
       ;; sort the completions by their usage frequency
       (require-package 'company-statistics)
       (setq company-statistics-file (expand-file-name "company-statistics-cache.el" cache-dir))
-      (company-statistics-mode))
+      (add-hook 'company-mode-hook 'company-statistics-mode))
 
      (setq company-frontends
            '(company-pseudo-tooltip-unless-just-one-frontend
              company-preview-if-just-one-frontend
              company-echo-metadata-frontend))
+
+      ;; list of default company backends for Emacs
+      (setq company-backends
+        '((company-dabbrev-code
+           company-gtags
+           company-etags
+           company-keywords)
+          company-files company-dabbrev))
 
      (setq company-backends
            '((
@@ -87,13 +95,10 @@
            company-begin-commands '(self-insert-command))       ;; start autocompletion only after typing
            company-dict-dir (expand-file-name "dict" cache-dir) ;; look for dictionary files
 
-           ;; From Chen's configuration
-           ;; @see https://github.com/redguardtoo/emacs.d/commit/2ff305c1ddd7faff6dc9fa0869e39f1e9ed1182d
-           (defadvice company-in-string-or-comment (around company-in-string-or-comment-hack activate)
-             ;; you can use (ad-get-arg 0) and (ad-set-arg 0) to tweak the arguments
-             (if (memq major-mode '(php-mode html-mode web-mode nxml-mode))
-                 (setq ad-return-value nil)
-               ad-do-it))
+           ;; fill column indicator
+           (add-hook 'company-completion-started-hook 'company-turn-off-fci)
+           (add-hook 'company-completion-finished-hook 'company-maybe-turn-on-fci)
+           (add-hook 'company-completion-cancelled-hook 'company-maybe-turn-on-fci)
 
            ;; Tern mode javascript completion
            (when (executable-find "tern")
@@ -114,6 +119,18 @@
                    inferior-emacs-lisp-mode
                    xsl-mode
                    xslt-process-mode))))
+
+
+;; work-around for issues with fci-mode
+(defvar-local company-fci-mode-on-p nil)
+
+(defun company-turn-off-fci (&rest ignore)
+  (when (boundp 'fci-mode)
+    (setq company-fci-mode-on-p fci-mode)
+    (when fci-mode (fci-mode -1))))
+
+(defun company-maybe-turn-on-fci (&rest ignore)
+  (when company-fci-mode-on-p (fci-mode 1)))
 
 ;;-----------------------------------------------------------------------------
 ;; adds fuzzy matching to company

@@ -22,8 +22,7 @@
         ("melpa"        . "https://melpa.org/packages/")
         ("melpa-stable" . "http://stable.melpa.org/packages/")
         ("org"          . "http://orgmode.org/elpa/")
-        ("marmalade"    . "https://marmalade-repo.org/packages/")
-        ))
+        ("marmalade"    . "https://marmalade-repo.org/packages/")))
 
 ;; == if on Emacs 24.4 or newer, if so, use the pinned package feature
 (when (boundp 'package-pinned-packages)
@@ -36,8 +35,7 @@
           (smart-mode-line       . "melpa-stable")
           (ensime                . "melpa-stable")
           (web-mode              . "melpa")
-          (which-key             . "melpa-stable")
-          )))
+          (which-key             . "melpa-stable"))))
 
 ;; == set package priorities
 (setq package-archive-priorities
@@ -46,8 +44,7 @@
         ("melpa"        . 20)
         ("gnu"          . 10)
         ("melpa-stable" . 10)
-        ("marmalade"    . 5)
-        ))
+        ("marmalade"    . 5)))
 (setq package-menu-hide-low-priority t)
 
 ;; == set it to `t' to use safer HTTPS to download packages
@@ -101,6 +98,10 @@ FEATURE may be any one of:
     `(with-eval-after-load ,feature ,@body))))
 
 
+;; benchmarking
+(require-package 'benchmark-init)
+(add-hook 'after-init-hook 'benchmark-init/activate)
+
 ;;; -- prettyish highlighting for require-package
 (font-lock-add-keywords 'emacs-lisp-mode
                         '(("(\\(require-package\\)\\>" 1 font-lock-builtin-face)))
@@ -126,6 +127,7 @@ FEATURE may be any one of:
 
 (eval-when-compile
   (require 'use-package))
+
 
 ;;; -- if not all the packages which are listed are installed, check one by one
 ;;;    and install the missing ones.

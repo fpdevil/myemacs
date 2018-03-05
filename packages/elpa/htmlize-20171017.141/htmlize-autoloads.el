@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "htmlize" "htmlize.el" (23126 26684 683213
-;;;;;;  226000))
+;;;### (autoloads nil "htmlize" "htmlize.el" (23196 55871 921479
+;;;;;;  777000))
 ;;; Generated autoloads from htmlize.el
 
 (autoload 'htmlize-buffer "htmlize" "\

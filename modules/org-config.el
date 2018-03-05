@@ -26,6 +26,30 @@
 (require 'ox-latex)
 (require 'ox-html)
 (require 'ox-reveal)
+(require 'ox-beamer)
+(require 'ox-texinfo)
+(require 'ox-org)
+(require 'ox-ascii)
+
+
+;; -- basic variable setup
+;; == file mode association
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+
+;; == do not use auto-fill in org-mode
+(auto-fill-mode -1)
+(remove-hook 'text-mode-hook #'turn-on-auto-fill)
+
+;; == allow lists with letters in them
+(setq org-list-allow-alphabetical t)
+
+;; -- miscellaneous settings for org-mode
+;; == renumber the footnotes when new footnotes are inserted
+(setq org-footnote-auto-adjust t)
+
+;; == default with the images open
+(setq org-startup-with-inline-images t)
+(setq org-image-actual-width nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  turn on visual-line-mode for Org-mode only                             ;;;
@@ -38,19 +62,21 @@
 (setq org-list-description-max-indent 5)    ;; set max indentation for description lines
 (setq org-adapt-indentation nil)            ;; prevent demoting heading, shifting text in sections
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  for listing to look like the fontified Emacs buffer                    ;;;
+;;;  for src code syntax highlighting during export                         ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq org-startup-with-inline-images t)
-(setq org-image-actual-width nil)
-
 (setq org-latex-listings t)
 (setq org-latex-listings 'minted)
 (add-to-list 'org-latex-packages-alist '("" "listings"))
 (add-to-list 'org-latex-packages-alist '("" "color"))
 (add-to-list 'org-latex-packages-alist '("" "minted"))
 (add-to-list 'org-latex-packages-alist '("" "parskip"))
+
+
+(setq org-latex-minted-options
+           '(("frame" "lines")
+             ("fontsize" "\\scriptsize")
+             ("linenos" "")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  pdf export options                                                       ;;
@@ -72,13 +98,15 @@
 ;;  next time you open an org file                                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(setq org-bullets-bullet-list '("◉" "◎" "⚫" "○" "►" "◇"))
-(add-hook 'org-mode-hook
-          (lambda ()
-            (org-bullets-mode 1)))
+;; (add-hook 'org-mode-hook
+;;           (lambda ()
+;;             (org-bullets-mode 1)))
+(setq org-bullets-bullet-list '("●" "○" "◆" "◇" "▸"))
+(add-hook 'org-mode-hook #'org-bullets-mode)
 
 
 (setq org-todo-keywords
-      '((sequence "☛ TODO(t)" "₪ NEXT(n)" "|" "✔ DONE(d)")
+      '((sequence "☛ TODO(t)" "₪ NEXT(n@)" "|" "✔ DONE(d@)")
         (sequence "⚑ WAITING(w@/!)" "⟁ HOLD(h@/!)" "|")
         (sequence "|" "✘ CANCELED(c@/!)" "|" "§ POSTPONED(p@/!)" "PHONE" "MEETING")))
 
@@ -137,23 +165,20 @@
         ("KEY"       . ?k)
         ("HARD"      . ?a)
         ("BONUS"     . ?b)
-        ("noexport"  . ?x)
-        ))
+        ("noexport"  . ?x)))
 
 (setq org-tag-faces
-      '(
-        ("HOME"     . (:foreground "GoldenRod" :weight bold))
-        ("RESEARCH" . (:foreground "GoldenRod" :weight bold))
-        ("TEACHING" . (:foreground "GoldenRod" :weight bold))
+      '(("HOME"     . (:foreground "DarkGoldenRod1" :weight bold))
+        ("RESEARCH" . (:foreground "DarkGoldenRod1" :weight bold))
+        ("TEACHING" . (:foreground "DarkGoldenRod1" :weight bold))
         ("OS"       . (:foreground "IndianRed1" :weight bold))
         ("DEV"      . (:foreground "IndianRed1" :weight bold))
         ("WWW"      . (:foreground "IndianRed1" :weight bold))
         ("URGENT"   . (:foreground "Red" :weight bold))
         ("KEY"      . (:foreground "Red" :weight bold))
         ("HARD"     . (:foreground "Red" :weight bold))
-        ("BONUS"    . (:foreground "GoldenRod" :weight bold))
-        ("noexport" . (:foreground "Red" :weight bold))
-        ))
+        ("BONUS"    . (:foreground "DarkGoldenRod1" :weight bold))
+        ("noexport" . (:foreground "Red" :weight bold))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  inserting code blocks                                                  ;;;
@@ -238,18 +263,23 @@
     (require 'ob-sed)
     (require 'ob-css)
     (require 'ob-js)
-    (setq org-export-babel-evaluate nil)
+    (setq org-export-babel-evaluate nil)                                ;; do not export code on export by default
     (setq org-startup-indented t)
-    ;; increase imenu depth to include third level headings
-    (setq org-imenu-depth 3)
+    (setq org-imenu-depth 3)                                            ;; increase imenu depth to include third level headings
     ;; Set sensible mode for editing dot files
     (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot))
-    ;; Update images from babel code blocks automatically
-    (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
-    ;; font coloring in code blocks
+    (add-hook 'org-babel-after-execute-hook 'org-display-inline-images) ;; update images from babel code blocks automatically
+
+  ;; eye candies and font coloring in code blocks
     (setq org-src-fontify-natively t)
-    (setq org-src-tab-acts-natively t)
-    (setq org-confirm-babel-evaluate nil)))
+    (setq org-src-tab-acts-natively t)                                  ;; have completion in blocks
+    (setq org-confirm-babel-evaluate nil)                               ;; coding without prompt
+    (setq org-hide-leading-stars t)
+    (setq org-alphabetical-lists t)
+    (setq org-hide-emphasis-markers t)                                  ;; hide the *,=, or / markers
+    (setq org-pretty-entities t)                                        ;; have \alpha, \to and others display as utf8
+    (setq org-confirm-elisp-link-function nil)
+    (setq org-confirm-shell-link-function nil)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

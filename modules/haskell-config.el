@@ -324,8 +324,16 @@
           (lambda ()
             (add-to-list (make-local-variable 'company-backends) 'company-ghc)))
 
-(setq company-ghc-turn-on-autoscan t)
-(setq company-ghc-component-prefix-match t)
+(eval-after-load "company"
+  '(add-hook 'haskell-mode-hook
+             (lambda ()
+               (setq company-minimum-prefix-length 1
+                     company-ghc-turn-on-autoscan t
+                     company-ghc-component-prefix-match t))))
+
+;;(setq company-ghc-turn-on-autoscan t)
+;;(setq company-ghc-component-prefix-match t)
+
 
 ;; Default value of company-ghc-show-info is nil since when ghc-modi info is
 ;; called, ghc-mod pops up error if the current buffer contains error.
@@ -382,6 +390,11 @@
 (setq haskell-process-path-stack (executable-find "stack"))
 (setq haskell-hoogle-command (executable-find "hoogle"))
 (setq haskell-process-use-ghci t)
+
+;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
+;; haskell yasnippets
+;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
+(require-package 'haskell-snippets)
 
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
 ;; laod the Haskell helpers...

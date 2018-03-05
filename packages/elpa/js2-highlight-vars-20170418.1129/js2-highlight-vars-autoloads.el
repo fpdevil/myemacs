@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "js2-highlight-vars" "js2-highlight-vars.el"
-;;;;;;  (23126 26809 859293 951000))
+;;;;;;  (23196 55997 864727 672000))
 ;;; Generated autoloads from js2-highlight-vars.el
 
 (autoload 'js2-highlight-vars-mode "js2-highlight-vars" "\

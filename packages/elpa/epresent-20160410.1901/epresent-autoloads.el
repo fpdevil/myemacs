@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "epresent" "epresent.el" (23126 26683 766683
-;;;;;;  147000))
+;;;### (autoloads nil "epresent" "epresent.el" (23196 55870 708554
+;;;;;;  459000))
 ;;; Generated autoloads from epresent.el
 
 (autoload 'epresent-run "epresent" "\

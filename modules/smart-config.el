@@ -23,6 +23,12 @@
 (sp-local-pair '(emacs-lisp-mode) "'" "'" :actions nil)
 (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
 
+;; set up some pairings for org mode markup. These pairings won't
+;; activate by default; they'll only apply for wrapping regions.
+(sp-local-pair 'org-mode "~" "~" :actions '(wrap))
+(sp-local-pair 'org-mode "/" "/" :actions '(wrap))
+(sp-local-pair 'org-mode "*" "*" :actions '(wrap))
+
 (sp-with-modes '(emacs-lisp-mode
                  inferior-emacs-lisp-mode
                  lisp-interaction-mode

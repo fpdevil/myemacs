@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "helm-c-yasnippet" "helm-c-yasnippet.el" (23137
-;;;;;;  40353 134923 397000))
+;;;### (autoloads nil "helm-c-yasnippet" "helm-c-yasnippet.el" (23196
+;;;;;;  55945 746297 768000))
 ;;; Generated autoloads from helm-c-yasnippet.el
 
 (autoload 'helm-yas-complete "helm-c-yasnippet" "\

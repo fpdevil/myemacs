@@ -14,6 +14,35 @@
   (require 'flyspell)                                           ; flyspell mode
 
   ;;------------------------------------------------------------------------------
+  ;; flyspell checking for comments and text mode
+  ;;------------------------------------------------------------------------------
+  ;; do a spell check on the comments for c & c++
+  (add-hook 'c++-mode-hook 'flyspell-prog-mode)
+  (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
+
+  ;; enable flyspell in text mode(s)
+  (if (fboundp 'prog-mode)
+      (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+    (dolist (hook '(lisp-mode-hook
+                    emacs-lisp-mode-hook
+                    clojure-mode-hook
+                    python-mode-hook
+                    shell-mode-hook
+                    css-mode-hook
+                    js-mode-hook
+                    javascript-mode-hook
+                    haskell-mode-hook
+                    go-mode-hook
+                    erlang-mode-hook
+                    nxml-mode-hook))
+      (add-hook hook 'flyspell-prog-mode)))
+
+  (dolist (hook '(text-mode-hook))
+    (add-hook hook (lambda () (flyspell-mode 1))))
+  (dolist (hook '(change-log-mode-hook log-edit-mode-hook))
+    (add-hook (hook (lambda () (flyspell-mode -1)))))
+
+  ;;------------------------------------------------------------------------------
   ;; improve performance by not printing messages for every word
   ;;------------------------------------------------------------------------------
   (setq flyspell-issue-message-flag nil
@@ -77,42 +106,6 @@
                 rjsx-attr))))
   (put 'js2-mode 'flyspell-mode-predicate 'js-flyspell-verify)
   (put 'rjsx-mode 'flyspell-mode-predicate 'js-flyspell-verify)
-
-  ;;------------------------------------------------------------------------------
-  ;; flyspell checking for comments and text mode
-  ;;------------------------------------------------------------------------------
-  (if (fboundp 'prog-mode)
-      (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-
-    (dolist (hook '(text-mode-hook org-mode-hook))
-      (add-hook hook (lambda () (flyspell-mode 1))))
-
-    (dolist (hook '(change-log-mode-hook log-edit-mode-hook org-agenda-mode-hook))
-      (add-hook hook (lambda () (flyspell-mode -1))))
-
-    ;; (dolist (hook '(lisp-mode-hook
-    ;;                 emacs-lisp-mode-hook
-    ;;                 clojure-mode-hook
-    ;;                 yaml-mode
-    ;;                 python-mode-hook
-    ;;                 haskell-mode-hook
-    ;;                 javascript-mode-hook
-    ;;                 erlang-mode-hook
-    ;;                 go-mode-hook
-    ;;                 c++-mode-hook
-    ;;                 c-mode-hook
-    ;;                 shell-mode-hook
-    ;;                 css-mode-hook
-    ;;                 html-mode-hook
-    ;;                 nxml-mode-hook
-    ;;                 LaTeX-mode-hook
-    ;;                 markdown-mode-hook))
-    ;;   (add-hook hook 'flyspell-prog-mode))
-    )
-
-  ;; Spell check comments in c++ and c common
-  (add-hook 'c++-mode-hook  'flyspell-prog-mode)
-  (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
 
   ;;------------------------------------------------------------------------------
   ;; company ispell integration

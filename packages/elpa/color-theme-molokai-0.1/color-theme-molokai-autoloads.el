@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "color-theme-molokai" "color-theme-molokai.el"
-;;;;;;  (23126 26516 745040 561000))
+;;;;;;  (23196 55648 778918 847000))
 ;;; Generated autoloads from color-theme-molokai.el
 
 (autoload 'color-theme-molokai "color-theme-molokai" "\

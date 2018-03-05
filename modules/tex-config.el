@@ -76,8 +76,25 @@
 (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 
+;; PDF with LaTeX by default
+(defun auto-fill-mode-on ()
+  "Set the TEX PDF mode on."
+  (interactive)
+  (TeX-PDF-mode 1))
+
+(add-hook 'tex-mode-hook 'TeX-PDF-mode-on)
+(add-hook 'latex-mode-hook 'TeX-PDF-mode-on)
+
+
 (setq reftex-plug-into-AUCTeX t)
 (setq TeX-PDF-mode t)
+
+;; auto-fill mode
+(defun auto-fill-mode-on () (auto-fill-mode 1))
+(add-hook 'text-mode-hook 'auto-fill-mode-on)
+(add-hook 'emacs-lisp-mode 'auto-fill-mode-on)
+(add-hook 'tex-mode-hook 'auto-fill-mode-on)
+(add-hook 'latex-mode-hook 'auto-fill-mode-on)
 
 
 (setq TeX-output-view-style
@@ -118,8 +135,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq org-export-latex-listings t)
 (defun my-auto-tex-cmd ()
-  "When exporting from .org with latex, automatically run latex,
-       pdflatex, or xelatex as appropriate, using latexmk."
+  "When exporting from .org with latex, automatically run latex, pdflatex or xelatex as appropriate, using latexmk."
   (let ((texcmd)))
   ;; default command: oldstyle latex via dvi
   (setq texcmd "latexmk -dvi -pdfps %f")

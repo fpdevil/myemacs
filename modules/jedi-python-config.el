@@ -60,6 +60,7 @@
   (local-set-key (kbd "M-?") 'jedi:show-doc)
   (local-set-key (kbd "M-/") 'jedi:get-in-function-call))
 
+;; -- auto-complete integration for jedi
 (after 'auto-complete
     (require 'auto-complete-config)
     (ac-config-default))

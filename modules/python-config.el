@@ -9,7 +9,8 @@
 ;;;
 ;;; Code:
 ;;;=============================================================================
-;; load all the syntax specific packages needed for python3
+
+;; -- load all the syntax specific packages needed for python3
 (require 'ring)                 ; browse the kill ring
 (require 'epc)                  ; RPC stack for the Emacs Lisp
 (require 'python-pylint)        ; minor mode for running pylint
@@ -20,9 +21,13 @@
 (setq-default python-shell-completion-native-enable nil)
 
 ;;; -- make Emacs aware of the version-dependent shebangs
-(autoload 'python-mode "python-mode" "Python Mode." t)
+;; (autoload 'python-mode "python-mode" "Python Mode." t)
 ;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-(setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
+;; (setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
+
+(autoload 'python-mode "python-mode" "Python Mode." t)
+(add-to-list 'auto-mode-alist '("\\.py$\\'" . python-mode))
+(add-to-list 'interpreter-mode-alist '("python" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python2" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python3" . python-mode))
 
@@ -37,18 +42,19 @@
                    tab-width 4))
           (untabify (point-min) (point-max)))
 
-;;; -- indentation
+;;; -- indentation through electric indent
 (defun python-indent-setup ()
+  "Set necessary python indentation."
   (unless (is-buffer-file-temp)
     ;; http://emacs.stackexchange.com/questions/3322/python-auto-indent-problem/3338#3338
     ;; emacs 24.4 only
     (setq electric-indent-chars (delq ?: electric-indent-chars))))
 (add-hook 'python-mode-hook 'python-indent-setup)
 
-;;; -- rebind Enter to Ctrl+J for proper indentation
+;;; -- rebind the Enter key to Ctrl+J for proper indentation with RET
 (add-hook 'python-mode-hook
           (lambda ()
-             (define-key python-mode-map "\r" 'newline-and-indent)))
+            (define-key python-mode-map "\r" 'newline-and-indent)))
 
 
 ;;; --  python3 shell interpreter
@@ -61,14 +67,16 @@
       python-shell-prompt-regexp "In \\[[0-9]+\\]: "
       python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
       py-python-command (executable-find "python3"))
-;; below line specified for handling the args-out-of-range error in buffer
+
+;; == below line specified for handling the args-out-of-range error in buffer
 (setenv "IPY_TEST_SIMPLE_PROMPT" "1")
 (setq python-check-command (executable-find "pyflakes"))
-(setq python-environment-directory (concat (getenv "HOME") "/.emacs.d/.python-environments"))
-;; handling white-spaces in python mode
+(setq python-environment-directory (concat user-emacs-directory "/.python-environments"))
+
+;; == handling white-spaces in python mode
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-;;; -- system path in the lisp
+;;; -- set system path in the lisp for lib availability
 ;;;    == set PATH, because we don't load .bashrc
 (setenv
  "PATH" (concat
@@ -90,6 +98,14 @@
 
 ;;; --
 ;;; -- auto completion with rope
+(require-package 'pymacs)
+(autoload 'pymacs-apply "pymacs")
+(autoload 'pymacs-call "pymacs")
+(autoload 'pymacs-eval "pymacs" nil t)
+(autoload 'pymacs-exec "pymacs" nil t)
+(autoload 'pymacs-load "pymacs" nil t)
+(autoload 'pymacs-autoload "pymacs")
+
 (ac-ropemacs-initialize)
 (add-hook 'python-mode-hook
           (lambda ()
@@ -98,10 +114,9 @@
 ;;-----------------------------------------------------------------------------
 ;; documentation and help
 ;;-----------------------------------------------------------------------------
-;;; -- enable eldoc
-(eldoc-mode t)
+(eldoc-mode t)                              ;;; -- enable eldoc
 
-;;; -- sphinx documentation for python
+;;; -- sphinx documentation generation for python
 ;;; -- move the cursor to some function/method definition and hit C-c M-d
 (add-hook 'python-mode-hook
           (lambda ()
@@ -123,6 +138,7 @@
 (require 'virtualenvwrapper)           ;; python virtualenv wrapper
 (venv-initialize-interactive-shells)   ;; if you want interactive shell support
 (venv-initialize-eshell)               ;; if you want eshell support
+
 ;; note that setting `venv-location` is not necessary if you use the default
 ;; location (`~/.virtualenvs`), or incase if the system environment variable
 ;; `WORKON_HOME` points to the right place
@@ -152,15 +168,43 @@
                   flycheck-pylintrc (concat (getenv "HOME") ".pylintrc"))))
 
 ;;------------------------------------------------------------------------------
-;;; FlyCheck and FlyMake
+;;; SYNTAX CHECKING - (FlyCheck and FlyMake)
 ;;------------------------------------------------------------------------------
-;;; -- flymake handler for syntax-checking python source code using
-;;; -- pyflakes or flake8
-(require 'flymake-python-pyflakes)
-(add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
-;; using flake8 for FlyMake
-(setq flymake-python-pyflakes-executable (executable-find "flake8"))
+;;; -- flymake handler for syntax-checking python source code
+;;;    using pyflakes or flake8
+(after "flymake"
+  (require 'flymake-python-pyflakes)
+  (add-hook 'python-mode-hook #'(lambda () (setq flymake-no-changes-timeout 10))) ;; default 0.5
+  (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
+  ;; using flake8 for FlyMake
+  (setq flymake-python-pyflakes-executable (executable-find "flake8")))
 
+;; flymake with pychecker script
+(when (load "flymake" t)
+  (defun flymake-pylint-init (&optional trigger-type)
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name)))
+           (options (when trigger-type (list "--trigger-type" trigger-type))))
+      (list "~/.emacs.d/flymake/pyflymake.py" (append options (list local-file)))))
+
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.py" flymake-pylint-init)))
+(add-hook 'find-file-hook 'flymake-find-file-hook)
+
+(load-library "flymake-cursor")
+
+;;------------------------------------------------------------------------------
+;; == for autopep8 formatting and linting
+;;    ignoring the below:
+;; - E501 - Try to make lines fit within --max-line-length characters.
+;; - W293 - Remove trailing whitespace on blank line.
+;; - W391 - Remove trailing blank lines.
+;; - W690 - Fix various deprecated code (via lib2to3).
+;; (setq py-autopep8-options '("--ignore=E501,W293,W391,W690"))
+;;------------------------------------------------------------------------------
 ;;; -- code standardization with autopep8
 (defcustom python-autopep8-path (executable-find "autopep8")
   "autopep8 executable path."
@@ -177,49 +221,30 @@ $ autopep8 --in-place --aggressive --aggressive <filename>"
              (shell-quote-argument (buffer-file-name))))
     (revert-buffer t t t)))
 
-;;; -- for auto format on save
-(if python-autopep8-path
-       (add-hook 'before-save-hook 'python-autopep8))
-
-;; == for autopep8 formatting and linting
-;;    ignoring the below:
-;; - E501 - Try to make lines fit within --max-line-length characters.
-;; - W293 - Remove trailing whitespace on blank line.
-;; - W391 - Remove trailing blank lines.
-;; - W690 - Fix various deprecated code (via lib2to3).
-;; (setq py-autopep8-options '("--ignore=E501,W293,W391,W690"))
 (after 'py-autopep8
   (setq py-autopep8-options '("--ignore=W690"))
   (add-hook 'python-mode-hook 'py-autopep8-enable-on-save))
 
 ;;; -- helper functions
-;;; -- Small helper to scrape text from shell output
+;;;    == small helper to scrape text from shell output
 (defun get-shell-output (cmd)
+  "Scrape text from the shell output of the CMD."
   (replace-regexp-in-string "[ \t\n]*$" "" (shell-command-to-string cmd)))
 
 (defun get-project-root (buf repo-file &optional init-file)
-  "Just uses the vc-find-root function to figure out the project root.
-       Won't always work for some directory layouts."
+  "Just make use of the `vc-find-root' function to figure out the project root taking in BUF REPO-FILE and INIT-FILE.  Won't always work for some directory layouts."
   (let* ((buf-dir (expand-file-name (file-name-directory (buffer-file-name buf))))
          (project-root (vc-find-root buf-dir repo-file)))
     (if project-root
         (expand-file-name project-root)
       nil)))
 
-
-;; flymake with pychecker script
-(when (load "flymake" t)
-  (defun flymake-pycheckers-init ()
-    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                    'flymake-create-temp-inplace))
-        (local-file (file-relative-name
-                     temp-file
-                     (file-name-directory buffer-file-name))))
-      (list "~/.emacs.d/flymake/pycheckers.py"  (list local-file))))
-
-  (add-to-list 'flymake-allowed-file-name-masks
-            '("\\.py\\'" flymake-pycheckers-init)))
-
+;;------------------------------------------------------------------------------
+;; grand unified debugger
+;;------------------------------------------------------------------------------
+;; Tell Python debugger (pdb) to use the current virtual environment
+;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
+(setq gud-pdb-command-name "python3 -m pdb ")
 
 ;;------------------------------------------------------------------------------
 ;; prettify symbols

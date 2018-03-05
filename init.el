@@ -44,7 +44,7 @@
 ;;;
 ;;; Code:
 ;;        This sets up the load path so that we can override it
-;;        Update Note    : 13 Nov 2017
+;;        Update Note    : 31 Jan 2018
 ;;;=============================================================================
 (eval-when-compile (require 'cl))
 
@@ -67,8 +67,8 @@
  :group 'local)
 
 ;;; -- load the newest byte code every time
-(setq load-prefer-newer t)
 ;; (byte-recompile-init-files)
+(setq load-prefer-newer t)
 
 ;;; -- finalizers (for debugging and recompiling)
 ;; (setq debug-on-error t)
@@ -212,11 +212,13 @@ Under this the elpa directory will be present which houses all the .el packages.
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
 
+;; == for haskell ghc-mod
 ;; path setting needed for identifying the ghc-mod package
+;; for some reason the same specified in haskell custom configuration
+;; is not working, so placing it here
 (let ((my-cabal-path (expand-file-name (concat (getenv "HOME") "/Library/Haskell/bin"))))
   ; setup the cabal path and put into classpath
   (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
-  (message "**** cabal-path %s ****" my-cabal-path)
   (add-to-list 'exec-path my-cabal-path))
 
 

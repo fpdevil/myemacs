@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "cmake-project" "cmake-project.el" (23126 26776
-;;;;;;  894213 96000))
+;;;### (autoloads nil "cmake-project" "cmake-project.el" (23196 55944
+;;;;;;  746780 987000))
 ;;; Generated autoloads from cmake-project.el
 
 (autoload 'cmake-project-configure-project "cmake-project" "\

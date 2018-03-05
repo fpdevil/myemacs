@@ -63,6 +63,9 @@
 (defvar erlang-erl-path "/usr/local/opt/erlang/lib/erlang")
 (defvar erlang-esense-path (wild "/opt/erlang/" "esense-"))
 (defvar erlang-distel-path "/opt/erlang/distel/elisp")
+(unless (member erlang-distel-path load-path)
+  ;; add distel to end of load path
+  (setq load-path (append load-path (list erlang-distel-path))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Wrangler refactoring support for Erlang                                       ;;
@@ -310,8 +313,10 @@
                  ac-source-filename))
 
 (with-eval-after-load 'auto-complete
-  (setq ac-modes (append ac-modes '(erlang-mode)))
-  (setq ac-modes (append ac-modes '(erlang-shell-mode))))
+  ;;(setq ac-modes (append ac-modes '(erlang-mode)))
+  ;;(setq ac-modes (append ac-modes '(erlang-shell-mode)))
+  (setq ac-modes (append ac-modes (list 'erlang-mode)))
+  (setq ac-modes (append ac-modes (list 'erlang-shell-mode))))
 ;; }}}
 
 ;; {{{  auto-complete-mode so can interact with inferior erlang and
@@ -397,8 +402,8 @@
 ;;-------------------------------------------------------------------------------
 ;; which function mode for displaying function names
 ;;-------------------------------------------------------------------------------
-(eval-after-load "which-func"
-  '(add-to-list 'which-func-modes 'erlang-mode))
+;; (eval-after-load "which-func"
+;;   '(add-to-list 'which-func-modes 'erlang-mode))
 
 ;;-------------------------------------------------------------------------------
 ;; erlang flycheck support and custom helpers

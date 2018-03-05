@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "wttrin" "wttrin.el" (23126 26841 765198 267000))
+;;;### (autoloads nil "wttrin" "wttrin.el" (23196 56040 396337 257000))
 ;;; Generated autoloads from wttrin.el
 
 (autoload 'wttrin "wttrin" "\

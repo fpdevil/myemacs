@@ -20,14 +20,32 @@
 (setq-default custom-enabled-themes '(
                                       ;;darkokai
                                       ;;majapahit-light
-                                      ;;whiteboard
+                                      leuven
                                       ;;deeper-blue
                                       ;;material
                                       ;;material-light
                                       ;;spolsky
-                                      ;;wheatgrass
-                                      badger
+                                      ;;badger
                                       ))
+
+;;-------------------------------------------------------------------------------
+;; helper function's for disabling and enabling themes
+;;-------------------------------------------------------------------------------
+(defun change-theme (theme)
+  "Disable the current theme if any and load the THEME."
+  (interactive
+   (list
+    (intern (completing-read "Load a custom theme: "
+                             (mapc 'symbol-name
+                                   (custom-available-themes))))))
+  (let ((enabled-themes custom-enabled-themes))
+    (mapc #'disable-theme custom-enabled-themes)
+    (load-theme theme t)))
+
+(defun disable-active-themes ()
+  "Disable the currently active themes listed from `custom-enabled-themes'."
+  (interactive)
+  (mapc #'disable-theme custom-enabled-themes))
 
 ;;-------------------------------------------------------------------------------
 ;; Ensure that themes will be applied even if they have not been customized
@@ -40,12 +58,6 @@
       (message "loading the theme %s" theme)
       (load-theme theme t)))
   (custom-set-variables `(custom-enabled-themes (quote ,custom-enabled-themes))))
-
-;; disabling the current themes
-(defun disable-all-themes ()
-  "Disable each currently enabled theme."
-  (interactive)
-  (mapc #'disable-theme custom-enabled-themes))
 
 ;;-------------------------------------------------------------------------------
 ;; Toggle between light and dark solarized themes
@@ -125,13 +137,13 @@
 ;; Toggle between spacemacs's light and dark themes
 ;;-------------------------------------------------------------------------------
 (defun space-light ()
-  "Activate spacemacs light theme"
+  "Activate spacemacs light theme."
   (interactive)
   (load-theme 'spacemacs-light t))
 
 
 (defun space-dark ()
-  "Activate spacemacs light theme"
+  "Activate spacemacs light theme."
   (interactive)
   (load-theme 'spacemacs-dark t))
 

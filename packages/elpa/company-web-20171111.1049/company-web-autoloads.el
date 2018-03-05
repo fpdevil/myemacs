@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "company-web-html" "company-web-html.el" (23126
-;;;;;;  26833 217304 354000))
+;;;### (autoloads nil "company-web-html" "company-web-html.el" (23196
+;;;;;;  56030 150562 571000))
 ;;; Generated autoloads from company-web-html.el
 
 (autoload 'company-web-html "company-web-html" "\
@@ -14,8 +14,8 @@
 
 ;;;***
 
-;;;### (autoloads nil "company-web-jade" "company-web-jade.el" (23126
-;;;;;;  26833 218913 143000))
+;;;### (autoloads nil "company-web-jade" "company-web-jade.el" (23196
+;;;;;;  56030 152118 986000))
 ;;; Generated autoloads from company-web-jade.el
 
 (autoload 'company-web-jade "company-web-jade" "\
@@ -25,8 +25,8 @@
 
 ;;;***
 
-;;;### (autoloads nil "company-web-slim" "company-web-slim.el" (23126
-;;;;;;  26833 210295 316000))
+;;;### (autoloads nil "company-web-slim" "company-web-slim.el" (23196
+;;;;;;  56030 145020 480000))
 ;;; Generated autoloads from company-web-slim.el
 
 (autoload 'company-web-slim "company-web-slim" "\
@@ -37,7 +37,7 @@
 ;;;***
 
 ;;;### (autoloads nil nil ("company-web-pkg.el" "company-web.el")
-;;;;;;  (23126 26833 215710 118000))
+;;;;;;  (23196 56030 149008 123000))
 
 ;;;***
 

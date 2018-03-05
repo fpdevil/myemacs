@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "airline-themes" "airline-themes.el" (23126
-;;;;;;  26513 815375 77000))
+;;;### (autoloads nil "airline-themes" "airline-themes.el" (23196
+;;;;;;  55647 175917 928000))
 ;;; Generated autoloads from airline-themes.el
 
 (when load-file-name (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
@@ -23,7 +23,7 @@
 ;;;;;;  "airline-simple-theme.el" "airline-sol-theme.el" "airline-solarized-alternate-gui-theme.el"
 ;;;;;;  "airline-solarized-gui-theme.el" "airline-themes-pkg.el"
 ;;;;;;  "airline-ubaryd-theme.el" "airline-understated-theme.el"
-;;;;;;  "airline-wombat-theme.el") (23126 26513 842338 652000))
+;;;;;;  "airline-wombat-theme.el") (23196 55647 201264 76000))
 
 ;;;***
 

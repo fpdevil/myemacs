@@ -108,9 +108,6 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
            (sanityinc/time-subtract-millis after-init-time before-init-time)))
 ;; (add-hook 'after-init-hook 'sanityinc/show-init-time)
 
-;;; -- activate benchmarking...
-(benchmark-init/activate)
-
 ;;;-- [TAB] key settings - handle whitespaces
 (require 'whitespace)
 (setq whitespace-style
@@ -194,8 +191,11 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
   "Set company idle CDELAY, prefix CLENGTH for a specific mode MYMODE."
   (if (equal major-mode mymode)
       (message "--> setting idle delay to %f prefix-length to %d for %S-hook" cdelay clength mymode)
-      (setq company-idle-delay cdelay
-            company-minimum-prefix-length clength)))
+    (eval-after-load "company"
+      '(add-hook mymode
+                 (lambda ()
+                   (setq company-idle-delay cdelay
+                         company-minimum-prefix-length clength))))))
 
 ;;; -- indentation function
 (defun indent-reformat-buffer-on-save ()

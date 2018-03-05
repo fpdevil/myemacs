@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "import-js" "import-js.el" (23126 26912 159046
-;;;;;;  134000))
+;;;### (autoloads nil "import-js" "import-js.el" (23196 56179 990715
+;;;;;;  479000))
 ;;; Generated autoloads from import-js.el
 
 (autoload 'import-js-import "import-js" "\

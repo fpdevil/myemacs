@@ -56,7 +56,7 @@
 ;;-----------------------------------------------------------------------------
 ;; set default font for aquamacs
 ;;-----------------------------------------------------------------------------
-(when (equal system-type 'darwin)
+(when (string-equal system-type 'darwin)
   (set-frame-font "Monaco-12.0"))
 (if (string-match "apple-darwin" system-configuration)
     (set-face-font 'default "Monaco-12"))

@@ -24,6 +24,9 @@
       ensime-graphical-tooltips t
       ensime-auto-generate-config t)
 
+(after "company"
+ (setq company-minimum-prefix-length 1))
+
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
 (setq ensime-sbt-command (executable-find "sbt")

@@ -23,7 +23,7 @@
 ;;;              reload  the list of packages after for the first time
 ;;;
 ;;; Code:
-;;; Updated    : 20 Oct 2017
+;;; Updated    : 31 Jan 2018
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; -- required default standard libraries
@@ -38,8 +38,7 @@
 (add-to-list 'load-path module-dir)             ;; load the modules dir
 
 ;; == debug messages
-(message "Loading the Aquamacs modules...")
-(message "using aqua-package-repos.el %s"  (or load-file-name (buffer-file-name)))
+(message "loading aqua-package-repos.el %s"  (or load-file-name (buffer-file-name)))
 (message "directory %s" (file-name-directory (or load-file-name (buffer-file-name))))
 
 ;; == load all the requires
@@ -59,7 +58,6 @@
 (require 'quick-peek-config)                    ;; Quick-peek inline-window library
 (require 'fringe-config)                        ;; thin strip down the left and/or right edge
 
-
 (require 'smart-config)                         ;; smart parentheses
 (require 'paredit-config)                       ;; para management
 
@@ -70,14 +68,13 @@
 (require 'flycheck-config)                      ;; flycheck syntax checking
 (require 'flymake-config)                       ;; flymake syntax checking
 
-(require 'haskell-config)                       ;; Haskell programming language syntax/auto-complete etc
-(require 'semantic-config)                      ;; emacs semantic completion (C/C++)
-(require 'cpp-config)                           ;; c++ & c programming language support
-(require 'cpp-irony-config)                     ;; c++ code completion using irony
 (require 'python-config)                        ;; python 3.x.x programming core settings
 (require 'elpy-python-config)                   ;; python 3.x.x auto completion through ELPY
 (require 'jedi-python-config)                   ;; python 3.x.x auto completion through JEDI
-;;(require 'ipythonnb-config)                   ;; ipython notebook configuration
+(require 'haskell-config)                       ;; Haskell programming language syntax/auto-complete etc
+(require 'cpp-config)                           ;; c++ & c programming language support
+(require 'cpp-irony-config)                     ;; c++ code completion using irony
+(require 'semantic-config)                      ;; emacs semantic completion (C/C++)
 (require 'erlang-config)                        ;; Erlang programming language syntax/auto-complete etc
 (require 'elixir-config)                        ;; ELIXIR programming language syntax/auto-complete etc
 (require 'elisp-config)                         ;; ELisp programming language syntax/auto-complete etc
@@ -85,8 +82,8 @@
 (require 'go-config)                            ;; Go programming language syntax/auto-complete etc
 (require 'clojure-config)                       ;; Clojure programming language syntax/auto-complete etc
 (require 'vim-config)                           ;; VIM Script syntax checking and completion
-(require 'web-config)                           ;; for html and web markup langugae support
 (require 'js-config)                            ;; Java Script syntax checking, linting & Auto Completion
+(require 'web-config)                           ;; for html and web markup langugae support
 (require 'coffee-config)                        ;; Coffee Script syntax/auto-complete
 (require 'gitgutter-config)                     ;; vcs management
 (require 'shell-config)                         ;; for shell scripting support
@@ -123,30 +120,32 @@
 (require 'rbow-config)                          ;; rainbow colors for parentheses
 (require 'rbow-identifiers-config)              ;; rainbow colors for variables
 (require 'clr-identifiers-config)               ;; color identifiers mode
-(require 'rainbow-delims-config)                ;; ranbow colors for brackets
+(require 'rainbow-delims-config)                ;; rainbow colors for brackets
 (require 'highlight-symbol-config)              ;; highlight current symbol
-(require 'mode-line-config)                     ;; emacs modeline (sml + airline)
 
 (require 'diminish-config)                      ;; diminish minor modes in mode line
 (require 'whichkey-config)                      ;; get details of key bindings
 (require 'guidekey-config)                      ;; get details of all emacs key mappings
 
+;; {{ Themes section
 ;; == comment below line if you want to setup color theme in your own way
 (if (or (display-graphic-p)
      (string-match-p "256color"(getenv "TERM")))
    (require 'themes-config))
-
 ;; == comment below line if you want to setup color theme in your own way
-; (if (or (display-graphic-p)
-;         (string-match-p "256color"(getenv "TERM")))
-;     (require 'color-theme-config))
+;(if (or (display-graphic-p)
+;        (string-match-p "256color"(getenv "TERM")))
+;    (require 'color-theme-config))
 ;; ==
+;; }}
+(require 'mode-line-config)                     ;; emacs modeline (sml + airline)
 
 ;; --
-;;(require 'ecb-config)                        ;; emacs code browser
-;;(require 'html-config)                       ;; for html files
-;;(require 'spell-config)                      ;; not used
-;;(require 'themes-config)                     ;; emacs themes
+;;(require 'ipythonnb-config)                     ;; ipython notebook configuration
+;;(require 'ecb-config)                           ;; emacs code browser
+;;(require 'html-config)                          ;; for html files
+;;(require 'spell-config)                         ;; not used
+;;(require 'themes-config)                        ;; emacs themes
 ;; --
 
 ;;; -- now load personal elisp files if any from personal directory

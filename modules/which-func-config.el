@@ -30,7 +30,7 @@
 (make-local-variable 'which-func-cleanup-function)
 (setq which-func-cleanup-function #'string-trim-left)
 
-;; remove the ??? when which-func cannot determine name
+;; to remove the ??? when which-func cannot determine name
 ;; (setq which-func-unknown "n/a")
 
 ;;;;;;;;;;;;;;;;;;;;;;; which func configuration end ;;;;;;;;;;;;;;;;;;;;;;;;;;;

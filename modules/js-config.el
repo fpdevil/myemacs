@@ -7,6 +7,10 @@
 ;;; Description: Emacs configuration for javascript development support
 ;;; ref: http://codewinds.com/blog/2015-04-02-emacs-flycheck-eslint-jsx.html
 ;;; elisp code for customizing the js development settings
+;;; -- flycheck --
+;;; javascript-eslint is  part of flycheck, it  will fallback to it  as we
+;;; have  disabled  priority   one  javascript-jshint  and  json-json-lint
+;;; checkers
 ;;;
 ;;; Code:
 ;;;
@@ -50,7 +54,7 @@
 (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
 
 (defun my-create-newline-and-enter-sexp (&rest _ignored)
-  "Open a new brace or bracket expression, with relevant newlines and indent. "
+  "Open a new brace or bracket expression, with relevant newlines and indent."
   (newline)
   (indent-according-to-mode)
   (forward-line -1)
@@ -112,52 +116,40 @@
                                "__dirname" "console" "JSON" "jQuery" "$" "angular"))
 
 ;;------------------------------------------------------------------------------
-;; tern - intelligent javascript tooling
-;; first install with npm - install -g tern
+;; javascript js2 refactoring
 ;;------------------------------------------------------------------------------
+
 (after "js2-mode-autoloads"
   ;; javascript code refactoring
   ;; https://github.com/magnars/js2-refactor.el
   (require-package 'js2-refactor)
   (after 'js2-refactor
     ;; kbd prefix as C-c C-m (extract function with `C-c C-m ef`)
-    (js2r-add-keybindings-with-prefix "C-c C-m"))
+    (js2r-add-keybindings-with-prefix "C-c C-m")))
 
-  (add-hook 'js2-mode-hook #'js2-refactor-mode)
-  (add-hook 'js2-minor-mode-hook #'js2-refactor-mode)
+;;------------------------------------------------------------------------------
+;; tern - intelligent javascript tooling
+;; first install with npm - install -g tern
+;;------------------------------------------------------------------------------
+(require-package 'tern)
+(add-hook 'js-mode-hook (lambda () (tern-mode t)))
 
-  (when (executable-find "tern")
-    (require-package 'tern)
-    (after 'tern
-      (after 'auto-complete
-        (require-package 'tern-auto-complete)
-        (tern-ac-setup))
-      (after 'company-mode
-        (require-package 'company-tern)))
+(after "auto-complete"
+  (add-hook 'js2-mode-hook
+            '(lambda ()
+               (when (locate-library "tern")
+                 (setq tern-command '("tern" "--no-port-file")) ;; .term-port
+                 (tern-mode t)
+                 (eval-after-load 'tern
+                   '(progn
+                      (require 'tern-auto-complete)
+                      (tern-ac-setup)))))))
 
-    (add-hook 'js2-mode-hook #'tern-mode)
-    (add-hook 'js2-minor-mode-hook #'tern-mode)))
-
-(add-hook 'js-mode-hook
-  (lambda ()
-    (tern-mode t)))
-
-;; company auto completion integration with tern
-;; (after 'company
-;;   (when (executable-find "tern")
-;;     (after "company-tern-autoloads"
-;;       (add-to-list (make-local-variable 'company-backends) 'company-tern))))
-
-;; tern completion with auto complete mode
-;; (after "auto-complete"
-;;    '(progn
-;;       (require 'tern-auto-complete)
-;;       (tern-ac-setup)))
-
-
-;; (add-hook 'js2-mode-hook
-;;   (lambda ()
-;;     (tern-mode t)))
+(after "company"
+  (add-hook 'js2-mode-hook
+    '(lambda ()
+      (setq-local company-backends
+        '((company-tern :with company-yasnippet))))))
 
 ;;------------------------------------------------------------------------------
 ;; Force restart of tern in new projects (M-x delete-tern-process)
