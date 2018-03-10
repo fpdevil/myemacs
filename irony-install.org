@@ -1,0 +1,163 @@
+#+TITLE: IRONY mode installation for EMacs on Mac OSX
+#+AUTHOR: Sampath Singamsetty
+#+DATE: Sat Mar 10 13:19:34 2018
+
+#+LATEX_HEADER: \usepackage{minted}
+#+LATEX_HEADER: \usepackage{color}
+#+LATEX_HEADER: \usepackage{verbatim}
+#+LATEX_HEADER: \RequirePackage{fancyvrb}
+#+LATEX_HEADER: \DefineVerbatimEnvironment{verbatim}{Verbatim}{fontsize=\scriptsize}
+#+LaTeX_HEADER: \lstset{basicstyle=\scriptsize\ttfamily}
+
+#+OPTIONS: ^:{} # make super/subscripts only when wrapped in {}
+#+STARTUP: showall
+
+* Basic setup
+=irony-mode= is an Emacs minor-mode that aims at improving the editing
+experience for the =C=, =C++= and =Objective-C= languages. It works by using
+a combination of an Emacs package and a =C++= program (*irony-server*)
+exposing =libclang=.
+
+It provides the below features while editing a =.c,= =.cpp= or an =oobjectiveC= file.
+
+- Code completion
+- Syntax Checking
+- Documentation lookup in association with *eldoc*
+
+** Package installation in =Emacs=
+
+The *Emacs* package can be installed from =MELPA= using any standard
+package management procedures like =use-package= or custom =elisp= code.
+
+- =M-x package-install RET irony RET=
+
+** The simplest configuration
+
+The simplest configuration would be just including the below in
+appropriate =elisp=
+
+#+BEGIN_SRC elisp
+(add-hook 'c++-mode-hook 'irony-mode)
+(add-hook 'c-mode-hook 'irony-mode)
+(add-hook 'objc-mode-hook 'irony-mode)
+#+END_SRC
+
+* *irony-server* installation post the =elisp= package installation
+
+Once *irony* package is installed on =Emacs= the *irony-server* needs to be
+built using appropriate =libclang=. The following section shows the
+build details
+
+** Build instructions
+
+- On *OSX* first download the appropriate version of pre-built *libclang*
+  package, =clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz= from the
+  repository /http://llvm.org/releases/download.html/
+
+#+begin_src shell
+http --download --verify=no http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz
+tar -xvf clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz
+ll clang+llvm-6.0.0-x86_64-apple-darwin/
+#+end_src
+
+- Now create a build directory inside the =irony= package for running
+  the *CMAKE* script(s). Create a directory =build= inside the =irony=
+  package and traverse into it to run the necessary *cmake*
+
+#+BEGIN_SRC shell
+$ mkdir build
+$ cd build
+#+END_SRC
+
+- Now run the =cmake= from inside the build directory, using the below command(s)
+
+#+BEGIN_SRC shell
+$ cmake -DCMAKE_PREFIX_PATH=/opt/software/clang+llvm-6.0.0-x86_64-apple-darwin/ \
+        -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
+        -DLIBCLANG_LIBRARY=/opt/software/clang+llvm-6.0.0-x86_64-apple-darwin/lib/libclang.dylib \
+        -DCMAKE_INSTALL_PREFIX=~/.emacs.d/irony/ \
+        ~/.emacs.d/packages/elpa/irony-20180308.1256/server
+#+END_SRC
+
+- Once the *build* files are all successfully generated, run the below
+  command to create the *irony-server* inside the =.emacs.d= folder. This
+  command should be run from within the build directory as above.
+
+#+BEGIN_SRC shell
+$ cmake --build . --use-stderr --config Release --target install
+#+END_SRC
+
+** Installation synopsis
+
+Here are the details from the actual build run on my system
+
+#+BEGIN_SRC shell
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_PREFIX_PATH=/opt/software/clang+llvm-6.0.0-x86_64-apple-darwin/ \
+        -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
+        -DLIBCLANG_LIBRARY=/opt/software/clang+llvm-6.0.0-x86_64-apple-darwin/lib/libclang.dylib \
+        -DCMAKE_INSTALL_PREFIX=~/.emacs.d/irony/ \
+        ~/.emacs.d/packages/elpa/irony-20180308.1256/server
+#+END_SRC
+
+- Here is the output of the above run
+
+#+BEGIN_SRC shell
+-- The C compiler identification is AppleClang 9.0.0.9000039
+-- The CXX compiler identification is AppleClang 9.0.0.9000039
+-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc
+-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++
+-- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Setting build type to 'Release' as none was specified
+-- Performing Test HAS_STDCXX11
+-- Performing Test HAS_STDCXX11 - Success
+-- Performing Test HAS_CXX11_STDLIB
+-- Performing Test HAS_CXX11_STDLIB - Success
+-- C++11 compiler option(s): -std=c++11
+-- Found LibClang: /opt/software/clang+llvm-6.0.0-x86_64-apple-darwin/lib/libclang.dylib
+-- Detecting Clang resource directory
+-- Detecting libclang builtin headers directory -- success
+-- Irony package version is '1.2.0'
+-- Found emacs: /Applications/emacs.app/Contents/MacOS/Emacs
+-- Configuring done
+-- Generating done
+-- Build files have been written to: ~/emacs.d/packages/elpa/irony-20180308.1256/build
+#+END_SRC
+
+- Here is the server build
+
+#+BEGIN_SRC shell
+$ cmake --build . --use-stderr --config Release --target install
+Scanning dependencies of target irony-server
+[ 14%] Building CXX object src/CMakeFiles/irony-server.dir/support/CommandLineParser.cpp.o
+[ 28%] Building CXX object src/CMakeFiles/irony-server.dir/support/TemporaryFile.cpp.o
+[ 42%] Building CXX object src/CMakeFiles/irony-server.dir/Command.cpp.o
+[ 57%] Building CXX object src/CMakeFiles/irony-server.dir/Irony.cpp.o
+[ 71%] Building CXX object src/CMakeFiles/irony-server.dir/TUManager.cpp.o
+[ 85%] Building CXX object src/CMakeFiles/irony-server.dir/main.cpp.o
+[100%] Linking CXX executable ../bin/irony-server
+[100%] Built target irony-server
+Install the project...
+-- Install configuration: "Release"
+-- Installing: ~/.emacs.d/irony/bin/irony-server
+#+END_SRC
+
+- Check the version of the *irony-server* built
+
+#+BEGIN_SRC shell
+ elpa  irony-20180308.1256  build $ ./bin/irony-server -v
+irony-server version 1.2.0
+clang version 6.0.0 (tags/RELEASE_600/final)
+#+END_SRC
+
+** Restart *Emacs* and start working on a =C++= file.
