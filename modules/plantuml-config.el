@@ -40,17 +40,6 @@
 (message "--> loading plantuml from %s" org-plantuml-jar-path)
 
 ;;-----------------------------------------------------------------------------
-;; ditaa - DIagrams Through Ascii Art | brew install ditaa
-;;-----------------------------------------------------------------------------
-;; Location where homebrew installed the ditaa
-(setq org-ditaa-jar-path "/usr/local/opt/ditaa/libexec/ditaa0_10.jar")
-(setq ditaa-cmd "java -jar /usr/local/opt/ditaa/libexec/ditaa0_10.jar")
-(defun djcb-ditaa-generate ()
-  (interactive)
-  (shell-command
-    (concat ditaa-cmd " " buffer-file-name)))
-
-;;-----------------------------------------------------------------------------
 ;;; activate Babel language and use plantuml as org-babel language
 ;;-----------------------------------------------------------------------------
 (when (boundp 'org-plantuml-jar-path)
@@ -78,19 +67,11 @@
 (add-hook 'org-mode-hook #'my-org-mode-hook)
 
 ;;-----------------------------------------------------------------------------
-;; Asynchronous src_block execution for org-babel
-;;-----------------------------------------------------------------------------
-(require-package 'ob-async)
-(add-to-list 'org-ctrl-c-ctrl-c-hook #'ob-async-org-babel-execute-src-block)
-
-;;-----------------------------------------------------------------------------
-;; make dot work as graphviz-dot
-;;-----------------------------------------------------------------------------
-(add-to-list 'org-src-lang-modes '("dot" . graphviz-dot))
-
-;;-----------------------------------------------------------------------------
 ;; integration with org-mode
 ;; use plantuml-mode to edit PlantUML source snippets within org-mode docs
+;; #+BEGIN_SRC plantuml
+;;   <hit C-c ' here to open a plantuml-mode buffer>
+;; #+END_SRC
 ;;-----------------------------------------------------------------------------
 (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
 
@@ -101,8 +82,11 @@
   "LANG BODY Do not ask for confirmation to evaluate code for specified languages."
   (member lang '("plantuml")))
 
-;;-----------------------------------------------------------------------------
 ;; trust certain code as being safe
+(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
+;;-----------------------------------------------------------------------------
+;; trust certain code as being safe | displaying inline images
 ;;-----------------------------------------------------------------------------
 (defun aqua-display-inline-images ()
   "For displaying images inline."
@@ -143,6 +127,22 @@
                 (buffer-file-name)))
     (message cmd)
     (call-process-shell-command cmd nil 0)))
+
+;;-----------------------------------------------------------------------------
+;; ditaa - DIagrams Through Ascii Art | brew install ditaa
+;;-----------------------------------------------------------------------------
+;; Location where homebrew installed the ditaa
+(setq org-ditaa-jar-path "/usr/local/opt/ditaa/libexec/ditaa-0.11.0-standalone.jar")
+(setq ditaa-cmd "java -jar /usr/local/opt/ditaa/libexec/ditaa-0.11.0-standalone.jar")
+(defun djcb-ditaa-generate ()
+  (interactive)
+  (shell-command
+    (concat ditaa-cmd " " buffer-file-name)))
+
+;;-----------------------------------------------------------------------------
+;; make dot work as graphviz-dot
+;;-----------------------------------------------------------------------------
+(add-to-list 'org-src-lang-modes '("dot" . graphviz-dot))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -67,6 +67,7 @@
 
 (require 'flycheck-config)                      ;; flycheck syntax checking
 (require 'flymake-config)                       ;; flymake syntax checking
+(require 'flyspell-config)                      ;; spell check
 
 (require 'python-config)                        ;; python 3.x.x programming core settings
 (require 'elpy-python-config)                   ;; python 3.x.x auto completion through ELPY
@@ -103,7 +104,6 @@
 (require 'popwin-config)                        ;; text pop up for completion hints
 (require 'auto-insert-config)                   ;; auto insert tags and snippets
 (require 'projectile-config)                    ;; project management
-(require 'flyspell-config)                      ;; spell check
 (require 'beacon-config)                        ;; visually show where am i
 (require 'weather-config)                       ;; get wether details
 (require 'vregex-config)                        ;; regex support

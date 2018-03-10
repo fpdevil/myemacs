@@ -1,4 +1,6 @@
-((("width" .
+((("require-package" .
+   [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("width" .
    [1 0 0 0 0])
   ("detector" .
    [1 0 0 0 0 0 0 1])
@@ -93,7 +95,7 @@
   ("safeFileReader" .
    [0 0 0 0 0 1 0 0 0 0 0 0 0 0])
   ("cv2" .
-   [8 0 0])
+   [11 0 0])
   ("shape_predictor" .
    [0 1 0 1 0 0 0 0 0 0 0 0 0 0 0])
   ("get_frontal_face_detector" .
@@ -247,4 +249,26 @@
   ("fizzbuzz" .
    [2 0 0 0 0 0 0 0])
   ("solveRPN" .
-   [0 0 0 0 0 0 1 0])))
+   [0 0 0 0 0 0 1 0])
+  ("shape" .
+   [2 0 0 0 0])
+  ("face_utils" .
+   [1 0 0 0 1 0 0 0 0 0])
+  ("shape_to_np" .
+   [0 0 0 0 0 0 0 0 0 0 1])
+  ("rect_to_bb" .
+   [0 0 0 0 0 0 0 0 0 1])
+  ("rect" .
+   [1 0 0 0])
+  ("rectangle" .
+   [0 0 1 0 0 0 0 0 0])
+  ("image" .
+   [1 0 0 0 0])
+  ("putText" .
+   [0 0 0 1 0 0 0])
+  ("format" .
+   [0 0 0 0 1 0])
+  ("FONT_HERSHEY_SIMPLEX" .
+   [0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("waitKey" .
+   [0 1 0 0 0 0 0])))

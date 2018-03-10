@@ -38,13 +38,14 @@
           (which-key             . "melpa-stable"))))
 
 ;; == set package priorities
-(setq package-archive-priorities
-      '(("org"          . 30)
-        ("elpy"         . 30)
-        ("melpa"        . 20)
-        ("gnu"          . 10)
-        ("melpa-stable" . 10)
-        ("marmalade"    . 5)))
+;;(setq package-archive-priorities
+;;      '(("org"          . 30)
+;;        ("elpy"         . 30)
+;;        ("melpa"        . 20)
+;;        ("gnu"          . 10)
+;;        ("melpa-stable" . 10)
+;;        ("marmalade"    . 5)))
+
 (setq package-menu-hide-low-priority t)
 
 ;; == set it to `t' to use safer HTTPS to download packages
@@ -127,7 +128,6 @@ FEATURE may be any one of:
 
 (eval-when-compile
   (require 'use-package))
-
 
 ;;; -- if not all the packages which are listed are installed, check one by one
 ;;;    and install the missing ones.

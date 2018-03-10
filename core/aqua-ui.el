@@ -39,7 +39,9 @@
 ;;-----------------------------------------------------------------------------
 ;; add proper word wrapping
 ;;-----------------------------------------------------------------------------
-(global-visual-line-mode t)
+(global-visual-line-mode)
+;; enable visual wordwrap in every text-mode (which includes org-mode)
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
 
 ;;-----------------------------------------------------------------------------
 ;; additional mode line settings

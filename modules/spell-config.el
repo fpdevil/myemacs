@@ -1,114 +1,141 @@
-;;; package  --- spell-config.el
+;;; package  --- flyspell-config.el
 ;;; -*- coding: utf-8 -*-
 ;;;
 ;;; Commentary:
 ;;;
-;;; Filename   : spell-config.el
+;;; Filename   : flyspell-config.el
 ;;; Description: Emacs enable spell checking for comments & text
 ;;;              spell checking on the fly.
-;;;===========================================================================
+;;;
 ;;; Code:
+;;;
+;;;=============================================================================
+(lazy-init
+  (require 'flyspell)                                           ; flyspell mode
 
-(defvar spell-checking-enable-by-default t
-  "Enable spell checking by default.")
+  ;;------------------------------------------------------------------------------
+  ;; flyspell checking for comments and text mode
+  ;;------------------------------------------------------------------------------
+  ;; do a spell check on the comments for c & c++
+  (add-hook 'c++-mode-hook 'flyspell-prog-mode)
+  (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
 
-(defvar spell-checking-enable-auto-dictionary nil
-  "Specify if auto-dictionary should be enabled or not.")
+  ;; enable flyspell in text mode(s)
+  (if (fboundp 'prog-mode)
+      (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+    (dolist (hook '(lisp-mode-hook
+                    emacs-lisp-mode-hook
+                    clojure-mode-hook
+                    python-mode-hook
+                    shell-mode-hook
+                    css-mode-hook
+                    js-mode-hook
+                    javascript-mode-hook
+                    haskell-mode-hook
+                    go-mode-hook
+                    erlang-mode-hook
+                    nxml-mode-hook))
+      (add-hook hook 'flyspell-prog-mode)))
 
-(defvar enable-flyspell-auto-completion nil
-  "If not nil, show speeling suggestions in popups.")
+  (dolist (hook '(text-mode-hook))
+    (add-hook hook (lambda () (flyspell-mode 1))))
+  (dolist (hook '(change-log-mode-hook log-edit-mode-hook))
+    (add-hook (hook (lambda () (flyspell-mode -1)))))
 
-(defun spell-config/add-flyspell-hook (hook)
-  "Add `flyspell-mode' to the given HOOK, if
-`spell-checking-enable-by-default' is true."
-  (when spell-checking-enable-by-default
-    (add-hook hook 'flyspell-mode)))
+  ;;------------------------------------------------------------------------------
+  ;; improve performance by not printing messages for every word
+  ;;------------------------------------------------------------------------------
+  (setq flyspell-issue-message-flag nil
+        flyspell-issue-welcome-flag nil
+        flyspell-use-meta-tab nil)
 
-(defun spell-config/change-dictionary ()
-  "Change the dictionary. Use the ispell version if
-auto-dictionary is not used, use the adict version otherwise."
-  (interactive)
-  (if (fboundp 'adict-change-dictionary)
-      (adict-change-dictionary)
-    (call-interactively 'ispell-change-dictionary)))
+  ;; Don't consider that a word repeated twice is an error
+  (setq flyspell-mark-duplications-flag nil)
+  ;; Lower (for performance reasons) the maximum distance for finding
+  ;; duplicates of unrecognized words (default: 400000)
+  (setq flyspell-duplicate-distance 12000)
+  ;; Dash character (`-') is considered as a word delimiter
+  (setq flyspell-consider-dash-as-word-delimiter-flag t)
 
+  ;; load flyspell-lazy
+  (after 'flyspell
+    '(progn
+       (require 'flyspell-lazy)
+       (flyspell-lazy-mode 1)))
 
-(defun spell-config/init-auto-dictionary ()
-  (use-package auto-dictionary
-    :defer t
-    :init
-    (progn
-      (add-hook 'flyspell-mode-hook 'auto-dictionary-mode)
-      ;; set the local buffer dictionary if set
-      ;; auto-dictionary will replace it with a guessed one at each activation
-      (defun adict-set-local-dictionary ()
-        "Set the local dictionary if not nil."
-        (when (and (fboundp 'adict-change-dictionary)
-                ispell-local-dictionary)
-          (adict-change-dictionary ispell-local-dictionary)))
-      (add-hook 'auto-dictionary-mode-hook
-                'adict-set-local-dictionary 'append))))
+  ;;------------------------------------------------------------------------------
+  ;;;           find aspell load
+  ;;------------------------------------------------------------------------------
+  (setq ispell-program-name (executable-find "aspell")
+        ispell-dictionary "american" ; better for aspell
+        ispell-extra-args '("--sug-mode=ultra" "--lang=en_US")
+        ispell-list-command "--list")
 
+  (add-to-list 'ispell-local-dictionary-alist '(nil
+                                                "[[:alpha:]]"
+                                                "[^[:alpha:]]"
+                                                "['‘’]"
+                                                t
+                                                ("-d" "en_US")
+                                                nil
+                                                utf-8))
 
-(defun spell-config/init-flyspell ()
-  (use-package flyspell
-    :defer t
-    :commands (spell-checking/change-dictionary)
-    :init
-    (progn
-      (spell-checking/add-flyspell-hook 'text-mode-hook)
-      (when spell-checking-enable-by-default
-        (add-hook 'prog-mode-hook 'flyspell-prog-mode))
-      (add-toggle-spelling-checking
-        :status flyspell-mode
-        :on (if (derived-mode-p 'prog-mode)
-              (flyspell-prog-mode)
-              (flyspell-mode))
-        :off (progn
-               (flyspell-mode-off)
-               ;; disable auto-dictionary when disabling spell-checking
-               (when (fboundp 'auto-dictionary-mode) (auto-dictionary-mode -1)))
-        :documentation "Enable automatic spell checking."
-        :evil-leader "tS"))))
+  ;; Use helm with flyspell
+  (define-key flyspell-mode-map (kbd "<f8>") 'helm-flyspell-correct)
 
-(defun spell-config/init-flyspell-correct ()
-  (use-package flyspell-correct
-    :commands (flyspell-correct-word-generic
-               flyspell-correct-previous-word-generic)
-    :init
-    (evil-leader/set-key "Sc" 'flyspell-correct-previous-word-generic)))
+  ;; flyspell line styles
+  (custom-set-faces
+   '(flyspell-duplicate ((t (:underline (:color "Blue" :style wave)))))
+   '(flyspell-incorrect ((t (:underline (:color "Purple" :style wave))))))
 
-(defun spell-config/init-flyspell-correct-helm ()
-  (use-package flyspell-crrect-helm
-    :commands (flyspell-correct-helm)
-    :init
-    (setq flyspell-correct-interface #'flyspell-correct-popup)))
+  ;;------------------------------------------------------------------------------
+  ;; flyspell setup for js2-mode
+  ;;------------------------------------------------------------------------------
+  (defun js-flyspell-verify ()
+    (let* ((f (get-text-property (- (point) 1) 'face)))
+      ;; *whitelist*
+      ;; only words with following font face will be checked
+      (memq f '(js2-function-call
+                js2-function-param
+                js2-object-property
+                font-lock-variable-name-face
+                font-lock-string-face
+                font-lock-function-name-face
+                font-lock-builtin-face
+                rjsx-tag
+                rjsx-attr))))
+  (put 'js2-mode 'flyspell-mode-predicate 'js-flyspell-verify)
+  (put 'rjsx-mode 'flyspell-mode-predicate 'js-flyspell-verify)
 
-(defun spell-config/init-flyspell-correct-popup ()
-  (use-package flyspell-correct-popup
-    :commands (flyspell-correct-popup)
-    :init
-    (setq flyspell-correct-interface #'flyspell-correct-popup)))
+  ;;------------------------------------------------------------------------------
+  ;; company ispell integration
+  ;;------------------------------------------------------------------------------
+  (defun company-text-mode-hook ()
+    "Company for `text-mode'"
+    (make-local-variable 'company-backends)
+    (add-to-list 'company-backends 'company-ispell)
+    (setq company-ispell-dictionary (file-truename "~/.emacs.d/private/english-words.txt")))
+  (add-hook 'text-mode-hook 'company-text-mode-hook)
 
-(defun spell-config/init-flyspell-popup ()
-  (use-package flyspell-popup
-    :defer t
-    :init
-    (progn
-      (setq flyspell-popup-correct-delay 0.8)
-      (add-hook 'flyspell-mode-hook 'flyspell-popup-auto-correct-mode))))
+  (defun toggle-company-ispell ()
+    "M-x toggle the company iSpell."
+    (interactive)
+    (cond
+     ((memq 'company-ispell company-backends)
+      (setq company-backends (delete 'company-ispell company-backends))
+      (message "company-ispell disabled"))
+     (t
+      (add-to-list 'company-backends 'company-ispell)
+      (message "company-ispell enabled!"))))
+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-;; enable for org-mode
-(spell-config/add-flyspell-hook 'org-mode-hook)
-
-
-(provide 'spell-config)
+(provide 'flyspell-config)
 
 ;; Local Variables:
 ;; coding: utf-8
 ;; mode: emacs-lisp
-;; byte-compile-warnings: (not cl-functions)
+;; no-byte-compile t
 ;; End:
 
-;;; spell-config.el ends here
+;;; flyspell-config.el ends here

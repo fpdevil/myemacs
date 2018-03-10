@@ -29,7 +29,7 @@
                                       ))
 
 ;;-------------------------------------------------------------------------------
-;; helper function's for disabling and enabling themes
+;; helper function's for changing, disabling and enabling themes
 ;;-------------------------------------------------------------------------------
 (defun change-theme (theme)
   "Disable the current theme if any and load the THEME."

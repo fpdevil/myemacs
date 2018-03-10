@@ -7,11 +7,13 @@
 ;;; Description: Emacs Color theme
 ;;;
 ;;; elisp code for customizing the latex
-;;===========================================================================
 ;;;
 ;;; Code:
 ;;;
+;;===========================================================================
 (require 'latex-pretty-symbols)
+
+(add-to-list 'auto-mode-alist '("\\.tex\\'" . TeX-latex-mode))
 
 ;; set the PATH for texbin
 (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))
@@ -25,6 +27,18 @@
 (setq TeX-engine (quote "/Library/TeX/texbin/xetex"))
 ;; add synctex
 (setq LaTeX-command "pdflatex -synctex=1")
+
+;;
+;; TeX Completion with Company
+(after "company"
+  (require-package 'company-auctex)
+  (add-hook 'LaTeX-mode-hook #'company-auctex-init))
+
+;;
+;; TeX Cmpletion with Auto-Complete
+(after "auto-complete"
+  (require-package 'auto-complete-auctex))
+
 
 ;; TeX command list configuration
 (setq TeX-command-list
@@ -77,7 +91,7 @@
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 
 ;; PDF with LaTeX by default
-(defun auto-fill-mode-on ()
+(defun TeX-PDF-mode-on ()
   "Set the TEX PDF mode on."
   (interactive)
   (TeX-PDF-mode 1))
@@ -85,17 +99,18 @@
 (add-hook 'tex-mode-hook 'TeX-PDF-mode-on)
 (add-hook 'latex-mode-hook 'TeX-PDF-mode-on)
 
-
 (setq reftex-plug-into-AUCTeX t)
 (setq TeX-PDF-mode t)
 
 ;; auto-fill mode
-(defun auto-fill-mode-on () (auto-fill-mode 1))
+(defun auto-fill-mode-on ()
+  "Turn on Autofill mode."
+  (auto-fill-mode 1))
+
 (add-hook 'text-mode-hook 'auto-fill-mode-on)
 (add-hook 'emacs-lisp-mode 'auto-fill-mode-on)
 (add-hook 'tex-mode-hook 'auto-fill-mode-on)
 (add-hook 'latex-mode-hook 'auto-fill-mode-on)
-
 
 (setq TeX-output-view-style
     (quote
@@ -106,10 +121,10 @@
 ;; make latexmk available via C-c C-c
 ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
 (add-hook 'LaTeX-mode-hook (lambda ()
-  (push
-    '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
-      :help "Run latexmk on file")
-    TeX-command-list)))
+                             (push
+                              '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+                                :help "Run latexmk on file")
+                              TeX-command-list)))
 (add-hook 'TeX-mode-hook
           '(lambda ()
              (setq TeX-command-default "latexmk")))
@@ -120,7 +135,7 @@
 (setq TeX-view-program-selection
       '((output-pdf "PDF Viewer")))
 (setq TeX-view-program-list
-     '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+      '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
 
 ;; hide some parts of the text file
 (defun turn-on-outline-minor-mode ()
@@ -133,7 +148,52 @@
 (setq outline-minor-mode-prefix "\C-c \C-o")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; LaTeX export settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; interpret "_" and "^" for export when braces are used
+(setq org-export-with-sub-superscripts '{})
+
+(setq org-latex-default-packages-alist
+      '(("AUTO" "inputenc" t)
+        ("" "lmodern" nil)
+        ("T1" "fontenc" t)
+        ("" "fixltx2e" nil)
+        ("" "graphicx" t)
+        ("" "longtable" nil)
+        ("" "float" nil)
+        ("" "wrapfig" nil)
+        ("" "rotating" nil)
+        ("normalem" "ulem" t)
+        ("" "amsmath" t)
+        ("" "textcomp" t)
+        ("" "marvosym" t)
+        ("" "wasysym" t)
+        ("" "amssymb" t)
+        ("" "amsmath" t)
+        ("version=3" "mhchem" t)
+        ("numbers,super,sort&compress" "natbib" nil)
+        ("" "natmove" nil)
+        ("" "url" nil)
+        ("" "minted" nil)
+        ("" "underscore" nil)
+        ("linktocpage,pdfstartview=FitH,colorlinks,
+linkcolor=blue,anchorcolor=blue,
+citecolor=blue,filecolor=blue,menucolor=blue,urlcolor=blue"
+         "hyperref" nil)
+        ("" "attachfile" nil)))
+
+;; do not put in \hypersetup. Use your own if you want it e.g.
+;; \hypersetup{pdfkeywords={%s},\n pdfsubject={%s},\n pdfcreator={%}}
+(setq org-latex-with-hyperref nil)
+
 (setq org-export-latex-listings t)
+
+;; avoid getting \maketitle right after begin{document}
+;; you should put \maketitle if and where you want it.
+(setq org-latex-title-command "")
+
+(setq org-latex-prefer-user-labels t)
+
 (defun my-auto-tex-cmd ()
   "When exporting from .org with latex, automatically run latex, pdflatex or xelatex as appropriate, using latexmk."
   (let ((texcmd)))

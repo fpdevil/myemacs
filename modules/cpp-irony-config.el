@@ -68,6 +68,12 @@
 (after 'flycheck
   '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
 
+;; Integrate Clang Static Analyzer with flycheck for on-the-fly
+;; static analysis in Emacs
+(with-eval-after-load 'flycheck
+  (require-package 'flycheck-clang-analyzer)
+  (flycheck-clang-analyzer-setup))
+
 ;;------------------------------------------------------------------------------
 ;; bind TAB key for indent-or-complete (optional)
 ;;------------------------------------------------------------------------------

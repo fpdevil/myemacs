@@ -263,14 +263,21 @@ $ autopep8 --in-place --aggressive --aggressive <filename>"
            ("in"     . "∈")
            ("not in" . "∉")
            ("return" . "η")
-           ;; ("yield"  . "≫≫")
            ("for"    . "∀")
            ("!="     . "≠")
            ("=="     . "≡")
            (">="     . "≥")
            ("<="     . "≤")
-           ("[]"     . "⃞")
            ("="      . "≃")))))
+
+;;------------------------------------------------------------------------------
+;;; -- Tree style source code viewer for Python buffer
+;;------------------------------------------------------------------------------
+(require-package 'jedi-direx)
+(after "python"
+  '(define-key python-mode-map "\C-c x" 'jedi-direx:pop-to-buffer))
+(add-hook 'jedi-mode-hook 'jedi-direx:setup)
+
 
 ;;------------------------------------------------------------------------------
 ;;; -- which function mode for displaying function names

@@ -21,7 +21,6 @@
      (setq show-trailing-whitespace t))
    (when (string-match "\\.min\\." (buffer-file-name))
      (fundamental-mode)))
-
  (add-hook 'find-file-hook #'my-find-file-hook)
 
  ;;----------------------------------------------------------------------------
@@ -34,6 +33,12 @@
  (add-to-list 'golden-ratio-exclude-buffer-regexp "^\\*Ilist\\*")
  (setq imenu-list-focus-after-activation t
        imenu-list-auto-resize t)
+
+ ;;----------------------------------------------------------------------------
+ ;; HTTP REST client tool for emacs
+ ;; C-c C-c: runs the query under the cursor, tries to pretty-print the response
+ ;;----------------------------------------------------------------------------
+ (require-package 'restclient)
 
  ;;----------------------------------------------------------------------------
  ;; volatile-highlights

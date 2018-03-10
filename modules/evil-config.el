@@ -53,13 +53,13 @@
 (setq evil-magic 'very-magic)
 
 ;;; change cursor colors based on the mode
-(setq evil-emacs-state-cursor    '("red"    box))
-(setq evil-motion-state-cursor   '("orange" box))
-(setq evil-normal-state-cursor   '("green"  box))
-(setq evil-visual-state-cursor   '("orange" box))
-(setq evil-insert-state-cursor   '("red"    bar))
-(setq evil-replace-state-cursor  '("red"    bar))
-(setq evil-operator-state-cursor '("red"    hollow))
+(setq evil-emacs-state-cursor    '("#cc6666" box))
+(setq evil-motion-state-cursor   '("orange"  box))
+(setq evil-normal-state-cursor   '("#b294bb" box))
+(setq evil-visual-state-cursor   '("orange"  box))
+(setq evil-insert-state-cursor   '("#de935f" bar))
+(setq evil-replace-state-cursor  '("red"     bar))
+(setq evil-operator-state-cursor '("red"     hollow))
 
 (add-hook 'evil-jumps-post-jump-hook #'recenter)
 

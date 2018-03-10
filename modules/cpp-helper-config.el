@@ -10,11 +10,49 @@
 ;;; Code:
 ;;===========================================================================
 
-;; C++ completion for GNU Emacs
+;; c++ completion for GNU Emacs
 (require 'function-args)
 (fa-config-default)
 
+;;
+;; show #if 0 / #endif etc regions in comment face - taken from
+;; http://stackoverflow.com/questions/4549015/in-c-c-mode-in-emacs-change-face-of-code-in-if-0-endif-block-to-comment-fa
+(defun c-mode-font-lock-if0 (limit)
+  "Fontify #if 0 / #endif as comments for c modes etc.
+Bound search to LIMIT as a buffer position to find appropriate
+code sections."
+  (save-restriction
+    (widen)
+    (save-excursion
+      (goto-char (point-min))
+      (let ((depth 0) str start start-depth)
+        (while (re-search-forward "^\\s-*#\\s-*\\(if\\|else\\|endif\\)" limit 'move)
+          (setq str (match-string 1))
+          (if (string= str "if")
+              (progn
+                (setq depth (1+ depth))
+                (when (and (null start) (looking-at "\\s-+0"))
+                  (setq start (match-end 0)
+                        start-depth depth)))
+            (when (and start (= depth start-depth))
+              (c-put-font-lock-face start (match-beginning 0) 'font-lock-comment-face)
+              (setq start nil))
+            (when (string= str "endif")
+              (setq depth (1- depth)))))
+        (when (and start (> depth 0))
+          (c-put-font-lock-face start (point) 'font-lock-comment-face)))))
+  nil)
 
+(defun my-c-mode-common-hook ()
+  (font-lock-add-keywords
+   nil
+   '((my-c-mode-font-lock-if0 (0 font-lock-comment-face prepend))) 'add-to-end))
+
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+
+
+;;
 ;; compilation database code
 (defun cpp-complete/find-clang-complete-file ()
   "Find the .clang_complete file."
@@ -43,6 +81,7 @@
                     (split-string (buffer-string) "\n" t))))
     compile-flags))
 
+;;
 ;; Now load the compilation database
 (defun cpp-complete/load-clang-args ()
   "Set arguments for company-clang, system paths for company-c-headers and
@@ -58,13 +97,14 @@ arguments for flycheck-clang based on project specific file"
 
 (add-to-hooks 'cpp-complete/load-clang-args '(c-mode-hook c++-mode-hook))
 
+;;
 ;; eldoc support
 (with-eval-after-load 'c-eldoc
  (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
  (add-hook 'c++-mode-hook 'c-turn-on-eldoc-mode)
- (setq c-eldoc-cpp-command (executable-find "clang"))
- )
+ (setq c-eldoc-cpp-command (executable-find "clang")))
 
+;;
 ;; auto-insert the comment strings at top based on the file types
 (eval-after-load 'autoinsert
   '(define-auto-insert '("\\.cpp\\|.cc\\'" . "C++ skeleton")
@@ -115,9 +155,8 @@ arguments for flycheck-clang based on project specific file"
        "#ifndef " str n "#define " str "\n\n" _ "\n\n#endif  // " str)))
 
 
-;;---------------------------------------------------------------------------
+;;
 ;; compiling c and cpp files
-;;---------------------------------------------------------------------------
 (defun compile-current-c ()
   "Compile the current c file."
   (interactive)
