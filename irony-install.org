@@ -18,7 +18,7 @@ experience for the =C=, =C++= and =Objective-C= languages. It works by using
 a combination of an Emacs package and a =C++= program (*irony-server*)
 exposing =libclang=.
 
-It provides the below features while editing a =.c,= =.cpp= or an =oobjectiveC= file.
+It provides the below features while editing a =C=, =C++= or an =ObjectiveC= file.
 
 - Code completion
 - Syntax Checking
@@ -52,12 +52,15 @@ build details
 
 - On *OSX* first download the appropriate version of pre-built *libclang*
   package, =clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz= from the
-  repository /http://llvm.org/releases/download.html/
+  repository /http://llvm.org/releases/download.html/ and extract the same
+  at some suitable location.
 
 #+begin_src shell
-http --download --verify=no http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz
-tar -xvf clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz
-ll clang+llvm-6.0.0-x86_64-apple-darwin/
+$ http --download --verify=no http://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz
+
+$ tar -xvf clang+llvm-6.0.0-x86_64-apple-darwin.tar.xz
+
+$ ll clang+llvm-6.0.0-x86_64-apple-darwin/
 #+end_src
 
 - Now create a build directory inside the =irony= package for running
