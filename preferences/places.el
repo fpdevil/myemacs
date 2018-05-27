@@ -1,2 +1,4 @@
 ;;; -*- coding: utf-8 -*-
-(("/Users/sampathsingamsetty/.emacs.d/packages/elpa/auctex-12.1.0/auctex-autoloads.el" . 10661))
+(("/Users/sampathsingamsetty/.emacs.d/preferences/scratch buffer" . 55)
+ ("/Users/sampathsingamsetty/aquamacs.d/custom.el" . 4881)
+ ("/Users/sampathsingamsetty/.emacs.d/cache/recentf" . 97586))

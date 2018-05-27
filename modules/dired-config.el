@@ -15,32 +15,32 @@
 ;;-----------------------------------------------------------------------------
 ;; http://www.emacswiki.org/DiredPlus
 ;;-----------------------------------------------------------------------------
-(use-package dired+
-             :ensure t
-             ;;:defer t
-             :config
-             (setq diredp-hide-details-initially-flag nil)
-             (setq diredp-hide-details-propagate-flag nil)
-             (defalias 'dired-find-file 'diredp-find-file)
-             (defalias 'dired-get-filename 'diredp-get-filename)
-             (defalias 'dired-goto-file 'diredp-goto-file)
-             (defalias 'dired-insert-directory 'diredp-insert-directory)
-             (defalias 'dired-insert-set-properties 'diredp-insert-set-properties)
-             (defalias 'dired-mark-files-regexp 'diredp-mark-files-regexp)
-             (defalias 'dired-mark-pop-up 'diredp-mark-pop-up)
-             (defalias 'dired-pop-to-buffer 'diredp-pop-to-buffer)
-             (defalias 'dired-revert 'diredp-revert)
-             (defalias 'dired-switches-escape-p 'diredp-switches-escape-p)
-             (defalias 'dired-up-directory 'diredp-up-directory)
-             )
+;;(use-package dired+
+;;             :ensure t
+;;             ;defer t
+;;             :config
+;;             (setq diredp-hide-details-initially-flag nil)
+;;             (setq diredp-hide-details-propagate-flag nil)
+;;             (defalias 'dired-find-file 'diredp-find-file)
+;;             (defalias 'dired-get-filename 'diredp-get-filename)
+;;             (defalias 'dired-goto-file 'diredp-goto-file)
+;;             (defalias 'dired-insert-directory 'diredp-insert-directory)
+;;             (defalias 'dired-insert-set-properties 'diredp-insert-set-properties)
+;;             (defalias 'dired-mark-files-regexp 'diredp-mark-files-regexp)
+;;             (defalias 'dired-mark-pop-up 'diredp-mark-pop-up)
+;;             (defalias 'dired-pop-to-buffer 'diredp-pop-to-buffer)
+;;             (defalias 'dired-revert 'diredp-revert)
+;;             (defalias 'dired-switches-escape-p 'diredp-switches-escape-p)
+;;             (defalias 'dired-up-directory 'diredp-up-directory)
+;;             )
 
 
 ;; http://truongtx.me/2013/04/24/dired-as-default-file-manager-1-introduction
 
-(use-package dired-details+
-             :ensure t
-             ;;:defer t
-             )
+;;(use-package dired-details+
+;;             :ensure t
+;;             ;;:defer t
+;;             )
 
 ;;-----------------------------------------------------------------------------
 ;;  Ibuffer like filtering for dired

@@ -12,7 +12,10 @@
 ;;; Code:
 ;;;
 ;;===============================================================================
-(require 'color-theme)
+(require-package 'color-theme)
+
+;; ALL themes are safe to me
+(setq custom-safe-themes t)
 
 ;;-------------------------------------------------------------------------------
 ;; setting default color theme to required (from Steve Purcell .emacs)
@@ -20,12 +23,11 @@
 (setq-default custom-enabled-themes '(
                                       ;;darkokai
                                       ;;majapahit-light
-                                      leuven
+                                      ;;leuven
                                       ;;deeper-blue
                                       ;;material
-                                      ;;material-light
+                                      twilight-bright
                                       ;;spolsky
-                                      ;;badger
                                       ))
 
 ;;-------------------------------------------------------------------------------
@@ -53,9 +55,10 @@
 (defun reapply-themes ()
   "Forcibly load the themes listed in `custom-enabled-themes'."
   (interactive)
+  (setq color-theme-illegal-faces "^\\(w2-\\|dropdown-\\|info-\\|linum\\|yas-\\|font-lock\\|dired-directory\\)")
   (dolist (theme custom-enabled-themes)
     (unless (custom-theme-p theme)
-      (message "loading the theme %s" theme)
+      (message "loading theme %s" theme)
       (load-theme theme t)))
   (custom-set-variables `(custom-enabled-themes (quote ,custom-enabled-themes))))
 
@@ -170,8 +173,8 @@
 ;;-------------------------------------------------------------------------------
 ;; apply the themes after Emacs initializes
 ;;-------------------------------------------------------------------------------
-(setq color-theme-illegal-faces "^\\(w2-\\|dropdown-\\|info-\\|linum\\|yas-\\|font-lock\\|dired-directory\\)")
 (add-hook 'after-init-hook 'reapply-themes)
+(setq color-theme-illegal-faces "^\\(w2-\\|dropdown-\\|info-\\|linum\\|yas-\\|font-lock\\|dired-directory\\)")
 
 ;; set the background color for the header.
 (custom-set-faces '(header-line ((t (:background "#003366")))))

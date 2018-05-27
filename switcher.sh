@@ -6,20 +6,22 @@
 #          configuration directory is aquamacs.d
 # Spacemacs configuration file is spacemacs
 #           configuration directory is spacemacs.d
-# Prelude configuration file is prelude
-#           configuration directory is prelude.d
+# Custom configuration file is cmacs
+#           configuration directory is cmacs.d
 #
 # the script is executed with an option A or S for
 # switching to either Aquamacs or Spacemacs by creating
 # softlinks to appropriate files and directories
 #
 # This script should be executed from users HOME directory
-# ./switcher.sh S | ./switcher.sh A | ./switcher.sh P
+# ./switcher.sh S | ./switcher.sh A | ./switcher.sh C | ./switcher.sh B
 #
 # Base files and directories for each
 # Aquamacs  - ~/aquamacs & ~/aquamacs.d
 # Spacemacs - ~/spacemacs & ~/spacemacs.d
-# Prelude   - ~/prelude * ~/prelude.d
+# Blingmacs - ~/bling & ~/bling.d
+# Custommacs - ~/cmacs & ~/cmacs.d
+# Smacs - ~/smacs & ~/smacs.d
 ############################################################
 
 usage()
@@ -28,13 +30,21 @@ usage()
     echo "provide an editor code to switch..."
     echo "@ A - aquamacs"
     echo "@ S - spacemacs"
-    echo "@ P - prelude"
+    echo "@ C - chen"
+    echo "@ B - bing"
+    echo "@ X - custom"
     return 1
 }
 
+# acronyms for the emacs flavours
 A=Aquamacs
 S=Spacemacs
-P=Prelude
+C=Chen
+B=Bling
+X=Custom
+
+clear
+
 # if no input is provided show usage information
 if [ $# -eq 0  ]
 then
@@ -60,7 +70,7 @@ else
                 rm -rvf .spacemacs .emacs .emacs.d
                 # I am cleaning up my old customizations which can be
                 # commented out if not needed.
-                rm -rvf aquamacs.d/SessionDesktop.el aquamacs.d/custom-settings.el
+                rm -rvf aquamacs.d/SessionDesktop.el aquamacs.d/custom.el
                 rm -vrf ~/Library/Application\ Support/Aquamacs\ Emacs/*
                 rm -vrf ~/Library/Preferences/Aquamacs\ Emacs/*
                 ln -s aquamacs .emacs
@@ -88,34 +98,86 @@ else
                 rm -vrf .emacs .emacs.d
                 ln -s spacemacs .spacemacs
                 ln -s spacemacs.d .emacs.d
+                echo "cleaning up leftovers..."
+                rm -vfr ~/spacemacs.d/SessionDesktop.el ~/spacemacs.d/.custom.el
                 exit $?
             else
                 echo "spacemacs directories does not exist for $S and $1 change"
                 exit $?
             fi
         fi
-    # check for option prelude
-    elif [[ $1 == P ]]
+    # check for option Chenmacs
+    elif [[ $1 == C ]]
     then
-        pl=prelude
-        pld=prelude.d
+        cl=cmacs
+        cld=cmacs.d
         # if [[ -L .emacs  &&  -L .emacs.d ]]
-        if [[ -L .emacs  &&  -L .emacs.d ]] && [[ $(readlink -n .emacs.d) == $pld  && $(readlink -n .emacs) == $pl ]]
+        if [[ -L .emacs  &&  -L .emacs.d ]] && [[ $(readlink -n .emacs.d) == $cld  && $(readlink -n .emacs) == $cl ]]
         then
-            echo "Option $1 and Already at $P"
+            echo "Option $1 and Already at $C"
             exit $?
         else
-            if [[ -f prelude && -d prelude.d ]]
+            if [[ -f cmacs && -d cmacs.d ]]
             then
-                echo "switching to $P for option $1"
-                echo "creating soft links for prelude..."
+                echo "switching to $C for option $1"
+                echo "creating soft links for chenbin..."
                 # remove any existing links to aquamacs
                 rm -vrf .spacemacs .emacs .emacs.d
-                ln -s prelude .emacs
-                ln -s prelude.d .emacs.d
+                ln -s $cl .emacs
+                ln -s $cld .emacs.d
                 exit $?
             else
-                echo "prelude directories does not exist for $P and $1 change"
+                echo "chenbin directories does not exist for $C and $1 change"
+                exit $?
+            fi
+        fi
+    # check for option Custom
+    elif [[ $1 == X ]]
+    then
+        xl=scimax
+        xld=scimax.d
+        # if [[ -L .emacs  &&  -L .emacs.d ]]
+        if [[ -L .emacs  &&  -L .emacs.d ]] && [[ $(readlink -n .emacs.d) == $xld  && $(readlink -n .emacs) == $xl ]]
+        then
+            echo "Option $1 and Already at $X"
+            exit $?
+        else
+            if [[ -f scimax && -d scimax.d ]]
+            then
+                echo "switching to $X for option $X"
+                echo "creating soft links for sampath..."
+                # remove any existing links to aquamacs
+                rm -vrf .spacemacs .emacs .emacs.d
+                ln -s $xl .emacs
+                ln -s $xld .emacs.d
+                exit $?
+            else
+                echo "custom directories does not exist for $X and $1 change"
+                exit $?
+            fi
+        fi
+    # check for option test configuration BlingMacs
+    elif [[ $1 == B ]]
+    then
+        ul=bling
+        uld=bling.d
+        # if [[ -L .emacs  &&  -L .emacs.d ]]
+        if [[ -L .emacs  &&  -L .emacs.d ]] && [[ $(readlink -n .emacs.d) == $uld  && $(readlink -n .emacs) == $ul ]]
+        then
+            echo "Option $1 and Already at $T"
+            exit $?
+        else
+            if [[ -f bling && -d bling.d ]]
+            then
+                echo "switching to $T for option $1"
+                echo "creating soft links for Bling Emacs..."
+                # remove any existing links to other emacs
+                rm -vrf .spacemacs .emacs .emacs.d
+                ln -s bling .emacs
+                ln -s bling.d .emacs.d
+                exit $?
+            else
+                echo "BlingMacs directories does not exist for $T and $1 change"
                 exit $?
             fi
         fi

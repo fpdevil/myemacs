@@ -45,7 +45,12 @@
       ;; K but with "inverted video" face
       which-key-special-keys '("RET" "DEL" ; delete key
                                "ESC" "BS" ; backspace key
-                               "SPC" "TAB"))
+                               "SPC" "TAB")
+      ;; Underlines commands to emphasize some functions:
+      which-key-highlighted-command-list
+      '("\\(rectangle-\\)\\|\\(-rectangle\\)"
+        "\\`org-"))
+
 
 (push '(("\\(.*\\) 0" . "select-window-0") . ("\\1 0..9" . "window 0..9"))
       which-key-replacement-alist)

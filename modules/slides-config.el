@@ -9,19 +9,22 @@
 ;;;
 ;;; elisp code for customizing the org-mode slideshow settings
 ;;; https://github.com/hakimel/reveal.js/wiki/Example-Presentations
+;;;
+;;; Code:
+;;;
 ;;;===========================================================================
 (require 'ox-reveal)                       ;; org-reveal
 (require 'ox-html5slide)                   ;; org-html5
 (require 'org-tree-slide)                  ;; presentations for org
-;;;
-;;; Code:
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; set the location of the reveal js
+
+;;{{{ reveal.js setup
+;;    set the location of the reveal js
 (setq org-reveal-root (concat "file://" vendor-dir "/javascript/revealjs"))
 ;;(setq org-reveal-root (expand-file-name (concat vendor-dir "javascript/reveal.js")))
 (setq org-reveal-postamble "Sampath Singamsetty")
-(setq org-reveal-mathjax t)
+(setq org-reveal-hlevel 1)
+(setq org-reveal-theme "simple") ;beige blood moon night serif simple sky solarized
+(setq org-reveal-mathjax t)      ;use mathjax.org to render LaTeX equations
 (add-hook 'org-mode-hook
           (lambda ()
             (load-library "ox-reveal")))
@@ -29,6 +32,8 @@
 ;; using org-tree-slide
 (setq org-tree-slide-skip-outline-level 4)
 (org-tree-slide-simple-profile)
+;;}}}
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'slides-config)

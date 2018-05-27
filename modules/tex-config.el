@@ -5,6 +5,8 @@
 ;;;
 ;;; Filename   : tex-config.el
 ;;; Description: Emacs Color theme
+;;; Additional Packages: https://en.wikibooks.org/wiki/LaTeX/Installing_Extra_Packages
+;;; Help: https://github.com/grettke/help
 ;;;
 ;;; elisp code for customizing the latex
 ;;;
@@ -100,7 +102,7 @@
 (add-hook 'latex-mode-hook 'TeX-PDF-mode-on)
 
 (setq reftex-plug-into-AUCTeX t)
-(setq TeX-PDF-mode t)
+;; (setq TeX-PDF-mode t)
 
 ;; auto-fill mode
 (defun auto-fill-mode-on ()
@@ -112,12 +114,44 @@
 (add-hook 'tex-mode-hook 'auto-fill-mode-on)
 (add-hook 'latex-mode-hook 'auto-fill-mode-on)
 
+
+;;{{{ for citations using reftex
+(after 'reftex
+  (require 'reftex-cite)
+  (defun org-mode-reftex-setup ()
+    (interactive)
+    (and (buffer-file-name) (file-exists-p (buffer-file-name))
+         (progn
+           ;; Reftex should use the org file as master file. See C-h v TeX-master for infos.
+           (setq TeX-master t)
+           (turn-on-reftex)
+           ;; enable auto-revert-mode to update reftex when bibtex file changes on disk
+           (global-auto-revert-mode t) ; careful: this can kill the undo
+                                        ; history when you change the file
+                                        ; on-disk.
+           (reftex-parse-all)
+           ;; add a custom reftex cite format to insert links
+           ;; This also changes any call to org-citation!
+           (reftex-set-cite-format
+            '((?c . "\\citet{%l}") ; natbib inline text
+              (?i . "\\citep{%l}") ; natbib with parens
+              ))))
+    (define-key org-mode-map (kbd "C-c )") 'reftex-citation)
+    (define-key org-mode-map (kbd "C-c (") 'org-mode-reftex-search))
+
+  (add-hook 'org-mode-hook 'org-mode-reftex-setup))
+;;}}}
+
+
 (setq TeX-output-view-style
-    (quote
-     (("^pdf$" "." "evince -f %o")
-      ("^html?$" "." "iceweasel %o"))))
+      (quote
+       (("^pdf$" "." "evince -f %o")
+        ("^html?$" "." "iceweasel %o"))))
 
 ;; Use Skim as viewer, enable source <-> PDF sync
+(dolist (dir '("/Applications/Skim.app/Contents/SharedSupport"))
+  (add-to-list 'exec-path dir))
+
 ;; make latexmk available via C-c C-c
 ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
 (add-hook 'LaTeX-mode-hook (lambda ()
@@ -129,13 +163,34 @@
           '(lambda ()
              (setq TeX-command-default "latexmk")))
 
+;; Pdf Viewer Settings
 ;; use Skim as default pdf viewer
+(add-hook 'LaTeX-mode-hook
+      (lambda()
+        (add-to-list 'TeX-expand-list
+             '("%q" skim-make-url))))
+
+(defun skim-make-url ()
+  (concat
+   (TeX-current-line)
+   " \""
+   (expand-file-name (funcall file (TeX-output-extension) t)
+                     (file-name-directory (TeX-master-file)))
+   "\" \""
+   (buffer-file-name)
+   "\""))
+
 ;; Skim's displayline is used for forward search (from .tex to .pdf)
 ;; option -b highlights the current line; option -g opens Skim in the background
-(setq TeX-view-program-selection
-      '((output-pdf "PDF Viewer")))
 (setq TeX-view-program-list
-      '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+      '(("Preview.app" "open -a Preview.app %o")
+        ("PDF Viewer" "open -a Skim.app %o")
+        ("displayline" "displayline -g -b %n %o %b")
+        ("open" "open %o"))
+      TeX-view-program-selection
+      '((output-dvi "open")
+        (output-pdf "PDF Viewer")
+        (output-html "open")))
 
 ;; hide some parts of the text file
 (defun turn-on-outline-minor-mode ()
@@ -190,7 +245,7 @@ citecolor=blue,filecolor=blue,menucolor=blue,urlcolor=blue"
 
 ;; avoid getting \maketitle right after begin{document}
 ;; you should put \maketitle if and where you want it.
-(setq org-latex-title-command "")
+;; (setq org-latex-title-command "")
 
 (setq org-latex-prefer-user-labels t)
 
@@ -206,7 +261,12 @@ citecolor=blue,filecolor=blue,menucolor=blue,urlcolor=blue"
   (if (string-match "LATEX_CMD: xelatex" (buffer-string))
       (setq texcmd "latexmk -pdflatex=xelatex -pdf %f"))
   ;; LaTeX compilation command
-  (setq org-latex-to-pdf-process (list texcmd)))
+  (setq org-latex-to-pdf-process (list texcmd))
+  ; (setq org-latex-to-pdf-process
+  ;       '("xelatex -interaction nonstopmode %f"
+  ;         "xelatex -interaction nonstopmode %f")) ;; for multiple passes
+  )
+
 (add-hook 'org-export-latex-after-initial-vars-hook 'my-auto-tex-cmd)
 ;; Default packages included in every tex file, pdflatex or xelatex
 (setq org-export-latex-packages-alist
@@ -264,6 +324,7 @@ citecolor=blue,filecolor=blue,menucolor=blue,urlcolor=blue"
                   org-export-latex-classes))))
 
 (add-hook 'org-export-latex-after-initial-vars-hook 'my-auto-tex-parameters)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'tex-config)

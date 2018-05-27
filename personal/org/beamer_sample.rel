@@ -1,0 +1,24 @@
+;; RefTeX parse info file
+;; File: /Users/sampathsingamsetty/aquamacs.d/personal/org/beamer_sample.org
+;; User: sampathsingamsetty (Sampath Singamsetty)
+
+(set reftex-docstruct-symbol '(
+
+
+(xr nil "\\\\\\\\\\\\")
+
+(index-tags)
+
+(is-multi nil)
+
+(bibview-cache)
+
+(master-dir . "/Users/sampathsingamsetty/aquamacs.d/personal/org/")
+
+(label-numbers)
+
+(bof "/Users/sampathsingamsetty/aquamacs.d/personal/org/beamer_sample.org")
+
+(eof "/Users/sampathsingamsetty/aquamacs.d/personal/org/beamer_sample.org")
+))
+

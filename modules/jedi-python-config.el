@@ -41,8 +41,15 @@
              ;; custom kbd keys
              (jedi-config:setup-keys)
              ;; for call signature display
-             (setq jedi:tooltip-method '(pos-tip popup)
-                   jedi:tooltip-show '(pos-tip popup))))
+             (setq
+              ;;jedi:tooltip-method nil              ; get eldoc style signature hints
+              jedi:tooltip-method '(pos-tip popup)   ; get popup style signature hints
+              jedi:tooltip-show '(pos-tip popup))
+
+             ;; customize function argument face
+             (set-face-attribute 'jedi:highlight-function-argument nil
+                                 :foreground "green")
+             ))
 
 ;; install the jedi python environment
 (when
@@ -61,21 +68,23 @@
   (local-set-key (kbd "M-/") 'jedi:get-in-function-call))
 
 ;; -- auto-complete integration for jedi
-(after 'auto-complete
-    (require 'auto-complete-config)
-    (ac-config-default))
+; (after 'auto-complete
+;     (require 'auto-complete-config)
+;     (ac-config-default)
+;     (setq ac-sources
+;           (delete 'ac-source-words-in-same-mode-buffers ac-sources)))
 
 ;; -- company integration for jedi
 (after 'company
-    (require 'company-jedi)
-    (defun my-python-hooks()
-        '(progn
-            (unless (member 'company-jedi (car company-backends))
-                (setq comp-back (car company-backends))
-                (push 'company-jedi comp-back)
-                (setq company-backends (list comp-back))
-                (setq company-backends (delete 'company-bbdb company-backends)))))
-    (add-hook 'python-mode-hook 'my-python-hooks))
+  (require 'company-jedi)
+  (defun my-python-hooks()
+    '(progn
+       (unless (member 'company-jedi (car company-backends))
+         (setq comp-back (car company-backends))
+         (push 'company-jedi comp-back)
+         (setq company-backends (list comp-back))
+         (setq company-backends (delete 'company-bbdb company-backends)))))
+  (add-hook 'python-mode-hook 'my-python-hooks))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'jedi-python-config)

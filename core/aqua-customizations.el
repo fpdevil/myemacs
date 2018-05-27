@@ -29,6 +29,11 @@
 (setq user-mail-address "Singamsetty.Sampath@gmail.com")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; auto-indent on RET
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(define-key global-map (kbd "RET") 'newline-and-indent)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; disable startup, splash screen and startup message
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq inhibit-startup-screen t)
@@ -75,6 +80,9 @@
     (expand-file-name "places.el" "~/.emacs.d/preferences"))
 
 (setq desktop-path (quote ("~/aquamacs.d" "." "~")))
+
+(setq ede-simple-save-directory
+ (expand-file-name "EDE" "~/.emacs.d/preferences/"))
 
 ;; save-list-file customizations
 (let ((dir (expand-file-name (concat cache-dir "/auto-save-list/"))))

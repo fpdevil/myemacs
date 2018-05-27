@@ -111,9 +111,9 @@
 ;; completion turn on when needed; haskell completion source for the          ;;
 ;; necessary auto-complete is provided by ac-haskell-process                  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq ac-delay 1.0) ;; change auto-complete value to not conflict with company
 (add-hook 'haskell-mode-hook
           (lambda () (auto-complete-mode 1)))
+(setq ac-delay 1.0) ;; change auto-complete value to not conflict with company
 
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
 ;; haskell completion source for Emacs auto-complete package
@@ -145,7 +145,7 @@
 (after "haskell-mode"
   '(progn
      ;; to get a variable in scope
-     (auto-complete-mode)
+     ;; (auto-complete-mode)
      (ac-define-source ghc-mod
        '((depends ghc)
          (candidates . (ghc-select-completion-symbol))
@@ -161,7 +161,6 @@
      (defun my-haskell-ac-init ()
        "Init auto-complete sources for haskell-mode when you open a file."
        (when (member (file-name-extension buffer-file-name) '("hs" "lhs"))
-         ;(auto-complete-mode t)
          (setq ac-sources '(ac-source-words-in-same-mode-buffers
                             ac-source-dictionary
                             ac-source-ghc-mod))))

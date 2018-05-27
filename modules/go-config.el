@@ -53,7 +53,6 @@
   ;; Load auto-complete
   (after 'auto-complete
     (require 'go-autocomplete)
-    (require 'auto-complete-config)
     ;; (add-to-list 'ac-modes 'go-mode)
     (add-hook 'go-mode-hook 'auto-complete-mode))
   (setenv "GOPATH" (concat (getenv "HOME") "/sw/programming/gocode/go"))

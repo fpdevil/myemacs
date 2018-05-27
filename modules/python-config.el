@@ -8,30 +8,25 @@
 ;;;              A full featured python ide and language support for Aquamacs
 ;;;
 ;;; Code:
-;;;=============================================================================
+;;;
 
-;; -- load all the syntax specific packages needed for python3
+;;*
+;;*  load all the syntax specific packages needed for python3
 (require 'ring)                 ; browse the kill ring
-(require 'epc)                  ; RPC stack for the Emacs Lisp
 (require 'python-pylint)        ; minor mode for running pylint
-(require 'py-yapf)              ; Use yapf to beautify a Python buffer
 (require 'py-autopep8)          ; Integrate autopep8 into Emacs
+(require 'epc)                  ; RPC stack for the Emacs Lisp
 
-;; -- python default shell completion disable
-(setq-default python-shell-completion-native-enable nil)
-
-;;; -- make Emacs aware of the version-dependent shebangs
-;; (autoload 'python-mode "python-mode" "Python Mode." t)
-;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-;; (setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
-
+;;**
+;;** make Emacs aware of the version-dependent shebangs
 (autoload 'python-mode "python-mode" "Python Mode." t)
 (add-to-list 'auto-mode-alist '("\\.py$\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python2" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python3" . python-mode))
 
-;;; -- proper python indentation settings
+;;**
+;;** proper python indentation settings
 (add-hook 'python-mode-hook
           '(lambda ()
              ;; python common indentations
@@ -42,7 +37,8 @@
                    tab-width 4))
           (untabify (point-min) (point-max)))
 
-;;; -- indentation through electric indent
+;;**
+;;** indentation through electric indent
 (defun python-indent-setup ()
   "Set necessary python indentation."
   (unless (is-buffer-file-temp)
@@ -51,33 +47,39 @@
     (setq electric-indent-chars (delq ?: electric-indent-chars))))
 (add-hook 'python-mode-hook 'python-indent-setup)
 
-;;; -- rebind the Enter key to Ctrl+J for proper indentation with RET
-(add-hook 'python-mode-hook
-          (lambda ()
-            (define-key python-mode-map "\r" 'newline-and-indent)))
 
+;;**
+;; if it is Emacs 25.1, there is a known bug that will cause run-python to
+;; display a bunch of garbled characters in the python shell. The following
+;; method can solve the problem.
+(setenv "IPY_TEST_SIMPLE_PROMPT"  "1" )
 
-;;; --  python3 shell interpreter
-(setq python-shell-interpreter (executable-find "python3")
+;;**
+;;**  settings for the python3 shell interpreter
+(setq python-shell-interpreter (executable-find "ipython3")
       ;; if extras are needed with ipython3
+      python-shell-interpreter-args "-i"
       ;; (setq python-shell-interpreter-args "--pylab")
       python-shell-interpreter-args (if (is-mac) "--matplotlib=osx --colors=Linux"
                                       (if (is-linux) "--gui=wx --matplotlib=wx --colors=Linux"))
       ;; additional shell options added
       python-shell-prompt-regexp "In \\[[0-9]+\\]: "
       python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+      python-shell-completion-native-enable nil
+      python-shell-completion-native-disabled-interpreters (quote ("pypy" "ipython" "python"))
       py-python-command (executable-find "python3"))
 
-;; == below line specified for handling the args-out-of-range error in buffer
-(setenv "IPY_TEST_SIMPLE_PROMPT" "1")
+;;**
+;;** python checkers and python virtual environments
 (setq python-check-command (executable-find "pyflakes"))
 (setq python-environment-directory (concat user-emacs-directory "/.python-environments"))
 
-;; == handling white-spaces in python mode
+;;**
+;;** handling white-spaces in python mode
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-;;; -- set system path in the lisp for lib availability
-;;;    == set PATH, because we don't load .bashrc
+;;* set system path in the lisp for lib availability
+;;** set PATH, because we don't load .bashrc
 (setenv
  "PATH" (concat
    "$HOME/bin:"
@@ -88,7 +90,8 @@
    "/usr/local/bin:"
    "/usr/local/sbin"))
 
-;;; -- set PYTHONPATH, because we don't load from .bashrc
+;;*
+;;* set PYTHONPATH, because we don't load from .bashrc
 (defun set-pypath-from-shell-pythonpath ()
   "Set the PYTHONPATH variable as its not pulled from .profile."
   (let ((path-from-shell (shell-command-to-string "$SHELL -i -c 'echo $PYTHONPATH'")))
@@ -96,8 +99,8 @@
 (if (not (getenv "PYTHONPATH")) (setenv "PYTHONPATH" (executable-find "python3")))
 (if window-system (set-pypath-from-shell-pythonpath))
 
-;;; --
-;;; -- auto completion with rope
+;;**
+;;** auto completion with rope
 (require-package 'pymacs)
 (autoload 'pymacs-apply "pymacs")
 (autoload 'pymacs-call "pymacs")
@@ -116,14 +119,16 @@
 ;;-----------------------------------------------------------------------------
 (eldoc-mode t)                              ;;; -- enable eldoc
 
-;;; -- sphinx documentation generation for python
-;;; -- move the cursor to some function/method definition and hit C-c M-d
+;;*
+;;* sphinx documentation generation for python
+;;** move the cursor to some function/method definition and hit C-c M-d
 (add-hook 'python-mode-hook
           (lambda ()
             (require 'sphinx-doc)
             (sphinx-doc-mode t)))
 
-;;; -- python documentation under symbols pydoc-info
+;;**
+;;** python documentation under symbols pydoc-info
 (require 'pydoc-info)
 (info-lookup-add-help
    :mode 'python-mode
@@ -170,8 +175,8 @@
 ;;------------------------------------------------------------------------------
 ;;; SYNTAX CHECKING - (FlyCheck and FlyMake)
 ;;------------------------------------------------------------------------------
-;;; -- flymake handler for syntax-checking python source code
-;;;    using pyflakes or flake8
+;;* flymake handler for syntax-checking python source code
+;;**    using wither pyflakes or flake8
 (after "flymake"
   (require 'flymake-python-pyflakes)
   (add-hook 'python-mode-hook #'(lambda () (setq flymake-no-changes-timeout 10))) ;; default 0.5
@@ -179,7 +184,8 @@
   ;; using flake8 for FlyMake
   (setq flymake-python-pyflakes-executable (executable-find "flake8")))
 
-;; flymake with pychecker script
+;;*
+;;* flymake with pychecker script
 (when (load "flymake" t)
   (defun flymake-pylint-init (&optional trigger-type)
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
@@ -194,8 +200,6 @@
                '("\\.py" flymake-pylint-init)))
 (add-hook 'find-file-hook 'flymake-find-file-hook)
 
-(load-library "flymake-cursor")
-
 ;;------------------------------------------------------------------------------
 ;; == for autopep8 formatting and linting
 ;;    ignoring the below:
@@ -205,7 +209,7 @@
 ;; - W690 - Fix various deprecated code (via lib2to3).
 ;; (setq py-autopep8-options '("--ignore=E501,W293,W391,W690"))
 ;;------------------------------------------------------------------------------
-;;; -- code standardization with autopep8
+;;** code standardization with autopep8
 (defcustom python-autopep8-path (executable-find "autopep8")
   "autopep8 executable path."
   :group 'python
@@ -225,8 +229,17 @@ $ autopep8 --in-place --aggressive --aggressive <filename>"
   (setq py-autopep8-options '("--ignore=W690"))
   (add-hook 'python-mode-hook 'py-autopep8-enable-on-save))
 
-;;; -- helper functions
-;;;    == small helper to scrape text from shell output
+;;**
+;;** formatting with yapf
+;;(require 'py-yapf)              ; Use yapf to beautify a Python buffer
+;; discarding py-yapf in favor of yapfiy as py-yapf loses the kill ring when it runs
+(require-package 'yapfify)
+(add-hook 'python-mode-hook 'yapf-mode)
+
+
+;;**
+;;** helper functions
+;;*** small helper to scrape text from shell output
 (defun get-shell-output (cmd)
   "Scrape text from the shell output of the CMD."
   (replace-regexp-in-string "[ \t\n]*$" "" (shell-command-to-string cmd)))
@@ -239,51 +252,49 @@ $ autopep8 --in-place --aggressive --aggressive <filename>"
         (expand-file-name project-root)
       nil)))
 
-;;------------------------------------------------------------------------------
-;; grand unified debugger
-;;------------------------------------------------------------------------------
+;;{{{ grand unified debugger
 ;; Tell Python debugger (pdb) to use the current virtual environment
 ;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
 (setq gud-pdb-command-name "python3 -m pdb ")
 
-;;------------------------------------------------------------------------------
-;; prettify symbols
-;;------------------------------------------------------------------------------
+;;}}}
+
+
+;;{{{ prettify symbols
 (setq prettify-symbols-unprettify-at-point 'right-edge) ;; when hovered show original
 
 ;; symbols for concealing
 (add-hook 'python-mode-hook
- (lambda ()
-   (mapc (lambda (pair) (push pair prettify-symbols-alist))
-         '(("def"    . "ƒ")
-           ("class"  . "ℂ")
-           ("and"    . "∧")
-           ("or"     . "∨")
-           ("not"    . "￢")
-           ("in"     . "∈")
-           ("not in" . "∉")
-           ("return" . "η")
-           ("for"    . "∀")
-           ("!="     . "≠")
-           ("=="     . "≡")
-           (">="     . "≥")
-           ("<="     . "≤")
-           ("="      . "≃")))))
+          (lambda ()
+            (mapc (lambda (pair) (push pair prettify-symbols-alist))
+                  '(("def"    . "ƒ")
+                    ("class"  . "ℂ")
+                    ("and"    . "∧")
+                    ("or"     . "∨")
+                    ("not"    . "￢")
+                    ("in"     . "∈")
+                    ("not in" . "∉")
+                    ("return" . "η")
+                    ("for"    . "∀")
+                    ("!="     . "≠")
+                    ("=="     . "≡")
+                    (">="     . "≥")
+                    ("<="     . "≤")
+                    ("="      . "≃")))))
+;;}}}
+
+;;------------------------------------------------------------------------------
+;;; -- pydoc with helm interface
+;;------------------------------------------------------------------------------
+(require-package 'helm-pydoc)
 
 ;;------------------------------------------------------------------------------
 ;;; -- Tree style source code viewer for Python buffer
 ;;------------------------------------------------------------------------------
 (require-package 'jedi-direx)
 (after "python"
-  '(define-key python-mode-map "\C-c x" 'jedi-direx:pop-to-buffer))
+  '(define-key python-mode-map "\C-cx" 'jedi-direx:pop-to-buffer))
 (add-hook 'jedi-mode-hook 'jedi-direx:setup)
-
-
-;;------------------------------------------------------------------------------
-;;; -- which function mode for displaying function names
-;;------------------------------------------------------------------------------
-; (after "which-func"
-;   '(add-to-list 'which-func-modes 'python-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'python-config)

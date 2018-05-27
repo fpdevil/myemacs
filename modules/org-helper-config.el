@@ -14,80 +14,80 @@
 ;; * Block templates
 ;; add <p for python expansion
 (add-to-list 'org-structure-template-alist
-       '("p" "#+BEGIN_SRC python :results output org drawer\n?\n#+END_SRC"
-         "<src lang=\"python\">\n?\n</src>"))
+             '("p" "#+BEGIN_SRC python :results output org drawer\n?\n#+END_SRC"
+               "<src lang=\"python\">\n?\n</src>"))
 
 ;; add <por for python expansion with raw output
 (add-to-list 'org-structure-template-alist
-       '("por" "#+BEGIN_SRC python :results output raw\n?\n#+END_SRC"
-         "<src lang=\"python\">\n?\n</src>"))
+             '("por" "#+BEGIN_SRC python :results output raw\n?\n#+END_SRC"
+               "<src lang=\"python\">\n?\n</src>"))
 
 ;; add <pv for python expansion with value
 (add-to-list 'org-structure-template-alist
-       '("pv" "#+BEGIN_SRC python :results value\n?\n#+END_SRC"
-         "<src lang=\"python\">\n?\n</src>"))
+             '("pv" "#+BEGIN_SRC python :results value\n?\n#+END_SRC"
+               "<src lang=\"python\">\n?\n</src>"))
 
 ;; add <el for emacs-lisp expansion
 (add-to-list 'org-structure-template-alist
-       '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"
-         "<src lang=\"emacs-lisp\">\n?\n</src>"))
+             '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"
+               "<src lang=\"emacs-lisp\">\n?\n</src>"))
 
 (add-to-list 'org-structure-template-alist
-       '("ell" "#+BEGIN_SRC emacs-lisp :lexical t\n?\n#+END_SRC"
-         "<src lang=\"emacs-lisp\">\n?\n</src>"))
+             '("ell" "#+BEGIN_SRC emacs-lisp :lexical t\n?\n#+END_SRC"
+               "<src lang=\"emacs-lisp\">\n?\n</src>"))
 
 ;; add <sh for shell
 (add-to-list 'org-structure-template-alist
-       '("sh" "#+BEGIN_SRC sh\n?\n#+END_SRC"
-         "<src lang=\"shell\">\n?\n</src>"))
+             '("sh" "#+BEGIN_SRC sh\n?\n#+END_SRC"
+               "<src lang=\"shell\">\n?\n</src>"))
 
 (add-to-list 'org-structure-template-alist
-       '("lh" "#+latex_header: " ""))
+             '("lh" "#+latex_header: " ""))
 
 (add-to-list 'org-structure-template-alist
-       '("lc" "#+latex_class: " ""))
+             '("lc" "#+latex_class: " ""))
 
 (add-to-list 'org-structure-template-alist
-       '("lco" "#+latex_class_options: " ""))
+             '("lco" "#+latex_class_options: " ""))
 
 (add-to-list 'org-structure-template-alist
-       '("ao" "#+attr_org: " ""))
+             '("ao" "#+attr_org: " ""))
 
 (add-to-list 'org-structure-template-alist
-       '("al" "#+attr_latex: " ""))
+             '("al" "#+attr_latex: " ""))
 
 (add-to-list 'org-structure-template-alist
-       '("ca" "#+caption: " ""))
+             '("ca" "#+caption: " ""))
 
 (add-to-list 'org-structure-template-alist
-       '("tn" "#+tblname: " ""))
+             '("tn" "#+tblname: " ""))
 
 (add-to-list 'org-structure-template-alist
-       '("n" "#+name: " ""))
+             '("n" "#+name: " ""))
 
 (add-to-list 'org-structure-template-alist
-       '("o" "#+options: " ""))
+             '("o" "#+options: " ""))
 
 (add-to-list 'org-structure-template-alist
-       '("ti" "#+title: " ""))
+             '("ti" "#+title: " ""))
 
-;; == for table expansions
+;;{{{ for table expansions
 (loop for i from 1 to 6
       do
       (let ((template (make-string i ?t))
-      (expansion (concat "|"
-             (mapconcat
-        'identity
-        (loop for j to i collect "   ")
-        "|"))))
-  (setf (substring expansion 2 3) "?")
-  (add-to-list 'org-structure-template-alist
-         `(,template ,expansion ""))))
+            (expansion (concat "|"
+                               (mapconcat
+                                'identity
+                                (loop for j to i collect "   ")
+                                "|"))))
+        (setf (substring expansion 2 3) "?")
+        (add-to-list 'org-structure-template-alist
+                     `(,template ,expansion ""))))
+;;}}}
 
 
-;; * Colored src blocks
+;;{{{ * Colored src blocks
 ;; based on patches from Rasmus <rasmus@gmx.us>
-
 ;; This function overwrites the org-src function to make src blocks be colored again.
 (defun org-src-font-lock-fontify-block (lang start end)
   "Fontify code block.
@@ -97,36 +97,36 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
   (let ((lang-mode (org-src--get-lang-mode lang)))
     (when (fboundp lang-mode)
       (let ((string (buffer-substring-no-properties start end))
-      (modified (buffer-modified-p))
-      (org-buffer (current-buffer))
-      (block-faces (let ((face-name (intern (format "org-block-%s" lang))))
-         (append (and (facep face-name) (list face-name))
-           '(org-block)))))
-  (remove-text-properties start end '(face nil))
-  (with-current-buffer
-      (get-buffer-create
-       (format " *org-src-fontification:%s*" lang-mode))
-    (erase-buffer)
-    (insert string " ") ;; so there's a final property change
-    (unless (eq major-mode lang-mode) (funcall lang-mode))
-    (org-font-lock-ensure)
-    (let ((pos (point-min)) next)
-      (while (setq next (next-single-property-change pos 'face))
-        (let ((new-face (get-text-property pos 'face)))
-    (put-text-property
-     (+ start (1- pos)) (1- (+ start next)) 'face
-     (list :inherit (append (and new-face (list new-face))
-          block-faces))
-     org-buffer))
-        (setq pos next))
-      ;; Add the face to the remaining part of the font.
-      (put-text-property (1- (+ start pos))
-             end 'face
-             (list :inherit block-faces) org-buffer)))
-  (add-text-properties
-   start end
-   '(font-lock-fontified t fontified t font-lock-multiline t))
-  (set-buffer-modified-p modified)))))
+            (modified (buffer-modified-p))
+            (org-buffer (current-buffer))
+            (block-faces (let ((face-name (intern (format "org-block-%s" lang))))
+                           (append (and (facep face-name) (list face-name))
+                                   '(org-block)))))
+        (remove-text-properties start end '(face nil))
+        (with-current-buffer
+            (get-buffer-create
+             (format " *org-src-fontification:%s*" lang-mode))
+          (erase-buffer)
+          (insert string " ") ;; so there's a final property change
+          (unless (eq major-mode lang-mode) (funcall lang-mode))
+          (org-font-lock-ensure)
+          (let ((pos (point-min)) next)
+            (while (setq next (next-single-property-change pos 'face))
+              (let ((new-face (get-text-property pos 'face)))
+                (put-text-property
+                 (+ start (1- pos)) (1- (+ start next)) 'face
+                 (list :inherit (append (and new-face (list new-face))
+                                        block-faces))
+                 org-buffer))
+              (setq pos next))
+            ;; Add the face to the remaining part of the font.
+            (put-text-property (1- (+ start pos))
+                               end 'face
+                               (list :inherit block-faces) org-buffer)))
+        (add-text-properties
+         start end
+         '(font-lock-fontified t fontified t font-lock-multiline t))
+        (set-buffer-modified-p modified)))))
 
 
 (defun org-fontify-meta-lines-and-blocks-1 (limit)
@@ -240,9 +240,9 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
   `((t (:background "gray90")))
   "Face for python blocks")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; org agenda files
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;}}}
+
+;;{{{ * org agenda files
 (setq org-directory (expand-file-name "org" personal-dir))
 (setq org-agenda-files (list (expand-file-name "home.org" org-directory)
                              (expand-file-name "python.org" org-directory)
@@ -260,15 +260,15 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
 (setq org-refile-use-outline-path (quote file))
 ;; Targets complete in steps so we start with filename, TAB shows the next level of targets etc
 (setq org-outline-path-complete-in-steps t)
+;;}}}
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;   Display images in org mode enable image mode first                    ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;{{{  Image handling in org
+;; Display images in org mode enable image mode first
 (iimage-mode)
 
 ;; add the org file link format to the iimage mode regex
 (add-to-list 'iimage-mode-image-regex-alist
-  (cons (concat "\\[\\[file:\\(~?" iimage-mode-image-filename-regex "\\)\\]")  1))
+             (cons (concat "\\[\\[file:\\(~?" iimage-mode-image-filename-regex "\\)\\]")  1))
 
 ;;  add a hook so we can display images on load
 (add-hook 'org-mode-hook
@@ -292,10 +292,9 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
   (call-interactively 'iimage-mode))
 
 (define-key org-mode-map (kbd "C-S-a") 'org-archive-subtree)
+;;}}}
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; yasnippet compatibility
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;{{{ yasnippet compatibility
 ;;(add-hook 'org-mode-hook
 ;;  (lambda ()
 ;;    (org-set-local 'yas/trigger-key [tab])
@@ -310,11 +309,10 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
 ;;    (setq yas/trigger-key [tab])
 ;;    (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
 ;;    (define-key yas/keymap [tab] 'yas/next-field)))
+;;}}}
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Drag images and files onto org-mode and insert a link to them           ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; inserting images from web M-x org-easy-img-insert
+;;{{{ Drag images and files onto org-mode and insert a link to them
+;;    inserting images from web M-x org-easy-img-insert
 ;;
 ;; http://kitchingroup.cheme.cmu.edu/blog/2015/07/10/
 ;; Drag-images-and-files-onto-org-mode-and-insert-a-link-to-them/
@@ -359,11 +357,11 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
 (define-key org-mode-map (kbd "<drag-n-drop>") 'my-dnd-func)
 (define-key org-mode-map (kbd "<C-drag-n-drop>") 'my-dnd-func)
 (define-key org-mode-map (kbd "<M-drag-n-drop>") 'my-dnd-func)
+;;}}}
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;{{{
 ;; org-mode modules for citations, cross-references, bibliographies in the
 ;; org-mode and useful bibtex tools to go with it
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require-package 'org-ref)
 (require 'org-ref)
 
@@ -375,19 +373,18 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
       bibtex-autokey-titlewords-stretch 1
       bibtex-autokey-titleword-length 5
       org-ref-bibtex-hydra-key-binding (kbd "H-b"))
+;;}}}
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; allow for export=>beamer by placing
-;; http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-mode-and.html
-;; http://mirror.utexas.edu/ctan/macros/latex/contrib/beamer/doc/beameruserguide.pdf
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;{{{ allow for export=>beamer by placing
+;;    http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-mode-and.html
+;;    http://mirror.utexas.edu/ctan/macros/latex/contrib/beamer/doc/beameruserguide.pdf
 ;; #+LaTeX_CLASS: beamer in org files
 (unless (boundp 'org-export-latex-classes)
   (setq org-export-latex-classes nil))
 (add-to-list 'org-export-latex-classes
-  ;; beamer class, for presentations
-  '("beamer"
-     "\\documentclass[11pt]{beamer}\n
+             ;; beamer class, for presentations
+             '("beamer"
+               "\\documentclass[11pt,professionalfonts]{beamer}\n
       \\mode<{{{beamermode}}}>\n
       \\usetheme{{{{beamertheme}}}}\n
       \\usecolortheme{{{{beamercolortheme}}}}\n
@@ -398,6 +395,22 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
       \\usepackage{hyperref}\n
       \\usepackage{color}
       \\usepackage{listings}
+      \\usepackage{multirow}
+      \\usepackage{subfigure}
+      \\usepackage{graphicx}
+      \\usepackage{xcolor}
+      \\usepackage{url}
+      \\usepackage{amssymb}
+      \\usepackage{amsmath}
+      \\usepackage{tikz}
+      \\usepackage{xcolor}
+      \\usepackage{amsmath}
+      \\usepackage{lmodern}
+      \\usepackage[margin=1in]{geometry}
+      \\usepackage{algorithmic}
+      \\usepackage{algorithm}
+      \\usepackage{fontspec,xunicode,xltxtra}
+      \\usepackage{polyglossia}
       \\lstset{numbers=none,language=[ISO]C++,tabsize=4,
   frame=single,
   basicstyle=\\small,
@@ -409,29 +422,28 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
       \\usepackage{verbatim}\n
       \\institute{{{{beamerinstitute}}}}\n
        \\subject{{{{beamersubject}}}}\n"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\begin{frame}[fragile]\\frametitle{%s}"
+                "\\end{frame}"
+                "\\begin{frame}[fragile]\\frametitle{%s}"
+                "\\end{frame}")))
 
-     ("\\section{%s}" . "\\section*{%s}")
-
-     ("\\begin{frame}[fragile]\\frametitle{%s}"
-       "\\end{frame}"
-       "\\begin{frame}[fragile]\\frametitle{%s}"
-       "\\end{frame}")))
-
-  ;; letter class, for formal letters
-
-  (add-to-list 'org-export-latex-classes
-
-  '("letter"
-     "\\documentclass[11pt]{letter}\n
+;; letter class, for formal letters
+(add-to-list 'org-export-latex-classes
+             '("letter"
+               "\\documentclass[11pt]{letter}\n
       \\usepackage[utf8]{inputenc}\n
       \\usepackage[T1]{fontenc}\n
       \\usepackage{color}"
 
-     ("\\section{%s}" . "\\section*{%s}")
-     ("\\subsection{%s}" . "\\subsection*{%s}")
-     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-     ("\\paragraph{%s}" . "\\paragraph*{%s}")
-     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+;;}}}
+
 
 ;;-----------------------------------------------------------------------------
 

@@ -27,6 +27,8 @@
                                     ) t)
                            "\\'") 'nxml-mode))
 
+(unify-8859-on-decoding-mode)
+
 (when (> emacs-major-version 21)
   (setq magic-mode-alist
         (cons '("<\\?xml " . nxml-mode) magic-mode-alist)))
@@ -66,20 +68,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; company-nxml
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun my-company-nxml-settings ()
-  "Add company backends for xml."
-  (setq-local company-minimum-prefix-length 1)
-  (add-to-list (make-local-variable 'company-backends)
-    'company-nxml))
-
 (after 'company
+  (defun my-company-nxml-settings ()
+    "Add company backends for xml."
+    (setq-local company-minimum-prefix-length 1)
+    (add-to-list (make-local-variable 'company-backends)
+                 'company-nxml))
   (add-hook 'nxml-mode-hook 'my-company-nxml-settings))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; hide show
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'nxml-mode-hook (lambda() (hs-minor-mode 1)))
-
 (add-to-list 'hs-special-modes-alist
              '(nxml-mode
                "<!--\\|<[^/>]*[^/]>" ;; regexp for start block

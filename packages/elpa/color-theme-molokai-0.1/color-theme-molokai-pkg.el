@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "color-theme-molokai" "0.1" "Molokai color theme by Lloyd" 'nil)

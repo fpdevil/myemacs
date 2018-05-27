@@ -7,11 +7,11 @@
 ;;; Description: Flycheck syntax checker for Emacs
 ;;;
 ;;; elisp code for erlang syntaxerl handling
-;;=================================================================================
-
 ;;;
 ;;; Code:
 ;;;
+;;=================================================================================
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; some default erlang compilation options                                     ;;;
@@ -91,24 +91,24 @@
                         (file-name-directory buffer-file-name))))
     (list path (list local-file))))
 
-(defun my-erlang-setup ()
-  "Setup the syntax path for files with erlang extensions."
+(defun my-setup-erlang ()
   (interactive)
   (unless (is-buffer-file-temp)
     (when (file-exists-p (file-truename "/opt/erlang/syntaxerl/syntaxerl"))
-      ;; (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'"     flymake-syntaxerl))
-      (add-to-list 'flymake-allowed-file-name-masks '("\\.hrl\\'"     flymake-syntaxerl))
-      (add-to-list 'flymake-allowed-file-name-masks '("\\.app\\'"     flymake-syntaxerl))
+      (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-syntaxerl))
+      (add-to-list 'flymake-allowed-file-name-masks '("\\.hrl\\'" flymake-syntaxerl))
+      (add-to-list 'flymake-allowed-file-name-masks '("\\.app\\'" flymake-syntaxerl))
       (add-to-list 'flymake-allowed-file-name-masks '("\\.app.src\\'" flymake-syntaxerl))
-      (add-to-list 'flymake-allowed-file-name-masks '("\\.config\\'"  flymake-syntaxerl))
-      (add-to-list 'flymake-allowed-file-name-masks '("\\.rel\\'"     flymake-syntaxerl))
-      (add-to-list 'flymake-allowed-file-name-masks '("\\.script\\'"  flymake-syntaxerl))
+      (add-to-list 'flymake-allowed-file-name-masks '("\\.config\\'" flymake-syntaxerl))
+      (add-to-list 'flymake-allowed-file-name-masks '("\\.rel\\'" flymake-syntaxerl))
+      (add-to-list 'flymake-allowed-file-name-masks '("\\.script\\'" flymake-syntaxerl))
       (add-to-list 'flymake-allowed-file-name-masks '("\\.escript\\'" flymake-syntaxerl))
-      ;; should be the last one.
+      ;; should be the last.
       (flymake-mode 1))))
 
-;; add the above function to erlang mode
-(add-hook 'erlang-mode-hook 'my-erlang-setup)
+  ;; add the above function to erlang mode
+  (add-hook 'erlang-mode-hook 'my-setup-erlang)
+
 ; }}}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

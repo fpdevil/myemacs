@@ -21,10 +21,7 @@
   "A list of diminished modes to either unicode or ascii values.")
 
 (defmacro diminished-mode-symbol (mode &optional unicode ascii)
-  "Diminish MODE name in the mode line to either UNICODE or ASCII based on the
-support for UNICODE character symbols.
-If ASCII is not provided then UNICODE will be used. If neither of them are
-provided, mode will not be shown in the mode line."
+  "Diminish MODE name in the mode line to either UNICODE or ASCII based on the support for UNICODE character symbols.  If ASCII is not provided then UNICODE will be used.  If neither of them are provided, mode will not be shown in the mode line."
   (let ((cell (assq ',mode list-diminished-modes)))
     (if cell
         (setcdr cell '(,unicode ,ascii))
@@ -44,10 +41,9 @@ provided, mode will not be shown in the mode line."
                    (company-mode               "Ⓒ" company)
                    (auto-complete-mode         "Ⓐ")
                    (git-gutter-mode            "Ⓖ" git-gutter)
-                   (yas-minor-mode             "Ⓨ")
-                   (visual-line-mode           "Ⓥ")
-                   (paredit-mode               "{ק}" paredit)
-                   (helm-mode                  "Ⓗ")))
+                   (yas-minor-mode             "Ⓨ" yas)
+                   ;;(paredit-mode               "{ק}" paredit)
+                   ))
 
 
 ;;------------------------------------------------------------------------------
@@ -81,8 +77,11 @@ provided, mode will not be shown in the mode line."
 (after 'haskell-interactive-mode (diminish 'interactive-haskell-mode " IntHS"))
 (after 'haskell-doc (diminish 'haskell-doc-mode))
 (after 'checkdoc (diminish 'checkdoc-minor-mode))
+(after 'aggressive-indent (diminish 'aggressive-indent-mode))
+(after 'paredit (diminish 'paredit-mode))
+(after 'helm-mode (diminish 'helm-mode))
+(after 'ivy (diminish 'ivy-mode))
 
-;;------------------------------------------------------------------------------
 
 (provide 'diminish-config)
 

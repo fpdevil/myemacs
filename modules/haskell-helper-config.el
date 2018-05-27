@@ -169,16 +169,16 @@
 ;; A function used to change the behaviour of return.  If you press it at
 ;; the start of a line, it will just move the code down a line.  If you
 ;; press it anywhere else, you get automatic indentation.
-; (defun haskell-ret()
-;   "Return"
-;   (interactive)
-;   (if (bolp) (newline) (newline-and-indent)))
-; (add-hook 'haskell-mode-hook (lambda () (local-set-key (kbd "RET") 'haskell-ret)))
+;; (defun haskell-ret()
+;;   "Return"
+;;   (interactive)
+;;   (if (bolp) (newline) (newline-and-indent)))
+;; (add-hook 'haskell-mode-hook (lambda () (local-set-key (kbd "RET") 'haskell-ret)))
 
 
 (defun set-newline-and-indent ()
   (local-set-key (kbd "RET") 'newline-and-indent))
-(add-hook 'haskell-mode-hook 'set-newline-and-indent)
+;;(add-hook 'haskell-mode-hook 'set-newline-and-indent)
 
 ;; set tab width to 2
 (add-hook 'haskell-mode-hook

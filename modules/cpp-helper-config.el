@@ -11,10 +11,10 @@
 ;;===========================================================================
 
 ;; c++ completion for GNU Emacs
+(require-package 'function-args)
 (require 'function-args)
 (fa-config-default)
 
-;;
 ;; show #if 0 / #endif etc regions in comment face - taken from
 ;; http://stackoverflow.com/questions/4549015/in-c-c-mode-in-emacs-change-face-of-code-in-if-0-endif-block-to-comment-fa
 (defun c-mode-font-lock-if0 (limit)
@@ -48,7 +48,7 @@ code sections."
    nil
    '((my-c-mode-font-lock-if0 (0 font-lock-comment-face prepend))) 'add-to-end))
 
-(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+;; (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
 
 

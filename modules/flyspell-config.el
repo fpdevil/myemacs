@@ -12,6 +12,7 @@
 ;;;=============================================================================
 ;; {{ flyspell setup for web-mode
 (defun web-mode-flyspell-verify ()
+  "Flyspell veriification setup for web-mode."
   (let* ((f (get-text-property (- (point) 1) 'face))
          rlt)
     (cond
@@ -48,6 +49,7 @@
 
 ;; {{ flyspell setup for js2-mode
 (defun js-flyspell-verify ()
+  "Flyspell verification setup for js mode."
   (let* ((f (get-text-property (- (point) 1) 'face)))
     ;; *whitelist*
     ;; only words with following font face will be checked
@@ -64,21 +66,20 @@
 (put 'rjsx-mode 'flyspell-mode-predicate 'js-flyspell-verify)
 ;; }}
 
-(after 'flyspell
+(after-load 'flyspell
   '(progn
      (require 'flyspell-lazy)
      (flyspell-lazy-mode 1)))
 
-;; for better performance
 ;; improve performance by not printing messages for every word
 (setq flyspell-issue-message-flag nil
       flyspell-issue-welcome-flag nil
       flyspell-use-meta-tab nil)
 
-;; if (aspell installed) { use aspell}
-;; else if (hunspell installed) { use hunspell }
-;; whatever spell checker I use, I always use English dictionary
-;; I prefer use aspell because:
+;; if (aspell is installed) { use aspell}
+;; else if (hunspell is installed) { use hunspell }
+;; whatever spell checker is active, always use English dictionary
+;; aspell can be a better choice as:
 ;; 1. aspell is older
 ;; 2. looks Kevin Atkinson still get some road map for aspell:
 ;; @see http://lists.gnu.org/archive/html/aspell-announce/2011-09/msg00000.html
@@ -88,15 +89,16 @@ Please note RUN-TOGETHER will make aspell less capable.  So it should only be us
   (let (args)
     (when ispell-program-name
       (cond
-        ((string-match "aspell$" ispell-program-name)
-         ;; force the English dictionary, support Camel Case spelling check (tested with aspell 0.6)
-         (setq args (list "--sug-mode=ultra" "--lang=en_US"))
-         (if run-together
-           (setq args (append args '("--run-together" "--run-together-limit=16" "--run-together-min=2")))))
-        ((string-match "hunspell$" ispell-program-name)
-         (setq args nil))))
+       ((string-match "aspell$" ispell-program-name)
+        ;; force the English dictionary, support Camel Case spelling check (tested with aspell 0.6)
+        (setq args (list "--sug-mode=ultra" "--lang=en_US"))
+        (if run-together
+            (setq args (append args '("--run-together" "--run-together-limit=16" "--run-together-min=2")))))
+       ((string-match "hunspell$" ispell-program-name)
+        (setq args nil))))
     args))
 
+;; @ref redguard
 ;; Aspell Setup (recommended):
 ;; Skipped because it's easy.
 ;;
@@ -158,14 +160,15 @@ Please note RUN-TOGETHER will make aspell less capable.  So it should only be us
 (add-hook 'text-mode-hook 'text-mode-hook-setup)
 
 ;; Add auto spell-checking in comments for all programming language modes
-;; if and only if there is enough memory
-;; You can use prog-mode-hook instead.
+;; if and only if there is enough memory, you may use prog-mode-hook instead.
 (defun can-enable-flyspell-mode ()
+  "Enable flyspell mode based on the program availability."
   (and (not *no-memory*)
        ispell-program-name
        (executable-find ispell-program-name)))
 
 (defun enable-flyspell-mode-conditionally ()
+  "Conditionally enable FlySpell."
   (if (can-enable-flyspell-mode)
       (flyspell-mode 1)))
 
@@ -173,7 +176,7 @@ Please note RUN-TOGETHER will make aspell less capable.  So it should only be us
 (if (can-enable-flyspell-mode)
     (add-hook 'prog-mode-hook 'flyspell-prog-mode))
 
-;; you can also use "M-x ispell-word" or hotkey "M-$". It pop up a multiple choice
+;; you can also use "M-x ispell-word" or hotkey "M-$". It pops up a multi choice
 ;; @see http://frequal.com/Perspectives/EmacsTip03-FlyspellAutoCorrectWord.html
 (global-set-key (kbd "C-c s") 'flyspell-auto-correct-word)
 
@@ -183,6 +186,7 @@ Please note RUN-TOGETHER will make aspell less capable.  So it should only be us
  (make-variable-buffer-local 'flyspell-check-doublon)
 
 (defadvice flyspell-highlight-incorrect-region (around flyspell-highlight-incorrect-region-hack activate)
+  "Highlight the incorrect words."
   (if (or flyspell-check-doublon (not (eq 'doublon (ad-get-arg 2))))
       ad-do-it))
 ;; }}
@@ -200,7 +204,7 @@ Please note RUN-TOGETHER will make aspell less capable.  So it should only be us
                       (length aspell-words)
                       (mapconcat 'identity aspell-words "\n"))))))
 
-;; Use helm with flyspell
+;; Using Helm with flyspell
 (after "flyspell-correct-helm"
   (setq flyspell-correct-interface #'flyspell-correct-helm)
   (define-key flyspell-mode-map (kbd "<f8>") 'helm-flyspell-correct))
@@ -210,34 +214,36 @@ Please note RUN-TOGETHER will make aspell less capable.  So it should only be us
 (setq flyspell-correct-interface #'flyspell-correct-popup)
 
 (require-package 'flyspell-popup)
-(setq flyspell-popup-correct-delay 0.8)
-(add-hook 'flyspell-mode-hook 'flyspell-popup-auto-correct-word)
+(define-key flyspell-mode-map (kbd "C-:") #'flyspell-popup-correct)
+;;(setq flyspell-popup-correct-delay 1.0)
+(add-hook 'flyspell-mode-hook #'flyspell-popup-auto-correct-mode)
 
 ;; flyspell line styles
-(custom-set-faces
- '(flyspell-duplicate ((t (:underline (:color "Blue" :style wave)))))
- '(flyspell-incorrect ((t (:underline (:color "Purple" :style wave))))))
+;; (custom-set-faces
+;;  '(flyspell-duplicate ((t (:underline (:color "Blue" :style wave)))))
+;;  '(flyspell-incorrect ((t (:underline (:color "Purple" :style wave))))))
 
-;;------------------------------------------------------------------------------
-;; company ispell integration
-;;------------------------------------------------------------------------------
-(defun company-text-mode-hook ()
-  "Company for `text-mode'."
-  (make-local-variable 'company-backends)
-  (add-to-list 'company-backends 'company-ispell)
-  (setq company-ispell-dictionary (file-truename "~/.emacs.d/private/english-words.txt")))
-(add-hook 'text-mode-hook 'company-text-mode-hook)
+(set-face-attribute 'flyspell-duplicate nil
+                    :foreground "white"
+                    :background "orange" :box t :underline t)
 
-(defun toggle-company-ispell ()
-  "M-x toggle the company iSpell."
-  (interactive)
-  (cond
-   ((memq 'company-ispell company-backends)
-    (setq company-backends (delete 'company-ispell company-backends))
-    (message "company-ispell disabled"))
-   (t
-    (add-to-list 'company-backends 'company-ispell)
-    (message "company-ispell enabled!"))))
+(set-face-attribute 'flyspell-incorrect nil
+                    :foreground "white"
+                    :background "red" :box t :underline t)
+
+
+;;{{{ auto dictionary switcher for flyspell
+(after 'flyspell
+  (require-package 'auto-dictionary)
+  (require 'auto-dictionary)
+  (add-hook 'flyspell-mode-hook (lambda () (auto-dictionary-mode 1)))
+  (add-hook 'auto-dictionary-mode-hook
+            (lambda ()
+              (when (and
+                     (fboundp 'adict-change-dictionary)
+                     ispell-local-dictionary)
+                (adict-change-dictionary ispell-local-dictionary))) 'append))
+;;}}}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -249,4 +255,4 @@ Please note RUN-TOGETHER will make aspell less capable.  So it should only be us
 ;; no-byte-compile t
 ;; End:
 
-  ;;; flyspell-config.el ends here
+;;; flyspell-config.el ends here

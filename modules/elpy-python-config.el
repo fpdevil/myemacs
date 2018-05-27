@@ -12,6 +12,11 @@
 ;;;=============================================================================
 (require 'elpy)                 ; Emacs Python Development Environment
 
+;; --
+;; visual clue on how the code is indented
+(require-package 'highlight-indentation)
+(add-hook 'python-mode-hook 'highlight-indentation)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; start elpy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;; Emacs Python Development Environment  ;;;;;;;;;;;;;;;;;;;;
 ;; elpy mode can be disabled or commented out if running 2 completion(s)      ;;
@@ -62,16 +67,12 @@
     (lambda ()
       (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
       (add-hook 'elpy-mode-hook 'flycheck-mode))
-    (add-hook 'elpy-mode-hook
-          '(lambda ()
-             (progn
-               (add-to-list 'flymake-err-line-patterns '("\\([^|]+\\)| \\([^:]+\\):\\([0-9]+\\)$" 2 3 nil 1))
-                (set (make-local-variable 'flymake-warning-predicate) "^.[^EF]")))))
+  (add-hook 'elpy-mode-hook
+            '(lambda ()
+               (progn
+                 (add-to-list 'flymake-err-line-patterns '("\\([^|]+\\)| \\([^:]+\\):\\([0-9]+\\)$" 2 3 nil 1))
+                 (set (make-local-variable 'flymake-warning-predicate) "^.[^EF]")))))
 
-;; --
-;; visual clue on how the code is indented
-; (require 'highlight-indentation)
-; (add-hook 'python-mode-hook 'highlight-indentation)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; end elpy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

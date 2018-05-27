@@ -10,25 +10,23 @@
 ;;; elisp code for customizing ycm
 ;;; https://github.com/Malabarba/aggressive-indent-mode
 ;;;
-;;; Code
+;;; Code:
 ;;;
 ;;;===========================================================================
-(require-package 'aggressive-indent)
-(require 'aggressive-indent)
+(lazy-init
+    (require-package 'aggressive-indent)
+    (require 'aggressive-indent)
 
-;; (global-aggressive-indent-mode 1) ;; enables globally
+    ;; to enable globally for all modes
+    ;; (global-aggressive-indent-mode 1)
 
-;; enable for certain modes
-(add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
-(add-hook 'lisp-mode-hook #'aggressive-indent-mode)
-;;(add-hook 'css-mode-hook #'aggressive-indent-mode)
-;;(add-hook 'python-mode-hook #'aggressive-indent-mode)
-;;(add-hook 'erlang-mode-hook #'aggressive-indent-mode)
-;;(add-hook 'c++-mode-hook #'aggressive-indent-mode)
+    ;; enable for certain modes
+    (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+    (add-hook 'lisp-mode-hook #'aggressive-indent-mode)
 
-;; if a prticular mode needs to be disabled while enabling globally
-;; (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
+    ;; if a prticular mode needs to be disabled while enabling globally
+    ;; (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
+    )
 
 (provide 'indent-config)
-
-;; indent-config.el ends here
+;;; indent-config.el ends here

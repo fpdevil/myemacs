@@ -7,38 +7,46 @@
 ;;;              which cannot be placed anywhere.  Any customized settings
 ;;;              for the Emacs (aquamacs) or any packages or internal(s) may
 ;;;              be placed here and the same will be loaded during bootstrap
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Code:
 ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (global-set-key (kbd "<menu>") 'nil)
 
 ;; a variable for holding if system is mac os x
-(setq *is-a-mac* (eq system-type 'darwin))
+(setq *is-mac* (eq system-type 'darwin))
 (setq *win64* (eq system-type 'windows-nt) )
 (setq *cygwin* (eq system-type 'cygwin) )
 (setq *linux* (or (eq system-type 'gnu/linux) (eq system-type 'linux)) )
 (setq *unix* (or *linux* (eq system-type 'usg-unix-v) (eq system-type 'berkeley-unix)) )
 (setq *emacs24* (and (not (featurep 'xemacs)) (or (>= emacs-major-version 24))) )
 (setq *emacs25* (and (not (featurep 'xemacs)) (or (>= emacs-major-version 25))) )
-(setq *no-memory* (cond
-                    (*is-a-mac*
-                      (< (string-to-number (nth 1 (split-string (shell-command-to-string "sysctl hw.physmem")))) 4000000000))
-                    (*linux* nil)
-                    (t nil)))
+(setq *no-memory*
+      (cond
+       (*is-mac*
+        (< (string-to-number (nth 1 (split-string (shell-command-to-string "sysctl hw.physmem")))) 4000000000))
+       (*linux* nil)
+       (t nil)))
 
-(setq *emacs24old*  (or (and (= emacs-major-version 24) (= emacs-minor-version 3))
-                        (not *emacs24*)))
+(setq *emacs24old*
+      (or (and (= emacs-major-version 24) (= emacs-minor-version 3))
+          (not *emacs24*)))
 
 ;;----------------------------------------------------------------------------
 ;; garbage collection setup for aquamacs
 ;; Start garbage collection every 50MB to improve Emacs performance
 ;; warn when opening files bigger than 100MB
 ;;----------------------------------------------------------------------------
-(defun my-minibuffer-setup-hook () (setq gc-cons-threshold most-positive-fixnum))
-(defun my-minibuffer-exit-hook () (setq gc-cons-threshold (* 64 1024 1024)))
-(add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
-(add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
+(defun my-minibuffer-setup-hook ()
+  "Set GC threshold value for minibuffer."
+  (setq gc-cons-threshold most-positive-fixnum))
+(defun my-minibuffer-exit-hook ()
+  "Set GC threshold."
+  (setq gc-cons-threshold (* 64 1024 1024)))
+
+;;(add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
+;;(add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
 
 (message "Emacs Version: %d%s%d"
          emacs-major-version
@@ -133,7 +141,7 @@
 
 ;; prompt while exiting with C-x C-c
 (defun ask-before-closing ()
-  "Ask whether or not to close, and then close if y was pressed"
+  "Ask whether or not to close, and then close if y was pressed."
   (interactive)
   (if (y-or-n-p (format "Are you sure you want to exit Emacs? "))
       (if (< emacs-major-version 22)

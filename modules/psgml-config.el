@@ -14,7 +14,7 @@
 (autoload 'xml-mode "psgml" "Major mode to edit XML files." t)
 (setq auto-mode-alist
        (nconc
-         '(("\\.html$" . xml-mode))
+         ;;'(("\\.html$" . xml-mode))
          '(("\\.xml$" . xml-mode))
          auto-mode-alist))
 

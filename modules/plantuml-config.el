@@ -12,6 +12,8 @@
 ;;;              -- http --
 ;;;              https://github.com/zweifisch/ob-http
 ;;;
+;;; Real worl examples @https://real-world-plantuml.com/
+;;;
 ;;; elisp code for org support and handling
 ;;; examples @href http://plantuml.com/
 ;;;
@@ -48,12 +50,19 @@
    '((org        . t)
      (latex      . t)
      (haskell    . t)
+     (elixir     . t)
+     (coq        . t)
+     (js         . t)
      (emacs-lisp . t)
      (scala      . t)
      (js         . t)
+     (java       . t)
      (shell      . t)
+     (sql        . t)
+     (http       . t)
      ;; (sh      . t)
      (python     . t)
+     (ipython    . t)
      (dot        . t)
      (plantuml   . t)
      (ditaa      . t)

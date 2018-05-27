@@ -5,10 +5,27 @@ games/
 .DS_Store
 .*
 !/.gitignore
+
+# for ycmd binaries
 private/ycmd/
+
+# ignore edts erlang contents
 edts/
+
+# package nw settings
 ./network-security.data
-eshell/
+
+# under eshell
+/eshell/
+
+# backups
 backup/
-packages/
+
+# ignore cache contents
 cache/
+
+# elpa packages
+/elpa/
+
+# AUCTeX auto folder
+/auto/

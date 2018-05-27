@@ -5,70 +5,60 @@
 ;;; Description: any custom methods can all be defined here.
 ;;;
 ;;; Code:
-;;; Updated    : 02 Dec 2016
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Updated    : 06 Apr 2018
 
-;;; -- load lazily or initialize lazily
-(defmacro lazy-init (&rest body)
-  "Initializae the BODY after being idle for a predetermined amount of time."
-  `(run-with-idle-timer
-    0.5
-    nil
-    (lambda () ,@body)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; identify unnecessary whitespace is in all programming modes            ;;;
-;;; whitespace-cleanup command for clearing trailing white spaces          ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
+;; identify unnecessary whitespace is in all programming modes
+;; whitespace-cleanup command for clearing trailing white spaces
+;;------------------------------------------------------------------------------
 (require 'whitespace)                           ;; this is an internal package
 (setq-default show-trailing-whitespace t)
 (set-default 'indent-tabs-mode nil)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
 (setq my-command-buffer-hooks (make-hash-table))
 (defun my-command-on-save-buffer (c)
-    "C Run a command <c> every time the buffer is saved."
-    (interactive "sShell command: ")
-    (puthash (buffer-file-name) c my-command-buffer-hooks))
+  "C Run a command <c> every time the buffer is saved."
+  (interactive "sShell command: ")
+  (puthash (buffer-file-name) c my-command-buffer-hooks))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+;;------------------------------------------------------------------------------
 (defun my-command-buffer-kill-hook ()
   "Remove a key from <command-buffer-hooks> if it exists."
   (remhash (buffer-file-name) my-command-buffer-hooks))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+;;------------------------------------------------------------------------------
 (defun my-command-buffer-run-hook ()
   "Run a command if it exists in the hook."
   (let ((hook (gethash (buffer-file-name) my-command-buffer-hooks)))
     (when hook
-        (shell-command hook))))
+      (shell-command hook))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
 ;; add a function for inserting current date time.
+;;------------------------------------------------------------------------------
 (defun my-insert-date (prefix)
-    "Insert the current date with PREFIX, use ISO format.
+  "Insert the current date with PREFIX, use ISO format.
 With two prefix arguments, write out the day and month name."
-    (interactive "P")
-    (let ((format (cond
-                   ((not prefix) "%Y-%m-%d %H:%M")
-                   ((equal prefix '(4)) "%Y-%m-%d")
-                   ((equal prefix '(16)) "%A, %d. %B %Y")))
-          )
-      (insert (format-time-string format))))
+  (interactive "P")
+  (let ((format (cond
+                 ((not prefix) "%Y-%m-%d %H:%M")
+                 ((equal prefix '(4)) "%Y-%m-%d")
+                 ((equal prefix '(16)) "%A, %d. %B %Y")))
+        )
+    (insert (format-time-string format))))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
 ;; function to get current system's name and defining system types
+;;------------------------------------------------------------------------------
 (defun insert-system-name()
   (interactive)
   "Get current system's name"
-  (insert (format "%s" (system-name)))
-  )
+  (insert (format "%s" (system-name))))
 
 (defun is-mac()
   "Get and see if the System type is MAC."
@@ -80,16 +70,18 @@ With two prefix arguments, write out the day and month name."
   (interactive)
   (string-equal system-type "gnu/linux"))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
 ;; function to get current system type
+;;------------------------------------------------------------------------------
 (defun insert-system-type()
   (interactive)
   "Get current system type"
   (insert (format "%s" system-type))
   )
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
 ;; function to get face information at a position
+;;------------------------------------------------------------------------------
 (defun get-faces (pos)
   "Get the font faces at POS."
   (remq nil
@@ -106,9 +98,9 @@ With two prefix arguments, write out the day and month name."
       nil t))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; print the face found at the current point
-;; M-x what-face
+;;------------------------------------------------------------------------------
+;; print the face found at the current point (M-x what-face)
+;;------------------------------------------------------------------------------
 (defun what-face (pos)
   "Print font face at the POS."
   (interactive "d")
@@ -116,9 +108,9 @@ With two prefix arguments, write out the day and month name."
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; function to reduce the cruft in modeline (rename major mode)       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
+;; function to reduce the cruft in modeline (rename major mode)
+;;------------------------------------------------------------------------------
 (defmacro rename-modeline (package-name mode new-name)
   `(eval-after-load ,package-name
      '(defadvice ,mode (after rename-modeline activate)
@@ -128,9 +120,9 @@ With two prefix arguments, write out the day and month name."
 ;; (rename-modeline "clojure-mode" clojure-mode "Clj")
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; reloading the .emacs configuration file                          ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
+;; reloading the .emacs configuration file
+;;------------------------------------------------------------------------------
 (defun reload-dot-emacs ()
   "Save the .emacs buffer if required and reload .emacs."
   (interactive)
@@ -141,9 +133,9 @@ With two prefix arguments, write out the day and month name."
   (message "--> Emacs re-initialized."))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; get the major version as Aquamacs has none                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
+;; get the major version as Aquamacs has none
+;;------------------------------------------------------------------------------
 (defconst aq-major-version
   (progn (string-match "^[0-9]+" emacs-version)
          (string-to-number (match-string 0 emacs-version)))
@@ -151,9 +143,9 @@ With two prefix arguments, write out the day and month name."
 This variable first existed in version 19.23.")
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; functions for un-setting key maps and checking key maps            ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
+;; functions for un-setting key maps and checking key maps
+;;------------------------------------------------------------------------------
 (defun get-key-combo (key)
   "Just return the KEY combo entered by the user."
   (interactive "kKey combo: ")
@@ -174,9 +166,9 @@ This variable first existed in version 19.23.")
 ;;
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; function for setting default fonts                                 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
+;; function for setting default fonts
+;;------------------------------------------------------------------------------
 (defun aqua/default-fonts ()
   "Set up the fonts that I like for my work."
   (interactive)
@@ -184,9 +176,9 @@ This variable first existed in version 19.23.")
   (set-face-font 'default "-unknown-Monaco for Powerline-normal-normal-normal-*-13-*-*-*-m-0-iso10646-1"))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ESC - exit the evils insert state and also close the company popup       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
+;; ESC - exit the evils insert state and also close the company popup
+;;------------------------------------------------------------------------------
 (defun aqua-company-abort ()
   "Pressing ESC should close POPUP."
   (interactive)
@@ -195,21 +187,21 @@ This variable first existed in version 19.23.")
              (eq evil-state 'insert))
     (evil-force-normal-state)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; utility function to (brokenly :< ) handle versioned dirs                 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
+;; utility function to (brokenly :< ) handle versioned dirs
+;;------------------------------------------------------------------------------
 (defun aqua/wild (dir stem)
-   "Return the last (alphabetically) file name that match DIR/STEM*."
-   (car
-    (reverse
-     (sort
-      (let (value)
-        (dolist (element (file-name-all-completions stem dir) value)
-          (setq value (cons (concat dir element) value)))) 'string-lessp))))
+  "Return the last (alphabetically) file name that match DIR/STEM*."
+  (car
+   (reverse
+    (sort
+     (let (value)
+       (dolist (element (file-name-all-completions stem dir) value)
+         (setq value (cons (concat dir element) value)))) 'string-lessp))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
 ;; kill all other buffers
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
 (defun kill-other-buffers ()
   "Kill all buffers but the current one, doesn't mess with special buffers."
   (interactive)
@@ -218,7 +210,7 @@ This variable first existed in version 19.23.")
       (kill-buffer buffer))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
 (defvar aqua--diminished-minor-modes nil
   "List of diminished modes to unicode or ascii values.")
 
@@ -237,31 +229,31 @@ the mode will not show in the mode line."
   `(eval-after-load 'diminish '(diminish ',mode)))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; list of current active modes
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
+;; list of current active modes
+;;------------------------------------------------------------------------------
 (defun list-active-modes()
   "List all the active modes in current buffer."
   (interactive)
   (let ((active-modes))
     (mapc (lambda (mode) (condition-case nil
-                             (if (and (symbolp mode) (symbol-value mode))
-                                 (add-to-list 'active-modes mode))
-                           (error nil)))
+                        (if (and (symbolp mode) (symbol-value mode))
+                            (add-to-list 'active-modes mode))
+                      (error nil)))
           minor-mode-list)
     (message "Current active modes list %s" active-modes)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
 ;; https://github.com/cofi/dotfiles/blob/master/emacs.d/config/cofi-util.el
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
 (defun add-to-hooks (fun hooks)
   "Add function to hooks"
   (dolist (hook hooks)
     (add-hook hook fun)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; add hooks
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;------------------------------------------------------------------------------
+;; add hooks | fill n unfill
+;;------------------------------------------------------------------------------
 (add-hook 'kill-buffer-hook 'my-command-buffer-kill-hook)
 (add-hook 'after-save-hook 'my-command-buffer-run-hook)
 

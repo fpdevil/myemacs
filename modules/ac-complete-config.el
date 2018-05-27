@@ -26,8 +26,9 @@
   ;; some default global values for ac completions
   (setq ac-auto-show-menu t)
   (setq ac-delay 0.5)
-  (setq ac-quick-help-delay 0.3)
-  (setq ac-auto-start t)
+  (setq ac-quick-help-delay 0.8)
+  ;;(setq ac-auto-start t)
+  (setq ac-auto-start 1)
   (setq ac-use-menu-map t)
   (setq ac-menu-height 30)
   (setq ac-ignore-case nil)
@@ -37,6 +38,7 @@
   (setq ac-fuzzy-enable t)
   (setq ac-dwim t)
   (setq ac-stop-words (quote ("/" "//" "/*" "//*" "///" "////")))
+  (setq ac-modes (append ac-modes '(org-mode))) ; for org mode
   (ac-config-default))
 
 ;; show the menu

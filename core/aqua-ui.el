@@ -9,13 +9,32 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Show a marker in the left fringe for lines not in the buffer
+(setq indicate-empty-lines t)
+;; show no tool bar
+(if (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+;; show no scroll bar
+(if (fboundp 'set-scroll-bar-mode)
+    (set-scroll-bar-mode nil))
+;; show no menu bar
+;; (if (fboundp 'menu-bar-mode)
+;;   (menu-bar-mode -1))
+
 ;;-----------------------------------------------------------------------------
 ;; frame title to show either a file or a buffer name
 ;;-----------------------------------------------------------------------------
 (setq frame-title-format
       '("" invocation-name " Emacs - " (:eval (if (buffer-file-name)
-                                                 (abbreviate-file-name (buffer-file-name))
-                                               "%b"))))
+                                                  (abbreviate-file-name (buffer-file-name))
+                                                "%b"))))
+
+
+;;-----------------------------------------------------------------------------
+;; Opening Files In Same Frame, but keep Apple-N functionality the same
+;;-----------------------------------------------------------------------------
+(setq one-buffer-one-frame-mode 0)
+
 
 ;;-----------------------------------------------------------------------------
 ;; parentheses show

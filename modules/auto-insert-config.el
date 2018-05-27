@@ -32,14 +32,15 @@
         ((python-mode . "Python program") nil
          "#!/usr/bin/env python\n"
          "# -*- coding:utf-8 -*-\n"
-         "# @Copyright © " (substring (current-time-string) -4) " " (user-full-name) "\n"
+         "# Copyright © " (substring (current-time-string) -4) " " (user-full-name) "\n"
          "#\n"
-         "# @File        : " (file-name-nondirectory buffer-file-name) "\n"
-         "# @Author      : " (user-full-name) " <" (progn user-mail-address) ">\n"
-         "# @Time-stamp  : " (format-time-string "%a %b %d %H:%M:%S %Z %Y") "\n"
-         "# @Description :" _ "\n"
+         "# File        : " (file-name-nondirectory buffer-file-name) "\n"
+         "# Author      : " (user-full-name) " <" (progn user-mail-address) ">\n"
+         "# Time-stamp  : " (format-time-string "%a %b %d %H:%M:%S %Z %Y") "\n"
+         "# License     :" _ "\n"
+         "# Description :" _ "\n"
          "#\n"
-         "###############################################################################\n\n")
+         "##############################################################################\n\n")
         ((c-mode . "C program") nil
          "/*\n"
          " * File: " (file-name-nondirectory buffer-file-name) "\n"

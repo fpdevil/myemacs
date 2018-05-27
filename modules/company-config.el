@@ -15,25 +15,23 @@
 ;;;
 ;;;===========================================================================
 (require-package 'company)
-(require 'company)               ;; company mode
-(require 'company-quickhelp)     ;; documentation popup for company
-(require 'company-dict)          ;; ac-source-dictionary to company-mode
-(require 'company-math)          ;; back-ends for for math unicode symbols and latex tags
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;            company mode (for company based completions)                  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; use company-mode in all buffers globally
-(add-hook 'after-init-hook 'global-company-mode)
+;;----------------------------------------------------------------------------
+;;            company mode (for company based completions)
+;;----------------------------------------------------------------------------
+(add-hook 'after-init-hook 'global-company-mode)  ; use company-mode in all buffers globally
 
 
 ;;-----------------------------------------------------------------------------
 ;; company options - frontends and backends
 ;;-----------------------------------------------------------------------------
 (after 'company
+
+  (require 'company-quickhelp)     ;; documentation popup for company
+  (require 'company-dict)          ;; ac-source-dictionary to company-mode
+
   '(progn
-    (lazy-init
+     (lazy-init
       ;; sort the completions by their usage frequency
       (require-package 'company-statistics)
       (setq company-statistics-file (expand-file-name "company-statistics-cache.el" cache-dir))
@@ -44,35 +42,55 @@
              company-preview-if-just-one-frontend
              company-echo-metadata-frontend))
 
-      ;; list of default company backends for Emacs
-      (setq company-backends
-        '((company-dabbrev-code
-           company-gtags
-           company-etags
-           company-keywords)
-          company-files company-dabbrev))
+     ;; enable math completions
+     (require 'company-math)
+     (add-to-list 'company-backends 'company-math-symbols-unicode)
+     ;;(add-to-list 'company-backends 'company-math-symbols-latex)
 
+     (add-to-list 'company-backends 'company-gtags)
+     (add-to-list 'company-backends 'company-etags)
+     (add-to-list 'company-backends 'company-keywords)
+     (add-to-list 'company-backends 'company-files)
+     (add-to-list 'company-backends 'company-dict)
+     (add-to-list 'company-backends 'company-cmake)
+     (add-to-list 'company-backends 'company-c-headers)
+
+     ;; put company-capf at the beginning of the list
+     (require 'company-capf)
      (setq company-backends
-           '((
-              company-yasnippet
-              ;; company-nxml
-              ;; company-gtags
-              company-cmake
-              company-c-headers
-              company-files
-              company-keywords
-              company-capf
-              company-dict
-              company-dabbrev-code)
-       (company-abbrev company-dabbrev)
-       (company-math-symbols-latex company-math-symbols-unicode)))
+           (delete-dups (cons 'company-capf company-backends)))
+
+     ;; list of default company backends for Emacs
+     ;; (setq company-backends
+     ;;       '((company-dabbrev-code
+     ;;          company-gtags
+     ;;          company-etags
+     ;;          company-keywords)
+     ;;         company-files company-dabbrev))
+
+     ;; (setq company-backends
+     ;;       '((
+     ;;          company-yasnippet
+     ;;          ;;company-nxml
+     ;;          ;;company-gtags
+     ;;          company-cmake
+     ;;          company-c-headers
+     ;;          company-files
+     ;;          company-keywords
+     ;;          ;;company-capf
+     ;;          company-dict
+     ;;          company-dabbrev-code)
+     ;;         (company-abbrev company-dabbrev)
+     ;;         (company-math-symbols-latex company-math-symbols-unicode)))
 
      ;; remove unused backends
      (setq company-backends (delete 'company-ropemacs company-backends))
+     (setq company-backends (delete 'company-oddmuse company-backends))
+
 
      (setq company-auto-complete nil         ;;  this will accept highlighted item with SPC if t
            company-minimum-prefix-length 2
-           company-tooltip-align-annotations t
+           ;; company-tooltip-align-annotations t
            company-selection-wrap-around t
            company-show-numbers t
            company-require-match nil
@@ -80,6 +98,8 @@
 
            company-dabbrev-downcase nil
            company-dabbrev-ignore-case t                ;; case sensitive completion
+           company-dabbrev-code-ignore-case t
+           company-dabbrev-code-everywhere t
 
            ;; invert navigation direction if completion popup-isearch-match
            ;; is displayed on top (happens near the bottom of windows)
@@ -93,32 +113,32 @@
            company-clang-insert-arguments nil
            company-transformers '(company-sort-by-occurrence)
            company-begin-commands '(self-insert-command))       ;; start autocompletion only after typing
-           company-dict-dir (expand-file-name "dict" cache-dir) ;; look for dictionary files
+     company-dict-dir (expand-file-name "dict" cache-dir) ;; look for dictionary files
 
-           ;; fill column indicator
-           (add-hook 'company-completion-started-hook 'company-turn-off-fci)
-           (add-hook 'company-completion-finished-hook 'company-maybe-turn-on-fci)
-           (add-hook 'company-completion-cancelled-hook 'company-maybe-turn-on-fci)
+     ;; fill column indicator
+     (add-hook 'company-completion-started-hook 'company-turn-off-fci)
+     (add-hook 'company-completion-finished-hook 'company-maybe-turn-on-fci)
+     (add-hook 'company-completion-cancelled-hook 'company-maybe-turn-on-fci)
 
-           ;; Tern mode javascript completion
-           (when (executable-find "tern")
-             (after "company-tern-autoloads"
-               (add-to-list 'company-backends 'company-tern)))
+     ;; Tern mode javascript completion
+     (when (executable-find "tern")
+       (after "company-tern-autoloads"
+         (add-to-list 'company-backends 'company-tern)))
 
-           ;; do not use company completion for certain modes like xml, xsl, nxml modes
-           (setq company-global-modes
-                 '(not
-                   eshell-mode
-                   comint-mode
-                   erc-mode
-                   gud-mode
-                   rcirc-mode
-                   minibuffer-inactive-mode
-                   xml-mode
-                   nxml-mode
-                   inferior-emacs-lisp-mode
-                   xsl-mode
-                   xslt-process-mode))))
+     ;; do not use company completion for certain modes like xml, xsl, nxml modes
+     (setq company-global-modes
+           '(not
+             eshell-mode
+             comint-mode
+             erc-mode
+             gud-mode
+             rcirc-mode
+             minibuffer-inactive-mode
+             xml-mode
+             nxml-mode
+             inferior-emacs-lisp-mode
+             xsl-mode
+             xslt-process-mode))))
 
 
 ;; work-around for issues with fci-mode
@@ -185,10 +205,17 @@
     (make-local-variable 'company-backends)
     (add-to-list 'company-backends 'company-ispell)
     (if (and (boundp 'ispell-alternate-dictionary) ispell-alternate-dictionary)
-      (setq company-ispell-dictionary ispell-alternate-dictionary))))
+        (setq company-ispell-dictionary ispell-alternate-dictionary))))
 
-;; do not turn on company ispell for org mode
+(defun company-text-mode-hook ()
+  "Set Company ISPELL for `text-mode'."
+  (make-local-variable 'company-backends)
+  (add-to-list 'company-backends 'company-ispell)
+  (setq company-ispell-dictionary (file-truename "~/.emacs.d/private/english-words.txt")))
+
+;; do not turn on company ispell for org and text modes
 (add-hook 'org-mode-hook 'company-ispell-setup)
+(add-hook 'text-mode-hook 'company-text-mode-hook)
 
 (after 'company-etags
   '(progn
@@ -228,22 +255,27 @@
 
 ;;----------------------------------------------------------------------------
 ;; add company-yasnippet support for all the company backends
-;; https://github.com/syl20bnr/spacemacs
 ;;----------------------------------------------------------------------------
-(defvar company-mode/enable-yas t
-  "Enable yasnippet for all backends.")
-
+;; enable yasnippet everywhere
+(defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
 (defun company-mode/backend-with-yas (backend)
-  "Company YaSnippet Integration."
-  (if (or (not company-mode/enable-yas)
-          (and (listp backend)
-               (member 'company-yasnippet backend)))
+  (if (or
+       (not company-mode/enable-yas)
+       (and (listp backend) (member 'company-yasnippet backend)))
       backend
     (append (if (consp backend) backend (list backend))
             '(:with company-yasnippet))))
+  ;; ('company-backends (mapcar #'company-mode/backend-with-yas 'company-backends))
 
-;; uncomment the below to add :with company-yasnippet to all backends
-;; (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+(after 'yasnippet
+  (setq company-backends
+        (mapcar
+         (lambda (backend)
+           (if (and (listp backend) (member 'company-yasnippet backend))
+               backend
+             (append (if (consp backend) backend (list backend))
+                     '(:with company-yasnippet))))
+         company-backends)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Company mode and YASnippet step on each other toes. These functions are  ;;

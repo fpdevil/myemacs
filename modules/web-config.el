@@ -10,6 +10,9 @@
 ;;;              https://truongtx.me/
 ;;;
 ;;; elisp code for customizing the web/html development settings
+;;;
+;;; Code:
+;;;
 ;;;===========================================================================
 (require 'cl)
 (require 'web-mode)                                  ;; for all web/html/js related work
@@ -17,13 +20,10 @@
 (require 'company-web-html)                          ;; load company mode html backend
 (require 'company-web-jade)                          ;; load company mode jade backend
 (require 'company-web-slim)                          ;; load company mode slim backend
-
 ;(require 'tidy)
-;;;
-;;; Code:
-;;;
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; an autonomous emacs major-mode for editing web templates                 ;;
+;; an autonomous Emacs's major-mode for editing web templates                 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'"                             . web-mode))
 (add-to-list 'auto-mode-alist '("\\.jsp\\'"                                   . web-mode))
@@ -41,7 +41,9 @@
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'"                                . web-mode))
 (add-to-list 'auto-mode-alist '("\\.*tpl\\'"                                  . web-mode))
 (add-to-list 'auto-mode-alist '("\\.*tml\\'"                                  . web-mode))
-(add-to-list 'auto-mode-alist '("\\.html?$\\'"                                . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html\\'"                                  . web-mode))
+(add-to-list 'auto-mode-alist '("\\.htm\\'"                                   . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html?$"                                   . web-mode))
 (add-to-list 'auto-mode-alist '("/\\(views\\|html\\|templates\\)/.*\\.php\\'" . web-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -150,8 +152,13 @@
 ;; (add-hook 'html-mode-hook (lambda () (tidy-build-menu html-mode-map)))
 
 ;; auto complete with ac-emmet through auto-complete and emmet
-(add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-(add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
+(defun turn-on-emmet-mode ()
+  "Turn on the emmet mode."
+  (require-package 'emmet-mode)
+  (emmet-mode))
+(add-hook 'sgml-mode-hook #'turn-on-emmet-mode) ;; Auto-start on any markup modes
+(add-hook 'css-mode-hook  #'turn-on-emmet-mode) ;; enable Emmet's css abbreviation.
+(add-hook 'web-mode-hook  #'turn-on-emmet-mode) ;; enable for web-mode
 
 ;; css indentation
 (setq-default css-indent-offset 2)
@@ -275,7 +282,7 @@
 
 (add-hook 'web-mode-hook 'web-mode-hook-setup)
 
-(eval-after-load 'web-mode
+(after 'web-mode
   '(progn
      ;; make org-mode export fail, I use evil and evil-matchit
      ;; to select text, so expand-region.el is not used
@@ -290,6 +297,14 @@
              ;; angular imenu
              (" \\(ng-[a-z]*\\)=\"\\([^\"]+\\)" 1 2 "=")))
      ))
+
+
+;; auto-complete for html tags and attributes
+(require-package 'ac-html)
+;; auto complete angular15 data for `ac-html' and `company-web'
+(require-package 'ac-html-angular)
+;; Major modes for editing Angular 2
+(require-package 'ng2-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

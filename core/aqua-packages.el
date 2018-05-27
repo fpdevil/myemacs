@@ -58,6 +58,7 @@
     doom-themes                                 ;; pack of modern color-themes
     afternoon-theme                             ;; dark theme with deep blue background
     badger-theme                                ;; dark theme for Emacs
+    lenlen-theme                                ;; solarized-based kawaii light theme
     ;;;;;; project setup and configuration      ;;;;;;
     ;; projectile                               ;; Project Interaction Library for Emacs
     ;; helm-projectile                          ;; Helm UI for Projectile
@@ -67,7 +68,7 @@
     ;;;;;; company backends for completion      ;;;;;;
     company-jedi                                ;; company jedi mode for python
     company-distel                              ;; company distel mode for erlang
-    ;company-erlang                             ;; company backend for erlang, ivy-erlang-complete
+                                        ;company-erlang                             ;; company backend for erlang, ivy-erlang-complete
     distel-completion-lib                       ;; distel-completion is needed for company-distel
     company-dict                                ;; backend that emulates ac-source-dictionary
     company-quickhelp                           ;; documentation popup for company
@@ -78,7 +79,7 @@
     company-irony-c-headers                     ;; backend for C/C++ header files with irony-mode
     company-c-headers                           ;; auto-completion for C/C++ headers using Company
     company-tern                                ;; tern backend for company-mode
-    ;company-ycm                                ;; Emacs client for the YCM code-completion engine
+    ;;company-ycm                               ;; Emacs client for the YCM code-completion engine
     ;;;;;; auto-complete family                 ;;;;;;
     auto-complete                               ;; auto completion for gnu emacs
     auto-complete-distel                        ;; auto completion distel for erlang
@@ -92,13 +93,12 @@
     ;;;;;; some utilities                       ;;;;;;
     parent-mode                                 ;; get major mode's parent modes
     exec-path-from-shell                        ;; make Emacs use the $PATH set up by the user's shell
-    ;better-defaults                            ;; better defaults for Emacs
+    ;;better-defaults                           ;; better defaults for Emacs
     ;;;;;; essential utilities                  ;;;;;;
     smartparens                                 ;; parenthesis management
-    paredit                                     ;; minor mode for editing parentheses
     ;;;;;; documentation and help               ;;;;;;
     markdown-mode                               ;; markdown language support
-    ; auctex                                    ;; AUCTEX and LATEX
+                                        ; auctex                                    ;; AUCTEX and LATEX
     graphviz-dot-mode                           ;; dot language graphviz graphs (for erlang .dotfiles)
     ;;;;;; on the fly syntax checkers           ;;;;;;
     ;;;;;; flycheck family                      ;;;;;;
@@ -140,15 +140,15 @@
     epresent                                    ;; simple presentation mode for Emacs Org-mode
     htmlize                                     ;; convert buffer text and decorations to HTML
     ;;;;;; git integration                      ;;;;;;
-    ;magit                                      ;; git status
+    ;;magit                                     ;; git status
     git-gutter                                  ;; Emacs port of GitGutter
+    ibuffer-vc                                  ;; Group ibuffer's list by VC project, or show VC status
     ;;;;;; language and IDE setup               ;;;;;;
     ;;;;;; python 3 programming modes           ;;;;;;
     virtualenvwrapper                           ;; virtualenv wrapper for python
     jedi                                        ;; python jedi IDE
     elpy                                        ;; python elpy IDE
     python-pylint                               ;; python linter
-    py-yapf                                     ;; python yapf
     pyvenv                                      ;; python virtual environment interface for Emacs
     py-autopep8                                 ;; integrate autopep8 into Emacs
     sphinx-doc                                  ;; sphinx style doc strings for python code
@@ -164,10 +164,10 @@
     hindent                                     ;; haskell code indenting
     hi2                                         ;; for haskell-indentation, 2nd try
     ghc                                         ;; haskell ghc
-    ; intero                                    ;; complete dev environment for haskell
+    ;;intero                                    ;; complete dev environment for haskell
     ;;;;;; erlang laguage support               ;;;;;;
     erlang                                      ;; erlang emacs plugin
-    ;ivy-erlang-complete                        ;; context sensitive completion for erlang
+    ;;ivy-erlang-complete                       ;; context sensitive completion for erlang
     edts                                        ;; Erlang Development Tool Suite
     ;;;;;; elixir language                      ;;;;;;
     elixir-mode                                 ;; major mode for editing elixir files
@@ -197,24 +197,24 @@
     elixir-yasnippets                           ;; yasnippets for elixir
     clojure-snippets                            ;; snippets for clojure
     ;;;;;; important and useful utilities       ;;;;;;
-    helm                                        ;; incremental completion and selection narrowing framework
-    helm-core                                   ;; development files for Helm
-    helm-describe-modes                         ;; Helm interface to Emacs’s describe-mode
-    ;helm-gtags                                 ;; gnu global helm interface
-    imenu-list                                  ;; show the current buffer's imenu entries
+    ;;helm                                      ;; incremental completion and selection narrowing framework
+    ;;helm-core                                 ;; development files for Helm
+    ;;helm-describe-modes                       ;; Helm interface to Emacs’s describe-mode
+    ;;helm-gtags                                ;; gnu global helm interface
+    ;;imenu-list                                ;; show the current buffer's imenu entries
     ;;;;;; essential packs and tools            ;;;;;;
     ecb                                         ;; emacs code browser
     buffer-move                                 ;; move buffer
     neotree                                     ;; a tree plugin like NerdTree for Vim
     dired-imenu                                 ;; imenu binding for dired mode
-    golden-ratio                                ;; auto re-size Emacs windows Tool golden ratio
+    ;;golden-ratio                              ;; auto re-size Emacs windows Tool golden ratio
     volatile-highlights                         ;; visual feedback on operations
     ;;;;;; essential utilities                  ;;;;;;
     highlight-symbol                            ;; automatic and manual symbol highlighting for Emacs
     xah-math-input                              ;; show math input symbols
     fiplr                                       ;; Emacs Fuzzy Find in Project Package
     ;;;;;; icon displays                        ;;;;;;
-    ; mode-icons                                ;; show icons for modes
+    ;;mode-icons                                ;; show icons for modes
     all-the-icons                               ;; package for showing various icons
     ;;;;;; editing and keyboard mappings        ;;;;;;
     key-chord                                   ;; map pairs of simultaneously pressed keys to commands
@@ -247,7 +247,6 @@
     ;;;;;; window, text and file utilities      ;;;;;;
     popwin                                      ;; popup window manager
     popup                                       ;; show popup for flycheck
-    switch-window                               ;; window switching, the visual way
     clippy                                      ;; show tooltip with function documentation at point
     quick-peek                                  ;; inline window doc popup
     ;;;;;; miscellaneous utilities              ;;;;;;
@@ -291,8 +290,8 @@
     company-ycmd                                ;; company mode backend for ycmd
     flycheck-ycmd                               ;; flycheck integration for ycmd
     ;;;;;; indentation and text editing         ;;;;;;
-    ;aggressive-indent                          ;; minor mode for code indentation
-  )
+    ;;aggressive-indent                         ;; minor mode for code indentation
+    )
   "A list of packages that will be installed if not present when firing Emacs.")
 
 

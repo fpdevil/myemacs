@@ -7,11 +7,10 @@
 ;;; Description: Emacs settings for GUD (Grand Unified Debugger) library
 ;;;
 ;;; elisp code for customizing the Emacs gud
-;;===============================================================================
-
 ;;;
 ;;; Code:
 ;;;
+;;===============================================================================
 
 (defvar gud-overlay
   (let* ((ov (make-overlay (point-min) (point-min))))
@@ -28,22 +27,26 @@
                     (current-buffer)))))
 
 (defun gud-kill-buffer ()
+  "Delete the overlay."
   (if (derived-mode-p 'gud-mode)
       (delete-overlay gud-overlay)))
 
 (add-hook 'kill-buffer-hook 'gud-kill-buffer)
 
 ;; {{ hack buffer
-;; move the cursor to the end of last line if it's gud-mode
+;;    move the cursor to the end of last line if it's gud-mode
 (defun hack-gud-mode ()
+  "Move the cursor to the end of last line if it's gud-mode."
   (when (string= major-mode "gud-mode")
     (goto-char (point-max))))
 
 (defadvice switch-to-buffer (after switch-to-buffer-after activate)
-  (hack-gud-mode))
+  (hack-gud-mode)
+  "Switch to the gud mode.")
 
 (defadvice select-window-by-number (after select-window-by-number-after activate)
-  (hack-gud-mode))
+  (hack-gud-mode)
+  "Switch to gud after selecting window.")
 
 ;; windmove-do-window-select is from windmove.el
 (defadvice windmove-do-window-select (after windmove-do-window-select-after activate)
@@ -51,7 +54,7 @@
 ;; }}
 
 (defun gud-cls (&optional num)
-  "clear gud screen"
+  "Clear the gud screen after the window NUM."
   (interactive "p")
   (let ((old-window (selected-window)))
     (save-excursion
@@ -63,16 +66,15 @@
         (if (> num 1) (recenter-top-bottom))
         (select-window old-window))
        (t (error "GUD buffer doesn't exist!"))
-       ))
-    ))
+       ))))
 
-(eval-after-load 'gud
-                 '(progn
-                    (gud-def gud-kill "kill" "\C-k" "Kill the debugee")
-                    ))
+(after 'gud
+  '(progn
+     (gud-def gud-kill "kill" "\C-k" "Kill the debugee")
+     ))
 
 (defun gud-kill-yes ()
-  "gud-kill and confirm with y"
+  "Kill gud and confirm with y."
   (interactive)
   (let ((old-window (selected-window)))
     (save-excursion
@@ -84,11 +86,12 @@
         (comint-send-input)
         (recenter-top-bottom)
         (select-window old-window))
-       (t (error "GUD buffer doesn't exist!"))
-       ))
-    ))
+       (t (error "GUD buffer doesn't exist!"))))))
 
 (global-set-key "\C-x\C-a\C-g" 'gud-run)
+
+;;; enable tooltips: bubbles with help text
+(gud-tooltip-mode t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; gud configuration end ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -12,10 +12,10 @@
 ;;;
 ;;===============================================================================
 
-(require 'color-theme)
+(require-package 'color-theme)
 
 (defadvice load-theme (before disable-themes-first activate)
-  ;; disable all themes
+  "Disable all themes."
   (dolist (i custom-enabled-themes)
     (disable-theme i)))
 

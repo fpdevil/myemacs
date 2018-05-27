@@ -25,8 +25,7 @@
   "Enable syntax-checking by default.")
 
 (defun add-flycheck-hook (mode)
-  "Use flycheck in MODE by default, if `syntax-checking-enable-by-default' is
-true."
+  "Use flycheck in MODE by default, if `syntax-checking-enable-by-default' is true."
   (when (and syntax-checking-enable-by-default
              (listp flycheck-global-modes)
              (not (eq 'not (car flycheck-global-modes))))
@@ -38,17 +37,13 @@ true."
 ;;-----------------------------------------------------------------------------
 ;; additional flycheck options
 ;;-----------------------------------------------------------------------------
+(setq flycheck-highlighting-mode 'lines)        ; highlight the whole line, as it’s much faster
+                                                ; other options are nil, symbol etc
 
-;; (setq flycheck-highlighting-mode nil)
-;; (setq flycheck-highlighting-mode 'symbols)
-
-;; highlight the whole line, as it’s much faster
-(setq flycheck-highlighting-mode 'lines)
-
-;; indicate syntax errors/warnings in the left-fringe.
+;; indicate any syntax errors/warnings in the left-fringe.
 (setq flycheck-indication-mode 'left-fringe)
-(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
 (setq flycheck-highlighting-mode 'symbols)
+(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
 
 ;; add on option for error messages
 (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages)
@@ -66,7 +61,7 @@ true."
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;; helm based flycheck
-(require-package 'helm-flycheck) ;; Not necessary if using ELPA package
+(require-package 'helm-flycheck)
 (eval-after-load 'flycheck
   '(define-key flycheck-mode-map (kbd "C-c ! h") 'helm-flycheck))
 

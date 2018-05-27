@@ -3,18 +3,34 @@
 ;;; Commentary:
 ;;;
 ;;; Filename   : org-config.el
-;;; Description: Show bullets in org-mode as UTF-8 characters
-;;;              configuration file for org bullets mode
-;;;              https://github.com/sabof/org-bullets
-;;;              follow: http://doc.norang.ca/org-mode.html
-;;;
-;;; shell command execution example (C-c C-c) also include in export
-;;; #+begin_src sh :results output :exports both
-;;;   df -Ph
-;;; #+end_src
-;;;
-;;; elisp code for org mode configuration support and handling
-;;;
+;;; Description: ORG mode configuration and customization
+;;               Predominantly used for pdf docs and presentations
+;;
+;; shell command execution example (C-c C-c) also include in export
+;; #+begin_src sh :results output :exports both
+;;   df -Ph
+;; #+end_src
+;;
+;; Installation of minted.sty
+;; In order to have that tex convert to pdf, you have to ensure that you have
+;; minted.sty in your TEXMF folder.
+;;  - To know if minted.sty in correct path do "kpsewhich minted.sty".
+;;  - If it is not found, download from http://www.ctan.org/tex-archive/macros/latex/contrib/minted
+;;  - Generate minted.sty by "tex minted.ins"
+;;  - To know your TEXMF folder, do "kpsewhich -var-value=TEXMFHOME"
+;;  - if folder is ~/texmf
+;;  - Move the minted.sty to your $TEXMF/tex/latex/commonstuff folder.
+;;  - Do mkdir -p ~/texmf/tex/latex/commonstuff if that folder hierarchy doesn't exist
+;;  - Do "mktexlsr" to refresh the sty database
+;;  - Generate pdf from the Org exported tex by "pdflatex -shell-escape FILE.tex"
+;;
+;; help https://nakkaya.com/2010/09/07/writing-papers-using-org-mode/
+;;      https://orgmode.org/worg/org-tutorials/org-latex-export.html
+;;      https://www.sharelatex.com/learn
+;;      https://en.wikibooks.org/wiki/LaTeX
+;;
+;; elisp code for org mode configuration support and handling
+;;
 ;;; Code:
 ;;;
 ;;;============================================================================
@@ -86,8 +102,10 @@
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;;  turn on visual-line-mode for Org-mode only                             ;;;
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+  ;; install adaptive-wrap
+  (require-package 'adaptive-wrap)
   (add-hook 'org-mode-hook #'visual-line-mode)
+  (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
   (add-hook 'org-mode-hook
             (lambda ()
               ;; make the lines in the buffer wrap around the edges of the screen.
@@ -96,16 +114,144 @@
               (org-indent-mode t))
             t)
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;;  auto complete sources for org                                            ;;
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;{{{
+  ;;  auto complete sources for org
   (require-package 'org-ac)
   ;;(require 'org-ac)
   (org-ac/config-default)
+  ;;}}}
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;;;  inserting code blocks                                                  ;;;
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;{{{
+  ;; ox-beamer export - allow for export=>beamer by placing
+  ;; #+latex_class: beamer in Org files
+  (after "ox-latex"
+    ;; https://github.com/fniessen/refcard-org-beamer
+    ;; update the list of LaTeX classes and associated header (encoding, etc.)
+    ;; and structure
+    '(add-to-list 'org-latex-classes
+                  `("beamer"
+                    ,(concat "\\documentclass[presentation]{beamer}\n"
+                             "[DEFAULT-PACKAGES]"
+                             "[PACKAGES]"
+                             "[EXTRA]\n")
+                    ("\\section{%s}" . "\\section*{%s}")
+                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
+
+  ;;}}}
+
+  ;;{{{ for thesis
+  (add-to-list 'org-latex-classes
+               '("thesis" "\\documentclass{thesis}"
+                 ("\\chapter{%s}" . "\\chapter*{%s}")
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+
+
+  (add-to-list 'org-latex-classes
+               '("documentation" "
+\\NeedsTeXFormat{LaTeX2e}
+\\documentclass[a4paper,10pt,twoside,openright,numbers=noenddot,headings=normal]{scrbook}
+[NO-DEFAULT-PACKAGES]
+
+% default packages (without inputenc, because we use xetex)
+\\usepackage{fixltx2e}
+\\usepackage{graphicx}
+\\usepackage{longtable}
+\\usepackage{float}
+\\usepackage{wrapfig}
+\\usepackage{rotating}
+\\usepackage[normalem]{ulem}
+\\usepackage{amsmath}
+\\usepackage{textcomp}
+\\usepackage{marvosym}
+\\usepackage{wasysym}
+\\usepackage{amssymb}
+\\usepackage{hyperref}
+\\tolerance=1000
+
+% Encoding
+\\usepackage[ngerman,english]{babel}
+\\usepackage{fontspec}
+\\usepackage{polyglossia}
+
+% Fonts
+\\setmainfont{Source Serif Pro}
+\\setsansfont{Source Sans Pro}
+\\setromanfont{Source Sans Pro}
+\\setmonofont{Source Code Pro}[Scale=MatchLowercase]
+
+% Default packages
+\\usepackage{multirow}                  % Table rows multiline
+\\usepackage{graphicx}
+\\usepackage{verbatim}
+\\usepackage{subfigure}
+\\usepackage{url}
+\\usepackage{amssymb}
+\\usepackage{amsmath}
+% biblio
+\\usepackage{cite}
+
+% Layout
+\\usepackage[scale=0.70, marginratio={4:5, 3:4}, ignoreall, headsep=8mm]{geometry}
+\\setlength{\\parskip}{1.4ex plus 0.35ex minus 0.3ex}
+\\renewcommand\\arraystretch{1.3}       % stretch lines in tables
+\\clubpenalty10000                      % no orphan lines
+\\widowpenalty10000                     % no widowed lines
+\\setcounter{tocdepth}{3}               % max depth of in toc
+
+% Header and Footer
+\\usepackage{fancyhdr}
+\\pagestyle{fancy}
+\\fancyhead[RO]{\\slshape \\rightmark}
+\\fancyhead[LE]{\\slshape \\leftmark}
+\\fancyhead[LO,RE]{}
+\\fancyheadoffset[L,R]{0.5cm}
+\\fancypagestyle{plain}{
+\\fancyhf{}                           % clear all header and footer fields
+\\fancyfoot[C]{\\thepage}             % except the center
+\\renewcommand{\\headrulewidth}{0pt}
+\\renewcommand{\\footrulewidth}{0pt}}
+
+\\usepackage{hyperref}
+\\hypersetup{
+colorlinks=false,
+pdfborder=0 0 0                       % no boxes on links
+}
+"
+
+           ("\\chapter{%s}" . "\\chapter*{%s}")
+           ("\\section{%s}" . "\\section*{%s}")
+           ("\\subsection{%s}" . "\\subsection*{%s}")
+           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+           ("\\paragraph{%s}" . "\\paragraph*{%s}")
+           ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+;;}}}
+
+;;{{{ for using the publication format for copernicus
+;; move the files under latex/copernicus of vendor-dir to
+;; the directory where org paper is being created
+;; use #+Latex_Class: copernicus_discussions
+;; #+LaTeX_CLASS_OPTIONS: [acpd, hvmath, online]
+(after 'ox-latex
+  (add-to-list 'org-latex-classes
+               `("copernicus_discussions"
+                 "\\documentclass{copernicus_discussions}
+[NO-DEFAULT-PACKAGES]
+[PACKAGES]
+[EXTRA]"
+                   ("\\section{%s}" . "\\section*{%s}")
+                   ("\\subsection{%s}" "\\newpage" "\\subsection*{%s}" "\\newpage")
+                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+  ;;}}}
+
+
+  ;;{{{
+  ;;  inserting code blocks
   (defun org-insert-src-block (src-code-type)
     "Insert a `SRC-CODE-TYPE' type source code block in `org-mode'."
     (interactive
@@ -123,6 +269,9 @@
               "gnuplot"
               "plantuml"
               "awk"
+              "sh"
+              "lisp"
+              "ditaa"
               "haskell"
               "latex"
               "org"
@@ -135,7 +284,10 @@
       (insert "#+END_SRC\n")
       (previous-line 2)
       (org-edit-src-code)))
+  ;;-----------------------
+  ;;}}}
 
+  ;;{{{
   ;; Notes - press M-x org-insert-src-block , then type in the wanted Emacs
   ;;         major mode for the block, for example, emacs-lisp (press TAB to
   ;;         do auto-completion)
@@ -153,13 +305,19 @@
                ;; keybinding for inserting code blocks
                (local-set-key (kbd "C-c s i")
                               'org-insert-src-block)))
+  ;;}}}
 
-  ;; org workline
+
+
+  ;;{{{ org workline
   (setq org-todo-keywords
         '((sequence "☛ TODO(t)" "₪ NEXT(n@)" "|" "✔ DONE(d@)")
           (sequence "⚑ WAITING(w@/!)" "⟁ HOLD(h@/!)" "|")
           (sequence "|" "✘ CANCELED(c@/!)" "|" "§ POSTPONED(p@/!)" "PHONE" "MEETING")))
+  ;;}}}
 
+
+  ;;{{{
   ;; State Triggers for TODO
   ;; The triggers are governed by the following rules
   ;; Moving a task to CANCELLED adds a CANCELLED tag
@@ -177,8 +335,10 @@
                 ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
                 ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
                 ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+  ;;}}}
 
-  ;; == TODO Keyword Faces
+
+  ;;{{{ TODO Keyword Faces
   (setq org-todo-keyword-faces
         '(("TODO"      . (:foreground "green"        :weight bold))
           ("IDEA"      . (:foreground "GoldenRod"    :weight bold))
@@ -191,7 +351,9 @@
           ("POSTPONED" . (:foreground "LimeGreen"    :weight bold))
           ("MEETING"   . (:foreground "forest green" :weight bold))
           ("PHONE"     . (:foreground "forest green" :weight bold))))
+  ;;}}}
 
+  ;;{{{
   ;; If you have a preferred set of tags that you would like to use in every file,
   ;; in addition to those defined on a per-file basis by TAGS option lines, then you
   ;; may specify a list of tags with this variable
@@ -211,8 +373,10 @@
           ("HARD"      . ?a)
           ("BONUS"     . ?b)
           ("noexport"  . ?x)))
+  ;;}}}
 
-  ;; specify special faces for specific tags using the option org-tag-faces
+
+  ;;{{{ specify special faces for specific tags using the option org-tag-faces
   (setq org-tag-faces
         '(("HOME"     . (:foreground "DarkGoldenRod1" :weight bold))
           ("RESEARCH" . (:foreground "DarkGoldenRod1" :weight bold))
@@ -225,6 +389,7 @@
           ("HARD"     . (:foreground "Red" :weight bold))
           ("BONUS"    . (:foreground "DarkGoldenRod1" :weight bold))
           ("noexport" . (:foreground "Red" :weight bold))))
+  ;;}}}
 
   (setq org-outline-path-complete-in-steps nil)
   (setq org-completion-use-ido t)
@@ -241,153 +406,206 @@
   (require 'ob-async)
   (add-to-list 'org-ctrl-c-ctrl-c-hook #'ob-async-org-babel-execute-src-block)
 
+  ;;{{{ org mode beautification
   ;; change the elipsis face
   ;; (setq org-ellipsis "⚡⚡⚡")
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;;  org bullets for markdown                                                 ;;
-  ;;  use org-bullets-mode for utf8 symbols as org bullets                     ;;
-  ;;  select, do [M-x eval-region]. The *s will be replaced with utf-8 bullets ;;
-  ;;  next time you open an org file                                           ;;
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;  org bullets for markdown
+  ;;  use org-bullets-mode for utf8 symbols as org bullets
+  ;;  select, do [M-x eval-region]. The *s will be replaced with utf-8 bullets
+  ;;  next time you open an org file
   (require-package 'org-bullets)
-  (setq org-bullets-bullet-list '("●" "○" "◆" "◇" "▸"))
+  ;;(setq org-bullets-bullet-list '("●" "○" "◆" "◇" "▸"))
   (add-hook 'org-mode-hook #'org-bullets-mode)
+  ;;}}
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;;;  some custom settings and todo configuration from pragmatic emacs       ;;;
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;{{{  some custom settings and todo configuration from pragmatic emacs
   (setq org-list-description-max-indent 5)    ;; set max indentation for description lines
   (setq org-adapt-indentation nil)            ;; prevent demoting heading, shifting text in sections
+  ;;}}}
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;;;  for src code syntax highlighting during export                         ;;;
-  ;;; install python pygments package                                         ;;;
-  ;;; this is for code syntax highlighting in export. you need to use         ;;;
-  ;;; -shell-escape with latex, and install pygments.                         ;;;
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  (setq org-latex-listings t)
+  ;;{{{ for src code syntax highlighting during export
+  ;; install python pygments package
+  ;; this is for code syntax highlighting in export. you need to use
+  ;; -shell-escape with latex, and install pygments.
+  (setq org-latex-listings t)   ;; for a nice looking code block, use Listings instead of Verbatim
   (setq org-latex-listings 'minted)
   (add-to-list 'org-latex-packages-alist '("" "listings"))
   (add-to-list 'org-latex-packages-alist '("" "color"))
   (add-to-list 'org-latex-packages-alist '("" "minted"))
   (add-to-list 'org-latex-packages-alist '("" "parskip"))
+  ;;}}}
 
+
+  ;;{{{ get listings to wrap
+  ;; (setq org-latex-listings-options '(("breaklines" "true")))
+  (setq org-latex-listings-options '(("breaklines" "true")
+                                     ("literate" "{0}{0}{1}%
+{1}{1}{1}%
+{2}{2}{1}%
+{3}{3}{1}%
+{4}{4}{1}%
+{5}{5}{1}%
+{6}{6}{1}%
+{7}{7}{1}%
+{8}{8}{1}%
+{9}{9}{1}%
+")))
+  ;;}}}
+
+  ;;{{{ minted options through pygments
   (setq org-latex-minted-options
         '(("frame" "lines")
           ("fontsize" "\\scriptsize")
-          ("linenos" "")))
+          ("bgcolor" "mintedbg")
+          ("mathescape" "true")
+          ("linenos" "")
+          ("breaklines" "true")
+          ("breakanywhere" "true")))
+  ;;}}}
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;;  pdf export options                                                       ;;
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  (setq org-latex-pdf-process
-        '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;;;   making ispell work with the org-mode                                  ;;;
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  (defun org-ispell ()
-    "Configure `ispell-skip-region-alist' for `org-mode'."
-    (make-local-variable 'ispell-skip-region-alist)
-    (add-to-list 'ispell-skip-region-alist '(org-property-drawer-re))
-    (add-to-list 'ispell-skip-region-alist '("~" "~"))
-    (add-to-list 'ispell-skip-region-alist '("=" "="))
-    (add-to-list 'ispell-skip-region-alist '("^#\\+BEGIN_SRC" . "^#\\+END_SRC")))
-  (add-hook 'org-mode-hook #'org-ispell)
+ ;;{{{ org pdf export options
+ ;;    using xelatex instead of pdflatex as fontspec if only supported by
+ ;;    xelatex or lualatex
+ (setq org-latex-pdf-process
+       '(
+         "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+         "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+         "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+         ;;"lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+         ;;"biber %b"
+         ;;"lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+         ;;"lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+         ;;"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+         ;;"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+         ;;"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+         ))
+ ;;}}}
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;;   org babel loads                                                         ;;
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  (lambda()
-    (require 'ob-emacs-lisp)
-    (require 'ob-http)
-    (require 'ob-latex)
-    (require 'ob-haskell)
-    (require 'ob-scala)
-    (require 'ob-python)
-    (require 'ob-C)
-    (require 'ob-clojure)
-    (require 'ob-shell)
-    (require 'ob-org)
-    (require 'ob-awk)
-    (require 'ob-sed)
-    (require 'ob-css)
-    (require 'ob-js)
-    (setq org-export-babel-evaluate nil)            ;; do not export code on export by default
-    (setq org-imenu-depth 3)                        ;; increase imenu depth to include third level headings
-    ;; set sensible mode for editing dot files
-    (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot)))
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; remove key bindings for some motions                                     ;;
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  (defun my-org-mode-hook ()
-    "Remove unnecessary keymaps."
-    (let ((oldmap (cdr (assoc 'evil-motion-state-minor-mode minor-mode-map-alist)))
-          (newmap (make-sparse-keymap)))
-      (set-keymap-parent newmap oldmap)
-      (define-key newmap (kbd "\\") nil)
-      (define-key newmap (kbd "*") nil)
-      (define-key newmap (kbd "SPC") nil)
-      (make-local-variable 'minor-mode-overriding-map-alist)
-      (push `(evil-motion-state-minor-mode . ,newmap) minor-mode-overriding-map-alist)))
+ ;;{{{ spell check -  making ispell work with the org-mode
+ (defun org-ispell ()
+   "Configure `ispell-skip-region-alist' for `org-mode'."
+   (make-local-variable 'ispell-skip-region-alist)
+   (add-to-list 'ispell-skip-region-alist '(org-property-drawer-re))
+   (add-to-list 'ispell-skip-region-alist '("~" "~"))
+   (add-to-list 'ispell-skip-region-alist '("=" "="))
+   (add-to-list 'ispell-skip-region-alist '("^#\\+BEGIN_SRC" . "^#\\+END_SRC")))
+ (add-hook 'org-mode-hook #'org-ispell)
+ ;;}}}
 
-  (add-hook 'org-mode-hook 'my-org-mode-hook)
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;;;; Load Helper and utilities configuration                               ;;;
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  (load-file (concat module-dir "/org-helper-config.el"))
+ ;;{{{ org babel loads
+ (lambda()
+   (require 'ob-emacs-lisp)
+   (require 'ob-http)
+   (require 'ob-latex)
+   (require 'ob-haskell)
+   (require 'ob-elixir)
+   (require 'ob-scala)
+   (require 'ob-python)
+   (require 'ob-ipython)
+   (require 'ob-C)
+   (require 'ob-clojure)
+   (require 'ob-shell)
+   (require 'ob-org)
+   (require 'ob-awk)
+   (require 'ob-sed)
+   (require 'ob-css)
+   (require 'ob-js)
+   (setq org-export-babel-evaluate nil)            ;; do not export code on export by default
+   (setq org-imenu-depth 3)                        ;; increase imenu depth to include third level headings
+   (setq org-babel-python-command "python3")       ;; set python3 as default
+   ;; Out of the box Emacs supports js with js-mode.
+   ;; define language javascript to use js2-mode
+   (add-to-list 'org-src-lang-modes '("javascript" . js2)))
+ ;;}}}
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;;  use imagemagick to preview latex                                         ;;
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; (setq org-latex-create-formula-image-program 'imagemagick)
-  (setq org-preview-latex-default-process 'imagemagick)
 
-  ;;-----------------------------------------------------------------------------
-  ;; use pre-evaluated results directly and avoid repeated evaluation again
-  ;; during the insertion of src templates in pdf export
-  ;;-----------------------------------------------------------------------------
-  (setq org-export-babel-evaluate 'inline-only)
+ ;;{{{ remove key bindings for some motions
+ (defun my-org-mode-hook ()
+   "Remove unnecessary keymaps."
+   (let ((oldmap (cdr (assoc 'evil-motion-state-minor-mode minor-mode-map-alist)))
+         (newmap (make-sparse-keymap)))
+     (set-keymap-parent newmap oldmap)
+     (define-key newmap (kbd "\\") nil)
+     (define-key newmap (kbd "*") nil)
+     (define-key newmap (kbd "SPC") nil)
+     (make-local-variable 'minor-mode-overriding-map-alist)
+     (push `(evil-motion-state-minor-mode . ,newmap) minor-mode-overriding-map-alist)))
 
-  ;;-----------------------------------------------------------------------------
-  ;; Prettier (or at least fancier) code block delimiters
-  ;;-----------------------------------------------------------------------------
-  (defun prettier-org-code-blocks ()
-    "For prettier code blocks."
-    (interactive)
-    (font-lock-add-keywords nil
-                            '(("\\(\+begin_src\\)"
-                               (0 (progn (compose-region (match-beginning 1) (match-end 1) ?¦)
-                                         nil)))
-                              ("\\(\+end_src\\)"
-                               (0 (progn (compose-region (match-beginning 1) (match-end 1) ?¦)
-                                         nil))))))
-  (add-hook 'org-mode-hook #'prettier-org-code-blocks)
+ (add-hook 'org-mode-hook 'my-org-mode-hook)
+ ;;}}}
 
-  ;; org babel
-  (require-package 'ob-restclient)       ;; org-mode extension to restclient.el
-  ;; execute the query by pressing C-c C-c on the source-block header
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((python     . t)
-     (emacs-lisp . t)
-     (coq        . t)
-     (haskell    . t)
-     (calc       . t)
-     (ledger     . t)
-     (ditaa      . t)
-     (plantuml   . t)
-     (sh         . t)
-     (sql        . t)
-     (dot        . t)
-     (restclient . t)))
 
-  )
+ ;;{{{ Load Helper and utilities configuration
+ (load-file (concat module-dir "/org-helper-config.el"))
+ ;;}}}
+
+ ;;{{{ use imagemagick to preview latex
+ ;; (setq org-latex-create-formula-image-program 'imagemagick)
+ (setq org-preview-latex-default-process 'imagemagick)
+ ;;}}}
+
+ ;;{{{ use pre-evaluated results directly and avoid repeated evaluation again
+ ;; during the insertion of src templates in pdf export
+ (setq org-export-babel-evaluate 'inline-only)
+ ;;}}}
+
+
+ ;;{{{ Prettier (or at least fancier) code block delimiters
+ (defun prettier-org-code-blocks ()
+   "For prettier code blocks."
+   (interactive)
+   (font-lock-add-keywords nil
+                           '(("\\(\+begin_src\\)"
+                              (0 (progn (compose-region (match-beginning 1) (match-end 1) ?¦)
+                                        nil)))
+                             ("\\(\+end_src\\)"
+                              (0 (progn (compose-region (match-beginning 1) (match-end 1) ?¦)
+                                        nil))))))
+ (add-hook 'org-mode-hook #'prettier-org-code-blocks)
+ ;;}}}
+
+
+ ;;{{{ org babel
+ (require-package 'ob-restclient)       ;; org-mode extension to restclient.el
+ (require-package 'ob-elixir)           ;; org-mode extension to ipython
+ (require-package 'ob-ipython)          ;; org-mode extension to elixir/erlang
+ ;; execute the query by pressing C-c C-c on the source-block header
+ (org-babel-do-load-languages
+  'org-babel-load-languages
+  '((python     . t)
+    (emacs-lisp . t)
+    (coq        . t)
+    (awk        . t)
+    (haskell    . t)
+    (elixir     . t)
+    (clojure    . t)
+    (calc       . t)
+    (ledger     . t)
+    (ditaa      . t)
+    (plantuml   . t)
+    ;;(sh       . t)
+    (shell      . t)
+    (scala      . t)
+    (js         . t)
+    (java       . t)
+    (sql        . t)
+    (dot        . t)
+    (http       . t)
+    (org        . t)
+    (latex      . t)
+    (restclient . t)))
+
+  ;; Upcase #+begin_example...#+end_example in the results
+  (setq org-babel-uppercase-example-markers t)
+
+ ;;}}}
+
+ )
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

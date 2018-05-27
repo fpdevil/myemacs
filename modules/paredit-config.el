@@ -12,9 +12,13 @@
 ;;;
 ;;=============================================================================
 (lazy-init
+ (require-package 'paredit)
  (require 'paredit)
+
+
  (defun enable-paredit ()
    "Function for enabling the paredit globally."
+   (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
    (paredit-mode 1))
 
  (defvar lisp-mode-hooks
@@ -25,6 +29,15 @@
 
  (dolist (h lisp-mode-hooks)
    (add-hook h 'enable-paredit))
+
+;;{{{ To use ParEdit with Emacs’ Lisp modes
+(add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+(add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+(add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+;;}}}
 
  ;; (defun erlang-paredit ()
  ;;   "Paredit for Erlang major mode."

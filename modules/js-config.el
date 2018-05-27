@@ -42,23 +42,11 @@
             (setq js-indent-level preferred-javascript-indent-level)))
 
 ;;------------------------------------------------------------------------------
-;; integration with paredit and smartparens
+;; integration with paredit / smartparens /electric-mode
 ;;------------------------------------------------------------------------------
 ;; (after "paredit"
 ;; (define-key js-mode-map "{" 'paredit-open-curly)
 ;; (define-key js-mode-map "}" 'paredit-close-curly-and-newline))
-
-;; newline and indentation after {}
-(sp-local-pair 'js-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-(sp-local-pair 'js2-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-(sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-
-(defun my-create-newline-and-enter-sexp (&rest _ignored)
-  "Open a new brace or bracket expression, with relevant newlines and indent."
-  (newline)
-  (indent-according-to-mode)
-  (forward-line -1)
-  (indent-according-to-mode))
 
 ;; make return key also do indent, for current buffer only
 (electric-indent-local-mode 1)
@@ -238,10 +226,22 @@
 ;; [ skewer ] - live loading with skewer (for front-end)
 ;; [ livid ] - Live browser eval of JavaScript every time a buffer changes
 ;;------------------------------------------------------------------------------
-(after "skewer-mode"
-  (add-hook 'js2-mode-hook 'skewer-mode)
-  (add-hook 'css-mode-hook 'skewer-css-mode)
-  (add-hook 'html-mode-hook 'skewer-html-mode))
+;; (after "skewer-mode"
+;;   (add-hook 'js2-mode-hook 'skewer-mode)
+;;   (add-hook 'css-mode-hook 'skewer-css-mode)
+;;   (add-hook 'html-mode-hook 'skewer-html-mode))
+
+(use-package skewer-mode
+  :about live browser JavaScript, CSS, and HTML interaction
+  :homepage https://github.com/skeeto/skewer-mode
+  :disabled t
+  :ensure t
+  :defer t
+  :init
+  (add-hook 'js2-mode-hook #'skewer-mode)
+  (add-hook 'css-mode-hook #'skewer-css-mode)
+  (add-hook 'html-mode-hook #'skewer-html-mode))
+
 
 (require-package 'livid-mode)
 (require 'livid-mode)
@@ -384,12 +384,27 @@ Refer the URL `https://github.com/mdevils/node-jscs'."
 (defun jscs-enable ()
   "Enable the jscs checker."
   (interactive)
-       (add-to-list 'flycheck-checkers 'javascript-jscs))
+  (add-to-list 'flycheck-checkers 'javascript-jscs))
 
 (defun jscs-disable ()
   "Disable the jscs checker."
   (interactive)
-       (setq flycheck-checkers (remove 'javascript-jscs flycheck-checkers)))
+  (setq flycheck-checkers (remove 'javascript-jscs flycheck-checkers)))
+
+;; Manual jshint invocation
+;; Configure jshint for JS style checking.
+;;   - Install: $ npm install -g jshint
+;;   - Usage: Hit C-c C-u within any emacs buffer visiting a .js file
+(setq jshint-cli "jshint --show-non-errors ")
+(setq compilation-error-regexp-alist-alist
+      (cons '(jshint-cli "^\\([a-zA-Z\.0-9_/-]+\\): line \\([0-9]+\\), col \\([0-9]+\\)"
+                         1 ;; file
+                         2 ;; line
+                         3 ;; column
+                         )
+            compilation-error-regexp-alist-alist))
+(setq compilation-error-regexp-alist
+      (cons 'jshint-cli compilation-error-regexp-alist))
 
 ;;------------------------------------------------------------------------------
 ;; flycheck with jslint (npm install jslinter -g)
@@ -440,6 +455,12 @@ See URL `https://github.com/tensor5/JSLinter'."
             (push '("null"      . ?∅) prettify-symbols-alist)))
 
 ;;------------------------------------------------------------------------------
+;; REPL Interaction - send code to a running node repl
+;;------------------------------------------------------------------------------
+(require-package 'js-comint)
+(require 'js-comint)
+
+;;------------------------------------------------------------------------------
 ;; tern plugin adding scope coloring
 ;;------------------------------------------------------------------------------
 ;; (eval-after-load 'context-coloring
@@ -455,8 +476,8 @@ See URL `https://github.com/tensor5/JSLinter'."
 ;;------------------------------------------------------------------------------
 ;; Highlight JavaScript with Tern
 ;;------------------------------------------------------------------------------
-;(require 'tj-mode)
-;(add-to-list 'auto-mode-alist '("\\.js\\'" . tj-mode))
+                                        ;(require 'tj-mode)
+                                        ;(add-to-list 'auto-mode-alist '("\\.js\\'" . tj-mode))
 
 ;;------------------------------------------------------------------------------
 ;; for js evaluation in js buffers through indium (formerly jade)
