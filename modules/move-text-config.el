@@ -7,7 +7,7 @@
 ;;; elisp code for customizing the text move settings
 ;;;
 ;;; Code:
-;;;===========================================================================
+;;;
 
 ;; Move current line or region with M-up or M-down
 (require-package 'move-text)

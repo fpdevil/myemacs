@@ -45,50 +45,66 @@
 ;; bootstrap the first one...
 (require 'bootstrap-config)                     ; initial settings and some miscellaneous stuff
 
+(require 'exec-path-config)                     ; setup $PATH
+(require 'utils-config)                         ; utilities like window configurations, imenu-list etc.
+
 (require 'helm-config)                          ; emacs helm fuzzy
 (require 'ido-config)                           ; emacs ido navigation
 (require 'ivy-config)                           ; emacs ivy navigation
 
-(require 'exec-path-config)                     ; setup $PATH
+(require 'sp-config)                            ; smart parentheses
+(require 'paredit-config)                       ; para management
+
+(require 'yasnippets-config)                    ; emacs snippets
+(require 'company-config)                       ; company auto completion
+(require 'ac-complete-config)                   ; auto completion ac
+
+(require 'evil-config)                          ; emacs vim emulation
 (require 'ibuffer-config)                       ; iBuffer
-(require 'utils-config)                         ; utilities like window configurations, imenu-list etc.
 (require 'undo-tree-config)                     ; manage undo history
 (require 'which-func-config)                    ; display current function name under scope
 (require 'dired-config)                         ; for dired*
 (require 'bookmarks-config)                     ; manage bookmarks
 (require 'indent-config)                        ; manage indentation
 
-(require 'evil-config)                          ; emacs vim emulation
 (require 'fiplr-config)                         ; Fuzzy Find in Project Package
 (require 'quick-peek-config)                    ; Quick-peek inline-window library
-(require 'fringe-config)                        ; thin strip down the left and/or right edge
-
-(require 'sp-config)                            ; smart parentheses
-(require 'paredit-config)                       ; para management
-
-(require 'yasnippets-config)                    ; emacs snippets
-(require 'ac-complete-config)                   ; auto completion ac
-(require 'company-config)                       ; company auto completion
+(require 'popwin-config)                        ; text pop up for completion hints
+(require 'beacon-config)                        ; visually show where am i
+(require 'move-text-config)                     ; text management
+(require 'multiple-cursors-config)              ; manage multiple cursors
+(require 'vregex-config)                        ; regex support
+(require 'dumbjump-config)                      ; jump to function definition
+(require 'ctags-config)                         ; ctags generation helper
+(require 'neotree-config)                       ; neotree for file explorer
+(require 'iedit-config)                         ; edit multiple regions
+(require 'hippie-config)                        ; hippie expansions
+(require 'weather-config)                       ; get wether details
 
 (require 'flycheck-config)                      ; flycheck syntax checking
 (require 'flymake-config)                       ; flymake syntax checking
 (require 'flyspell-config)                      ; spell check
 
-(require 'cpp-config)                           ; c++ & c programming language support
-(require 'cpp-irony-config)                     ; c++ code completion using irony
-(require 'semantic-config)                      ; emacs semantic completion (C/C++)
+(require 'auto-insert-config)                   ; auto insert tags and snippets
+(require 'projectile-config)                    ; project management
 
 (require 'python-config)                        ; python 3.x.x programming core settings
-(require 'elpy-python-config)                   ; python 3.x.x auto completion through ELPY
 (require 'jedi-python-config)                   ; python 3.x.x auto completion through JEDI
+(require 'elpy-python-config)                   ; python 3.x.x auto completion through ELPY
+(require 'ipythonnb-config)                     ; ipython notebook configuration
+
+(require 'semantic-config)                      ; emacs semantic completion (C/C++)
+(require 'cpp-helper-config)                    ; c/c++ common auxilliary settings
+(require 'cpp-irony-config)                     ; c++ code completion using irony
+(require 'cpp-config)                           ; c++ & c programming language support
 
 (require 'haskell-config)                       ; Haskell programming language
 (require 'erlang-config)                        ; Erlang programming language
 (require 'elixir-config)                        ; ELIXIR programming language
 (require 'elisp-config)                         ; ELisp programming language
 (require 'scala-config)                         ; Scala programming language
-(require 'clojure-config)                       ; Clojure programming language
 (require 'go-config)                            ; Go programming language
+(require 'clojure-config)                       ; Clojure programming language
 
 (require 'js-config)                            ; Java Script syntax checking, linting & Auto Completion
 (require 'web-config)                           ; for html and web markup langugae support
@@ -96,59 +112,50 @@
 (require 'gitgutter-config)                     ; vcs management
 (require 'shell-config)                         ; for shell scripting support
 (require 'markdown-config)                      ; for Markdown files *.md
-(require 'ycm-config)                           ; YouCompleteMe Intelligent Completion
 
 (require 'psgml-config)                         ; markup language support
 (require 'xslide-config)                        ; xsl ide settings
 (require 'xslt-process-config)                  ; for xslt syntax and completion
 (require 'nxml-config)                          ; for xml syntax validation
 
+
 (require 'org-config)                           ; for org mode
 (require 'tex-config)                           ; TeX mode
 (require 'plantuml-config)                      ; org mode diagrams
 (require 'slides-config)                        ; org mode presentations
 
-(require 'beacon-config)                        ; visually show where am i
-(require 'move-text-config)                     ; text management
-(require 'multiple-cursors-config)              ; manage multiple cursors
-(require 'auto-insert-config)                   ; auto insert tags and snippets
-(require 'popwin-config)                        ; text pop up for completion hints
-(require 'projectile-config)                    ; project management
-(require 'vregex-config)                        ; regex support
-(require 'dumbjump-config)                      ; jump to function definition
-(require 'gud-config)                           ; grand unified debugger settings
-(require 'ctags-config)                         ; ctags generation helper
-(require 'neotree-config)                       ; neotree for file explorer
-(require 'iedit-config)                         ; edit multiple regions
-(require 'hippie-config)                        ; hippie expansions
-(require 'weather-config)                       ; get wether details
+(require 'ycm-config)                           ; YouCompleteMe Intelligent Completion
+
+(require 'magit-config)                         ; Git Management
+(require 'hydra-config)                         ; Hydra configuration
+
+(require 'whichkey-config)                      ; get details of key bindings
+(require 'guidekey-config)                      ; get details of all emacs key mappings
+(require 'diminish-config)                      ; diminish minor modes in mode line
 
 (require 'rbow-config)                          ; rainbow colors for parentheses
 (require 'rbow-identifiers-config)              ; rainbow colors for variables
 (require 'clr-identifiers-config)               ; color identifiers mode
 (require 'rainbow-delims-config)                ; rainbow colors for brackets
 (require 'highlight-symbol-config)              ; highlight current symbol
-(require 'diminish-config)                      ; diminish minor modes in mode line
 
-(require 'whichkey-config)                      ; get details of key bindings
-(require 'guidekey-config)                      ; get details of all emacs key mappings
-
-;;**
-;;    color themes switching section
-;;    comment below line to setup color theme in another way
+;;**  color themes switching section
+;;***    comment below line to setup color theme in another way
 (if (or (display-graphic-p) (string-match-p "256color"(getenv "TERM"))) (require 'themes-config))
 
-;;    comment below line to setup color theme in different way
-;; (if (or (display-graphic-p) (string-match-p "256color"(getenv "TERM")) (require 'color-theme-config))
-;;}}}
+;;***    comment below line to setup color theme in different way
+; (if (or (display-graphic-p) (string-match-p "256color"(getenv "TERM"))) (require 'color-theme-config))
 
-(require 'mode-line-config)                       ; emacs modeline (sml + airline)
+(require 'mode-line-config)                     ; emacs modeline (sml + airline)
 
+;;
 ;; -- unused configurations
 ;;(require 'ipythonnb-config)                     ; ipython notebook configuration
 ;;(require 'ecb-config)                           ; emacs code browser
 ;;(require 'html-config)                          ; for html files
 ;;(require 'spell-config)                         ; not used
+;;(require 'fringe-config)                        ; thin strip down the left and/or right edge
+;;(require 'gud-config)                           ; grand unified debugger settings
 ;; --
 
 ;;; -- now load personal elisp files if any from personal directory

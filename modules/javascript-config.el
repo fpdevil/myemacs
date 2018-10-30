@@ -138,10 +138,20 @@
         (tern-ac-setup))
       (after 'company-mode
              (require-package 'company-tern)
-             (add-to-list 'company-backends 'company-tern)
+             (defun tern-company-backends ()
+               "Set company backends for tern."
+               (make-local-variable 'company-backends)
+               ;; (setq company-backends '((company-etags company-capf company-dabbrev company-tern)))
+               (push 'company-etags company-backends)
+               (push 'company-capf company-backends)
+               (push 'company-dabbrev company-backends)
+               (push 'company-tern company-backends)
+               )
+             ;; (add-to-list 'company-backends 'company-tern)
              (add-hook 'js2-mode-hook (lambda ()
                                         (tern-mode)
                                         (company-mode)))
+             (add-hook 'tern-mode-hook 'tern-company-backends)
              ))
 
     (add-hook 'js2-mode-hook #'tern-mode)

@@ -5,47 +5,83 @@
 ;;;
 ;;; Filename   : python-config.el
 ;;; Description: Core Python 3.x.x configuration for Emacs.
-;;;              A full featured python ide and language support for Aquamacs
+;;;              A full featured python IDE and language support for Aquamacs
 ;;;
 ;;; Code:
 ;;;
 
-;;*
-;;*  load all the syntax specific packages needed for python3
-(require 'ring)                 ; browse the kill ring
-(require 'python-pylint)        ; minor mode for running pylint
-(require 'py-autopep8)          ; Integrate autopep8 into Emacs
-(require 'epc)                  ; RPC stack for the Emacs Lisp
 
 ;;**
 ;;** make Emacs aware of the version-dependent shebangs
-(autoload 'python-mode "python-mode" "Python Mode." t)
-(add-to-list 'auto-mode-alist '("\\.py$\\'" . python-mode))
-(add-to-list 'interpreter-mode-alist '("python" . python-mode))
-(add-to-list 'interpreter-mode-alist '("python2" . python-mode))
-(add-to-list 'interpreter-mode-alist '("python3" . python-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(py\\)$" . python-mode))
+(setq interpreter-mode-alist
+      (cons '("python" . python-mode) interpreter-mode-alist))
+
 
 ;;**
-;;** proper python indentation settings
-(add-hook 'python-mode-hook
-          '(lambda ()
-             ;; python common indentations
-             (setq indent-tabs-mode nil
-                   python-indent 4
-                   python-indent-offset 4
-                   indent-level 4
-                   tab-width 4))
-          (untabify (point-min) (point-max)))
+;;**  settings for the python3 shell interpreter and indentation settings
+(defun my-python-mode-config ()
+  "Define settinigs for proper indentation and shell expressions."
+  (setq default-tab-width 4
+        indent-tabs-mode nil         ; autoconvert tabs to spaces
+        python-indent 4
+        python-indent-offset 4
+        indent-level 4
+        comment-inline-offset 2
+        tab-width 4
+
+        ;; python interpreter settings
+        ;; if using ipython3 with extras
+        python-shell-interpreter "/usr/local/bin/ipython3"
+        python-shell-interpreter-args "--simple-prompt -i"
+        ;;python-shell-interpreter-args ""
+        ;;python-shell-interpreter-args (if (aqua/is-mac) "--gui=osx --matplotlib=osx --colors=Linux"
+        ;;                              (if (aqua/is-linux) "--gui=wx --matplotlib=wx --colors=Linux"))
+        python-shell-completion-setup-code "from IPython.core.completerlib import module_completion"
+        python-shell-completion-module-string-code "';'.join(module_completion('''%s'''))\n"
+        python-shell-completion-string-code "';'.join(get_ipython().Completer.all_completions('''%s'''))\n"
+
+        ;; if using jupyter shell interpreter
+        ;; python-shell-interpreter "jupyter"
+        ;; python-shell-interpreter-args "console --simple-prompt"
+        ;; python-shell-prompt-detect-failure-warning nil
+
+        py-python-command (executable-find "python3")
+        py-shell-name "ipython"
+        py-which-bufname "IPython"
+
+        ;; additional shell options added
+        ;; python-shell-prompt-regexp ">>> "
+        python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+        python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+
+        python-shell-completion-native-enable t
+        python-shell-completion-native-disabled-interpreters (quote ("pypy" "ipython" "python" "jupyter"))
+        python-skeleton-autoinsert t)
+
+        (untabify (point-min) (point-max))
+        (hs-minor-mode t)                     ; hs-minor-mode
+        (auto-fill-mode 0)                    ; auto-fill-mode
+        (whitespace-mode t)                   ; whitespace-mode
+        ;;(hl-line-mode t)                    ; hl-line-mode
+        (set (make-local-variable 'electric-indent-mode) nil))
+
+(add-hook 'python-mode-hook 'my-python-mode-config)
+
 
 ;;**
 ;;** indentation through electric indent
 (defun python-indent-setup ()
   "Set necessary python indentation."
-  (unless (is-buffer-file-temp)
+  (unless (aqua/is-buffer-file-temp)
     ;; http://emacs.stackexchange.com/questions/3322/python-auto-indent-problem/3338#3338
     ;; emacs 24.4 only
     (setq electric-indent-chars (delq ?: electric-indent-chars))))
-(add-hook 'python-mode-hook 'python-indent-setup)
+;; (add-hook 'python-mode-hook 'python-indent-setup)
+
+;;**
+;;** handling white-spaces in python mode
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 
 ;;**
@@ -55,72 +91,27 @@
 (setenv "IPY_TEST_SIMPLE_PROMPT"  "1" )
 
 ;;**
-;;**  settings for the python3 shell interpreter
-(setq python-shell-interpreter (executable-find "ipython3")
-      ;; if extras are needed with ipython3
-      python-shell-interpreter-args "-i"
-      ;; (setq python-shell-interpreter-args "--pylab")
-      python-shell-interpreter-args (if (is-mac) "--matplotlib=osx --colors=Linux"
-                                      (if (is-linux) "--gui=wx --matplotlib=wx --colors=Linux"))
-      ;; additional shell options added
-      python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-      python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-      python-shell-completion-native-enable nil
-      python-shell-completion-native-disabled-interpreters (quote ("pypy" "ipython" "python"))
-      py-python-command (executable-find "python3"))
-
-;;**
 ;;** python checkers and python virtual environments
 (setq python-check-command (executable-find "pyflakes"))
-(setq python-environment-directory (concat user-emacs-directory "/.python-environments"))
+(setq python-environment-directory (expand-file-name ".python-environments" user-emacs-directory))
+
 
 ;;**
-;;** handling white-spaces in python mode
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+;;** company mode - for auto completions
+(after "company"
+  (add-hook 'inferior-python-mode-hook
+            (lambda ()
+              (setq-local company-minimum-prefix-length 0)
+              (setq-local company-idle-delay 0.5))))
 
-;;* set system path in the lisp for lib availability
-;;** set PATH, because we don't load .bashrc
-(setenv
- "PATH" (concat
-   "$HOME/bin:"
-   "/bin:"
-   "/usr/bin:"
-   "/sbin:"
-   "/usr/sbin:"
-   "/usr/local/bin:"
-   "/usr/local/sbin"))
-
-;;*
-;;* set PYTHONPATH, because we don't load from .bashrc
-(defun set-pypath-from-shell-pythonpath ()
-  "Set the PYTHONPATH variable as its not pulled from .profile."
-  (let ((path-from-shell (shell-command-to-string "$SHELL -i -c 'echo $PYTHONPATH'")))
-    (setenv "PYTHONPATH" path-from-shell)))
-(if (not (getenv "PYTHONPATH")) (setenv "PYTHONPATH" (executable-find "python3")))
-(if window-system (set-pypath-from-shell-pythonpath))
 
 ;;**
-;;** auto completion with rope
-(require-package 'pymacs)
-(autoload 'pymacs-apply "pymacs")
-(autoload 'pymacs-call "pymacs")
-(autoload 'pymacs-eval "pymacs" nil t)
-(autoload 'pymacs-exec "pymacs" nil t)
-(autoload 'pymacs-load "pymacs" nil t)
-(autoload 'pymacs-autoload "pymacs")
+;; documentation and help -- enables eldoc for all
+(eldoc-mode t)
 
-(ac-ropemacs-initialize)
-(add-hook 'python-mode-hook
-          (lambda ()
-            (add-to-list 'ac-sources 'ac-source-ropemacs)))
 
-;;-----------------------------------------------------------------------------
-;; documentation and help
-;;-----------------------------------------------------------------------------
-(eldoc-mode t)                              ;;; -- enable eldoc
-
-;;*
-;;* sphinx documentation generation for python
+;;**
+;;** sphinx documentation generation for python
 ;;** move the cursor to some function/method definition and hit C-c M-d
 (add-hook 'python-mode-hook
           (lambda ()
@@ -137,78 +128,74 @@
    '(("(python)Index" pydoc-info-lookup-transform-entry)
      ("(TARGETNAME)Index" pydoc-info-lookup-transform-entry)))
 
-;;-----------------------------------------------------------------------------
-;;; -- python virtual environment setup
-;;-----------------------------------------------------------------------------
+
+;;**
+;;** python virtual environment setup
 (require 'virtualenvwrapper)           ;; python virtualenv wrapper
 (venv-initialize-interactive-shells)   ;; if you want interactive shell support
 (venv-initialize-eshell)               ;; if you want eshell support
 
+;;
 ;; note that setting `venv-location` is not necessary if you use the default
 ;; location (`~/.virtualenvs`), or incase if the system environment variable
 ;; `WORKON_HOME` points to the right place
-(if (equal (getenv "WORKON_HOME") nil) (setenv "WORKON_HOME" "~/.virtualenvs"))
-(setq pyvenv-activate (getenv "WORKON_HOME"))
-(setq venv-location (expand-file-name "~/.virtualenvs/"))
-(setq python-shell-virtualenv-root "~/.virtualenvs/")
-(if (equal (getenv "VIRTUAL_ENV") nil) (setenv "VIRTUAL_ENV" "~/.virtualenvs"))
-(if (equal (getenv "VIRTUALENVWRAPPER_PYTHON") nil)
-  (setenv "VIRTUALENVWRAPPER_PYTHON" "/usr/local/bin/python3.6"))
-(setq pyvenv-virtualenvwrapper-python (getenv "VIRTUALENVWRAPPER_PYTHON"))
-(setq pyvenv-workon "default")
+;;
+;; (if (equal (getenv "WORKON_HOME") nil) (setenv "WORKON_HOME" "~/.virtualenvs"))
+;; (setq pyvenv-activate (getenv "WORKON_HOME"))
+;; (setq venv-location (expand-file-name "~/.virtualenvs/"))
+;; (setq python-shell-virtualenv-root "~/.virtualenvs/")
+;; (if (equal (getenv "VIRTUAL_ENV") nil) (setenv "VIRTUAL_ENV" "~/.virtualenvs"))
+;; (if (equal (getenv "VIRTUALENVWRAPPER_PYTHON") nil)
+;;   (setenv "VIRTUALENVWRAPPER_PYTHON" "/usr/local/bin/python3.7"))
+;; (setq pyvenv-virtualenvwrapper-python (getenv "VIRTUALENVWRAPPER_PYTHON"))
+;; (setq pyvenv-workon "default")
+;;
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; python linting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  using flycheck with pylint                                                ;;
+;;  using FlyCheck with pyLint                                                ;;
 ;;  http://liuluheng.github.io/wiki/public_html/Python                        ;;
 ;;                                 /flycheck-pylint-emacs-with-python.html    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun flycheck-python-setup ()
-  "Flycheck python lint support."
-  (flycheck-mode))
+(after "flycheck"
+  (add-hook 'python-mode-hook 'flycheck-mode)
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (setq flycheck-python-flake8-executable "~/.emacs.d/flymake/pycheckers"
+                    flycheck-pylintrc (concat (getenv "HOME") ".pylintrc")
+                    python-check-command (executable-find "pyflakes"))))
 
-(add-hook 'python-mode-hook #'flycheck-python-setup)
-(add-hook 'python-mode-hook
-          (lambda ()
-            (setq flycheck-python-flake8-executable (executable-find "flake8")
-                  flycheck-pylintrc (concat (getenv "HOME") ".pylintrc"))))
+  ;;**
+  ;;** flycheck for virtualenv
+  (defun flycheck-virtualenv-setup ()
+    "Setup Flycheck for the current virtualenv."
+    (setq-local flycheck-executable-find #'flycheck-virtualenv-executable-find))
+  )
 
-;;------------------------------------------------------------------------------
-;;; SYNTAX CHECKING - (FlyCheck and FlyMake)
-;;------------------------------------------------------------------------------
-;;* flymake handler for syntax-checking python source code
-;;**    using wither pyflakes or flake8
+
+;;**
+;;** SYNTAX CHECKING - (FlyCheck and FlyMake)
+;;**   flymake handler for syntax-checking python source code
+;;**   using wither pyflakes or flake8
 (after "flymake"
   (require 'flymake-python-pyflakes)
-  (add-hook 'python-mode-hook #'(lambda () (setq flymake-no-changes-timeout 10))) ;; default 0.5
+  (add-hook 'python-mode-hook #'(lambda () (setq-local flymake-no-changes-timeout 10))) ;; default 0.5
   (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
+  ;; disable fymake-cursor
+  (setq-local flymake-cursor-auto-enable nil)
   ;; using flake8 for FlyMake
-  (setq flymake-python-pyflakes-executable (executable-find "flake8")))
+  (setq-local flymake-python-pyflakes-executable (executable-find "flake8")))
 
-;;*
-;;* flymake with pychecker script
-(when (load "flymake" t)
-  (defun flymake-pylint-init (&optional trigger-type)
-    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                       'flymake-create-temp-inplace))
-           (local-file (file-relative-name
-                        temp-file
-                        (file-name-directory buffer-file-name)))
-           (options (when trigger-type (list "--trigger-type" trigger-type))))
-      (list "~/.emacs.d/flymake/pyflymake.py" (append options (list local-file)))))
 
-  (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.py" flymake-pylint-init)))
-(add-hook 'find-file-hook 'flymake-find-file-hook)
-
-;;------------------------------------------------------------------------------
+;;**
 ;; == for autopep8 formatting and linting
 ;;    ignoring the below:
-;; - E501 - Try to make lines fit within --max-line-length characters.
-;; - W293 - Remove trailing whitespace on blank line.
-;; - W391 - Remove trailing blank lines.
-;; - W690 - Fix various deprecated code (via lib2to3).
-;; (setq py-autopep8-options '("--ignore=E501,W293,W391,W690"))
-;;------------------------------------------------------------------------------
+;; *- E501 - Try to make lines fit within --max-line-length characters.
+;; *- W293 - Remove trailing whitespace on blank line.
+;; *- W391 - Remove trailing blank lines.
+;; *- W690 - Fix various deprecated code (via lib2to3).
+;;    (setq py-autopep8-options '("--ignore=E501,W293,W391,W690"))
+;;
 ;;** code standardization with autopep8
 (defcustom python-autopep8-path (executable-find "autopep8")
   "autopep8 executable path."
@@ -229,9 +216,10 @@ $ autopep8 --in-place --aggressive --aggressive <filename>"
   (setq py-autopep8-options '("--ignore=W690"))
   (add-hook 'python-mode-hook 'py-autopep8-enable-on-save))
 
+
 ;;**
-;;** formatting with yapf
-;;(require 'py-yapf)              ; Use yapf to beautify a Python buffer
+;;** formatting python code with yapf
+;; (require 'py-yapf)              ; use yapf to beautify a Python buffer
 ;; discarding py-yapf in favor of yapfiy as py-yapf loses the kill ring when it runs
 (require-package 'yapfify)
 (add-hook 'python-mode-hook 'yapf-mode)
@@ -253,17 +241,18 @@ $ autopep8 --in-place --aggressive --aggressive <filename>"
       nil)))
 
 ;;{{{ grand unified debugger
-;; Tell Python debugger (pdb) to use the current virtual environment
-;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
+;;**  Tell Python debugger (pdb) to use the current virtual environment
+;;**  https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
 (setq gud-pdb-command-name "python3 -m pdb ")
-
 ;;}}}
 
 
 ;;{{{ prettify symbols
-(setq prettify-symbols-unprettify-at-point 'right-edge) ;; when hovered show original
+;;**  when hovered show original
+(setq prettify-symbols-unprettify-at-point 'right-edge)
 
-;; symbols for concealing
+;;**
+;;** symbols for concealing
 (add-hook 'python-mode-hook
           (lambda ()
             (mapc (lambda (pair) (push pair prettify-symbols-alist))
@@ -283,18 +272,38 @@ $ autopep8 --in-place --aggressive --aggressive <filename>"
                     ("="      . "≃")))))
 ;;}}}
 
-;;------------------------------------------------------------------------------
-;;; -- pydoc with helm interface
-;;------------------------------------------------------------------------------
+
+;;{{{ for imenu integration
+(defun my-merge-imenu ()
+  "Imenu integration."
+  (interactive)
+  (let ((mode-imenu (imenu-default-create-index-function))
+        (custom-imenu (imenu--generic-function imenu-generic-expression)))
+    (append mode-imenu custom-imenu)))
+
+(add-to-list
+    'imenu-generic-expression
+    '("Sections" "^#### \\[ \\(.*\\) \\]$" 1))
+(setq imenu-create-index-function 'my-merge-imenu)
+;;}}}
+
+
+;;**
+;;** pydoc with helm interface
 (require-package 'helm-pydoc)
 
-;;------------------------------------------------------------------------------
-;;; -- Tree style source code viewer for Python buffer
-;;------------------------------------------------------------------------------
-(require-package 'jedi-direx)
-(after "python"
-  '(define-key python-mode-map "\C-cx" 'jedi-direx:pop-to-buffer))
-(add-hook 'jedi-mode-hook 'jedi-direx:setup)
+
+;;**
+;;** add support for smartparens
+(with-eval-after-load 'smartparens
+  (require 'smartparens-python))
+
+;; set PYTHONPATH, because we don't load .bashrc
+(defun set-python-path-from-shell-PYTHONPATH ()
+  (let ((path-from-shell (shell-command-to-string "$SHELL -i -c 'echo $PYTHONPATH'")))
+    (setenv "PYTHONPATH" path-from-shell)))
+
+(if window-system (set-python-path-from-shell-PYTHONPATH))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'python-config)

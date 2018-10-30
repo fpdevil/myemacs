@@ -20,20 +20,6 @@
   '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
 (setq flycheck-haskell-hlint-executable (executable-find "hlint"))
 
-;{{{
-; (after 'flycheck
-;   '(progn
-;      ;; (flycheck-mode)
-;      (setq flycheck-haskell-hlint-executable (executable-find "hlint"))
-;      (setq flycheck-check-syntax-automatically '(save idle-change new-line mode-enabled))
-;      ;; (setq flycheck-check-syntax-automatically '(save))
-;      (add-hook 'flycheck-mode-hook #'flycheck-haskell-setup)
-;      (add-hook 'haskell-mode-hook 'flycheck-mode)
-;      (add-hook 'haskell-mode-hook
-;                '(lambda ()
-;                   (setq flycheck-checker 'haskell-hlint)
-;                   (setq flycheck-disabled-checkers '(haskell-ghc))))))
-;}}}
 
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == ==
 ;; flymake handler for checking Haskell source code with hlint.
@@ -45,7 +31,7 @@
 (when (load "flymake" t)
   (defun flymake-hslint-init ()
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                     'flymake-create-temp-inplace))
+                       'flymake-create-temp-inplace))
            (local-file (file-relative-name
                         temp-file
                         (file-name-directory buffer-file-name))))
@@ -54,39 +40,15 @@
   (add-to-list 'flymake-allowed-file-name-masks '("\\.hs$\\'" flymake-hslint-init))
   (add-to-list 'flymake-allowed-file-name-masks '("\\.lhs$\\'" flymake-hslint-init)))
 
-;; {{{
-;; flymake-mode for Haskell with the Perl script flymake_haskell.pl
-; (when (load "flymake" t)
-;   ;; (add-hook 'haskell-mode-hook 'flymake-hlint-load)
-;   (add-hook 'haskell-mode-hook (lambda () (ghc-init) (flymake-mode)))
-;   (defun flymake-haskell-init (&optional trigger-type)
-;     "Return the command to run Python checks with pyflymake.py"
-;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
-;                        'flymake-create-temp-inplace))
-;            (local-file (file-relative-name
-;                         temp-file
-;                         (file-name-directory buffer-file-name)))
-;            (options (when trigger-type (list "--trigger-type" trigger-type))))
-;       ;; after an extended check, disable check-on-edit
-;       (when (member trigger-type '("save" "force"))
-;         (setq flymake-no-changes-timeout 18600))
-;       (list "~/.emacs.d/flymake/flymake_haskell.pl" (append options (list local-file)))))
-
-;   (push '(".+\\hs$" flymake-haskell-init) flymake-allowed-file-name-masks)
-;   (push '(".+\\lhs$" flymake-haskell-init) flymake-allowed-file-name-masks)
-;   (push
-;    '("^\\(\.+\.hs\\|\.lhs\\):\\([0-9]+\\):\\([0-9]+\\):\\(.+\\)"
-;      1 2 3 4) flymake-err-line-patterns))
-; }}}
 
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == ==
-;; DOC Strings
-;; auto insert haskell module header when a new file is created
+;;**  DOC Strings
+;;*** auto insert haskell module header when a new file is created
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == ==
 (require 'skeleton)
 (require 'autoinsert)
 
-;; -- A Haskell module definition template (inserted first time when opened)
+;;** A Haskell module definition template (inserted first time when opened)
 (define-skeleton haskell-module-skeleton
   "Haskell source module header."
   "Brief description (can be left blank for defaults):"
@@ -109,7 +71,7 @@
 ;; (add-to-list 'auto-insert-alist '("\\.hs\\|.lhs\\'" . haskell-module-skeleton))
 
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == ==
-;; -- a simple module level document string insertion
+;;** a simple module level document string insertion
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == ==
 (defun haskell-auto-insert-module-template ()
   "Insert a simple module template for the newly created buffer."
@@ -139,7 +101,7 @@
 (add-hook 'haskell-mode-hook 'haskell-auto-insert-module-template)
 
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == ==
-;; insert comment doc with C-c C-a
+;;** insert comment doc with C-c C-a
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == ==
 (defun haskell-insert-doc ()
   "Insert the documentation syntax."
@@ -164,7 +126,7 @@
 (define-key haskell-mode-map (kbd "C-c C-u") 'haskell-insert-undefined)
 
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == ==
-;; indentation settings
+;;** indentation settings
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == ==
 ;; A function used to change the behaviour of return.  If you press it at
 ;; the start of a line, it will just move the code down a line.  If you
@@ -181,27 +143,69 @@
 ;;(add-hook 'haskell-mode-hook 'set-newline-and-indent)
 
 ;; set tab width to 2
-(add-hook 'haskell-mode-hook
-          (lambda ()
-            ;; use spaces instead of tabs when indenting
-            (setq indent-tabs-mode nil)
-            (setq tab-width 2)
-            (setq whitespace-tab-width 2)))
+;; (add-hook 'haskell-mode-hook
+;;           (lambda ()
+;;             (setq indent-tabs-mode nil) ;; use spaces instead of tabs when indenting
+;;             (setq tab-width 2)
+;;             (setq whitespace-tab-width 2)))
+
+
+;; Get Haskell indentation which mirrors what I'm used to from Vim
+(defun haskell-indent-setup ()
+  "Setup variables for editing Haskell files."
+  (make-local-variable 'tab-stop-list)
+  (setq tab-stop-list (number-sequence 0 120 4))
+  (setq indent-line-function 'tab-to-tab-stop)
+
+  ; Backspace: delete spaces up until a tab stop
+  (defvar my-offset 4 "My indentation offset. ")
+  (defun backspace-whitespace-to-tab-stop ()
+    "Delete whitespace backwards to the next tab-stop, otherwise delete one character."
+    (interactive)
+      (let ((movement (% (current-column) my-offset))
+            (p (point)))
+        (when (= movement 0) (setq movement my-offset))
+        ;; Account for edge case near beginning of buffer
+        (setq movement (min (- p 1) movement))
+        (save-match-data
+          (if (string-match "[^\t ]*\\([\t ]+\\)$" (buffer-substring-no-properties (- p movement) p))
+              (backward-delete-char (- (match-end 1) (match-beginning 1)))
+            (call-interactively 'backward-delete-char)))))
+
+  (local-set-key (kbd "DEL") 'backspace-whitespace-to-tab-stop))
+(add-hook 'haskell-mode-hook 'haskell-indent-setup)
+
+
+;;------------------------------------------------------------------------------
+;;** alignment rules for haskell
+;;------------------------------------------------------------------------------
+(eval-after-load 'align
+  '(nconc
+    align-rules-list
+    (mapcar #'(lambda (x)
+                `(,(car x)
+                  (regexp . ,(cdr x))
+                  (modes quote (haskell-mode literate-haskell-mode))))
+            '((haskell-types       . "\\(\\s-+\\)\\(::\\|∷\\)\\s-+")
+              (haskell-assignment  . "\\(\\s-+\\)=\\s-+")
+              (haskell-arrows      . "\\(\\s-+\\)\\(->\\|→\\)\\s-+")
+              (haskell-left-arrows . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")))))
+
 
 ;;------------------------------------------------------------------------------
 ;; intero (not used, so commented)
 ;;------------------------------------------------------------------------------
-; (require-package 'intero)
-; (require 'intero)                   ;; complete development mode for haskell
-; (defun haskell-process-cabal-build-and-restart ()
-;   "Build and restart the Cabal project."
-;   (interactive)
-;   (intero-devel-reload))
-;
-; (add-hook 'haskell-mode-hook 'intero-mode)
-; ;; key map
-; (define-key intero-mode-map (kbd "C-`") 'flycheck-list-errors)
-; (define-key intero-mode-map [f12] 'intero-devel-reload)
+;; (require-package 'intero)
+;; (require 'intero)                   ;; complete development mode for haskell
+;; (defun haskell-process-cabal-build-and-restart ()
+;;   "Build and restart the Cabal project."
+;;   (interactive)
+;;   (intero-devel-reload))
+;;
+;; (add-hook 'haskell-mode-hook 'intero-mode)
+;; ;; key map
+;; (define-key intero-mode-map (kbd "C-`") 'flycheck-list-errors)
+;; (define-key intero-mode-map [f12] 'intero-devel-reload)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

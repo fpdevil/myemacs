@@ -16,7 +16,6 @@
 ;;;
 ;;;=============================================================================
 (require 'js2-highlight-vars)       ;; highlight occurrences of vars
-(require 'ac-js2)                   ;; javascript auto-completion in Emacs
 (require 'js-doc)                   ;; insert JsDoc style comment easily
 (require 'js2-mode)                 ;; js2 javascript mode
 (require 'jsfmt)                    ;; formatting with jsfmt
@@ -27,7 +26,7 @@
 ;;(require 'simple-httpd)           ;; required and fulfilled by js2-mode
 
 ;;------------------------------------------------------------------------------
-;; Change some defaults: customize them to override (js-mode indentation levels)
+;;** [js-mode indentation levels] - Change some defaults: customize them to override
 ;;------------------------------------------------------------------------------
 (defconst preferred-javascript-indent-level 4)
 (setq-local js-indent-level preferred-javascript-indent-level)
@@ -35,14 +34,14 @@
 (setq-local javascipt-indent-level preferred-javascript-indent-level)
 
 ;;------------------------------------------------------------------------------
-;; json-mode indentation settings
+;;** [json-mode] - indentation settings
 ;;------------------------------------------------------------------------------
 (add-hook 'json-mode-hook
           (lambda ()
             (setq js-indent-level preferred-javascript-indent-level)))
 
 ;;------------------------------------------------------------------------------
-;; integration with paredit / smartparens /electric-mode
+;;** [paredit / smartparens / electric-mode]
 ;;------------------------------------------------------------------------------
 ;; (after "paredit"
 ;; (define-key js-mode-map "{" 'paredit-open-curly)
@@ -52,38 +51,46 @@
 (electric-indent-local-mode 1)
 
 ;;------------------------------------------------------------------------------
-;; file modes association and auto lists
+;;** [file types] - file modes association and auto lists
 ;;------------------------------------------------------------------------------
-(add-to-list 'auto-mode-alist '("\\.js\\'"       . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.js$"         . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.jsx\\'"      . js2-mode))    ;; for jsx
-(add-to-list 'auto-mode-alist '("\\.eslintrc.*$" . json-mode))
-(add-to-list 'auto-mode-alist '("\\.babelrc$"    . json-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'"         . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.js$"           . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'"        . js2-mode))    ;; for jsx
+(add-to-list 'auto-mode-alist '("\\.eslintrc.*$"   . json-mode))
+(add-to-list 'auto-mode-alist '("\\.babelrc$"      . json-mode))
+(add-to-list 'auto-mode-alist '("\\.jsbeautifyrc$" . json-mode))
 
 (add-to-list 'interpreter-mode-alist (cons "node" 'js2-mode))
 ;; (add-to-list 'interpreter-mode-alist '("node"    . js2-mode))
 
 ;;------------------------------------------------------------------------------
-; js2 and json modes
-; https://truongtx.me/2014/02/23/set-up-javascript-development-environment-in-emacs
+;;** [js2 and json modes]
+;;** https://truongtx.me/2014/02/23/set-up-javascript-development-environment-in-emacs
 ;;------------------------------------------------------------------------------
 (add-hook 'js-mode-hook 'js2-minor-mode)
-(add-hook 'js2-mode-hook 'ac-js2-mode)
-(add-hook 'js2-mode-hook 'ac-js2-setup-auto-complete-mode)
+(add-hook 'js2-mode-hook #'js2-imenu-extras-mode) ;; for better imenu support, enable the extras
 
-;; for better imenu support, enable the extras
-(add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
 
 ;;------------------------------------------------------------------------------
-;; js2 variable highlighting where applicable
+;;** [auto-completion] - through ac-js2
+;;** for auto-completion using Js2-mode's parser and Skewer-mode
+;;------------------------------------------------------------------------------
+(require-package 'ac-js2)                   ;; javascript auto-completion in Emacs
+(require 'ac-js2)
+(add-hook 'js2-mode-hook 'ac-js2-mode)
+(setq ac-js2-evaluate-calls t)
+
+
+;;------------------------------------------------------------------------------
+;;** [highlight variables] - js2 variable highlighting where applicable
 ;;------------------------------------------------------------------------------
 (after "js2-highlight-vars-autoloads"
   '(add-hook 'js2-mode-hook (lambda () (js2-highlight-vars-mode))))
 
+
 ;;------------------------------------------------------------------------------
-;; js2 customizations - syntax specific and key binding settings
+;;** [js2 customizations] - syntax specific and key binding settings
 ;;------------------------------------------------------------------------------
-(setq ac-js2-evaluate-calls t)
 (setq js2-highlight-level 3        ;; amount of syntax highlighting to perform
       js2-use-font-lock-faces t
       js2-idle-timer-delay 0.1
@@ -103,10 +110,10 @@
                                "setInterval" "clearInterval" "location"
                                "__dirname" "console" "JSON" "jQuery" "$" "angular"))
 
-;;------------------------------------------------------------------------------
-;; javascript js2 refactoring
-;;------------------------------------------------------------------------------
 
+;;------------------------------------------------------------------------------
+;;** [refactoring] - javascript js2 refactoring
+;;------------------------------------------------------------------------------
 (after "js2-mode-autoloads"
   ;; javascript code refactoring
   ;; https://github.com/magnars/js2-refactor.el
@@ -116,41 +123,44 @@
     (js2r-add-keybindings-with-prefix "C-c C-m")))
 
 ;;------------------------------------------------------------------------------
-;; tern - intelligent javascript tooling
-;; first install with npm - install -g tern
+;;** [Tern] - intelligent javascript tooling
+;;** first install with npm - install -g tern
 ;;------------------------------------------------------------------------------
 (require-package 'tern)
 (add-hook 'js-mode-hook (lambda () (tern-mode t)))
 
 (after "auto-complete"
+  (message "[js] tern for auto-complete")
   (add-hook 'js2-mode-hook
             '(lambda ()
                (when (locate-library "tern")
-                 (setq tern-command '("tern" "--no-port-file")) ;; .term-port
+                 (setq tern-command '("node" "/usr/local/bin/tern" "--no-port-file")) ;; .term-port
                  (tern-mode t)
-                 (eval-after-load 'tern
+                 (after 'tern
                    '(progn
                       (require 'tern-auto-complete)
                       (tern-ac-setup)))))))
 
 (after "company"
+  (message "[js] tern for company")
   (add-hook 'js2-mode-hook
-    '(lambda ()
-      (setq-local company-backends
-        '((company-tern :with company-yasnippet))))))
+            '(lambda ()
+               (setq-local company-backends
+                           '((company-tern :with company-yasnippet))))))
 
 ;;------------------------------------------------------------------------------
-;; Force restart of tern in new projects (M-x delete-tern-process)
-;; If we have just added the .tern-project file or edit the file but Tern
-;; does not auto reload, we need to manually kill Tern server
+;;** Force restart of tern in new projects (M-x delete-tern-process)
+;;** If we have just added the .tern-project file or edit the file but Tern
+;;** does not auto reload, we need to manually kill Tern server
 ;;------------------------------------------------------------------------------
 (defun delete-tern-process ()
   "If Tern based auto-refresh is not happening disable Tern."
   (interactive)
   (delete-process "Tern"))
 
+
 ;;------------------------------------------------------------------------------
-;; code beautification through web-beautify and js-beautify npm package
+;;** code beautification through web-beautify and js-beautify npm package
 ;;------------------------------------------------------------------------------
 (after 'js2-mode
   '(define-key js2-mode-map (kbd "C-c b") 'web-beautify-js))
@@ -162,7 +172,7 @@
   '(define-key json-mode-map (kbd "C-c b") 'web-beautify-js))
 
 ;;------------------------------------------------------------------------------
-;; js3-mode settings (beefed up js2-mode)
+;;** js3-mode settings (beefed up js2-mode)
 ;;------------------------------------------------------------------------------
 (add-hook 'js3-mode-hook
           (lambda ()
@@ -220,11 +230,13 @@
                                 space-before-tab::tab newline
                                 indentation::tab empty
                                 space-after-tab::tab space-mark tab-mark newline-mark))))
+
+(add-to-list 'ac-modes 'js2-mode)
 (add-to-list 'ac-modes 'js3-mode)
 
 ;;------------------------------------------------------------------------------
-;; [ skewer ] - live loading with skewer (for front-end)
-;; [ livid ] - Live browser eval of JavaScript every time a buffer changes
+;;** [ skewer ] - live loading with skewer (for front-end)
+;;** [ livid ] - Live browser eval of JavaScript every time a buffer changes
 ;;------------------------------------------------------------------------------
 ;; (after "skewer-mode"
 ;;   (add-hook 'js2-mode-hook 'skewer-mode)
@@ -247,13 +259,13 @@
 (require 'livid-mode)
 
 ;;------------------------------------------------------------------------------
-;; jsfmt For formatting, searching, and rewriting javascript
+;; [jsfmt] - For formatting, searching, and rewriting javascript
 ;; prerequisite npm install -g jsfmt
 ;;------------------------------------------------------------------------------
 (add-hook 'before-save-hook 'jsfmt-before-save)
 
 ;;------------------------------------------------------------------------------
-;; additional setup for indentation
+;; [indentation] - additional setup for indentation
 ;;------------------------------------------------------------------------------
 (after "js2-mode"
   '(progn
@@ -284,7 +296,7 @@
      (add-hook 'js2-post-parse-callbacks 'my-add-jslint-declarations)))
 
 ;;------------------------------------------------------------------------------
-;; js-doc JsDoc style documentation and comments
+;; [js-doc] - JsDoc style documentation and comments
 ;; 1. insert function document by pressing Ctrl + c, i
 ;; 2. insert @tag easily by pressing @ in the JsDoc style comment
 ;;------------------------------------------------------------------------------
@@ -299,7 +311,7 @@
               (define-key js2-mode-map "@" 'js-doc-insert-tag)))
 
 ;;------------------------------------------------------------------------------
-;; key bindings for node-ac node js auto-completion for emacs
+;; [key bindings] - for node-ac node js auto-completion for emacs
 ;;------------------------------------------------------------------------------
 ; (require 'node-ac-mode)             ;; nodejs auto-completion
 ; (setq node-ac-node-modules-path "/usr/local/lib/node_modules")
@@ -312,7 +324,7 @@
 ;;        (local-set-key (kbd "C-c C-j") 'node-ac-jump-to-definition)))
 
 ;;------------------------------------------------------------------------------
-;; syntax checking and linting with jsxhint
+;; [FlyCheck jsxhint] - syntax checking and linting
 ;; first install checker using package manager - npm install -g jsxhint
 ;;------------------------------------------------------------------------------
 (after "flycheck"
@@ -340,7 +352,7 @@
         '(json-jsonlist)))))
 
 ;;------------------------------------------------------------------------------
-;; use local eslint from node_modules before global
+;; [eslint] - use local eslint from node_modules before global
 ;; http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable
 ;;------------------------------------------------------------------------------
 (defun my/use-eslint-from-node-modules ()
@@ -407,7 +419,7 @@ Refer the URL `https://github.com/mdevils/node-jscs'."
       (cons 'jshint-cli compilation-error-regexp-alist))
 
 ;;------------------------------------------------------------------------------
-;; flycheck with jslint (npm install jslinter -g)
+;; [FlyCheck jslint] - (npm install jslinter -g)
 ;;------------------------------------------------------------------------------
 (defun my-parse-jslinter-warning (warning)
   (flycheck-error-new
@@ -429,7 +441,7 @@ See URL `https://github.com/tensor5/JSLinter'."
   :modes (js-mode js2-mode js3-mode))
 
 ;;------------------------------------------------------------------------------
-;; [ flycheck ] syntax checker
+;; [ FlyCheck ] syntax checker
 ;;------------------------------------------------------------------------------
 (add-hook 'js-mode-hook
           (lambda () (flycheck-mode t)))
@@ -441,7 +453,7 @@ See URL `https://github.com/tensor5/JSLinter'."
 (require 'import-js)
 
 ;;------------------------------------------------------------------------------
-;; prettify symbols in javascript
+;; [pretty symbols] - prettify symbols in javascript
 ;;------------------------------------------------------------------------------
 (add-hook 'js2-mode-hook
           (lambda ()
@@ -455,13 +467,13 @@ See URL `https://github.com/tensor5/JSLinter'."
             (push '("null"      . ?∅) prettify-symbols-alist)))
 
 ;;------------------------------------------------------------------------------
-;; REPL Interaction - send code to a running node repl
+;; [REPL Interaction] - send code to a running node repl
 ;;------------------------------------------------------------------------------
 (require-package 'js-comint)
 (require 'js-comint)
 
 ;;------------------------------------------------------------------------------
-;; tern plugin adding scope coloring
+;; [Tern Context Coloring] - tern plugin adding scope coloring
 ;;------------------------------------------------------------------------------
 ;; (eval-after-load 'context-coloring
 ;;   '(tern-context-coloring-setup))
@@ -474,13 +486,13 @@ See URL `https://github.com/tensor5/JSLinter'."
 ;;                             (context-coloring-mode))))
 
 ;;------------------------------------------------------------------------------
-;; Highlight JavaScript with Tern
+;; [tj-mode] - Highlight JavaScript with Tern
 ;;------------------------------------------------------------------------------
-                                        ;(require 'tj-mode)
-                                        ;(add-to-list 'auto-mode-alist '("\\.js\\'" . tj-mode))
+;;(require 'tj-mode)
+;;(add-to-list 'auto-mode-alist '("\\.js\\'" . tj-mode))
 
 ;;------------------------------------------------------------------------------
-;; for js evaluation in js buffers through indium (formerly jade)
+;; [indium] - for js evaluation in js buffers (formerly jade)
 ;;------------------------------------------------------------------------------
 ;; (add-hook 'js2-mode-hook #'jade-interaction-mode)
 ;; (require 'indium)

@@ -1,4 +1,4 @@
-;;; Erlang Flycheck Configuration
+;;; package --- Erlang Flycheck Configuration
 ;;; -*- coding: utf-8 -*-
 ;;;
 ;;; Commentary:
@@ -10,13 +10,12 @@
 ;;;
 ;;; Code:
 ;;;
-;;=================================================================================
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; some default erlang compilation options                                     ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;{{{ include any additional compilation options if needed
+;;-------------------------------------------------------------------------------
+;;** some default erlang compilation options
+;;-------------------------------------------------------------------------------
+;; include any additional compilation options if needed
 (defvar erlang-compile-extra-opts
   "Add the include directory to default compile path."
   '(bin_opt_info debug_info (i . "../include")
@@ -26,12 +25,10 @@
 
 ; define where to put beam files.
 (setq erlang-compile-outdir "../ebin")
-;}}}
 
 ;;-------------------------------------------------------------------------------
-;; flycheck support
+;;** [FlyCheck] - Real Time syntax checking support through rebar3
 ;;-------------------------------------------------------------------------------
-;{{{ flycheck with rebar3 setup
 (require 'flycheck-rebar3)
 (flycheck-rebar3-setup)
 
@@ -56,28 +53,62 @@
   (quote ((allout-layout . t)
            (erlang-indent-level . 4)
            (erlang-indent-level . 2))))
-;}}}
 
-;;-------------------------------------------------------------------------------
-;; on the fly source code checking through flymake
-;;-------------------------------------------------------------------------------
+
+;;-----------------------------------------------------------------------------
+;; [FlyMake] - source code syntax checking for erlang
+;;-----------------------------------------------------------------------------
 (require 'erlang-flymake)
+
 (setq flymake-log-level 3)
-(setq erlang-flymake-location (concat user-emacs-directory "/flymake/eflymake"))
+(setq erlang-flymake-location (concat user-emacs-directory "flymake/eflymake"))
+
+(defun flymake-create-temp-intemp (file-name prefix)
+  "Return file name in temporary directory for checking FILE-NAME.
+This is a replacement for `flymake-create-temp-inplace'. The
+difference is that it gives a file name in
+`temporary-file-directory' instead of the same directory as
+FILE-NAME.
+For the use of PREFIX see that function.
+Note that not making the temporary file in another directory
+\(like here) will not if the file you are checking depends on
+relative paths to other files \(for the type of checks flymake
+makes)."
+  (unless (stringp file-name)
+    (error "Invalid file-name"))
+  (or prefix
+      (setq prefix "flymake"))
+  (let* ((name (concat
+                (file-name-nondirectory
+                 (file-name-sans-extension file-name))
+                "_" prefix))
+         (ext  (concat "." (file-name-extension file-name)))
+         (temp-name (make-temp-file name nil ext))
+         )
+    (flymake-log 3 "create-temp-intemp: file=%s temp=%s" file-name temp-name)
+    temp-name))
 
 (defun flymake-erlang-init ()
+  "Initialize the erlang flymake temp buffer."
   (let* ((temp-file (flymake-init-create-temp-buffer-copy
-         'flymake-create-temp-inplace))
-   (local-file (file-relative-name temp-file
-    (file-name-directory buffer-file-name))))
+                     'flymake-create-temp-intemp))
+         (local-file (file-relative-name
+                      temp-file
+                      (file-name-directory buffer-file-name))))
     (list "~/.emacs.d/flymake/eflymake" (list local-file))))
 
-(add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-erlang-init))
+(defun init-flymake ()
+  "Initialize the FlyMake mode for Erlang."
+	(when (locate-library "flymake")
+		(require 'flymake)
+		(add-to-list 'flymake-allowed-file-name-masks
+								 '("\\.erl\\'" flymake-erlang-init))
+		(flymake-mode 1))
+  )
 
-;;-------------------------------------------------------------------------------
-;; enable flymake only for erlang mode
-;;-------------------------------------------------------------------------------
-; {{{ flymake syntax checkers
+(add-hook 'erlang-mode-hook 'init-flymake)
+
+;;** flymake syntax checkers
 (defun flymake-syntaxerl ()
   "Erlang syntax checker for flymake."
   (flymake-compile-script-path "/opt/erlang/syntaxerl/syntaxerl"))
@@ -92,6 +123,7 @@
     (list path (list local-file))))
 
 (defun my-setup-erlang ()
+  "Erlang syntax checker with syntaxerl."
   (interactive)
   (unless (is-buffer-file-temp)
     (when (file-exists-p (file-truename "/opt/erlang/syntaxerl/syntaxerl"))
@@ -107,133 +139,9 @@
       (flymake-mode 1))))
 
   ;; add the above function to erlang mode
-  (add-hook 'erlang-mode-hook 'my-setup-erlang)
+  ;; having conflicts with distel and edts
+  ;;(add-hook 'erlang-mode-hook 'my-setup-erlang)
 
-; }}}
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; https://github.com/ten0s/syntaxerl                                            ;;
-;; see /usr/local/lib/erlang/lib/tools-<Ver>/emacs/erlang-flymake.erl            ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun erlang-flymake-only-on-save ()
-  "Trigger flymake only when the buffer is saved - clears syntax checker on a newline and when there is no change."
-  (interactive)
-  (setq flymake-no-changes-timeout most-positive-fixnum)
-  (setq flymake-start-syntax-check-on-newline nil))
-
-(erlang-flymake-only-on-save)
-
-;;-------------------------------------------------------------------------------
-;; enable flymake for rebar projects
-;;-------------------------------------------------------------------------------
-(defun ebm-find-rebar-top-recr (dirname)
-  "Get rebar.config filename based on DIRNAME."
-  (let* ((project-dir (locate-dominating-file dirname "rebar.config")))
-    (if project-dir
-      (let* ((parent-dir (file-name-directory (directory-file-name project-dir)))
-              (top-project-dir (if (and parent-dir (not (string= parent-dir "/")))
-                                 (ebm-find-rebar-top-recr parent-dir)
-                                 nil)))
-        (if top-project-dir
-          top-project-dir
-          project-dir))
-      project-dir)))
-
-(defun ebm-find-rebar-top ()
-  "Find top directory of rebar project."
-  (interactive)
-  (let* ((dirname (file-name-directory (buffer-file-name)))
-          (project-dir (ebm-find-rebar-top-recr dirname)))
-    (if project-dir
-      project-dir
-      (erlang-flymake-get-app-dir))))
-
-(defun ebm-directory-dirs (dir name)
-  "Find all directories in DIR with NAME."
-  (unless (file-directory-p dir)
-    (error "Not a directory `%s'" dir))
-  (let ((dir (directory-file-name dir))
-         (dirs '())
-         (files (directory-files dir nil nil t)))
-    (dolist (file files)
-      (unless (member file '("." ".."))
-        (let ((absolute-path (expand-file-name (concat dir "/" file))))
-          (when (file-directory-p absolute-path)
-            (if (string= file name)
-              (setq dirs (append (cons absolute-path
-                                   (ebm-directory-dirs absolute-path name))
-                           dirs))
-              (setq dirs (append
-                           (ebm-directory-dirs absolute-path name)
-                           dirs)))))))
-    dirs))
-
-(defun ebm-get-deps-code-path-dirs ()
-  "Get the files under deps directory."
-  (ebm-directory-dirs (ebm-find-rebar-top) "ebin"))
-
-(defun ebm-get-deps-include-dirs ()
-  "Include directories under deps."
-  (ebm-directory-dirs (ebm-find-rebar-top) "include"))
-
-(fset 'erlang-flymake-get-code-path-dirs 'ebm-get-deps-code-path-dirs)
-(fset 'erlang-flymake-get-include-dirs-function 'ebm-get-deps-include-dirs)
-
-
-;;-------------------------------------------------------------------------------
-;; new file declarations
-;;-------------------------------------------------------------------------------
-;{{{ handling of new erlang files with header
-
-(defun erl-file-header ()
-  "Insert a custom edoc header at the top."
-  (interactive)
-  (save-excursion
-    (when (re-search-forward "^\\s *-spec\\s +\\([a-zA-Z0-9_]+\\)\\s *(\\(\\(.\\|\n\\)*?\\))\\s *->[ \t\n]*\\(.+?\\)\\." nil t)
-      (let* ((beg (match-beginning 0))
-             (funcname (match-string-no-properties 1))
-             (arg-string (match-string-no-properties 2))
-             (retval (match-string-no-properties 4))
-             (args (split-string arg-string "[ \t\n,]" t)))
-        (when (re-search-forward (concat "^\\s *" funcname "\\s *(\\(\\(.\\|\n\\)*?\\))\\s *->") nil t)
-          (let ((arg-types (split-string (match-string-no-properties 1) "[ \t\n,]" t)))
-            (goto-char beg)
-            (insert "%%-----------------------------------------------------------------------------\n")
-            (insert "%% @doc\n")
-            (insert "%% Your description goes here\n")
-            (insert "%% @spec " funcname "(")
-            (dolist (arg args)
-              (if (string-match "::" arg) (insert arg) (insert (car arg-types) "::" arg))
-              (setq arg-types (cdr arg-types))
-              (when arg-types
-                (insert ", ")))
-            (insert ") ->\n")
-            (insert "%%       " retval "\n")
-            (insert "%% @end\n")
-            (insert "%%-----------------------------------------------------------------------------\n")))))))
-
-;}}}
-
-;{{{ erlang skels options
-(eval-after-load "erlang-skels"
-  (progn
-    (setq erlang-skel-mail-address "Singamsetty.Sampath@gmail.com")))
-;}}}
-
-;;-------------------------------------------------------------------------------
-;; electric commands
-;;-------------------------------------------------------------------------------
-; {{{ - for electric commands
-;; (set-variable 'erlang-electric-commands nil) ; to disable
-(setq erlang-electric-commands
-      ;; Insert a comma character and possibly a new indented line.
-      '(erlang-electric-comma
-        ;; Insert a semicolon character and possibly a prototype for the next line.
-        erlang-electric-semicolon
-        ;; Insert a '>'-sign and possible a new indented line.
-        erlang-electric-gt
-        ))
-;}}}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

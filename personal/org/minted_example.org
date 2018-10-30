@@ -1,0 +1,158 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:{} arch:headline author:t
+#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK") date:t e:t
+#+OPTIONS: email:nil f:t inline:t num:t p:nil pri:nil prop:nil stat:t tags:t
+#+OPTIONS: tasks:t tex:t timestamp:t title:t toc:t todo:t |:t
+#+TITLE: A demo of code snippet exports using Minted package
+#+DESCRIPTION: Walktrough of code snippets through minted
+#+DATE: <2018-08-13 Mon>
+#+AUTHOR: Sampath Singamsetty
+#+EMAIL: Singamsetty.Sampath@gmail.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 25.3.50.1 (Org mode 9.1.13)
+#+STARTUP: indent showeverything
+
+#+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
+
+#+latex_header: \usepackage[utf8x]{inputenc} %% For unicode chars
+#+latex_header: \usepackage[english]{babel}
+#+LATEX_HEADER: \usepackage[hyperref,x11names]{xcolor}
+#+LATEX_HEADER: \usepackage[colorlinks=true,urlcolor=SteelBlue4,linkcolor=Firebrick4]{hyperref}
+
+#+LaTeX_HEADER: \usemintedstyle{pastie}
+
+# uses fonts to support Greek letters etc...
+#+LATEX_HEADER: \usepackage{fontspec}
+#+LATEX_HEADER: \setmonofont{Monaco}
+
+#+LATEX_HEADER: \usepackage{titlesec}
+#+LATEX_HEADER: \titleformat*{\section}{\color{green}}
+#+LATEX_HEADER: \titleformat*{\subsection}{\color{blue}}
+#+LATEX_HEADER: \titleformat*{\paragraph}{\color{black}}
+
+
+* Description
+
+This article summarizes about the highlighting of code blocks using minted
+during pdf exports. The main python package which supports the coloring of
+code blocks using minted is *pygments* which needs to be installed first using
+python package manager /pip/
+
+#+BEGIN_SRC shell
+pip3 install -U pygments --no-cache
+#+END_SRC
+
+** A /cpp/ code block example
+
+#+attr_latex: :options rulecolor=\color{gray!40}
+#+BEGIN_SRC c++ :exports both
+#include <iostream>
+
+int main(int argc, char** argv)
+{
+     std::cout << "Hello, world." << std::endl;
+     return 0;
+}
+#+END_SRC
+
+** A simple /python/ code block example
+
+#+attr_latex: :options rulecolor=\color{gray!40}
+#+begin_src python
+#!/usr/bin/env python3
+
+def example_function():
+    return "hello world"
+
+# sample values
+a = 5
+b = "I am python code"
+#+end_src
+
+** A simple /elisp/ code block example
+
+#+attr_latex: :options rulecolor=\color{gray!40}
+#+BEGIN_SRC emacs-lisp
+  (defun org-xor (a b)
+     "Exclusive or."
+     (if a (not b) b))
+#+END_SRC
+
+** An example of a simple post request using the /curl/ command.
+
+#+attr_latex: :options rulecolor=\color{gray!40}
+#+begin_src js
+// a simple curl post command
+curl -k https://mysimpletestservice.cloud.com/api/oauth/token \
+  -d '{
+  "grant_type": "password",
+  "username": "MyUserName",
+  "password": "MyPassword",
+  "scope": "A Valid Scope",
+  "device_id": "A UUID format device identifier",
+  "client_id": "A pre shared oauth client identifier",
+  "client_secret": "A pre shared oauth client secret"
+}'
+#+end_src
+
+#+RESULTS:
+
+** A simple /python/ code block for demonstration
+
+#+attr_latex: :options rulecolor=\color{gray!40}
+#+BEGIN_SRC python
+# example with numpy
+import numpy as np
+
+M0 = np.array([0.55, 0.2])
+alpha = np.array([-1.0, -0.5])
+
+species = ['H2', 'O2']
+print ''.join(['{0:4s}{1:1.2f}\n'.format(sp,x) for sp,x in zip(species, - M0 / alpha)])
+print 'The maximum extent is {0} moles.'.format(min(- M0 / alpha))
+#+END_SRC
+
+** An example of a diagram generated with /ditaa/
+
+#+CAPTION:    This was the ditaa example
+#+LABEL:      fig:ditaaex
+#+ATTR_LaTeX: width=8cm,angle=90
+#+begin_src ditaa :file blue.png :cmdline -r
++---------+
+| cBLU    |
+|         |
+|    +----+
+|    |cPNK|
+|    |    |
++----+----+
+#+end_src
+
+** A Simple code block showing the /erlang/ syntax highlighting
+
+#+attr_latex: :options rulecolor=\color{pink!70}
+#+begin_src erlang
+  %% A process whose only job is to keep a counter.
+
+  -module(counter).
+  -export([start/0, codeswitch/1]).
+
+  start() -> loop(0).
+
+  loop(Sum) ->
+    receive
+       {increment, Count} ->
+          loop(Sum+Count);
+       reset ->
+          loop(0);
+       {counter, Pid} ->
+          Pid ! {counter, Sum},
+          loop(Sum);
+       code_switch ->
+          ?MODULE:codeswitch(Sum)
+    end.
+
+  codeswitch(Sum) -> loop(Sum).
+#+end_src
+
+Thats all for now

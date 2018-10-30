@@ -12,12 +12,13 @@
 ;;; editing files in markdown mode
 ;;------------------------------------------------------------------------------
 (setq auto-mode-alist
-    (append
-        (list '("\\.text"     . markdown-mode)
-              '("\\.md"       . markdown-mode)
-              '("\\.mdml$"    . markdown-mode)
-              '("\\.markdown" . markdown-mode))
-        auto-mode-alist))
+      (append
+       (list '("\\.text"     . markdown-mode)
+             '("\\.txt"      . markdown-mode)
+             '("\\.md"       . markdown-mode)
+             '("\\.mdml$"    . markdown-mode)
+             '("\\.markdown" . markdown-mode))
+       auto-mode-alist))
 (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
 
 (defun markdown-imenu-index ()

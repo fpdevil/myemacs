@@ -7,12 +7,11 @@
 ;;; If you move point on a symbol, it will automatically highlights all the
 ;;; symbols in the current screen.  From now on, pressing M-n and M-p will
 ;;; immediately jump to the next/previous symbols in a buffer.
-;;;===========================================================================
-(require 'highlight-symbol)
-
 ;;;
 ;;; Code:
 ;;;
+
+(require 'highlight-symbol)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; automatic and manual symbol highlighting for Emacs                       ;;

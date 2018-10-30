@@ -9,81 +9,72 @@
 ;;;
 ;;; Code:
 ;;; Updated    : 06 Apr 2018
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;=============================================================================
 ;;**
 ;; required default standard libraries
 (eval-when-compile (require 'cl))
 (require 'cl-lib)
 (require 'package)
 
-;;**
+;;----------------------------------------------------------------------------
 ;; Package repositories (gnu, melpa, melpa-stable and marmalade)
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (proto (if no-ssl "http" "https")))
-  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-  (add-to-list 'package-archives (cons "gnu" (concat proto "://elpa.gnu.org/packages/")))
-  (add-to-list 'package-archives (cons "org" (concat proto "://orgmode.org/elpa/")))
-  (add-to-list 'package-archives (cons "elpy" (concat proto "://jorgenschaefer.github.io/packages/")))
-  (add-to-list 'package-archives (cons "marmalade" (concat proto "://marmalade-repo.org/packages/")))
-
-  (when no-ssl
-    (setq package-check-signature nil)
-    (setq tls-program
-          ;; Defaults:
-          '("gnutls-cli --insecure -p %p %h"
-            "gnutls-cli --insecure -p %p %h --protocols ssl3"
-            "openssl s_client -connect %h:%p -no_ssl2 -ign_eof")
-          ;; '("gnutls-cli -p %p %h"
-          ;;   "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof")
-          )))
+;;----------------------------------------------------------------------------
+(setq package-archives
+      '(
+        ;; uncomment/comment the below line for GNU ELPA
+        ("gnu"            . "https://elpa.gnu.org/packages/")
+        ("melpa"          . "http://melpa.org/packages/")
+        ("melpa-stable"   . "http://stable.melpa.org/packages/")
+        ("melpa-unstable" . "http://stable.melpa.org/packages/")
+        ("elpy"           . "https://jorgenschaefer.github.io/packages/")
+        ("org"            . "http://orgmode.org/elpa/")
+        ;;("marmalade"      . "http://marmalade-repo.org/packages/")
+        ))
 
 
-;; (setq package-archives
-;;       '(("melpa"        . "https://melpa.org/packages/")
-;;         ("org"          . "http://orgmode.org/elpa/")
-;;         ("gnu"          . "https://elpa.gnu.org/packages/")
-;;         ("elpy"         . "https://jorgenschaefer.github.io/packages/")
-;;         ("melpa-stable" . "http://stable.melpa.org/packages/")
-;;         ("marmalade"    . "https://marmalade-repo.org/packages/")
-;;         ))
+(setq package-check-signature nil)
+(setq tls-program
+      ;; Defaults:
+      '("gnutls-cli --insecure -p %p %h"
+        "gnutls-cli --insecure -p %p %h --protocols ssl3"
+        "openssl s_client -connect %h:%p -no_ssl2 -ign_eof"))
 
 ;;**
 ;; if on Emacs 24.4 or newer, if so, use the pinned package feature
 (when (boundp 'package-pinned-packages)
   (setq package-pinned-packages
-        '((elpy                  . "elpy")
+        '(
+          (elpy                  . "melpa-stable")
           (highlight-indentation . "elpy") ;; fixes error in elpy 1.6
           (org                   . "org")
-          (jedi                  . "melpa")
+          (org-plus-contrib      . "org")
+          (org-download          . "org")
+          (jedi                  . "melpa-stable")
+          (jedi-core             . "melpa-stable")
+          (company-jedi          . "melpa-stable")
           (markdown-mode         . "melpa")
           (smart-mode-line       . "melpa")
-          (ensime                . "melpa")
+          (ensime                . "melpa-stable")
+          (clj-refactor          . "melpa-unstable") ;; note from http://planet.clojure.in/
+          (monroe                . "melpa-stable")
+          (smart-mode-line       . "melpa-stable")
           (web-mode              . "melpa")
           (counsel               . "melpa")
           (which-key             . "melpa"))))
 
-;;**
-;; set package priorities
-;;(setq package-archive-priorities
-;;      '(("org"          . 30)
-;;        ("elpy"         . 30)
-;;        ("melpa"        . 20)
-;;        ("gnu"          . 10)
-;;        ("melpa-stable" . 10)
-;;        ("marmalade"    . 5)))
 
 (setq package-menu-hide-low-priority t)
 
-;;**
-;; set it to `t' to use safer HTTPS to download packages
+;;----------------------------------------------------------------------------
+;;** set it to `t' in order to use a safer HTTPS to download packages
+;;----------------------------------------------------------------------------
 (defvar melpa-use-https-repo nil
   "By default, HTTP is used to download packages.
 But you may use safer HTTPS instead.")
 
-;;***
-;; initialize all the defined packages
+;;----------------------------------------------------------------------------
+;;** initialize all the defined packages
+;;----------------------------------------------------------------------------
 (unless (file-exists-p package-user-dir)
   (message "No packages exist yet, refreshing archives.")
   (package-refresh-contents))
@@ -91,8 +82,9 @@ But you may use safer HTTPS instead.")
 (setq package-enable-at-startup nil)
 (package-initialize)
 
-;;**
-;; define a package installation function
+;;----------------------------------------------------------------------------
+;;** define a default package installation function
+;;----------------------------------------------------------------------------
 (defun require-package (package &optional min-version no-refresh)
   "Install given PACKAGE, optionally requiring MIN-VERSION.
 If NO-REFRESH is non-nil, the available package lists will not be
@@ -105,18 +97,17 @@ re-downloaded in order to locate PACKAGE."
         (package-refresh-contents)
         (require-package package min-version t)))))
 
-;;**
-;; define a function for checking the package loading
+;;----------------------------------------------------------------------------
+;;** define a function for checking the package loading
+;;----------------------------------------------------------------------------
 (defmacro after (feature &rest body)
-  "Executes BODY after FEATURE has been loaded.
-
+  "Execute FEATURE and REST in BODY after loading,.
 FEATURE may be any one of:
     'evil            => (with-eval-after-load 'evil BODY)
     \"evil-autoloads\" => (with-eval-after-load \"evil-autolaods\" BODY)
     [evil cider]     => (with-eval-after-load 'evil
                           (with-eval-after-load 'cider
-                            BODY))
-"
+                            BODY))."
   (declare (indent 1))
   (cond
    ((vectorp feature)
@@ -131,27 +122,36 @@ FEATURE may be any one of:
     `(with-eval-after-load ,feature ,@body))))
 
 
-;;**
-;; benchmarking
+;;----------------------------------------------------------------------------
+;;** for benchmarking
+;;----------------------------------------------------------------------------
 (require-package 'benchmark-init)
-(add-hook 'after-init-hook 'benchmark-init/activate)
+(require 'benchmark-init)
+;; To disable collection of benchmark data after init is done.
+(add-hook 'after-init-hook 'benchmark-init/deactivate)
+;; (add-hook 'after-init-hook 'benchmark-init/activate)
 
-;;; -- prettyish highlighting for require-package
+;;----------------------------------------------------------------------------
+;;** pretty highlighting for the require-package
+;;----------------------------------------------------------------------------
 (font-lock-add-keywords 'emacs-lisp-mode
                         '(("(\\(require-package\\)\\>" 1 font-lock-builtin-face)))
 
 
-;;***
-;;    function to check if all listed packages are installed. return true when
-;;    package is not installed. When Emacs boots, check to make sure all the
-;;    packages defined in required-packages are installed. If not ELPA kicks in
+;;----------------------------------------------------------------------------
+;;**  function to check if all listed packages are installed. return true when
+;;**  package is not installed. When Emacs boots, check to make sure all the
+;;**  packages defined in required-packages are installed. If not ELPA kicks in
+;;----------------------------------------------------------------------------
 (defun aqua-packages-installed-p ()
+  "Check if packages are installed or not."
   (cl-loop for p in required-packages
            when (not (package-installed-p p)) do (cl-return nil)
            finally (cl-return t)))
 
-;;***
-;;    (ADDON package manager) for package installation through use-package
+;;----------------------------------------------------------------------------
+;;** [use-package] - AddOn package manager for package installation
+;;----------------------------------------------------------------------------
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -164,9 +164,10 @@ FEATURE may be any one of:
 (eval-when-compile
   (require 'use-package))
 
-;;***
-;;   if not all the packages which are listed are installed,
-;;   check one by one and install the missing ones.
+;;----------------------------------------------------------------------------
+;;**   if not all the packages which are listed are installed,
+;;**   check one by one and install the missing ones.
+;;----------------------------------------------------------------------------
 (unless (aqua-packages-installed-p)
   ;; check for new packages (package versions)
   (message "%s" ">>> Emacs refreshing its package database...")
@@ -185,8 +186,9 @@ Helpful to get rid of unused packages."
   (package-show-package-list
    (set-difference package-activated-list required-packages)))
 
-;;**
-;; upgrade all packages and delete obsolete ones
+;;----------------------------------------------------------------------------
+;;** upgrade all packages and delete obsolete ones
+;;----------------------------------------------------------------------------
 (defun aqua-package-upgrade ()
   "Upgrade all the listed packages."
   (interactive)
@@ -197,11 +199,13 @@ Helpful to get rid of unused packages."
       (package-menu-mark-obsolete-for-deletion)
       (package-menu-execute t))))
 
-;;***
-;; loop through the custom lisp under the vendor directory
-;; load all the .el files from the vendor package
+;;----------------------------------------------------------------------------
+;;** loop through the custom lisp under the vendor directory
+;;** load all the .el files from the vendor package
+;;----------------------------------------------------------------------------
 (cl-loop for location in custom-load-paths
          do (add-to-list 'load-path
+                         (message "loading vendor pkg %s" location)
                          (concat
                           (file-name-directory
                            (directory-file-name
@@ -217,17 +221,19 @@ Helpful to get rid of unused packages."
 ;                                  "vendor/"
 ;                                  location)))
 
-;;***
-;; Standard file extensions for which appropriate packages will be automatically
-;; installed if not already present
-;;
+;;----------------------------------------------------------------------------
+;;** Standard file extensions for which appropriate packages would be
+;;** installed automatically if not already present
+;;----------------------------------------------------------------------------
 (defmacro autoload-lazy-major-mode (pattern mode)
-  "Defines a new major-mode matched by PATTERN, installs the MODE if necessary, and activates the same."
+  "Defines a new `major-mode' matched by PATTERN, and install the MODE if necessary, and activates the same."
   `(add-to-list 'auto-mode-alist
                 '(,pattern . (lambda ()
                                (require-package (quote ,mode))
                                (,mode)))))
 
+;;**
+;;** auto modes for which the packages will be installed
 (autoload-lazy-major-mode "CMakeLists\\.txt'" cmake-mode)
 (autoload-lazy-major-mode "PKGBUILD\\'" pkgbuild-mode)
 (autoload-lazy-major-mode "\\.vim\\(rc\\)?\\'" vimrc-mode)

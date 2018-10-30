@@ -7,9 +7,9 @@
 ;;
 ;; elisp code for org helpers and utilities
 ;;;
-;;;Code:
+;;; Code:
 ;;;
-;;;============================================================================
+;;;
 
 ;; * Block templates
 ;; add <p for python expansion
@@ -444,6 +444,20 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
 
 ;;}}}
 
+
+;;** Wrap Region
+(use-package wrap-region
+  :diminish wrap-region-mode
+  :config
+  (wrap-region-add-wrappers
+   '(("*" "*" nil (org-mode))
+     ("~" "~" nil (org-mode))
+     ("/" "/" nil (org-mode))
+     ("=" "=" "+" (org-mode))
+     ("_" "_" nil (org-mode))
+     ("$" "$" nil (org-mode latex-mode)))
+  (add-hook 'org-mode-hook 'wrap-region-mode)
+  (add-hook 'latex-mode-hook 'wrap-region-mode)))
 
 ;;-----------------------------------------------------------------------------
 

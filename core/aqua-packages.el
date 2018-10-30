@@ -4,22 +4,23 @@
 ;;;
 ;;; filename.  : aqua-packages.el
 ;;; description: This file contains new or missing packages to be installed
-;;               during Emacs bootstrap. Any new packages to be installed
+;;               during Emacs bootstrap.  Any new packages to be installed
 ;;               for Emacs should be defined as a part of the section defined
-;;               under required-packages. Any packages not available as ready
+;;               under required-packages.  Any packages not available as ready
 ;;               packages should be in the vendor directory.
 ;;;
 ;;; Code:
 ;;; Updated    : 17 Nov 2017
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; -- required default standard libraries
+;;;
+
+;;-- provide the required default standard libraries
 (eval-when-compile (require 'cl))
 
 (message "aqua-package.el %s"  (or load-file-name (buffer-file-name)))
 (message "directory %s" (file-name-directory (or load-file-name (buffer-file-name))))
 
-;;; -- defvar is the correct way to declare global variables
-;;; -- setq is supposed to be use just to set variables and not create them.
+;;-- defvar is the correct way to declare global variables
+;;-- setq is supposed to be use just to set variables and not create them.
 (defvar required-packages
   '(
     ;;;;;; appearance and visual customization's ;;;;;;
@@ -54,11 +55,11 @@
     gruvbox-theme                               ;; retro-groove colour theme
     paper-theme                                 ;; minimal color theme
     twilight-bright-theme                       ;; light theme based on twilight
+    twilight-theme                              ;; twilight theme
     tango-plus-theme                            ;; light theme based on tango
     doom-themes                                 ;; pack of modern color-themes
     afternoon-theme                             ;; dark theme with deep blue background
-    badger-theme                                ;; dark theme for Emacs
-    lenlen-theme                                ;; solarized-based kawaii light theme
+    molokai-theme                               ;; Yet another molokai theme for Emacs 24
     ;;;;;; project setup and configuration      ;;;;;;
     ;; projectile                               ;; Project Interaction Library for Emacs
     ;; helm-projectile                          ;; Helm UI for Projectile
@@ -68,7 +69,7 @@
     ;;;;;; company backends for completion      ;;;;;;
     company-jedi                                ;; company jedi mode for python
     company-distel                              ;; company distel mode for erlang
-                                        ;company-erlang                             ;; company backend for erlang, ivy-erlang-complete
+    company-erlang                              ;; company backend for erlang, ivy-erlang-complete
     distel-completion-lib                       ;; distel-completion is needed for company-distel
     company-dict                                ;; backend that emulates ac-source-dictionary
     company-quickhelp                           ;; documentation popup for company
@@ -146,9 +147,11 @@
     ;;;;;; language and IDE setup               ;;;;;;
     ;;;;;; python 3 programming modes           ;;;;;;
     virtualenvwrapper                           ;; virtualenv wrapper for python
-    jedi                                        ;; python jedi IDE
+    jedi                                        ;; python auto-completion for Emacs
+    jedi-core                                   ;; common code of jedi.el and company-jedi.el
     elpy                                        ;; python elpy IDE
-    python-pylint                               ;; python linter
+    ;;python-pylint                             ;; python linter
+    pylint                                      ;; python linter
     pyvenv                                      ;; python virtual environment interface for Emacs
     py-autopep8                                 ;; integrate autopep8 into Emacs
     sphinx-doc                                  ;; sphinx style doc strings for python code
@@ -228,8 +231,8 @@
     js2-highlight-vars                          ;; highlight variables
     tern                                        ;; JavaScript code analyzer
     tern-auto-complete                          ;; js tooling auto-complete
-    ;tern-context-coloring                      ;; adding scope coloring
-    ;tj-mode                                    ;; Highlight JavaScript with Tern
+    ;;tern-context-coloring                     ;; adding scope coloring
+    ;;tj-mode                                   ;; Highlight JavaScript with Tern
     js2-mode                                    ;; Improved JavaScript editing mode
     js3-mode                                    ;; chimeric fork of js2-mode and js-mode
     js-doc                                      ;; Insert JsDoc style comment easily
@@ -237,9 +240,9 @@
     ac-js2                                      ;; Javascript auto-completion
     json-mode                                   ;; major mode for json editing
     coffee-mode                                 ;; major mode for CoffeeScript
-    ;indium                                     ;; JS Awesome Development Environment formerly jade
     company-web                                 ;; company backend for ac-html
-    ;tidy                                       ;; interface to html tidy program
+    ;;indium                                    ;; JS Awesome Development Environment formerly jade
+    ;;tidy                                      ;; interface to html tidy program
     ac-emmet                                    ;; auto-complete sources for emmet-mode
     emmet-mode                                  ;; emmet support for emacs
     web-beautify                                ;; Format HTML, CSS and JavaScript/JSON by js-beautify
@@ -260,6 +263,7 @@
     sunshine                                    ;; weather and forecast information
     manage-minor-mode                           ;; manage minor modes on a dedicated buffer
     know-your-http-well                         ;; Look up the meaning of HTTP metadata
+    zzz-to-char                                 ;; Fancy version of ‘zap-to-char’ command
     ;;;;;; vim emulation                        ;;;;;;
     evil                                        ;; Extensible Vi layer for Emacs.
     undo-tree                                   ;; Treat undo history as a tree (evil dependency)
@@ -301,14 +305,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar custom-load-paths
   '(
-    "xslide"                    ;; xml and xslt syntax, customization's
-    "xslt-process/lisp"         ;; xslt processor ide
-    ;;"javascript/node-ac"        ;; node-js auto-complete package
-    "dircolors"                 ;; colored buffer
-    "elisp/elisp-format"        ;; format elisp code
-    "psgml"                     ;; markup languages...
-    "cpp-addon"                 ;; addon to cc-mode
-    "flycheck-google-cpplint"   ;; google c++ style checker for flycheck
+    "xslide"                            ;; xml and xslt syntax, customization's
+    "xslt-process/lisp"                 ;; xslt processor ide
+    ;;"javascript/node-ac"              ;; node-js auto-complete package
+    "dircolors"                         ;; colored buffer
+    "elisp/elisp-format"                ;; format elisp code
+    "elisp/ps2pdf"                      ;; convert ps to pdf
+    "psgml"                             ;; markup languages...
+    "cpp-addon"                         ;; addon to cc-mode
+    "flycheck-google-cpplint"           ;; google c++ style checker for flycheck
+    "emacs-clang-complete-async/elisp"
     )
   "Custom load paths that do not follow the normal vendor/elisp/module-name.el format.")
 

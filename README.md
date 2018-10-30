@@ -101,9 +101,11 @@ Here is a template of the `.dir-locals.el` file
 #### References
 * [Elisp Programming] - A wonderful overview of elisp!
 * [Functional Programming] - Functional Programming by Example!
+* [emacs-starter-kit] - A cleaner version of the literate starter kit based on Emacs24!
 
 [Elisp Programming]: <http://caiorss.github.io/Emacs-Elisp-Programming/Elisp_Programming.html>
 [Functional Programming]: <http://caiorss.github.io/Functional-Programming/>
+[emacs-starter-kit]: <https://github.com/eschulte/emacs24-starter-kit>
 
 #### license
 

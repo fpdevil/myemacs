@@ -9,20 +9,104 @@
 ;;;
 ;;; Code:
 ;;;
-;;==============================================================================
-(require 'ac-cider)                            ;; clojure completion source
+
+
+
+(require-package 'clojure-mode)
+(require-package 'cider)
+
+
+;;-----------------------------------------------------------------------------
+;;** fancy symbols for clojure
+;;-----------------------------------------------------------------------------
 (require 'clojure-mode-extra-font-locking)     ;; clojure syntax highlighting
+(defun clojure/fancify-symbols (mode)
+  "Pretty symbols for Clojure's anonymous functions and set's
+like (λ [a] (+ a 5)), ƒ(+ % 5), and ∈{2 4 6} for MODE."
+  (font-lock-add-keywords mode
+                          `(("(\\(fn\\)[\[[:space:]]"
+                             (0 (progn (compose-region (match-beginning 1)
+                                                       (match-end 1) "λ"))))
+                            ("(\\(partial\\)[\[[:space:]]"
+                             (0 (progn (compose-region (match-beginning 1)
+                                                       (match-end 1) "Ƥ"))))
+                            ("(\\(comp\\)[\[[:space:]]"
+                             (0 (progn (compose-region (match-beginning 1)
+                                                       (match-end 1) "∘"))))
+                            ("\\(#\\)("
+                             (0 (progn (compose-region (match-beginning 1)
+                                                       (match-end 1) "ƒ"))))
+                            ("\\(#\\){"
+                             (0 (progn (compose-region (match-beginning 1)
+                                                       (match-end 1) "∈")))))))
+
+(dolist (c '(clojure-mode cider-repl-mode cider-clojure-interaction-mode))
+  (clojure/fancify-symbols c))
+
 
 ;;-----------------------------------------------------------------------------
-;; CLOJURE SETUP
+;;** great lisp coding hooks for clojure
 ;;-----------------------------------------------------------------------------
-(add-hook 'clojure-mode-hook 'enable-paredit-mode)   ;; paredit
-(add-hook 'clojure-mode-hook 'subword-mode)          ;; for working with java classes
-(add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)    ;; documentation
+(defun clj-coding-defaults ()
+  (smartparens-strict-mode +1)
+  (rainbow-delimiters-mode +1))
+
+(setq clj-coding-hook 'clj-coding-defaults)
+
+(eval-after-load 'clojure-mode
+  '(progn
+     (defun clj-mode-defaults ()
+       (subword-mode +1)
+       (run-hooks 'clj-coding-hook))
+
+     (setq clj-mode-hook 'clj-mode-defaults)
+
+     (add-hook 'clojure-mode-hook (lambda ()
+                                    (run-hooks 'clj-mode-hook)))))
+
+(eval-after-load 'cider
+  '(progn
+     (setq nrepl-log-messages t
+           cider-font-lock-dynamically '(macro core function var)
+           cider-overlays-use-font-lock t
+           cider-repl-use-pretty-printing t
+           cider-macroexpansion-print-metadata t
+           cider-repl-display-help-banner t
+           nrepl-buffer-name-show-port t
+           cider-completion-annotations-include-ns 'always
+           cider-prompt-for-symbol nil
+           cider-repl-history-file (concat cache-dir "/cider-history")
+           )
+
+     (add-hook 'cider-mode-hook 'eldoc-mode)
+     (add-hook 'cider-repl-mode-hook 'eldoc-mode)
+
+     (defun clj-cider-repl-mode-defaults ()
+       (subword-mode +1)
+       (run-hooks 'clj-coding-hook))
+
+     (setq clj-cider-repl-mode-hook 'clj-cider-repl-mode-defaults)
+
+     (add-hook 'cider-repl-mode-hook (lambda ()
+                                       (run-hooks 'clj-cider-repl-mode-hook)))))
+
+
+
+;; helm integration
+(after 'helm
+  (add-hook 'cider-mode-hook #'helm-cider-mode))
+
+(after 'evil
+  (evil-set-initial-state 'cider-popup-buffer-mode 'motion)
+  (evil-set-initial-state 'cider-browse-ns-mode 'motion)
+  (evil-set-initial-state 'cider-stacktrace-mode 'motion)
+  (evil-set-initial-state 'cider-repl-mode 'emacs))
 
 ;;-----------------------------------------------------------------------------
-;; syntax hilighting and indentation
+;; syntax highlighting and indentation
 ;;-----------------------------------------------------------------------------
+(setq clojure-indent-style :always-align)
+(setq clojure-indent-style :always-indent)
 (setq clojure-indent-style :align-arguments)
 
 (add-hook 'clojure-mode-hook
@@ -39,29 +123,13 @@
             (put-clojure-indent 'reg-fx 1)
             (put-clojure-indent 'reg-cofx 1)
             (put-clojure-indent 'reg-sub 1)
-            (enable-paredit-mode)
-            (subword-mode)))
+            ))
 
+;;** aggressive indentation for clojure
+(add-hook 'clojure-mode-hook #'aggressive-indent-mode)
+(add-hook 'clojurescript-mode-hook #'aggressive-indent-mode)
 
-;;-----------------------------------------------------------------------------
-;; for cider
-;;-----------------------------------------------------------------------------
-(add-hook 'clojure-mode-hook 'cider-mode)    ;; enter cider mode when entering the clojure
-(add-hook 'cider-mode-hook #'eldoc-mode)     ;; provides minibuffer documentation
-(setq cider-repl-pop-to-buffer-on-connect t
-      cider-repl-display-help-banner nil
-      cider-show-error-buffer nil
-      cider-auto-select-error-buffer t
-      cider-repl-history-file "~/.emacs.d/cache/cider-history"
-      cider-repl-wrap-history t
-      nrepl-log-messages t
-      nrepl-popup-stacktraces nil
-      cider-font-lock-dynamically '(macro core function var)
-      nrepl-hide-special-buffers t
-      cider-overlays-use-font-lock t
-      cider-repl-use-pretty-printing t)
-
-
+;;** eldoc and cider
 (define-advice cider-eldoc-format-function (:around (old-fun thing pos eldoc-info) docstring)
   "Show docstring for function as well."
   (concat
@@ -69,7 +137,6 @@
    (when-let* ((doc (lax-plist-get eldoc-info "docstring"))
                (doc-one-line (substring doc 0 (string-match "\n" doc))))
      (concat "  |  " (propertize doc-one-line 'face 'italic)))))
-
 
 (defun cider-reset ()
   "Reset the CIDER repl."
@@ -80,26 +147,6 @@
   "Refresh the CIDER repl."
   (interactive)
   (cider-interactive-eval "(clojure.tools.namespace.repl/refresh)"))
-
-;;-----------------------------------------------------------------------------
-;; helm, paredit and smartparens integration
-;;-----------------------------------------------------------------------------
-(after-load 'cider-mode
-  (add-hook 'cider-mode-hook #'helm-cider-mode)
-  (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
-  (add-hook 'cider-repl-mode-hook #'eldoc-mode))
-;;(add-hook 'cider-repl-mode-hook #'paredit-mode)            ;; enable paredit in repl
-;;(add-hook 'cider-repl-mode-hook #'smartparens-strict-mode)
-
-
-;;-----------------------------------------------------------------------------
-;; clojure mode for other extension
-;;-----------------------------------------------------------------------------
-(add-to-list 'auto-mode-alist '("\\.edn$" . clojure-mode))
-(add-to-list 'auto-mode-alist '("\\.boot$" . clojure-mode))
-(add-to-list 'auto-mode-alist '(".cljs.hl$" . clojurescript-mode))
-(add-to-list 'auto-mode-alist '("lein-env" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.cljs.*$" . clojure-mode))
 
 ;;-----------------------------------------------------------------------------
 ;; shortcuts
@@ -125,90 +172,97 @@
      (define-key clojure-mode-map (kbd "C-c u") 'cider-user-ns)
      (define-key cider-mode-map (kbd "C-c u") 'cider-user-ns)))
 
+
 ;;-----------------------------------------------------------------------------
-;; cider auto completion
+;;** [Company] - auto completion
+;;-----------------------------------------------------------------------------
+(after 'company
+  (setq company-minimum-prefix-length 1
+        company-tooltip-align-annotations t)
+  (add-hook 'cider-repl-mode-hook #'company-mode)
+  (add-hook 'cider-mode-hook #'company-mode)
+  (add-hook 'cider-repl-mode-hook #'cider-company-enable-fuzzy-completion)
+  (add-hook 'cider-mode-hook #'cider-company-enable-fuzzy-completion)
+
+  ;; (add-hook 'clojure-mode-hook
+  ;;           (lambda () (company-config/push-company-backends-locally 'company-dabbrev)))
+  ;; (add-hook 'cider-repl-mode-hook
+  ;;           (lambda () (company-config/push-company-backends-locally 'company-dabbrev)))
+
+  )
+
+
+;;-----------------------------------------------------------------------------
+;; [AC] - cider auto completion
 ;;-----------------------------------------------------------------------------
 (defun set-auto-complete-as-completion-at-point-function ()
   "Auto completion at a point from minibuffer.el."
   (setq completion-at-point-functions '(auto-complete)))
 
-(after-load 'auto-complete
-  (require-package 'ac-nrepl)
+(defun clj-ac-complete ()
+  "Auto complete bootstrapping for clojure."
+  (add-hook 'cider-repl-mode-hook (lambda () (auto-complete-mode 1)))
+  ;;
+  ;; ac-nrepl is deprecated in favor of ac-cider
+  ;;(require-package 'ac-nrepl)
+  ;;(add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
+  ;;(add-hook 'cider-mode-hook 'ac-nrepl-setup)
+  (require-package 'ac-cider)   ;; clojure completion source
+  (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
+  (add-hook 'cider-mode-hook 'ac-cider-setup)
+  (add-hook 'cider-repl-mode-hook 'ac-cider-setup)
+  (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
+  (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
+  (add-hook 'cider-repl-mode-hook 'set-auto-complete-as-completion-at-point-function)
+  (add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
   '(progn
-     (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
-     (add-hook 'cider-mode-hook 'ac-cider-setup)
-     (add-hook 'cider-repl-mode-hook 'ac-cider-setup)
-     (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
-     (add-hook 'cider-mode-hook 'ac-nrepl-setup)
-     (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
-     (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
-     (add-hook 'cider-repl-mode-hook 'set-auto-complete-as-completion-at-point-function)
-     (add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
      (add-to-list 'ac-modes 'cider-mode)
-     (add-to-list 'ac-modes 'cider-repl-mode)))
-
-(defun clj-align-vectors (beg end)
-  "Aligh clojure vectors BEG to END."
-  (interactive "r")
-  (align-regexp beg end "^ \\[[^ ]+\\(\\s-+\\)" 1 1 t))
-
-;; with company
-(after-load 'company
-  (add-hook 'cider-repl-mode-hook #'company-mode)
-  (add-hook 'cider-mode-hook #'company-mode))
+     (add-to-list 'ac-modes 'cider-repl-mode))
+  )
 
 
-;;-----------------------------------------------------------------------------
-;; Look up Clojure documentation in a pop-up with CIDER’s functionality
-;;-----------------------------------------------------------------------------
-(defun get-cider-symbol-full-doc (symbol)
-  "Return a string of full documentation of SYMBOL, as given by `cider-create-doc-buffer'."
-  (let ((buf (cider-create-doc-buffer symbol)))
-    (when buf
-      (with-current-buffer buf
-        (buffer-substring (point-min)
-                          ;; `-10' to exclude "[source]" line
-                          (- (point-max) 10))))))
+(when (eq dotemacs-completion-engine 'auto-complete)
+  ;; enable ac for repl
+  (add-hook 'cider-repl-mode-hook (lambda () (auto-complete-mode 1)))
+  (clj-ac-complete))
 
-(defun get-cider-doc-popup ()
-  "Display CIDER documentation in a popup."
-  (interactive)
-  (funcall (quick-peek-make-doc-command #'get-cider-symbol-full-doc #'cider-symbol-at-point)))
-
-(defun get-cider-doc-popup-on ()
-  "Turn `get-cider-doc-popup' by binding it to an appropriate key."
-  (define-key cider-mode-map (kbd "C-h C-j") #'get-cider-doc-popup))
-
-;; Only use pop-up documentation when CIDER is connected
-(add-hook 'cider-connected-hook #'get-cider-doc-popup-on)
 
 ;;-----------------------------------------------------------------------------
 ;; clj-refactor and dependencies
 ;;-----------------------------------------------------------------------------
-(require-package 'clj-refactor)
+(defun clojure-refactoring ()
+  "Enable Clojure refactoring support."
+  (require-package 'clj-refactor)
+  ;; Add clj-refactor to clojure-mode
+  (add-hook 'clojure-mode-hook '(lambda () (clj-refactor-mode 1)))
+  (setq cljr-auto-sort-ns nil                 ; no auto sort
+        cljr-favor-prefix-notation nil)       ; do not prefer prefixes when using clean-ns
+  ;; This choice of keybinding leaves cider-macroexpand-1 unbound
+  (cljr-add-keybindings-with-prefix "C-c C-m"))
 
-(add-hook 'clojure-mode-hook
-          (lambda ()
-            (clj-refactor-mode 1)
-            ;; insert keybinding setup here
-            (cljr-add-keybindings-with-prefix "C-c RET")))
+;; (clojure-refacting)
 
-(add-hook 'clojure-mode-hook #'yas-minor-mode)
-(setq cljr-auto-sort-ns nil)                 ; no auto sort
-(setq cljr-favor-prefix-notation nil)        ; do not prefer prefixes when using clean-ns
+;;-----------------------------------------------------------------------------
+;;** [monroe] - a better repl for clojure | M-x monroe [RET]
+;;-----------------------------------------------------------------------------
+(require-package 'monroe)
+(add-hook 'clojure-mode-hook 'clojure-enable-monroe)
+
+
+;; golden ratio support
+(with-eval-after-load 'golden-ratio
+  (push 'cider-popup-buffer-quit-function golden-ratio-extra-commands))
 
 
 ;;-----------------------------------------------------------------------------
-;; flycheck setup
+;; FlyCheck setup
 ;;-----------------------------------------------------------------------------
 (require-package 'let-alist)
 (require-package 'flycheck-clojure)
-(after-load 'clojure-mode
-  (after-load 'cider
-    (after-load 'flycheck
-      (flycheck-clojure-setup))))
+(after-load 'flycheck
+  (flycheck-clojure-setup))
 
-;;-----------------------------------------------------------------------------
+
 
 (provide 'clojure-config)
 

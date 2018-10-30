@@ -10,7 +10,7 @@
 ;;;
 ;;; Code:
 ;;;
-;;===============================================================================
+;;;
 
 (defvar gud-overlay
   (let* ((ov (make-overlay (point-min) (point-min))))
@@ -91,6 +91,7 @@
 (global-set-key "\C-x\C-a\C-g" 'gud-run)
 
 ;;; enable tooltips: bubbles with help text
+
 (gud-tooltip-mode t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; gud configuration end ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

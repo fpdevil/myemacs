@@ -7,13 +7,15 @@
 ;;;
 ;;; Filename   : auto-insert-config.el
 ;;; Description: auto-insert configuration for Emacs
-;;;===========================================================================
-
+;;;
 ;;; Code:
+;;;
+
 
 (require 'autoinsert)
 
-(auto-insert-mode 1)
+(add-hook 'after-init-hook 'auto-insert-mode)
+;;(auto-insert-mode 1)
 (auto-insert)
 
 (setq auto-insert-alist
@@ -28,19 +30,36 @@
          "%%% Created " (format-time-string "%d %b %Y") "\n"
          "%%%-----------------------------------------------------------------------------\n\n"
          "-module(" (file-name-base buffer-file-name) ").\n\n")
-         ;;"-module(." (file-name-sans-extension buffer-file-name) ").\n")
+        ;;"-module(." (file-name-sans-extension buffer-file-name) ").\n")
+        ;; ((python-mode . "Python program") nil
+        ;;  "#!/usr/bin/env python3\n"
+        ;;  "# -*- coding: utf-8 -*-\n\n"
+        ;;  "# Copyright © " (substring (current-time-string) -4) " " (user-full-name) "\n"
+        ;;  "#\n"
+        ;;  "# Author        : " (user-full-name) " <" (progn user-mail-address) ">\n"
+        ;;  "# Created Time  : " (format-time-string "%a %b %d %H:%M:%S %Z %Y") "\n"
+        ;;  "# File          : " (file-name-nondirectory buffer-file-name) "\n"
+        ;;  "# License       :" _ "\n"
+        ;;  "# Description   :" _ "\n"
+        ;;  "#\n"
+        ;;  "##############################################################################\n\n")
         ((python-mode . "Python program") nil
-         "#!/usr/bin/env python\n"
-         "# -*- coding:utf-8 -*-\n"
-         "# Copyright © " (substring (current-time-string) -4) " " (user-full-name) "\n"
-         "#\n"
-         "# File        : " (file-name-nondirectory buffer-file-name) "\n"
-         "# Author      : " (user-full-name) " <" (progn user-mail-address) ">\n"
-         "# Time-stamp  : " (format-time-string "%a %b %d %H:%M:%S %Z %Y") "\n"
-         "# License     :" _ "\n"
-         "# Description :" _ "\n"
-         "#\n"
-         "##############################################################################\n\n")
+         "#!/usr/bin/env python3\n"
+         "# -*- coding: utf-8 -*-\n\n"
+         "\"\"\""
+         "\n"
+         "Description\n"
+         "-----------\n\n"
+         "Some details here...\n"
+         "\n"
+         "Authors: " (user-full-name)"\n\n"
+         ":module:" (file-name-nondirectory buffer-file-name) "\n"
+         ":created: " (format-time-string "%a %b %d %H:%M:%S %Z %Y") "\n"
+         ":copyright: Copyright © " (substring (current-time-string) -4) " " (user-full-name) "\n"
+         ":license:" _ "\n"
+         ":moduleauthor:" (user-full-name) " <" (progn user-mail-address) ">\n"
+         "\"\"\""
+         "\n")
         ((c-mode . "C program") nil
          "/*\n"
          " * File: " (file-name-nondirectory buffer-file-name) "\n"

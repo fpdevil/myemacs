@@ -9,8 +9,8 @@
 
 
 ;;------------------------------------------------------------------------------
-;; identify unnecessary whitespace is in all programming modes
-;; whitespace-cleanup command for clearing trailing white spaces
+;;** identify unnecessary whitespace in all the programming modes
+;;** whitespace-cleanup command for clearing trailing white spaces
 ;;------------------------------------------------------------------------------
 (require 'whitespace)                           ;; this is an internal package
 (setq-default show-trailing-whitespace t)
@@ -19,19 +19,19 @@
 
 ;;------------------------------------------------------------------------------
 (setq my-command-buffer-hooks (make-hash-table))
-(defun my-command-on-save-buffer (c)
+(defun aqua/command-on-save-buffer (c)
   "C Run a command <c> every time the buffer is saved."
   (interactive "sShell command: ")
   (puthash (buffer-file-name) c my-command-buffer-hooks))
 
 ;;------------------------------------------------------------------------------
-(defun my-command-buffer-kill-hook ()
+(defun aqua/command-buffer-kill-hook ()
   "Remove a key from <command-buffer-hooks> if it exists."
   (remhash (buffer-file-name) my-command-buffer-hooks))
 
 
 ;;------------------------------------------------------------------------------
-(defun my-command-buffer-run-hook ()
+(defun aqua/command-buffer-run-hook ()
   "Run a command if it exists in the hook."
   (let ((hook (gethash (buffer-file-name) my-command-buffer-hooks)))
     (when hook
@@ -39,50 +39,48 @@
 
 
 ;;------------------------------------------------------------------------------
-;; add a function for inserting current date time.
+;;** add a function for inserting the current date time.
 ;;------------------------------------------------------------------------------
-(defun my-insert-date (prefix)
+(defun aqua/insert-date (prefix)
   "Insert the current date with PREFIX, use ISO format.
 With two prefix arguments, write out the day and month name."
   (interactive "P")
   (let ((format (cond
                  ((not prefix) "%Y-%m-%d %H:%M")
                  ((equal prefix '(4)) "%Y-%m-%d")
-                 ((equal prefix '(16)) "%A, %d. %B %Y")))
-        )
+                 ((equal prefix '(16)) "%A, %d. %B %Y"))))
     (insert (format-time-string format))))
 
 ;;------------------------------------------------------------------------------
-;; function to get current system's name and defining system types
+;;** function to get the current system's name and defining system types
 ;;------------------------------------------------------------------------------
-(defun insert-system-name()
+(defun aqua/insert-system-name()
   (interactive)
   "Get current system's name"
   (insert (format "%s" (system-name))))
 
-(defun is-mac()
+(defun aqua/is-mac()
   "Get and see if the System type is MAC."
   (interactive)
   (string-equal system-type "darwin"))
 
-(defun is-linux()
+(defun aqua/is-linux()
   "Get and see if the System type is Linux."
   (interactive)
   (string-equal system-type "gnu/linux"))
 
 ;;------------------------------------------------------------------------------
-;; function to get current system type
+;;** function to get current system type
 ;;------------------------------------------------------------------------------
-(defun insert-system-type()
+(defun aqua/insert-system-type()
   (interactive)
-  "Get current system type"
-  (insert (format "%s" system-type))
-  )
+  "Get current system type."
+  (insert (format "%s" system-type)))
 
 ;;------------------------------------------------------------------------------
-;; function to get face information at a position
+;;** function to get face information at a position
 ;;------------------------------------------------------------------------------
-(defun get-faces (pos)
+(defun aqua/get-faces (pos)
   "Get the font faces at POS."
   (remq nil
         (list
@@ -90,8 +88,8 @@ With two prefix arguments, write out the day and month name."
          (get-char-property pos 'face)
          (plist-get (text-properties-at pos) 'face))))
 
-;; function to check if a name font is available
-(defun font-existsp (font)
+;;** function to check if the named font is available
+(defun aqua/font-existsp (font)
   "Check if the specified FONT is available."
   (interactive)
   (if (null (x-list-fonts font))
@@ -99,9 +97,9 @@ With two prefix arguments, write out the day and month name."
 
 
 ;;------------------------------------------------------------------------------
-;; print the face found at the current point (M-x what-face)
+;;** print the face found at the current point (M-x what-face)
 ;;------------------------------------------------------------------------------
-(defun what-face (pos)
+(defun aqua/what-face (pos)
   "Print font face at the POS."
   (interactive "d")
   (let ((face (or (get-char-property (point) 'read-face-name)
@@ -109,9 +107,10 @@ With two prefix arguments, write out the day and month name."
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
 ;;------------------------------------------------------------------------------
-;; function to reduce the cruft in modeline (rename major mode)
+;;** function to reduce the cruft in modeline (rename major mode)
 ;;------------------------------------------------------------------------------
-(defmacro rename-modeline (package-name mode new-name)
+(defmacro aqua/rename-modeline (package-name mode new-name)
+  "Rename the PACKAGE-NAME in the MODE on mode line to NEW-NAME."
   `(eval-after-load ,package-name
      '(defadvice ,mode (after rename-modeline activate)
         (setq mode-name ,new-name))))
@@ -121,9 +120,9 @@ With two prefix arguments, write out the day and month name."
 
 
 ;;------------------------------------------------------------------------------
-;; reloading the .emacs configuration file
+;;** reloading the .emacs configuration file
 ;;------------------------------------------------------------------------------
-(defun reload-dot-emacs ()
+(defun aqua/reload-dot-emacs ()
   "Save the .emacs buffer if required and reload .emacs."
   (interactive)
   (let ((dot-emacs (concat (getenv "HOME") "/.emacs")))
@@ -134,7 +133,7 @@ With two prefix arguments, write out the day and month name."
 
 
 ;;------------------------------------------------------------------------------
-;; get the major version as Aquamacs has none
+;;** get the major version as Aquamacs has none
 ;;------------------------------------------------------------------------------
 (defconst aq-major-version
   (progn (string-match "^[0-9]+" emacs-version)
@@ -144,14 +143,14 @@ This variable first existed in version 19.23.")
 
 
 ;;------------------------------------------------------------------------------
-;; functions for un-setting key maps and checking key maps
+;;** functions for un-setting key maps and checking key maps
 ;;------------------------------------------------------------------------------
-(defun get-key-combo (key)
+(defun aqua/get-key-combo (key)
   "Just return the KEY combo entered by the user."
   (interactive "kKey combo: ")
   key)
 
-(defun keymap-unset-key (key keymap)
+(defun aqua/keymap-unset-key (key keymap)
   "Remove binding of KEY in a KEYMAP where KEY is a string or vector representing a sequence of keystrokes."
   (interactive
    (list (call-interactively #'get-key-combo)
@@ -167,19 +166,19 @@ This variable first existed in version 19.23.")
 
 
 ;;------------------------------------------------------------------------------
-;; function for setting default fonts
+;;** function for setting default fonts
 ;;------------------------------------------------------------------------------
 (defun aqua/default-fonts ()
   "Set up the fonts that I like for my work."
   (interactive)
-  (set-face-font 'menu "-unknown-Monaco for Powerline-normal-normal-normal-*-13-*-*-*-m-0-iso10646-1")
-  (set-face-font 'default "-unknown-Monaco for Powerline-normal-normal-normal-*-13-*-*-*-m-0-iso10646-1"))
+  (set-face-font 'menu "-*-Monaco for Powerline-normal-normal-normal-*-12-*-*-*-p-0-iso10646-1")
+  (set-face-font 'default "-*-Monaco for Powerline-normal-normal-normal-*-12-*-*-*-p-0-iso10646-1"))
 
 
 ;;------------------------------------------------------------------------------
-;; ESC - exit the evils insert state and also close the company popup
+;;** [ESC] - exit the evils insert state and also close the company popup
 ;;------------------------------------------------------------------------------
-(defun aqua-company-abort ()
+(defun aqua/company-abort ()
   "Pressing ESC should close POPUP."
   (interactive)
   (company-abort)
@@ -188,7 +187,7 @@ This variable first existed in version 19.23.")
     (evil-force-normal-state)))
 
 ;;------------------------------------------------------------------------------
-;; utility function to (brokenly :< ) handle versioned dirs
+;;** utility function to (brokenly :< ) handle versioned dirs
 ;;------------------------------------------------------------------------------
 (defun aqua/wild (dir stem)
   "Return the last (alphabetically) file name that match DIR/STEM*."
@@ -200,9 +199,9 @@ This variable first existed in version 19.23.")
          (setq value (cons (concat dir element) value)))) 'string-lessp))))
 
 ;;------------------------------------------------------------------------------
-;; kill all other buffers
+;;** kill all other buffers
 ;;------------------------------------------------------------------------------
-(defun kill-other-buffers ()
+(defun aqua/kill-other-buffers ()
   "Kill all buffers but the current one, doesn't mess with special buffers."
   (interactive)
   (dolist (buffer (buffer-list))
@@ -215,10 +214,8 @@ This variable first existed in version 19.23.")
   "List of diminished modes to unicode or ascii values.")
 
 (defmacro aqua|diminish (mode &optional unicode ascii)
-  "Diminish MODE name in mode line to UNICODE or ASCII depending on the value
-`dotspacemacs-mode-line-unicode-symbols'.
-If ASCII is not provided then UNICODE is used instead. If neither are provided,
-the mode will not show in the mode line."
+  "Diminish MODE name in mode line to UNICODE or ASCII depending on the value `dotspacemacs-mode-line-unicode-symbols'. If ASCII is not provided then UNICODE
+is used instead. If neither are provided, the mode will not show in the mode line."
   `(let ((cell (assq ',mode aqua--diminished-minor-modes)))
      (if cell
          (setcdr cell '(,unicode ,ascii))
@@ -232,7 +229,7 @@ the mode will not show in the mode line."
 ;;------------------------------------------------------------------------------
 ;; list of current active modes
 ;;------------------------------------------------------------------------------
-(defun list-active-modes()
+(defun aqua/list-active-modes()
   "List all the active modes in current buffer."
   (interactive)
   (let ((active-modes))
@@ -244,21 +241,33 @@ the mode will not show in the mode line."
     (message "Current active modes list %s" active-modes)))
 
 ;;------------------------------------------------------------------------------
-;; https://github.com/cofi/dotfiles/blob/master/emacs.d/config/cofi-util.el
+;;** https://github.com/cofi/dotfiles/blob/master/emacs.d/config/cofi-util.el
 ;;------------------------------------------------------------------------------
-(defun add-to-hooks (fun hooks)
-  "Add function to hooks"
+(defun aqua/add-to-hooks (fun hooks)
+  "Add function FUN to hooks HOOKS."
   (dolist (hook hooks)
     (add-hook hook fun)))
 
+
+(defun aqua/add-to-hook (hook funs)
+  "Add to HOOK, list of functions FUNS."
+  (dolist (fun funs)
+    (add-hook hook fun)))
+
+
+(defun aqua/add-all-to-hook (hook &rest funs)
+  "Add to HOOK FUNS."
+  (aqua/add-to-hook hook funs))
+
+
 ;;------------------------------------------------------------------------------
-;; add hooks | fill n unfill
+;;** add hooks | fill n unfill
 ;;------------------------------------------------------------------------------
-(add-hook 'kill-buffer-hook 'my-command-buffer-kill-hook)
-(add-hook 'after-save-hook 'my-command-buffer-run-hook)
+(add-hook 'kill-buffer-hook 'aqua/command-buffer-kill-hook)
+(add-hook 'after-save-hook 'aqua/command-buffer-run-hook)
 
 ;; http://endlessparentheses.com/fill-and-unfill-paragraphs-with-a-single-key.html
-(defun endless/fill-or-unfill ()
+(defun aqua/fill-or-unfill ()
   "Like `fill-paragraph', but unfill if used twice."
   (interactive)
   (let ((fill-column
@@ -269,6 +278,23 @@ the mode will not show in the mode line."
     (call-interactively #'fill-paragraph)))
 
 (bind-key [remap fill-paragraph] #'endless/fill-or-unfill)
+
+;;------------------------------------------------------------------------------
+;;** indentation function
+;;------------------------------------------------------------------------------
+(defun aqua/indent-reformat-buffer-on-save ()
+  "Indent an entire buffer with the default indentation scheme."
+  (interactive)
+  (save-excursion
+    (delete-trailing-whitespace)
+    (indent-region (point-min) (point-max) nil)
+    (untabify (point-min) (point-max))))
+
+;;** functions for custom display
+(defvar aqua-display-system-init-list '()
+  "Function list to be run after display system initialization.")
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

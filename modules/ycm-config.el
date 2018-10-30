@@ -12,23 +12,29 @@
 ;;;
 ;;; Code:
 ;;;
-;;;================================================================================
+;;;
 
-(lazy-init
+(when (eq dotemacs-completion-engine 'company)
+
+  (defcustom dotemacs-company/ycmd-server-command nil
+    "The path to the ycmd package."
+    :group 'dotemacs-company
+    :type 'boolean)
+
  (require 'ycmd)             ; load package for ycmd
  (require 'flycheck-ycmd)    ; flycheck integration
  (require 'ycmd-eldoc)       ; adds eldoc support for ycmd-mode buffers
  (require 'company-ycmd)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- ;;     YCMD Configuration for Emacs                                             ;;
+ ;;     YCMD Configuration for Emacs                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  (let ((ycmd-dir (expand-file-name "private/ycmd/" user-emacs-directory)))
    (if (not (file-exists-p ycmd-dir))
        (progn
          (message "Cloning and building YouCompleteMe ...")
          (setenv "EXTRA_CMAKE_ARGS"
-                 "-DEXTERNAL_LIBCLANG_PATH=/opt/software/clang+llvm-6.0.0-x86_64-apple-darwin/lib/libclang.dylib")
+                 "-DEXTERNAL_LIBCLANG_PATH=/opt/software/clang+llvm-7.0.0-x86_64-apple-darwin/lib/libclang.dylib")
          (shell-command (concat "git clone --recursive "
                                 "https://github.com/Valloric/ycmd.git "
                                 ycmd-dir

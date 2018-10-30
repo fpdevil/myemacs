@@ -10,9 +10,23 @@
 ;;; for *if*, *end*, *fun*, *case*, *begin*, *receive*
 ;;;
 ;;; Code:
-;;;===========================================================================
+;;;
 
-;;{{{ helper for formatting the erlang records
+(defun init-fun-hide ()
+  (setq hs-special-modes-alist
+        (cons '(erlang-mode
+                "^\\([a-z][a-zA-Z0-9_]*\\|'[^\n']*[^\\]'\\)\\s *(" nil "%"
+                erlang-end-of-clause) hs-special-modes-alist))
+  (hs-minor-mode 1)
+  (local-set-key [?\M-s] 'hs-toggle-hiding)
+  (local-set-key [?\M-h] 'hs-hide-all)
+  (local-set-key [?\M-u] 'hs-show-all))
+
+(add-hook 'erlang-mode-hook 'init-fun-hide)
+
+;;-----------------------------------------------------------------------------
+;;** helper for formatting the erlang records
+;;-----------------------------------------------------------------------------
 (defun align-erlang-record ()
   "Formatting the erlang record data structure."
   (interactive)
@@ -29,11 +43,11 @@
     (goto-char (- (point) 1))
     (ignore-errors (er/expand-region 1))
     (my-align-region-by "::")))
-;;}}}
 
 
-;;{{{ Font Locking, Prettify symbols and matching parentheses highlight
-(show-paren-mode t)
+;;-----------------------------------------------------------------------------
+;;** Font Locking, Prettify symbols and matching parentheses highlight
+;;-----------------------------------------------------------------------------
 (global-font-lock-mode t)
 
 (add-hook 'erlang-mode-hook 'erlang-font-lock-level-4)
@@ -65,7 +79,6 @@
 
 (add-hook 'erlang-mode-hook 'my-delayed-prettify)
 (add-hook 'erlang-mode-hook 'erlang-prettify-symbols)
-;;}}}
 
 
 (defun get-word-at-point ()
@@ -131,7 +144,9 @@
                 (erl-find-pair 'search-backward-regexp '(-1) (point)))))))))
 
 
-;; format the Erlang code
+;;-----------------------------------------------------------------------------
+;;** [Code Format] - format the Erlang code
+;;-----------------------------------------------------------------------------
 (defun format-erl ()
   "Format an Erlang file specified as argument."
   (interactive)
@@ -141,6 +156,73 @@
       (erlang-indent-current-buffer)
     ('error (message "%s" (error-message-string str))))
   (save-buffer 0))
+
+
+;;-------------------------------------------------------------------------------
+;;** electric commands
+;;-------------------------------------------------------------------------------
+;; (set-variable 'erlang-electric-commands nil) ; to disable
+;; (setq erlang-electric-commands
+;;       ;; Insert a comma character and possibly a new indented line.
+;;       '(erlang-electric-comma
+;;         ;; Insert a semicolon character and possibly a prototype for the next line.
+;;         erlang-electric-semicolon
+;;         ;; Insert a '>'-sign and possible a new indented line.
+;;         erlang-electric-gt
+;;         ))
+
+(defun erl/electric-mode-hook ()
+  "Handle the electric commands."
+  (setq erlang-electric-commands
+	;; Insert a comma character and possibly a new indented line.
+	'(erlang-electric-comma
+	  ;; Insert a semicolon character and possibly a prototype for the next line.
+	  erlang-electric-semicolon
+	  ;; Insert a '>'-sign and possible a new indented line.
+	  erlang-electric-gt
+	  ))
+  (setq erlang-electric-newline-inhibit-list
+	'(erlang-electric-gt))
+  (setq erlang-electric-newline-inhibit t))
+(add-hook 'erlang-mode-hook 'erl/electric-mode-hook)
+
+
+;;-------------------------------------------------------------------------------
+;;** new file declarations
+;;-------------------------------------------------------------------------------
+;;** handling of new erlang files with header
+
+(defun erl-file-header ()
+  "Insert a custom edoc header at the top."
+  (interactive)
+  (save-excursion
+    (when (re-search-forward "^\\s *-spec\\s +\\([a-zA-Z0-9_]+\\)\\s *(\\(\\(.\\|\n\\)*?\\))\\s *->[ \t\n]*\\(.+?\\)\\." nil t)
+      (let* ((beg (match-beginning 0))
+             (funcname (match-string-no-properties 1))
+             (arg-string (match-string-no-properties 2))
+             (retval (match-string-no-properties 4))
+             (args (split-string arg-string "[ \t\n,]" t)))
+        (when (re-search-forward (concat "^\\s *" funcname "\\s *(\\(\\(.\\|\n\\)*?\\))\\s *->") nil t)
+          (let ((arg-types (split-string (match-string-no-properties 1) "[ \t\n,]" t)))
+            (goto-char beg)
+            (insert "%%-----------------------------------------------------------------------------\n")
+            (insert "%% @doc\n")
+            (insert "%% Your description goes here\n")
+            (insert "%% @spec " funcname "(")
+            (dolist (arg args)
+              (if (string-match "::" arg) (insert arg) (insert (car arg-types) "::" arg))
+              (setq arg-types (cdr arg-types))
+              (when arg-types
+                (insert ", ")))
+            (insert ") ->\n")
+            (insert "%%       " retval "\n")
+            (insert "%% @end\n")
+            (insert "%%-----------------------------------------------------------------------------\n")))))))
+
+;;** erlang skels options
+(eval-after-load "erlang-skels"
+  (progn
+    (setq erlang-skel-mail-address "Singamsetty.Sampath@gmail.com")))
 
 
 (provide 'erlang-helper-config)

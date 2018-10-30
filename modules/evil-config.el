@@ -304,6 +304,9 @@
 ;; suppress the ad-handle definition warning messages
 (setq ad-redefinition-action 'accept)
 
+
+
+
 (provide 'evil-config)
 
 ;; Local Variables:

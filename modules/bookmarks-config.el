@@ -4,13 +4,11 @@
 ;;;
 ;;; Filename   : bookmarks-config.el
 ;;; Description: For bookmarks
-;;;==========================================================================
-(require 'bookmark)
-
 ;;;
 ;;; Code:
 ;;;
 
+(require 'bookmark)
 
 (setq bookmark-sort-flag nil
       bookmark-save-flag 1

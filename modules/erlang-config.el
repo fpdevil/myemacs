@@ -33,29 +33,10 @@
 ;;; Code:
 ;;;
 ;;=================================================================================
-
-;; start the erlang mode
-(require 'erlang-start)
-
-;;{{{ associate file extensions with major-modes
-(add-to-list 'auto-mode-alist '("\\.erl?$"        . erlang-mode))
-(add-to-list 'auto-mode-alist '("\\.hrl?$"        . erlang-mode))
-(add-to-list 'auto-mode-alist '(".*\\.app\\'"     . erlang-mode))
-(add-to-list 'auto-mode-alist '(".*app\\.src\\'"  . erlang-mode))
-(add-to-list 'auto-mode-alist '(".*\\.config\\'"  . erlang-mode))
-(add-to-list 'auto-mode-alist '(".*\\.rel\\'"     . erlang-mode))
-(add-to-list 'auto-mode-alist '(".*\\.script\\'"  . erlang-mode))
-(add-to-list 'auto-mode-alist '(".*\\.escript\\'" . erlang-mode))
-(add-to-list 'auto-mode-alist '(".*\\.es\\'"      . erlang-mode))
-(add-to-list 'auto-mode-alist '(".*\\.xrl\\'"     . erlang-mode))
-(add-to-list 'auto-mode-alist '(".*\\.yrl\\'"     . erlang-mode))
-(add-to-list 'auto-mode-alist '(".[eh]rl'"        . erlang-mode))
-(add-to-list 'auto-mode-alist '(".yaws?'"         . erlang-mode))
-(add-to-list 'auto-mode-alist '(".escript?'"      . erlang-mode))
-;;}}}
+(require 'cl-lib)
 
 
-;;{{{ utility function to handle versioned dirs
+;; {{{ utility function to handle versioned dirs
 (defun wild (dir stem)
   "Return the last (alphabetically) filename that match DIR/STEM*."
   (car
@@ -66,17 +47,47 @@
          (setq value (cons (concat dir element) value)))) 'string-lessp))))
 ;;}}}
 
-;;{{{ setup the locations for erlang root and other packages
+
+;;** [Setup] - locations for erlang root and other packages
 (defvar erlang-erl-path "/usr/local/opt/erlang/lib/erlang")
 (setq erlang-root-dir erlang-erl-path)
+
+(defun my-erlang-load-hook ()
+  "Erlang root directory bootstrap."
+  (setq erlang-root-dir "/usr/local/opt/erlang/lib/erlang"))
+(add-hook 'erlang-mode-hook 'my-erlang-load-hook)
+
 ;;find and load the erlang mode .el file
 (defvar erlang-erlmode-path
   (concat (wild (concat erlang-erl-path "/lib/") "tools-") "emacs"))
-;; (add-to-list 'load-path erlang-erlmode-path)           ; add erlang tools to the path
-                                        ;}}}
+(add-to-list 'load-path erlang-erlmode-path)           ; add erlang tools to the path
+(add-to-list 'exec-path (concat erlang-root-dir "/bin"))
+
+;;** now start the erlang mode
+(require 'erlang-start)
 
 
-;;{{{ setup the erlang path for Wrangler and start Wrangler, load the graphviz
+;;** [associate file extensions with major-modes]
+(setq auto-mode-alist
+      (reverse
+       (append auto-mode-alist
+               '(("\\.rel$"          . erlang-mode)
+                 ("\\.app$"          . erlang-mode)
+                 ("\\.appSrc$"       . erlang-mode)
+                 ("\\.app.src$"      . erlang-mode)
+                 ("\\.hrl$"          . erlang-mode)
+                 ("\\.erl$"          . erlang-mode)
+                 ("\\.yrl$"          . erlang-mode)
+                 (".yaws?'"          . erlang-mode)
+                 (".*\\.script\\'"   . erlang-mode)
+                 (".*\\.escript\\'"  . erlang-mode)
+                 (".escript?'"       . erlang-mode)
+                 ("rebar.config$"    . erlang-mode)
+                 ("relx.config$"     . erlang-mode)
+                 ("sys.config$"      . erlang-mode)))))
+
+
+;;** [WRANGLER] - erlang path for Wrangler and start Wrangler, load the graphviz
 ;; (defvar erlang-wrangler-path "/usr/local/lib/erlang/lib/wrangler-1.2.0/elisp")
 ;; (unless (member erlang-wrangler-path load-path)
 ;;   (add-to-list 'load-path erlang-wrangler-path))
@@ -85,69 +96,36 @@
 ;; some wrangler functionalities generate a .dot file and in order
 ;; to compile the same and view in graphviz specify the below.
 ;; (load-file (concat erlang-wrangler-path "/graphviz-dot-mode.el"))
-                                        ;}}}
-
-;;{{{ ERLANG IDE with EDTS
-;;    EDTS - Erlang Development Tool Suite
-;;    start edts - place the configuration file .edts in the project
-(add-to-list 'safe-local-variable-values '(erlang-indent-level . 2)) ; code indentation
-(setq edts-code-issue-wrap-around t)
-(defun start-edts ()
-  "Initialize EDTS for ERLANG."
-  (interactive)
-  ;; Set the manual directory and indent level
-  (setq edts-man-root erlang-root-dir
-        erlang-indent-level 2)
-  (setq edts-log-level 'debug)
-  (require 'edts-start))
-
-(add-hook 'erlang-mode-hook 'start-edts)
-                                        ;}}}
-
-;;{{{ Erlang distel
-(defvar erlang-distel-path "/opt/erlang/distel/elisp")
-(unless (member erlang-distel-path load-path)
-  ;; add distel to end of load path
-  (setq load-path (append load-path (list erlang-distel-path))))
-                                        ;}}}
-
-;;{{{ erlang Esense
-(defvar erlang-esense-path (wild "/opt/erlang/" "esense-"))
-(unless (member erlang-esense-path load-path)
-  (add-to-list 'load-path erlang-esense-path))
-                                        ;}}}
 
 
-;;{{{ for erlang man pages
+;;** [MAN PAGES]
 (setq erlang-man-root-dir (expand-file-name "man" erlang-erl-path))
 (setq erlang-man-dirs (list '("Man - Commands" "lib/erlang/man/man1" t)
                             '("Man - Modules" "lib/erlang/man/man3" t)
                             '("Man - Files" "lib/erlang/man/man4" t)
                             '("Man - Applications" "lib/erlang/man/man6" t)))
-                                        ;}}}
 
-;;{{{ for imenu and start an erlang shell with boot flags
-(defun my-erlang-hook-function ()
-  "Function to add iMenu."
-  (interactive)
-  (imenu-add-to-menubar "Functions"))
-(add-hook 'erlang-mode-hook 'my-erlang-hook-function)
-                                        ;}}}
 
-;;{{{ A number of the erlang-extended-mode key bindings are useful in the shell too
-;;    setup shortcut keys
-(defconst distel-shell-keys
-  '(("\C-\M-i"   erl-complete)
-    ("\M-?"      erl-complete)
-    ("\M-."      erl-find-source-under-point)
-    ("\M-,"      erl-find-source-unwind)
-    ("\M-*"      erl-find-source-unwind))
-  "Additional keys to bind when in Erlang shell.")
-                                        ;}}}
+;;** [imenu, indentation] - Imenu, indentation and machine-options
+(defun init-erl-utils ()
+  "interactive"
+  (setq indent-tabs-mode nil)
+  (setq-default tab-width 4)
+  (setq erlang-indent-level 4)
+  (setq inferior-erlang-machine-options '("-sname" "emacs"))
+  (imenu-add-to-menubar "imenu"))
+(add-hook 'erlang-mode-hook 'init-erl-utils)
 
-;;{{{ Erlang Distel setup
+
+;;** [DISTEL] - Erlang Development Support
+(defvar erlang-distel-path "/opt/erlang/distel/elisp")
+(unless (member erlang-distel-path load-path)
+  ;; add distel to end of load path
+  (setq load-path (append load-path (list erlang-distel-path))))
+
+
+;;** Erlang Distel setup continuation
 (require 'distel)
-(add-hook 'erlang-mode-hook 'distel-erlang-mode-hook)
 (add-hook 'erlang-mode-hook
           (lambda ()
             (setq distel-modeline-node "distel")
@@ -156,41 +134,58 @@
             ;; could talk to this node from other machines.
             ;; (setq inferior-erlang-machine-options '("-name" "emacs"))
             (setq inferior-erlang-machine-options '("-sname" "emacs"))
+            ;; tell distel to default to that node
+            (setq erl-nodename-cache
+                  (make-symbol
+                   (concat
+                    "emacs@"
+                    ;; Mac OS X uses "name.local" instead of "name", this should work
+                    ;; pretty much anywhere without having to muck with NetInfo
+                    ;; ... but I only tested it on Mac OS X.
+                    (car (split-string (shell-command-to-string "hostname"))))))
             (setq erlang-compile-extra-opts (list 'debug_info))
             ;; when loading a beam file from emacs, add the path to erlang
             (setq erl-reload-dwim t)))
 
+(add-hook 'erlang-mode-hook 'init-shell)
+
 (distel-setup)
 
-(defvar *erlang-shell-distel-keys* '(erl-complete
-                                     erl-find-source-under-point
-                                     erl-find-source-unwind
-                                     erl-process-list
-                                     erl-ie-show-session
-                                     erl-fdoc-describe
-                                     erl-fdoc-apropos
-                                     erl-who-calls
-                                     erl-openparen)
-  "Distel functions useful in the Erlang shell.")
+;;** [Erl Shell] - Setup the Erlang Shell
+(defun init-shell ()
+  (add-hook 'erlang-shell-mode-hook 'erlang-shell-init)
+  (defun erlang-shell-init ()
+    (setq comint-dynamic-complete-functions
+          '(erl-nodename-complete  comint-replace-by-expanded-history)))
+  (defun erl-nodename-complete ()
+    "Call erl-complete if we have an Erlang node name"
+    (if erl-nodename-cache
+        (erl-complete erl-nodename-cache)
+      nil))
+  ;; A number of the erlang-extended-mode key bindings are useful in the shell too
+  ;; setup shortcut keys
+  (defconst distel-shell-keys
+    '(("\C-\M-i"   erl-complete)
+      ("\M-?"      erl-complete)
+      ("\M-."      erl-find-source-under-point)
+      ("\M-,"      erl-find-source-unwind)
+      ("\M-*"      erl-find-source-unwind)
+      )
+    "Additional keys to bind when in Erlang shell.")
 
-(add-hook 'erlang-shell-mode-hook
-          ;; Add Distel bindings to the Erlang shell.
-          (lambda ()
-            ;; Comint binding that conflicts with some of the
-            ;; distel keybindings.
-            (define-key erlang-shell-mode-map (kbd "C-c C-d") nil)
-
-            (loop for (key-binding function) in distel-keys
-                  when (memq function *erlang-shell-distel-keys*)
-                  do (progn
-                       (message "Adding keybinding %s for %s"
-                                (format-kbd-macro key-binding) function)
-                       (define-key erlang-shell-mode-map key-binding function)))))
-                                        ;}}}
+  (add-hook 'erlang-shell-mode-hook
+            (lambda ()
+              ;; Comint binding that conflicts with some of the
+              ;; distel keybindings.
+              (define-key erlang-shell-mode-map (kbd "C-c C-d") nil)
+              ;; add some Distel bindings to the Erlang shell
+              (dolist (spec distel-shell-keys)
+                (define-key erlang-shell-mode-map (car spec) (cadr spec))))))
 
 
-;;{{{  auto-complete-mode so can interact with inferior erlang and
-;;     popup completion turn on when needed.
+;;** [auto-complete-mode]
+;;    auto-complete-mode so can interact with inferior erlang and
+;;    popup completion turn on when needed.
 (add-hook 'erlang-mode-hook
           (lambda () (auto-complete-mode 1)))
 
@@ -201,11 +196,12 @@
   ;;(setq ac-modes (append ac-modes '(erlang-mode)))
   ;;(setq ac-modes (append ac-modes '(erlang-shell-mode)))
   (setq ac-modes (append ac-modes (list 'erlang-mode)))
-  (setq ac-modes (append ac-modes (list 'erlang-shell-mode))))
-                                        ;}}}
+  (setq ac-modes (append ac-modes (list 'erlang-shell-mode)))
+  (add-to-list 'ac-sources 'auto-complete-distel))
 
 
-;;{{{ setup company completions with distel
+;;** [company-mode]
+;;    setup company completions with distel
 ;;    erlang auto completion using company mode and distel
 (after "company"
   (require 'company-distel)
@@ -221,11 +217,13 @@
   (setq distel-completion-get-doc-from-internet t)
   ;; Change completion symbols
   (setq distel-completion-valid-syntax "a-zA-Z:_-"))
-                                        ;}}}
 
-;;{{{ For ESENSE
+
+;;** [ESENSE] - Erlang IDE Features
+(defvar erlang-esense-path (wild "/opt/erlang/" "esense-"))
 (defun init-esense ()
   "Set esense configuration."
+  (add-to-list 'load-path erlang-esense-path)
   (require 'esense-start)
   (setq esense-indexer-program (concat erlang-esense-path "esense.sh"))
   (setq esense-setup-otp-search-directories t)
@@ -233,12 +231,14 @@
   (setq esense-include-search-directories (concat erlang-root-dir "/lib/*/include"))
   (setq esense-distel-node "distel@apple"))
 
+;;** initialize Esense
 (init-esense)
 
-;; Initialize Esense
+
+;;** [Compile] - Erlang Make and Compile
 (add-hook 'erlang-mode-hook 'my-erlang-mode-hook)
 (defun my-erlang-mode-hook ()
-  "Erlang hook for Esense Mode."
+  "Erlang hook for Make and Compile."
   ;; (esense-mode)
   ;; distel The Right Way(tm)
   (local-set-key [(meta l)] 'erl-find-mod)
@@ -258,9 +258,8 @@
                (if (file-exists-p "../ebin") "-o ../ebin " "")
                (if (file-exists-p "../inc") "-I ../inc " ""))
               "+debug_info -W " buffer-file-name))))))
-                                        ;}}}
 
-;;{{{ Initialize comint mode
+;;** [Comint] - Initialize comint mode
 (add-hook 'comint-mode-hook 'my-comint)
 (defun my-comint ()
   "Try to make the shell more like the real shell."
@@ -269,28 +268,53 @@
   (local-set-key [(control down)] 'next-line)
   (local-set-key [up] 'comint-previous-input)
   (local-set-key [down] 'comint-next-input))
-                                        ;}}}
-
-;;{{{ Setup the Erlang Shell
-(add-hook 'erlang-shell-mode-hook 'my-erlang-shell)
-(defun my-erlang-shell ()
-  "Erlang shell handler."
-  (setq comint-dynamic-complete-functions
-        '(my-erl-complete  comint-replace-by-expanded-history)))
-
-(defun my-erl-complete ()
-  "Call erl-complete if we have an Erlang node name."
-  (if erl-nodename-cache
-      (erl-complete erl-nodename-cache)
-    nil))
-                                        ;}}}
 
 
-;;{{{ Syntax Checking and Miscellaneous function loading
-;; erlang flycheck support and custom helpers
+
+;;** [IDE with EDTS]
+;;    EDTS - Erlang Development Tool Suite
+;;    start edts - place the configuration file .edts in the project
+;;(add-to-list 'safe-local-variable-values '(erlang-indent-level . 4))
+(defun start-edts ()
+  "Initialize EDTS for ERLANG."
+  (interactive)
+  ;; Set the manual directory and indent level
+  (setq edts-man-root "/usr/local/opt/erlang/lib/erlang")
+  ;;(setq edts-data-directory (expand-file-name "edts" cache-dir))
+  (setq edts-code-issue-wrap-around t)
+  (setq edts-log-level 'debug)
+  (require 'edts-start))
+
+
+;; (setq edts-projects
+;;      '(((name          . "code-dev")
+;;         (node-sname    . "code")
+;;         (root          . "~/code")
+;;         ;; (otp-path      . "/opt/install/R14b03")
+;;         (lib-dirs      . ("lib" "test")))))
+
+;; EDTS uses the directory name for the name of its worker node, which often
+;; collides with the name you’d use when running the application in an Erlang
+;; node… The below setup adds “edts-” to the beginning of the node that EDTS
+;; starts when opening the source code.
+(defun custom-edts-project-config-default (config)
+  (let ((entry (assq :node-sname config)))
+    (setf (cdr entry) (concat "edts-" (cdr entry)))
+    config))
+
+(with-eval-after-load "edts-project"
+  (advice-add 'edts-project--config-default :filter-return
+              'custom-edts-project-config-default))
+
+(add-hook 'erlang-mode-hook 'start-edts)
+;;(add-hook 'after-init-hook 'start-edts)
+;;(add-hook 'erlang-mode-hook (lambda () (require 'edts-start)))
+
+
+;;** [Syntax Checking] - Syntax Checking and Miscellaneous function loading
+;;                       erlang flycheck support and custom helpers
 (require 'erlang-flycheck-config)
 (require 'erlang-helper-config)
-                                        ;}}}
 
 
 (provide 'erlang-config)

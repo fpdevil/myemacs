@@ -11,23 +11,24 @@
 ;;;
 ;;; Code:
 ;;;
-;;===============================================================================
+;;;
+
 (require-package 'color-theme)
 
-;; ALL themes are safe to me
+;; with this setting all themes are safe to me
 (setq custom-safe-themes t)
 
 ;;-------------------------------------------------------------------------------
-;; setting default color theme to required (from Steve Purcell .emacs)
+;; set a default color theme as required (from Steve Purcell .emacs)
 ;;-------------------------------------------------------------------------------
 (setq-default custom-enabled-themes '(
+                                      ;;material-light
+                                      leuven
                                       ;;darkokai
                                       ;;majapahit-light
-                                      ;;leuven
-                                      ;;deeper-blue
-                                      ;;material
-                                      twilight-bright
-                                      ;;spolsky
+                                      ;;doom-solarized-light
+                                      ;;doom-molokai
+                                      ;;gruvbox-dark-hard
                                       ))
 
 ;;-------------------------------------------------------------------------------
@@ -63,6 +64,15 @@
   (custom-set-variables `(custom-enabled-themes (quote ,custom-enabled-themes))))
 
 ;;-------------------------------------------------------------------------------
+;; apply the themes after Emacs initializes
+;;-------------------------------------------------------------------------------
+(setq color-theme-illegal-faces "^\\(w2-\\|dropdown-\\|info-\\|linum\\|yas-\\|font-lock\\|dired-directory\\)")
+;; to fix the aquamacs theme setup issue
+;; (setq default-frame-alist nil)
+(add-hook 'after-init-hook 'reapply-themes)
+
+
+;;-------------------------------------------------------------------------------
 ;; Toggle between light and dark solarized themes
 ;;-------------------------------------------------------------------------------
 (defun light ()
@@ -91,7 +101,10 @@
       frame-name)))
   (load-theme 'zerodark t)
   (zerodark-setup-modeline-format)
-  (set-selected-frame-dark))
+  ;;(set-selected-frame-dark)
+  )
+
+; (zerodark)
 
 ;;-------------------------------------------------------------------------------
 ;; Toggle between prelude's light and dark solarized themes
@@ -170,15 +183,6 @@
 
 ;; (moe)
 
-;;-------------------------------------------------------------------------------
-;; apply the themes after Emacs initializes
-;;-------------------------------------------------------------------------------
-(add-hook 'after-init-hook 'reapply-themes)
-(setq color-theme-illegal-faces "^\\(w2-\\|dropdown-\\|info-\\|linum\\|yas-\\|font-lock\\|dired-directory\\)")
-
-;; set the background color for the header.
-(custom-set-faces '(header-line ((t (:background "#003366")))))
-
 ;;;;;;;;;;;;;;;;;;;;;;; color theme configuration end ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'themes-config)
@@ -186,6 +190,6 @@
 ;; Local Variables:
 ;; coding: utf-8
 ;; mode: emacs-lisp
+;; byte-compile-warnings: (not free-vars unresolved noruntime cl-functions)
 ;; End:
-
 ;;; themes-config.el ends here

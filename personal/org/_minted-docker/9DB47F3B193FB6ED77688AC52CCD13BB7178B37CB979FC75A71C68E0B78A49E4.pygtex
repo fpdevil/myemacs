@@ -1,5 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-docker start example1
-
-docker stop example1
-\end{Verbatim}

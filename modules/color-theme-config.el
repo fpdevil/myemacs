@@ -15,15 +15,16 @@
 (require-package 'color-theme)
 
 (defadvice load-theme (before disable-themes-first activate)
-  "Disable all themes."
+  "Disable all the existing themes first."
   (dolist (i custom-enabled-themes)
     (disable-theme i)))
 
 (defvar my-current-color-theme nil
   "My current color theme.")
 
+
 (defun my-toggle-color-theme ()
-  "Toggle between the major color theme and fallback theme.
+  "Toggle between the major color theme and the fallback theme.
 Fallback theme is used only if the console does NOT support 256 colors."
   (interactive)
   (cond
@@ -39,6 +40,7 @@ Fallback theme is used only if the console does NOT support 256 colors."
       (require 'color-theme-molokai))
     (color-theme-molokai)
     (setq my-current-color-theme "favorite"))))
+
 ;; turn on the color theme now!
 (my-toggle-color-theme)
 

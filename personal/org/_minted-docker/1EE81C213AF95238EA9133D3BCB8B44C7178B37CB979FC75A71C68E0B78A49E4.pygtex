@@ -1,8 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-docker run \PYGZhy{}p \PYG{l+m}{8000}:8000 \PYGZhy{}\PYGZhy{}name example1 todoapp
-
-\PYG{c+c1}{\PYGZsh{} press Ctrl+C to exit}
-
-\PYG{c+c1}{\PYGZsh{} do a diff}
-docker diff example1
-\end{Verbatim}

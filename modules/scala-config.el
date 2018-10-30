@@ -11,9 +11,11 @@
 ;;;
 ;;; Code:
 ;;;
-;;;===========================================================================
-(require 'ensime)               ; ensime loads scala-mode2 internally
-(require 'sbt-mode)             ; interact with scala and sbt projects
+
+(require-package 'company)
+(require-package 'ensime)               ; ensime loads scala-mode2 internally
+(require-package 'sbt-mode)             ; interact with scala and sbt projects
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ENhanced Scala Interaction Mode for Emacs (for scala development)        ;;
@@ -23,9 +25,6 @@
 (setq ensime-completion-style 'company
       ensime-graphical-tooltips t
       ensime-auto-generate-config t)
-
-(after "company"
- (setq company-minimum-prefix-length 1))
 
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
@@ -60,37 +59,36 @@
   ))
 
 (add-hook 'scala-mode-hook
-  (lambda ()
-    (ensime-scala-mode-hook)
-    (setq prettify-symbols-alist scala-prettify-symbols)
-    (prettify-symbols-mode)
-    (define-key scala-mode-map (kbd "C-x M-e") 'ensime-fully-reload)
-  ))
+          (lambda ()
+            (ensime-scala-mode-hook)
+            (setq prettify-symbols-alist scala-prettify-symbols)
+            (prettify-symbols-mode)
+            (define-key scala-mode-map (kbd "C-x M-e") 'ensime-fully-reload)))
 
 (setq ensime-sem-high-faces
       '(
         (implicitConversion nil)
-        (var . (:foreground "#ff2222"))
-        (val . (:foreground "#dddddd"))
-        (varField . (:foreground "#ff3333"))
-        (valField . (:foreground "#dddddd"))
-        (functionCall . (:foreground "#dc9157"))
-        (param . (:foreground "#ffffff"))
-        (object . (:foreground "#D884E3"))
-        (class . (:foreground "green"))
-        (trait . (:foreground "#009933")) ;; "#084EA8"))
-        (operator . (:foreground "#cc7832"))
-        (object . (:foreground "#6897bb" :slant italic))
-        (package . (:foreground "yellow"))
+        (var                . (:foreground "#ff2222"))
+        (val                . (:foreground "#dddddd"))
+        (varField           . (:foreground "#ff3333"))
+        (valField           . (:foreground "#dddddd"))
+        (functionCall       . (:foreground "#dc9157"))
+        (param              . (:foreground "#ffffff"))
+        (object             . (:foreground "#D884E3"))
+        (class              . (:foreground "green"))
+        (trait              . (:foreground "#009933")) ;; "#084EA8"))
+        (operator           . (:foreground "#cc7832"))
+        (object             . (:foreground "#6897bb" :slant italic))
+        (package            . (:foreground "yellow"))
         (implicitConversion . (:underline (:style wave :color "blue")))
-        (implicitParams . (:underline (:style wave :color "blue")))
-        (deprecated . (:strike-through "#a9b7c6"))
+        (implicitParams     . (:underline (:style wave :color "blue")))
+        (deprecated         . (:strike-through "#a9b7c6"))
         (implicitParams nil))
-        ;; ensime-completion-style 'company
-        ;; ensime-sem-high-enabled-p nil ;; disable semantic highlighting
-        ensime-tooltip-hints t ;; disable type-inspecting tooltips
-        ensime-tooltip-type-hints t ;; disable typeinspecting tooltips
-)
+      ;; ensime-completion-style 'company
+      ;; ensime-sem-high-enabled-p nil         ;; disable semantic highlighting
+      ensime-tooltip-hints t                   ;; disable type-inspecting tooltips
+      ensime-tooltip-type-hints t              ;; disable typeinspecting tooltips
+      )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Ensime                                                                   ;;

@@ -10,7 +10,7 @@
 ;;;
 ;;; Code:
 ;;;
-;;===========================================================================
+
 (require 'elixir-mode)         ;; this is installed as a alchemist dependency
 (require 'alchemist)           ;; alchemist for elixir major mode
 (require 'flycheck-elixir)     ;; flycheck checker for Elixir files
@@ -28,12 +28,21 @@
       alchemist-compile-command "/usr/local/bin/elixirc"
       alchemist-key-command-prefix (kbd "C-c a"))
 
+;; company integration
+(after 'company-mode
+  (add-hook 'elixir-mode-hook
+            (setq-local company-backends '((alchemist-company :with company-yasnippet)))))
+
+;; auto-complete integration
+(after "auto-complete"
+  (add-hook 'elixir-mode-hook 'ac-alchemist-setup))
+
 ;; add support for Elixir and mix to flycheck.
 (flycheck-mix-setup)
 (add-hook 'elixir-mode-hook 'flycheck-mode)
 
 (add-hook 'elixir-mode-hook
-          (lambda()
+      (lambda()
             (company-mode)
             (alchemist-mode)
             (add-to-list (make-local-variable 'company-backends)
@@ -47,12 +56,6 @@
                       (lambda()
                         (indent-whole-buffer)))))
 
-;; auto-complete
-(add-hook 'elixir-mode-hook 'ac-alchemist-setup)
-
-;; company auto completion
-;; (require 'company)
-;; (add-hook 'eval-after-load 'global-company-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'elixir-config)

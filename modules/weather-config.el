@@ -8,12 +8,13 @@
 ;;;              and sunshine Emacs plugin
 ;;;
 ;;; elisp code for getting the real time weather information
-;;;===========================================================================
-(require 'wttrin)                  ; get weather information
-(require 'sunshine)                ; weather and forecast information
 ;;;
 ;;; Code:
 ;;;
+;;;===========================================================================
+(require 'wttrin)                  ; get weather information
+(require 'sunshine)                ; weather and forecast information
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; provides weather information from wttr.in based on your query condition  ;;
 ;; command to invoke is wttrin. list any required cities                    ;;
@@ -27,6 +28,7 @@
 (setq sunshine-appid "e8ec8a2a343baa242eae803d07568d46")
 (setq sunshine-show-icons t)
 (setq sunshine-location "60106,USA")
+(setq wttrin-default-accept-language '("Accept-Language" . "en-US"))
 
 
 (provide 'weather-config)

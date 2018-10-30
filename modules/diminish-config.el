@@ -13,7 +13,8 @@
 ;;;
 ;;; Code:
 ;;;
-;;;=============================================================================
+;;;
+
 (require 'dim)      ;; customize mode-line names of major/minor modes
 (require 'diminish) ;; diminish minor mode displays
 
@@ -40,8 +41,9 @@
                    (rainbow-mode               "Ⓡ")
                    (company-mode               "Ⓒ" company)
                    (auto-complete-mode         "Ⓐ")
-                   (git-gutter-mode            "Ⓖ" git-gutter)
                    (yas-minor-mode             "Ⓨ" yas)
+                   (interactive-haskell-mode   "Ⓘ" IntHS)
+                   ;;(git-gutter-mode            "Ⓖ" git-gutter)
                    ;;(paredit-mode               "{ק}" paredit)
                    ))
 
@@ -81,6 +83,7 @@
 (after 'paredit (diminish 'paredit-mode))
 (after 'helm-mode (diminish 'helm-mode))
 (after 'ivy (diminish 'ivy-mode))
+(after 'git-gutter (diminish 'git-gutter-mode))
 
 
 (provide 'diminish-config)

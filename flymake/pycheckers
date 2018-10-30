@@ -1,5 +1,51 @@
 #!/bin/bash
 
-pyflakes "$1"
-pep8 --ignore=E221,E701,E202 --repeat "$1"
+# TODO: Warnings should be prepended with "warning" or "Warning"
+
+# Use flake8 instead of pyflakes and pep8
+## pyflakes "$1"
+
+## silenced pep8 warnings
+# W293: empty line has whitespace. I need that for code folding.
+# W291: trailing spaces. I don’t mind them.
+# E261: less than 2 spaces between code and comment. I disagree (due to highlighting).
+# E226: whitespace around operators. Sometimes these reduce readability in long equations.
+# E228: whitespace around modulo operator: Misfires on string formatting.
+# E231: whitespace after ,. In 2D array access that can hurt readability.
+# E501: long lines over 79 chars are nasty, but sometimes they improve readability.
+# E303: too many blank lines (>= 3 before function). I might want to use these.
+# E251: no spaces around = in function call keywords. I like them.
+# E401: multiple imports on one line. That actually improves readability.
+# E271: multiple spaces after keywords are *necessary* for
+# bracket-continued if's to avoid E125 (same indentation as body of
+# the if block). And E125 really creates readability problems, while
+# E271 is purely cosmetic. 
+# This allows this:
+# if     (foo and
+#         bar):
+#     baz
+# Only Alternative I see: 
+# if (
+#         foo and
+#         bar):
+#     baz
+# 
+# E241: multiple spaces after comma can be necessary to vertically align arguments of different length.
+# 
+# pep8 --ignore=E221,E701,E202,W291,W293,E261,E226,E228,E231,E501,E303,E251,E401,E271,E241 --repeat "$1"
+
+# the sed-calls make flymake show calls as warnings instead of errors:
+# F841: validation assigned but not used.
+# F401: unused import.
+# C901: Function too complex.
+# E302: No 2 blank lines before function definition. This is only stylistic.
+# W*: anything pep8 marks as warning.
+
+# --max-complexity 9 actually allows a maximum complexity of 8
+flake8 --max-complexity 9 --ignore=E221,E701,E202,W291,W293,E261,E226,E228,E231,E501,E303,E251,E401,E271,E241 "$1" \
+    | sed s/F401/warning\ F401/ \
+    | sed s/F841/warning\ F841/ \
+    | sed s/C901/warning\ C901/ \
+    | sed s/E302/warning\ E302/ \
+    | sed s/\:\ W/\:\ warning\ W/
 true

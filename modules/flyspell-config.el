@@ -66,7 +66,7 @@
 (put 'rjsx-mode 'flyspell-mode-predicate 'js-flyspell-verify)
 ;; }}
 
-(after-load 'flyspell
+(after 'flyspell
   '(progn
      (require 'flyspell-lazy)
      (flyspell-lazy-mode 1)))
@@ -207,14 +207,15 @@ Please note RUN-TOGETHER will make aspell less capable.  So it should only be us
 ;; Using Helm with flyspell
 (after "flyspell-correct-helm"
   (setq flyspell-correct-interface #'flyspell-correct-helm)
-  (define-key flyspell-mode-map (kbd "<f8>") 'helm-flyspell-correct))
+  ;;(define-key flyspell-mode-map (kbd "<f8>") 'helm-flyspell-correct)
+  )
 
 ;; flyspell popup configuration
 (require-package 'flyspell-correct-popup)
 (setq flyspell-correct-interface #'flyspell-correct-popup)
 
 (require-package 'flyspell-popup)
-(define-key flyspell-mode-map (kbd "C-:") #'flyspell-popup-correct)
+;;(define-key flyspell-mode-map (kbd "C-:") #'flyspell-popup-correct)
 ;;(setq flyspell-popup-correct-delay 1.0)
 (add-hook 'flyspell-mode-hook #'flyspell-popup-auto-correct-mode)
 
@@ -236,7 +237,7 @@ Please note RUN-TOGETHER will make aspell less capable.  So it should only be us
 (after 'flyspell
   (require-package 'auto-dictionary)
   (require 'auto-dictionary)
-  (add-hook 'flyspell-mode-hook (lambda () (auto-dictionary-mode 1)))
+  ;;(add-hook 'flyspell-mode-hook (lambda () (auto-dictionary-mode 1)))
   (add-hook 'auto-dictionary-mode-hook
             (lambda ()
               (when (and
@@ -244,6 +245,11 @@ Please note RUN-TOGETHER will make aspell less capable.  So it should only be us
                      ispell-local-dictionary)
                 (adict-change-dictionary ispell-local-dictionary))) 'append))
 ;;}}}
+
+
+;; spell checking on all open files
+; (add-hook 'find-file-hook 'flyspell-mode)
+; (add-hook 'find-file-hook 'flyspell-buffer)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

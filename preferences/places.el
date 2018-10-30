@@ -1,4 +1,4 @@
 ;;; -*- coding: utf-8 -*-
-(("/Users/sampathsingamsetty/.emacs.d/preferences/scratch buffer" . 55)
- ("/Users/sampathsingamsetty/aquamacs.d/custom.el" . 4881)
- ("/Users/sampathsingamsetty/.emacs.d/cache/recentf" . 97586))
+(("/Users/sampathsingamsetty/aquamacs.d/aqua-package-repos.el" . 5124)
+ ("/Users/sampathsingamsetty/aquamacs.d/modules/scala-config.el" . 4631)
+ ("/Users/sampathsingamsetty/aquamacs" . 853))

@@ -7,6 +7,7 @@
 ;;; modes as needed and this should be the first to load
 ;;;
 ;;; Code:
+;;;
 
 ;;------------------------------------------------------------------------------
 ;;** load lazily or initialize lazily
@@ -40,15 +41,14 @@
     `(eval-after-load ,file (lambda () ,@body))))
 
 (defmacro after (feature &rest body)
-  "Executes BODY after FEATURE has been loaded.
+  "Execute after the FEATURE BODY has been loaded.
 
 FEATURE may be any one of:
     'evil            => (with-eval-after-load 'evil BODY)
     \"evil-autoloads\" => (with-eval-after-load \"evil-autolaods\" BODY)
     [evil cider]     => (with-eval-after-load 'evil
                           (with-eval-after-load 'cider
-                            BODY))
-"
+                            BODY))"
   (declare (indent 1))
   (cond
    ((vectorp feature)
@@ -82,33 +82,36 @@ FEATURE may be any one of:
 ;;------------------------------------------------------------------------------
 (setq use-file-dialog nil)
 (setq use-dialog-box nil)
-(setq inhibit-startup-screen t)
+(setq inhibit-default-init t)
+(setq inhibit-startup-screen nil)
 (setq inhibit-startup-buffer-menu t)
 (setq inhibit-startup-echo-area-message t)
-(setq inhibit-startup-echo-area-message "locutus")
+(setq inhibit-startup-echo-area-message nil)
 (setq initial-buffer-choice t)
+(setq initial-major-mode 'fundamental-mode)
 
 
 ;;------------------------------------------------------------------------------
-;;*** display an initial scratch message & prettify symbols
+;;** display an initial scratch message & prettify symbols
 ;;------------------------------------------------------------------------------
-(setq-default initial-scratch-message
-              (concat "ॐ  Emacs With ❤️ " user-login-name "!\n" "☆ సంపత్ కుమార్ ☆" "\n"))
+(setq initial-scratch-message nil)
+; (setq initial-scratch-message
+;         (concat "ॐ  Emacs With ❤️ " user-login-name "!\n" "☆ సంపత్ కుమార్ ☆" "\n"))
 
 ;;------------------------------------------------------------------------------
-;;*** show a marker in the left fringe for lines not in the buffer
+;;** show a marker in the left fringe for lines not in the buffer
 ;;------------------------------------------------------------------------------
 (setq indicate-empty-lines t)
 
 ;;------------------------------------------------------------------------------
-;;*** prettify the symbols
+;;** prettify the symbols
 ;;------------------------------------------------------------------------------
 (when (fboundp 'global-prettify-symbols-mode)
   (global-prettify-symbols-mode))
 
 
 ;;------------------------------------------------------------------------------
-;;*** [TAB] key settings - handle whitespaces
+;;** [TAB] key settings - handle whitespaces
 ;; (require 'whitespace)
 ;;------------------------------------------------------------------------------
 (setq whitespace-style
@@ -125,14 +128,14 @@ FEATURE may be any one of:
 
 
 ;;------------------------------------------------------------------------------
-;;*** check the buffer file name
+;;** check the buffer file name
 ;;------------------------------------------------------------------------------
 (defvar load-user-customized-major-mode-hook t)
 (defvar cached-normal-file-full-path nil)
 
-(defun is-buffer-file-temp ()
+(defun aqua/is-buffer-file-temp ()
+  "If (buffer-file-name) is nil or a temp file or HTML file converted from org file."
   (interactive)
-  "If (buffer-file-name) is nil or a temp file or HTML file converted from org file"
   (let ((f (buffer-file-name))
         org
         (rlt t))
@@ -156,9 +159,9 @@ FEATURE may be any one of:
     rlt))
 
 ;;------------------------------------------------------------------------------
-;;*** utility to get list of minor modes
+;;** utility to get list of minor modes
 ;;------------------------------------------------------------------------------
-(defun which-active-modes ()
+(defun aqua/which-active-modes ()
   "Give a message of which minor modes are enabled in the current buffer."
   (interactive)
   (let ((active-modes))
@@ -171,9 +174,9 @@ FEATURE may be any one of:
 
 
 ;;------------------------------------------------------------------------------
-;;*** add or disable a specific backend in company-backends
+;;** add or disable a specific backend in company-backends
 ;;------------------------------------------------------------------------------
-(defun aqua-company-backend-disable (backend mymode)
+(defun aqua/company-backend-disable (backend mymode)
   "Disable a specific BACKEND in MYMODE in company for a mode."
   (interactive)
   (if (equal major-mode mymode)
@@ -183,7 +186,7 @@ FEATURE may be any one of:
       ;; disable or remove a backend
       (setq company-backends (delete backend company-backends)))))
 
-(defun aqua-company-backend-add (backend mymode)
+(defun aqua/company-backend-add (backend mymode)
   "Add a specific BACKEND in MYMODE in company for a mode."
   (interactive)
   (if (equal major-mode mymode)
@@ -194,7 +197,7 @@ FEATURE may be any one of:
         (add-to-list 'company-backends backend))))
 
 
-(defun aqua-company-idle-delay (cdelay clength mymode)
+(defun aqua/company-idle-delay (cdelay clength mymode)
   "Set company idle CDELAY, prefix CLENGTH for a specific mode MYMODE."
   (if (equal major-mode mymode)
       (message "--> setting idle delay to %f prefix-length to %d for %S-hook" cdelay clength mymode)
@@ -205,18 +208,7 @@ FEATURE may be any one of:
                          company-minimum-prefix-length clength))))))
 
 ;;------------------------------------------------------------------------------
-;;*** indentation function
-;;------------------------------------------------------------------------------
-(defun indent-reformat-buffer-on-save ()
-  "Indent an entire buffer with the default indentation scheme."
-  (interactive)
-  (save-excursion
-    (delete-trailing-whitespace)
-    (indent-region (point-min) (point-max) nil)
-    (untabify (point-min) (point-max))))
-
-;;------------------------------------------------------------------------------
-;;*** do not annoy with those messages about active processes while exitting
+;;** do not annoy with those messages about active processes while exitting
 ;;------------------------------------------------------------------------------
 (add-hook 'comint-exec-hook
           (lambda () (set-process-query-on-exit-flag (get-buffer-process (current-buffer)) nil)))

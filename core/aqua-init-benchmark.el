@@ -4,13 +4,14 @@
 ;;;
 ;;; Filename   : aqua-init-benchmark.el
 ;;; Description: Benchmark the startup times of packages in Emacs
-;;;              @Thanks to Steve Purcell (purcell emacs)
+;;;              @Thanks to Steve Purcell (purcell Emacs)
 ;;;              This should be the first file to load
 ;;;
 ;;; Code:
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun sanityinc/time-subtract-millis (b a)
+  "Get difference of B and A."
   (* 1000.0 (float-time (time-subtract b a))))
 
 (defvar sanityinc/require-times nil
@@ -42,14 +43,17 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
   (tablist-minor-mode))
 
 (defun sanityinc/require-times-sort-by-start-time-pred (entry1 entry2)
+  "Sort using 2 values ENTRY1 and ENTRY2."
   (< (string-to-number (elt (nth 1 entry1) 0))
      (string-to-number (elt (nth 1 entry2) 0))))
 
 (defun sanityinc/require-times-sort-by-load-time-pred (entry1 entry2)
+  "Sort ny load times for ENTRY1 and ENTRY2."
   (> (string-to-number (elt (nth 1 entry1) 2))
      (string-to-number (elt (nth 1 entry2) 2))))
 
 (defun sanityinc/require-times-tabulated-list-entries ()
+  "Get a tabulated list of times loaded."
   (cl-loop for (feature start-time millis) in sanityinc/require-times
            with order = 0
            do (incf order)
@@ -67,6 +71,7 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
     (display-buffer (current-buffer))))
 
 (defun sanityinc/show-init-time ()
+  "Show Emacs initialization time in ms."
   (message "init completed in %.2fms"
            (sanityinc/time-subtract-millis after-init-time before-init-time)))
 

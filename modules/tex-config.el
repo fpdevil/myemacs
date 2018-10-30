@@ -7,6 +7,11 @@
 ;;; Description: Emacs Color theme
 ;;; Additional Packages: https://en.wikibooks.org/wiki/LaTeX/Installing_Extra_Packages
 ;;; Help: https://github.com/grettke/help
+;;;       https://en.wikibooks.org/wiki/User:Dirk_H%C3%BCnniger/latex
+;;;       https://edwardtoday.wordpress.com/2012/12/09/notes-on-typesetting-my-thesis-with-latex/
+;;;
+;;; Tex package documentation at
+;;;       http://www.texdoc.net/
 ;;;
 ;;; elisp code for customizing the latex
 ;;;
@@ -29,6 +34,10 @@
 (setq TeX-engine (quote "/Library/TeX/texbin/xetex"))
 ;; add synctex
 (setq LaTeX-command "pdflatex -synctex=1")
+
+;; for AucTex
+;; revert the PDF-buffer after the TeX compilation has finished
+(add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
 
 ;;
 ;; TeX Completion with Company
@@ -88,9 +97,11 @@
 ;;
 (add-hook 'LaTeX-mode-hook 'visual-line-mode)
 (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+(add-hook 'LaTeX-mode-hook 'flyspell-buffer)
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+
 
 ;; PDF with LaTeX by default
 (defun TeX-PDF-mode-on ()
@@ -143,14 +154,22 @@
 ;;}}}
 
 
-(setq TeX-output-view-style
-      (quote
-       (("^pdf$" "." "evince -f %o")
-        ("^html?$" "." "iceweasel %o"))))
+;; (setq TeX-output-view-style
+;;       (quote
+;;        (("^pdf$" "." "evince -f %o")
+;;         ("^html?$" "." "iceweasel %o"))))
 
 ;; Use Skim as viewer, enable source <-> PDF sync
 (dolist (dir '("/Applications/Skim.app/Contents/SharedSupport"))
   (add-to-list 'exec-path dir))
+
+(setq TeX-output-view-style
+      (quote
+       (("^pdf$" "." "open -a Skim.app %o")
+        ("^dvi$" "^xdvi$" "open-x11 %(o?)xdvi %dS %d")
+        ("^dvi$" "^TeXniscope$" "open -a TeXniscope.app %o")
+        ("^pdf$" "." "open %o")
+        ("^html?$" "." "open %o"))))
 
 ;; make latexmk available via C-c C-c
 ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
@@ -324,6 +343,21 @@ citecolor=blue,filecolor=blue,menucolor=blue,urlcolor=blue"
                   org-export-latex-classes))))
 
 (add-hook 'org-export-latex-after-initial-vars-hook 'my-auto-tex-parameters)
+
+
+;;** LaTeX preview pane
+;;**  minor mode for Emacs that enables you to preview your LaTeX
+;;**  files directly in Emacs
+(use-package latex-preview-pane
+  :defer t)
+
+;;** FlyMake integration
+(defun flymake-get-tex-args (file-name)
+  "FILE-NAME against which FlyMake should run."
+  (list "pdflatex"
+        (list "-file-line-error" "-draftmode" "-interaction=nonstopmode" file-name)))
+
+(add-hook 'LaTeX-mode-hook 'flymake-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

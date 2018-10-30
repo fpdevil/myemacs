@@ -19,6 +19,9 @@
 (add-to-list 'auto-mode-alist '("\\.zsh\\'"          . sh-mode))
 (add-to-list 'auto-mode-alist '("\\.bashrc\\'"       . sh-mode))
 
+;; change eshell directory
+(setq eshell-directory-name (expand-file-name "eshell" cache-dir))
+
 ;;------------------------------------------------------------------------------
 ;; make a shell script executable automatically on save
 ;;------------------------------------------------------------------------------
@@ -106,10 +109,31 @@
        (add-to-list 'term-bind-key-alist p))))
 
 ;;------------------------------------------------------------------------------
-;; shell completion support
+;; shell and shell scripting completion support
 ;;------------------------------------------------------------------------------
 (defvar ac-source-eshell-pcomplete
   '((candidates . ac-eshell-pcomplete)))
+
+;; with company
+;;(after "company"
+;;  (require-package 'company-shell)
+;;  (progn
+;;      '(add-to-list 'company-backends '(company-shell company-shell-env))))
+
+(add-hook 'shell-mode-hook 'company-mode)
+
+(defun shell-mode-company-init ()
+  (setq-local company-backends '((company-shell
+                                  company-shell-env
+                                  company-etags
+                                  company-dabbrev-code))))
+
+(use-package company-shell
+  :ensure t
+  :after company
+  :config
+    ;;(require 'company)
+    (add-hook 'shell-mode-hook 'shell-mode-company-init))
 
 ;;------------------------------------------------------------------------------
 ;; extra information and color for your eshell prompt and command not found

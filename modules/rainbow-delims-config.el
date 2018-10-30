@@ -9,40 +9,58 @@
 ;;;
 ;;; Code:
 ;;;
-;;;===========================================================================
+
 (require 'rainbow-delimiters)      ; rainbow delimiters package
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; rainbow delimiters custom color codes                                  ;;;
-;;; fancy (but useful) stuff for rainbow delimiters                        ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; rainbow delimiters custom color codes
+;;; fancy (but useful) stuff for rainbow delimiters
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-;; some customizations for the default modes
-;; stolen from https://ogbe.net/emacsconfig.html
-(set-face-attribute 'rainbow-delimiters-depth-1-face nil
-                    :foreground "#78c5d6")
-(set-face-attribute 'rainbow-delimiters-depth-2-face nil
-                    :foreground "#bf62a6")
-(set-face-attribute 'rainbow-delimiters-depth-3-face nil
-                    :foreground "#459ba8")
-(set-face-attribute 'rainbow-delimiters-depth-4-face nil
-                    :foreground "#e868a2")
-(set-face-attribute 'rainbow-delimiters-depth-5-face nil
-                    :foreground "#79c267")
-(set-face-attribute 'rainbow-delimiters-depth-6-face nil
-                    :foreground "#f28c33")
-(set-face-attribute 'rainbow-delimiters-depth-7-face nil
-                    :foreground "#c5d647")
-(set-face-attribute 'rainbow-delimiters-depth-8-face nil
-                    :foreground "#f5d63d")
-(set-face-attribute 'rainbow-delimiters-depth-9-face nil
-                    :foreground "#78c5d6")
-(set-face-attribute 'rainbow-delimiters-unmatched-face nil
-                    :foreground "#800000")
 
-;;
-; fancy minor mode purely eye candy ((()))
-;;
+;; for automatically setting default more saturated colors...
+;; (require 'cl-lib)
+;; (require 'color)
+;; (cl-loop
+;;  for index from 1 to rainbow-delimiters-max-face-count
+;;  do
+;;  (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
+;;    (cl-callf color-saturate-name (face-foreground face) 30)))
+
+;; make unmatched parens display in bold red and with a strike through
+;; (require 'paren) ; show-paren-mismatch is defined in paren.el
+;; (set-face-attribute 'rainbow-delimiters-unmatched-face nil
+;;                     :foreground 'unspecified
+;;                     :inherit 'error
+;;                     :strike-through t)
+
+
+
+;; some customizations for the default modes
+(custom-set-faces
+ '(rainbow-delimiters-depth-1-face ((t (:foreground "#008080"))))
+ '(rainbow-delimiters-depth-2-face ((t (:foreground "#bf62a6"))))
+ '(rainbow-delimiters-depth-3-face ((t (:foreground "#f28c33"))))
+ '(rainbow-delimiters-depth-4-face ((t (:foreground "#87cefa"))))
+ '(rainbow-delimiters-depth-5-face ((t (:foreground "#ffd700"))))
+ '(rainbow-delimiters-depth-6-face ((t (:foreground "#79c267"))))
+ '(rainbow-delimiters-depth-7-face ((t (:foreground "#483d8b"))))
+ '(rainbow-delimiters-depth-8-face ((t (:foreground "#4682b4"))))
+ '(rainbow-delimiters-depth-9-face ((t (:foreground "#c71585"))))
+ '(rainbow-delimiters-unmatched-face ((t (:foreground nil :background nil :underline "#cc0033" :height 1.2))))
+
+ ;; rainbow-delimiters-mode setup, with decreasing bracket size
+ ;; '(rainbow-delimiters-depth-1-face ((t (:foreground "#008080" :height 1.4))))
+ ;; '(rainbow-delimiters-depth-2-face ((t (:foreground "#bf62a6" :height 1.3))))
+ ;; '(rainbow-delimiters-depth-3-face ((t (:foreground "#f28c33" :height 1.3))))
+ ;; '(rainbow-delimiters-depth-4-face ((t (:foreground "#87cefa" :height 1.2))))
+ ;; '(rainbow-delimiters-depth-5-face ((t (:foreground "#ffd700" :height 1.2))))
+ ;; '(rainbow-delimiters-depth-6-face ((t (:foreground "#79c267" :height 1.1))))
+ ;; '(rainbow-delimiters-depth-7-face ((t (:foreground "#483d8b" :height 1.1))))
+ ;; '(rainbow-delimiters-depth-8-face ((t (:foreground "#4682b4" :height 1.0))))
+ ;; '(rainbow-delimiters-depth-9-face ((t (:foreground "#c71585" :height 1.0))))
+ ;; '(rainbow-delimiters-unmatched-face ((t (:foreground nil :background nil :underline "#cc0033" :height 0.9))))
+ )
+
+;;** fancy minor mode purely eye candy ((()))
 (defun fancy-rbow-modeline ()
   "A fancy minor mode display of rainbow parenthesis."
   (interactive)

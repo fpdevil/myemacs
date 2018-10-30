@@ -10,7 +10,6 @@
 ;;;
 ;;; Code:
 ;;;
-;;===============================================================================
 
 (require-package 'highlight-numbers)
 (add-hook 'prog-mode-hook 'highlight-numbers-mode)
@@ -18,11 +17,12 @@
 (require-package 'highlight-quoted)
 (add-hook 'prog-mode-hook 'highlight-quoted-mode)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; fancy modeline(s) - powerline, airline and sml
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; (require 'powerline)
-; (powerline-default-theme)
+;; (require 'powerline)
+;; (powerline-default-theme)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; define constants for holding the themes
@@ -39,7 +39,7 @@
 (setq aqua-airline-theme 'airline-cool)
 
 ;; set smart-mode-line theme
-(setq aqua-sml-theme 'powerline)
+(setq aqua-sml-theme 'dark)
 ;; alternative themes available:
 ;; (sml/apply-theme 'powerline)
 ;; (sml/apply-theme 'dark)

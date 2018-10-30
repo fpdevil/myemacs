@@ -18,7 +18,6 @@
 (add-to-list 'auto-mode-alist '("\\.emacs\\.bmk\\'"   . emacs-lisp-mode))
 
 (add-hook 'emacs-lisp-mode-hook 'global-prettify-symbols-mode)
-(add-hook 'emacs-lisp-mode-hook 'imenu-elisp)
 
 ;;{{{ mode name shortening
 (defun shorten-emacs-lisp-mode-name ()
@@ -36,26 +35,47 @@
   (setq imenu-prev-index-position-function nil)
   (add-to-list 'imenu-generic-expression '("Sections" "^;;; \\(.+\\)$" 1) t))
 
+(add-hook 'emacs-lisp-mode-hook #'imenu-elisp)
+
 (defun my-lisp-hook ()
   "For slime and eldoc enabling."
   (progn
     (elisp-slime-nav-mode)
     (eldoc-mode)))
 
-(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
 (add-hook 'lisp-interaction-mode-hook #'eldoc-mode)
 (add-hook 'ielm-mode-hook #'my-lisp-hook)
+(add-hook 'emacs-lisp-mode-hook #'my-lisp-hook)
+
+;; enable doc for ielm buffer
+(eval-after-load 'ielm
+  '(progn
+     (add-hook 'inferior-emacs-lisp-mode-hook
+               (lambda ()
+                 (eldoc-mode)))))
+
+;; disable evil in the ielm
+(after "ielm"
+  (add-hook 'ielm-mode-hook 'turn-off-evil-mode)
+  (evil-set-initial-state 'ielm 'emacs))
+
 ;;}}}
 
 ;;{{{ flycheck
 (after "flycheck"
-  (setq-default flycheck-emacs-lisp-load-path 'inherit)
-  (setq flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+       ;; do not show errors for require statements
+       (setq-default flycheck-emacs-lisp-load-path 'inherit)
+       (setq flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 ;;}}}
 
 ;;{{{ company elisp backend for auto completion support
 (after "company"
-  (add-hook 'emacs-lisp-mode-hook '(lambda () (set (make-local-variable 'company-backends) '(company-elisp)))))
+       (add-hook 'emacs-lisp-mode-hook
+                 (lambda ()
+                   (set (make-local-variable 'company-backends) '(company-elisp))))
+       (add-hook 'ielm-mode-hook
+                 (lambda ()
+                   (set (make-local-variable 'company-backends) '(company-elisp)))))
 ;;}}}
 
 ;;{{{ @see http://blog.urth.org/2011/06/02/flymake-versus-the-catalyst-restarter/
@@ -90,7 +110,7 @@
 ;;{{{ flymake - do not use elisp lint
 (defun flymake-elisp-init ()
   "Do not use the elisp lint."
-  (unless (or (string-match "^ " (buffer-name)) (is-buffer-file-temp))
+  (unless (or (string-match "^ " (buffer-name)) (aqua/is-buffer-file-temp))
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
                        'flymake-create-temp-intemp))
            (local-file (file-relative-name
@@ -127,7 +147,7 @@
 ;;{{{ elisp required features
 (defun elisp-mode-hook-setup ()
   "Enable necessary features for elisp."
-  (unless (is-buffer-file-temp)
+  (unless (aqua/is-buffer-file-temp)
     (when (require 'eldoc nil t)
       (setq eldoc-idle-delay 0.2)
       (setq eldoc-echo-area-use-multiline-p t)
@@ -138,8 +158,7 @@
     (set-up-hippie-expand-for-elisp)
     (flymake-mode)
     (checkdoc-minor-mode)))
-(add-hook 'emacs-lisp-mode-hook 'elisp-mode-hook-setup)
-
+(add-hook 'emacs-lisp-mode-hook          #'elisp-mode-hook-setup)
 ;;}}}
 
 ;;{{{ search lisp doc under the cursor
@@ -170,24 +189,27 @@
 ;;}}}
 
 ;;{{{ for ielm Emacs lisp repl
-(require 'ac-slime)
-(add-hook 'slime-mode-hook 'set-up-slime-ac)
-(add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
-(eval-after-load "auto-complete"
-  '(add-to-list 'ac-modes 'slime-repl-mode 'emacs-lisp-mode))
 
-(defun ielm-auto-complete ()
-  "Enable `auto-complete' support in the \\[ielm]."
-  (setq ac-sources '(ac-source-functions
-                     ac-source-variables
-                     ac-source-features
-                     ac-source-symbols
-                     ac-source-words-in-same-mode-buffers))
-  (add-to-list 'ac-modes 'inferior-emacs-lisp-mode-hook))
+(after "auto-complete"
+       (require 'ac-slime)
+       (add-hook 'slime-mode-hook 'set-up-slime-ac)
+       (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
+       '(add-to-list 'ac-modes 'slime-repl-mode 'emacs-lisp-mode)
 
-(add-hook 'ielm-mode-hook 'ielm-auto-complete)
-(add-hook 'ielm-mode-hook '(lambda () (set (make-local-variable 'company-backends) '(company-elisp))))
-(add-hook 'emacs-lisp-mode-hook 'ielm-auto-complete)
+       (defun ielm-auto-complete ()
+         "Enable `auto-complete' support in the \\[ielm]."
+         (setq ac-sources '(ac-source-functions
+                            ac-source-variables
+                            ac-source-features
+                            ac-source-symbols
+                            ac-source-words-in-same-mode-buffers))
+         ;;(add-to-list 'ac-modes 'inferior-emacs-lisp-mode-hook)
+        )
+
+       (add-hook 'ielm-mode-hook (lambda () (auto-complete-mode -1)))
+       ;;(add-hook 'ielm-mode-hook 'ielm-auto-complete)
+       (add-hook 'emacs-lisp-mode-hook 'ielm-auto-complete)
+       )
 ;;}}}
 
 ;;{{{ Automatically compile Emacs Lisp libraries

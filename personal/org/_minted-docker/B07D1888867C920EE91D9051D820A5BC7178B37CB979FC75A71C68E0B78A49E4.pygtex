@@ -1,3 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYGZdl{} sudo sh \PYGZhy{}c \PYG{l+s+s1}{\PYGZsq{}echo \PYGZdq{}7\PYGZdq{} \PYGZgt{} /etc/yum/vars/dockerosversion\PYGZsq{}}
-\end{Verbatim}

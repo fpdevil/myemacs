@@ -17,7 +17,7 @@
  ;; Don't warn when TAGS files are large
  (setq large-file-warning-threshold nil)
 
- (if (is-mac)
+ (if (aqua/is-mac)
      ;; Mac's default ctags does not support -e option
      ;; If you install Emacs by homebrew, another version of etags is already
      ;; installed which does not need flag -e too

@@ -271,7 +271,7 @@
     (flymake-mode 1)))
 
 (defun web-mode-hook-setup ()
-  (unless (is-buffer-file-temp)
+  (unless (aqua/is-buffer-file-temp)
     (flymake-html-load)
     (enable-flyspell-mode-conditionally)
     (setq flyspell-check-doublon nil)
