@@ -17,6 +17,31 @@
 (setq interpreter-mode-alist
       (cons '("python" . python-mode) interpreter-mode-alist))
 
+;;** python-mode package
+(use-package python-mode
+  :mode "\\.py\\'"
+  :interpreter "python3"
+  :config
+  (defvar python-mode-initialized nil)
+  (defun my-python-mode-hook ()
+    (unless python-mode-initialized
+      (setq python-mode-initialized t)
+      (info-lookup-add-help
+       :mode 'python-mode
+       :regexp "[a-zA-Z_0-9.]+"
+       :doc-spec
+       '(("(python)Python Module Index" )
+         ("(python)Index"
+          (lambda
+            (item)
+            (cond
+             ((string-match
+               "\\([A-Za-z0-9_]+\\)() (in module \\([A-Za-z0-9_.]+\\))" item)
+              (format "%s.%s" (match-string 2 item)
+                      (match-string 1 item))))))))))
+  (add-hook 'python-mode-hook 'my-python-mode-hook))
+
+
 
 ;;**
 ;;**  settings for the python3 shell interpreter and indentation settings
@@ -32,11 +57,7 @@
 
         ;; python interpreter settings
         ;; if using ipython3 with extras
-        python-shell-interpreter "/usr/local/bin/ipython3"
-        python-shell-interpreter-args "--simple-prompt -i"
-        ;;python-shell-interpreter-args ""
-        ;;python-shell-interpreter-args (if (aqua/is-mac) "--gui=osx --matplotlib=osx --colors=Linux"
-        ;;                              (if (aqua/is-linux) "--gui=wx --matplotlib=wx --colors=Linux"))
+        python-shell-interpreter (executable-find "ipython3")
         python-shell-completion-setup-code "from IPython.core.completerlib import module_completion"
         python-shell-completion-module-string-code "';'.join(module_completion('''%s'''))\n"
         python-shell-completion-string-code "';'.join(get_ipython().Completer.all_completions('''%s'''))\n"
@@ -46,25 +67,26 @@
         ;; python-shell-interpreter-args "console --simple-prompt"
         ;; python-shell-prompt-detect-failure-warning nil
 
+        ;; additional shell options added
+        ;;python-shell-prompt-regexp ">>> "
+        ;;python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+        ;;python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+
+        python-shell-completion-native-enable nil
+        python-shell-completion-native-disabled-interpreters (quote ("pypy" "ipython" "python" "jupyter"))
+        python-skeleton-autoinsert t
+
         py-python-command (executable-find "python3")
         py-shell-name "ipython"
         py-which-bufname "IPython"
+        )
 
-        ;; additional shell options added
-        ;; python-shell-prompt-regexp ">>> "
-        python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-        python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-
-        python-shell-completion-native-enable t
-        python-shell-completion-native-disabled-interpreters (quote ("pypy" "ipython" "python" "jupyter"))
-        python-skeleton-autoinsert t)
-
-        (untabify (point-min) (point-max))
-        (hs-minor-mode t)                     ; hs-minor-mode
-        (auto-fill-mode 0)                    ; auto-fill-mode
-        (whitespace-mode t)                   ; whitespace-mode
-        ;;(hl-line-mode t)                    ; hl-line-mode
-        (set (make-local-variable 'electric-indent-mode) nil))
+  (untabify (point-min) (point-max))
+  (hs-minor-mode t)                     ; hs-minor-mode
+  (auto-fill-mode 0)                    ; auto-fill-mode
+  (whitespace-mode t)                   ; whitespace-mode
+  ;;(hl-line-mode t)                    ; hl-line-mode
+  (set (make-local-variable 'electric-indent-mode) nil))
 
 (add-hook 'python-mode-hook 'my-python-mode-config)
 
@@ -92,7 +114,8 @@
 
 ;;**
 ;;** python checkers and python virtual environments
-(setq python-check-command (executable-find "pyflakes"))
+;; (setq python-check-command (executable-find "pyflakes"))
+(setq python-check-command (concat user-emacs-directory "/flymake/pyflymake.py"))
 (setq python-environment-directory (expand-file-name ".python-environments" user-emacs-directory))
 
 
@@ -158,17 +181,20 @@
 ;;                                 /flycheck-pylint-emacs-with-python.html    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (after "flycheck"
-  (add-hook 'python-mode-hook 'flycheck-mode)
+  ;;(add-hook 'python-mode-hook 'flycheck-mode)
+  (flycheck-add-next-checker 'python-flake8 'python-pylint)
   (add-hook 'python-mode-hook
             (lambda ()
               (setq flycheck-python-flake8-executable "~/.emacs.d/flymake/pycheckers"
-                    flycheck-pylintrc (concat (getenv "HOME") ".pylintrc")
+                    flycheck-python-pylint-executable (executable-find "pylint")
+                    ;;flycheck-pylintrc (concat (getenv "HOME") "/.pylintrc")
                     python-check-command (executable-find "pyflakes"))))
 
   ;;**
   ;;** flycheck for virtualenv
   (defun flycheck-virtualenv-setup ()
     "Setup Flycheck for the current virtualenv."
+    (add-hook 'flycheck-mode-hook #'flycheck-virtualenv-setup)
     (setq-local flycheck-executable-find #'flycheck-virtualenv-executable-find))
   )
 
@@ -177,14 +203,31 @@
 ;;** SYNTAX CHECKING - (FlyCheck and FlyMake)
 ;;**   flymake handler for syntax-checking python source code
 ;;**   using wither pyflakes or flake8
-(after "flymake"
+;; (after "flymake"
+;;   (require 'flymake-python-pyflakes)
+;;   (add-hook 'python-mode-hook #'(lambda () (setq-local flymake-no-changes-timeout 10))) ;; default 0.5
+;;   (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
+;;   ;; disable fymake-cursor
+;;   (setq-local flymake-cursor-auto-enable nil)
+;;   ;; using flake8 for FlyMake
+;;   (setq-local flymake-python-pyflakes-executable (executable-find "flake8")))
+
+
+;; code checking via flymake
+;; set code checker here from "pyflymake", "pyflakes"
+;;(setq pycodechecker (concat user-emacs-directory "/flymake/pyflymake.py"))
+(setq pycodechecker (concat user-emacs-directory "/flymake/pycheckers.py"))
+(when (load "flymake" t)
   (require 'flymake-python-pyflakes)
-  (add-hook 'python-mode-hook #'(lambda () (setq-local flymake-no-changes-timeout 10))) ;; default 0.5
-  (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
-  ;; disable fymake-cursor
-  (setq-local flymake-cursor-auto-enable nil)
-  ;; using flake8 for FlyMake
-  (setq-local flymake-python-pyflakes-executable (executable-find "flake8")))
+  (defun flymake-pycodecheck-init ()
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
+      (list pycodechecker (list local-file))))
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.py\\'" flymake-pycodecheck-init)))
 
 
 ;;**
@@ -198,7 +241,7 @@
 ;;
 ;;** code standardization with autopep8
 (defcustom python-autopep8-path (executable-find "autopep8")
-  "autopep8 executable path."
+  "Python autopep8 executable path."
   :group 'python
   :type 'string)
 

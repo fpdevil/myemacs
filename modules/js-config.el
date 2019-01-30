@@ -14,7 +14,8 @@
 ;;;
 ;;; Code:
 ;;;
-;;;=============================================================================
+;;;
+
 (require 'js2-highlight-vars)       ;; highlight occurrences of vars
 (require 'js-doc)                   ;; insert JsDoc style comment easily
 (require 'js2-mode)                 ;; js2 javascript mode
@@ -130,11 +131,12 @@
 (add-hook 'js-mode-hook (lambda () (tern-mode t)))
 
 (after "auto-complete"
-  (message "[js] tern for auto-complete")
+  (message "[js] tern mode for auto-complete")
   (add-hook 'js2-mode-hook
             '(lambda ()
                (when (locate-library "tern")
-                 (setq tern-command '("node" "/usr/local/bin/tern" "--no-port-file")) ;; .term-port
+                 ;; .term-port file creation
+                 (setq tern-command '("node" "/usr/local/bin/tern" "--no-port-file"))
                  (tern-mode t)
                  (after 'tern
                    '(progn
@@ -142,7 +144,7 @@
                       (tern-ac-setup)))))))
 
 (after "company"
-  (message "[js] tern for company")
+  (message "[js] tern mode for company")
   (add-hook 'js2-mode-hook
             '(lambda ()
                (setq-local company-backends
@@ -231,8 +233,6 @@
                                 indentation::tab empty
                                 space-after-tab::tab space-mark tab-mark newline-mark))))
 
-(add-to-list 'ac-modes 'js2-mode)
-(add-to-list 'ac-modes 'js3-mode)
 
 ;;------------------------------------------------------------------------------
 ;;** [ skewer ] - live loading with skewer (for front-end)
@@ -301,9 +301,9 @@
 ;; 2. insert @tag easily by pressing @ in the JsDoc style comment
 ;;------------------------------------------------------------------------------
 (setq js-doc-mail-address "Sampath.Singamsetty"
-      js-doc-author (format "Sampath Singamsetty" js-doc-mail-address)
-      js-doc-url "http://united.com"
-      js-doc-license "license name")
+      js-doc-author (format "Sampath Singamsetty <%s>" js-doc-mail-address)
+      js-doc-url "https://github.com/fpdevil"
+      js-doc-license "MIT License")
 
 (add-hook 'js2-mode-hook
           #'(lambda ()
@@ -497,6 +497,12 @@ See URL `https://github.com/tensor5/JSLinter'."
 ;; (add-hook 'js2-mode-hook #'jade-interaction-mode)
 ;; (require 'indium)
 ;; (add-hook 'js2-mode-hook #'indium-interaction-mode)
+
+;;------------------------------------------------------------------------------
+;; [react js]
+;;------------------------------------------------------------------------------
+(use-package rjsx-mode
+  :ensure t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

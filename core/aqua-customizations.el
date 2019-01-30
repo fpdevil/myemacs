@@ -50,6 +50,7 @@
 ;;**
 ;;** save and load the mini buffer history
 (savehist-mode 1)
+(setq history-delete-duplicates t)
 (setq savehist-file (expand-file-name "minibuffer-history.el" cache-dir))
 ;; (when (file-exists-p savehist-file)
 ;;   (load savehist-file))

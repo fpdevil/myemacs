@@ -7,7 +7,7 @@ games/
 !/.gitignore
 
 # for ycmd binaries
-private/ycmd/
+private/youcompleteme/
 
 # ignore edts erlang contents
 edts/

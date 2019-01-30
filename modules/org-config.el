@@ -101,12 +101,16 @@
   ;; change a state using C-c C-t KEY where KEY is one of org-todo-keywords
   (setq org-treat-S-cursor-todo-selection-as-state-change nil)
 
+  ;; highlight latex text in org-mode
+  (setq org-highlight-latex-and-related '(latex))
+
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;;  turn on visual-line-mode for Org-mode only                             ;;;
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; install adaptive-wrap
   (require-package 'adaptive-wrap)
-  (add-hook 'org-mode-hook #'visual-line-mode)
+  ;;(add-hook 'org-mode-hook #'visual-line-mode)
+  (add-hook 'org-mode-hook 'visual-line-mode)
   (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
   (add-hook 'org-mode-hook
             (lambda ()
@@ -115,6 +119,10 @@
               ;; (visual-line-mode 1)
               (org-indent-mode t))
             t)
+
+  (use-package org-indent
+    :ensure nil
+    :diminish)
 
   ;;{{{
   ;;  auto complete sources for org
@@ -418,9 +426,15 @@ pdfborder=0 0 0                       % no boxes on links
 ;;  use org-bullets-mode for utf8 symbols as org bullets
 ;;  select, do [M-x eval-region]. The *s will be replaced with utf-8 bullets
 ;;  next time you open an org file
-(require-package 'org-bullets)
+;;(require-package 'org-bullets)
 ;;(setq org-bullets-bullet-list '("●" "○" "◆" "◇" "▸"))
-(add-hook 'org-mode-hook #'org-bullets-mode)
+;;(add-hook 'org-mode-hook #'org-bullets-mode)
+
+(use-package org-bullets
+  :commands org-bullets-mode
+  :init
+  (add-hook 'org-mode-hook 'org-bullets-mode)
+  (setq org-bullets-bullet-list '("◉" "○" "●" "►" "•")))
 ;;}}
 
 ;;{{{  some custom settings and todo configuration from pragmatic emacs
@@ -489,6 +503,7 @@ pdfborder=0 0 0                       % no boxes on links
 ;;{{{ org pdf export options
 ;;    using xelatex instead of pdflatex as fontspec if only supported by
 ;;    xelatex or lualatex
+(setq org-latex-compiler "xelatex")
 (setq org-latex-pdf-process
       '(
         "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
@@ -540,7 +555,9 @@ pdfborder=0 0 0                       % no boxes on links
   (setq org-babel-python-command "python3")       ;; set python3 as default
   ;; Out of the box Emacs supports js with js-mode.
   ;; define language javascript to use js2-mode
-  (add-to-list 'org-src-lang-modes '("javascript" . js2)))
+  (add-to-list 'org-src-lang-modes '("javascript" . js2))
+  ;; web mode for html
+  (add-to-list 'org-src-lang-modes '("html" . web)))
 ;;}}}
 
 

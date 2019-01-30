@@ -19,13 +19,14 @@
 ;;;
 ;;; Code:
 ;;;
-;;;============================================================================
 
-;; file mode enable
+
+;;** file mode enable
 (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
 (add-to-list 'auto-mode-alist '("\\.uml\\'"      . plantuml-mode))
+(add-to-list 'auto-mode-alist '("\\.pu\\'"       . plantuml-mode))
 
-;; disable electric indent mode
+;;** disable electric indent mode
 (add-hook 'electric-indent-mode-hook (lambda () (electric-indent-local-mode -1)))
 ;; to restore
 (add-hook 'electric-indent-mode-hook
@@ -57,10 +58,10 @@
      (scala      . t)
      (js         . t)
      (java       . t)
+     (C          . t)
      (shell      . t)
      (sql        . t)
      (http       . t)
-     ;; (sh      . t)
      (python     . t)
      (ipython    . t)
      (dot        . t)

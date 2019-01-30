@@ -86,9 +86,34 @@
 ;;}}}
 
 
-;;{{{ * Colored src blocks
-;; based on patches from Rasmus <rasmus@gmx.us>
-;; This function overwrites the org-src function to make src blocks be colored again.
+;;{{{ proportional fonts in different sizes for headlines.
+;;    listed fonts will be attempted in sequence
+(let* ((variable-tuple
+        (cond ((x-list-fonts "Monaco for Powerline") '(:font "Monaco for Powerline"))
+              ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+              ((x-list-fonts "Menlo")         '(:font "Menlo"))
+              ((x-family-fonts "Avenir")    '(:family "Avenir"))
+              (nil (warn "Cannot find Avenir Font.  Install the same."))))
+       (base-font-color     (face-foreground 'default nil 'default))
+       (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
+
+  (custom-theme-set-faces
+   'user
+   `(org-level-8 ((t (,@headline ,@variable-tuple))))
+   `(org-level-7 ((t (,@headline ,@variable-tuple))))
+   `(org-level-6 ((t (,@headline ,@variable-tuple))))
+   `(org-level-5 ((t (,@headline ,@variable-tuple))))
+   `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
+   `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.25))))
+   `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
+   `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.75))))
+   `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))))
+;;}}}
+
+
+;;{{{  Colored src blocks
+;;     based on patches from Rasmus <rasmus@gmx.us>
+;;     This function overwrites the org-src function to make src blocks be colored again.
 (defun org-src-font-lock-fontify-block (lang start end)
   "Fontify code block.
 LANG is the language of the block.  START and END are positions of
@@ -242,7 +267,7 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
 
 ;;;}}}
 
-;;{{{ * org agenda files
+;;{{{ org agenda files
 (setq org-directory (expand-file-name "org" personal-dir))
 (setq org-agenda-files (list (expand-file-name "home.org" org-directory)
                              (expand-file-name "python.org" org-directory)
@@ -456,8 +481,54 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
      ("=" "=" "+" (org-mode))
      ("_" "_" nil (org-mode))
      ("$" "$" nil (org-mode latex-mode)))
-  (add-hook 'org-mode-hook 'wrap-region-mode)
-  (add-hook 'latex-mode-hook 'wrap-region-mode)))
+   (add-hook 'org-mode-hook 'wrap-region-mode)
+   (add-hook 'latex-mode-hook 'wrap-region-mode)))
+
+
+;;*
+;; utilities to export scientific manuscripts
+;; (use-package ox-manuscript
+;;   :after org
+;;   :ensure t
+;;   :load-path (lambda () (expand-file-name "ox-manuscript" vendor-dir)))
+
+;;* swagger to org
+;; M-x swagger-to-org-from-file-name
+(use-package swagger-to-org
+  :after org
+  :defer t)
+
+
+;;** custom faces
+(custom-theme-set-faces
+ 'user
+ '(org-block                 ((t (:inherit fixed-pitch))))
+ '(org-document-info         ((t (:foreground "dark orange"))))
+ '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+ '(org-link                  ((t (:foreground "royal blue" :underline t))))
+ '(org-meta-line             ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+ '(org-property-value        ((t (:inherit fixed-pitch))) t)
+ '(org-special-keyword       ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+ '(org-tag                   ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+ '(org-verbatim              ((t (:inherit (shadow fixed-pitch))))))
+
+;;**
+;; clear org cache
+(defun clear-org-cache ()
+  "Clears all kinds of Org-mode caches and re-builds them if possible"
+  (interactive)
+  (measure-time
+   (org-element-cache-reset)
+   (org-refile-cache-clear)
+   (org-refile-get-targets)
+   (setq org-agenda-tags-column (- (- (window-total-width) 3))) ;; total width minus 3
+   (when (my-buffer-exists "*Org Agenda*")
+     (kill-buffer "*Org Agenda*")
+     (org-agenda-list)
+     )
+   )
+  )
+
 
 ;;-----------------------------------------------------------------------------
 

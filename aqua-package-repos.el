@@ -115,8 +115,8 @@
 
 (require 'psgml-config)                         ; markup language support
 (require 'xslide-config)                        ; xsl ide settings
-(require 'xslt-process-config)                  ; for xslt syntax and completion
 (require 'nxml-config)                          ; for xml syntax validation
+;(require 'xslt-process-config)                  ; for xslt syntax and completion
 
 
 (require 'org-config)                           ; for org mode
@@ -144,7 +144,7 @@
 (if (or (display-graphic-p) (string-match-p "256color"(getenv "TERM"))) (require 'themes-config))
 
 ;;***    comment below line to setup color theme in different way
-; (if (or (display-graphic-p) (string-match-p "256color"(getenv "TERM"))) (require 'color-theme-config))
+;;(if (or (display-graphic-p) (string-match-p "256color"(getenv "TERM"))) (require 'color-theme-config))
 
 (require 'mode-line-config)                     ; emacs modeline (sml + airline)
 

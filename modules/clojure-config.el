@@ -246,6 +246,8 @@ like (λ [a] (+ a 5)), ƒ(+ % 5), and ∈{2 4 6} for MODE."
 ;;** [monroe] - a better repl for clojure | M-x monroe [RET]
 ;;-----------------------------------------------------------------------------
 (require-package 'monroe)
+(require 'monroe)
+(autoload 'clojure-enable-monroe "Starts monroe." t)
 (add-hook 'clojure-mode-hook 'clojure-enable-monroe)
 
 

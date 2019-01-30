@@ -8,7 +8,7 @@
 ;;;              required for installing all the listed and required packages.
 ;;;
 ;;; Code:
-;;; Updated    : 06 Apr 2018
+;;; Updated    : 12 Dec 2018
 ;;;=============================================================================
 ;;**
 ;; required default standard libraries
@@ -25,19 +25,18 @@
         ("gnu"            . "https://elpa.gnu.org/packages/")
         ("melpa"          . "http://melpa.org/packages/")
         ("melpa-stable"   . "http://stable.melpa.org/packages/")
-        ("melpa-unstable" . "http://stable.melpa.org/packages/")
+        ("melpa-unstable" . "http://unstable.melpa.org/packages/")
         ("elpy"           . "https://jorgenschaefer.github.io/packages/")
         ("org"            . "http://orgmode.org/elpa/")
         ;;("marmalade"      . "http://marmalade-repo.org/packages/")
         ))
 
-
 (setq package-check-signature nil)
 (setq tls-program
-      ;; Defaults:
       '("gnutls-cli --insecure -p %p %h"
         "gnutls-cli --insecure -p %p %h --protocols ssl3"
         "openssl s_client -connect %h:%p -no_ssl2 -ign_eof"))
+(setq starttls-extra-arguments '("--tofu"))
 
 ;;**
 ;; if on Emacs 24.4 or newer, if so, use the pinned package feature
@@ -48,11 +47,11 @@
           (highlight-indentation . "elpy") ;; fixes error in elpy 1.6
           (org                   . "org")
           (org-plus-contrib      . "org")
-          (org-download          . "org")
+          (org-download          . "melpa")
           (jedi                  . "melpa-stable")
           (jedi-core             . "melpa-stable")
           (company-jedi          . "melpa-stable")
-          (markdown-mode         . "melpa")
+          (markdown-mode         . "melpa-stable")
           (smart-mode-line       . "melpa")
           (ensime                . "melpa-stable")
           (clj-refactor          . "melpa-unstable") ;; note from http://planet.clojure.in/

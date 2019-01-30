@@ -72,10 +72,10 @@
 
   (setq company-auto-complete nil         ;;  this will accept highlighted item with SPC if t
         company-minimum-prefix-length 2
-        company-tooltip-align-annotations t
+        company-tooltip-align-annotations nil
         company-selection-wrap-around t
         company-show-numbers t
-        company-require-match nil
+        company-require-match t
         company-etags-ignore-case t
 
         ;; dabbrev backends should only look for candidates in buffers with the same major mode

@@ -42,7 +42,7 @@
 # W*: anything pep8 marks as warning.
 
 # --max-complexity 9 actually allows a maximum complexity of 8
-flake8 --max-complexity 9 --ignore=E221,E701,E202,W291,W293,E261,E226,E228,E231,E501,E303,E251,E401,E271,E241 "$1" \
+/usr/local/bin/flake8 --max-complexity 9 --ignore=E221,E701,E202,W291,W293,E261,E226,E228,E231,E501,E303,E251,E401,E271,E241 "$1" \
     | sed s/F401/warning\ F401/ \
     | sed s/F841/warning\ F841/ \
     | sed s/C901/warning\ C901/ \

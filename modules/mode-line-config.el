@@ -23,6 +23,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; (require 'powerline)
 ;; (powerline-default-theme)
+(use-package smart-mode-line-powerline-theme
+  :ensure t
+  :after powerline
+  :after smart-mode-line
+  ;; :config
+  ;; (sml/setup)
+  ;; (sml/apply-theme 'powerline)
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; define constants for holding the themes
@@ -74,9 +82,31 @@
   (load-airline-settings)
   (load-theme aqua-airline-theme t))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; smart-mode-line enable/disable
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun apply-smart-modeline ()
+  "Apply SML Smart Model Line if selected."
+  (interactive)
+  (use-package smart-mode-line
+    :ensure t
+    :defer 0.2
+    :config
+    (add-hook 'after-load-theme-hook 'smart-mode-line-enable)
+    (setq sml/no-confirm-load-theme t
+          sml/theme 'dark
+          sml/mode-width 'full
+          sml/name-width 30
+          sml/shorten-modes t)
+    (if (not (null aqua-sml-theme))
+        (setq sml/theme aqua-sml-theme)
+      ;; delegate theme to the current active one
+      (setq sml/theme 'dark))
+    (sml/setup)
+    (sml/apply-theme aqua-sml-theme))
+  )
+
+
 (defun apply-sml ()
   "Apply Smart Mode Line if needed."
   (interactive)
@@ -86,11 +116,12 @@
       (progn
         ;;(setq powerline-arrow-shape 'curve)
         ;;(setq powerline-default-separator-dir '(right . left))
-        (setq sml/name-width 20)
-        (setq sml/mode-width 'full)
-        (setq sml/shorten-directory t)
-        (setq sml/shorten-modes t)
-        (setq sml/no-confirm-load-theme t)
+        (setq sml/name-width 30)
+        (setq sml/no-confirm-load-theme t
+              sml/theme 'dark
+              sml/mode-width 'full
+              sml/name-width 30
+              sml/shorten-modes t)
         (rich-minority-mode 1)
         (if after-init-time
             (sml/setup)
@@ -99,41 +130,40 @@
             (setq sml/theme aqua-sml-theme)
           ;; delegate theme to the current active one
           (setq sml/theme nil))
-        (setq sml/replacer-regexp-list
-              '(("^~/org/" ":O:")
-                ("^~/code/" ":CODE:")
-                ("^~/\\.emacs\\.d/" ":ED:")))
-        (after 'evil
-          (defvar dotemacs--original-mode-line-bg (face-background 'mode-line))
-          (defadvice evil-set-cursor-color (after dotemacs activate)
-            (cond ((evil-emacs-state-p)
-                   (set-face-background 'mode-line "#440000"))
-                  ((evil-insert-state-p)
-                   (set-face-background 'mode-line "#002244"))
-                  ((evil-visual-state-p)
-                   (set-face-background 'mode-line "#440044"))
-                  (t
-                   (set-face-background 'mode-line dotemacs--original-mode-line-bg))))))))
+        (sml/apply-theme aqua-sml-theme)
+        ;; (after 'evil
+        ;;   (evil-sml-customize))
+        )))
+
+(defun evil-sml-customize ()
+  "Customize mode line colors in evil mode."
+  (defvar dotemacs--original-mode-line-bg (face-background 'mode-line))
+  (defadvice evil-set-cursor-color (after dotemacs activate)
+    (cond ((evil-emacs-state-p)
+           (set-face-background 'mode-line "#440000"))
+          ((evil-insert-state-p)
+           (set-face-background 'mode-line "#F5ECCE"))
+          ((evil-visual-state-p)
+           (set-face-background 'mode-line "#440044"))
+          (t
+           (set-face-background 'mode-line dotemacs--original-mode-line-bg)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; uncomment if airline themes are required (load airline settings)
 ;; (add-hook 'after-init-hook 'load-airline-settings)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (add-hook 'after-init-hook 'apply-airline)
 (when (eq dotemacs-mode-line 'airline)
- (add-hook 'after-init-hook 'apply-airline))
+  (add-hook 'after-init-hook 'apply-airline))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; uncomment if smart mode line is required
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (add-hook 'after-init-hook 'apply-sml)
 (when (eq dotemacs-mode-line 'sml)
- (add-hook 'after-init-hook 'apply-sml))
+  (add-hook 'after-init-hook 'apply-sml))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; uncomment if spaceline mode line is required
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (add-hook 'after-init-hook 'apply-spaceline)
 (when (eq dotemacs-mode-line 'spaceline)
   (require-package 'spaceline)
   (require 'spaceline-config)

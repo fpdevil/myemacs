@@ -33,6 +33,19 @@
 (global-set-key (kbd "M-n") 'highlight-symbol-next)
 (global-set-key (kbd "M-p") 'highlight-symbol-prev)
 
+;;**
+;; highlight symbols with keymap-enabled overlays
+(require-package 'symbol-overlay)
+(after 'symbol-overlay
+  (add-hook 'prog-mode-hook #'symbol-overlay-mode)
+  (add-hook 'markdown-mode-hook #'symbol-overlay-mode)
+  (global-set-key (kbd "M-i") 'symbol-overlay-put)
+  (define-key symbol-overlay-map (kbd "p") 'symbol-overlay-jump-prev) ;; 次のシンボルへ
+  (define-key symbol-overlay-map (kbd "n") 'symbol-overlay-jump-next) ;; 前のシンボルへ
+  (define-key symbol-overlay-map (kbd "C-g") 'symbol-overlay-remove-all))
+
+
+
 (provide 'highlight-symbol-config)
 
 ;;; highlight-symbol-config.el ends here

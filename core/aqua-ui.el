@@ -11,6 +11,10 @@
 ;; * to fix the aquamacs theme setup issue
 (setq default-frame-alist nil)
 
+;; * for title bar (OS X emacs 26.1)
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'default-frame-alist '(ns-appearance . light))
+
 ;; *
 ;; * Display a marker on the left fringe for lines not in the buffer
 (setq indicate-empty-lines t)
@@ -44,8 +48,8 @@
 ;;** Show parentheses
 (show-paren-mode t)
 (setq show-paren-style 'parenthesis)    ;; highlight brackets
-;;(setq show-paren-style 'expression)     ;; highlight entire expression
-;;(setq show-paren-style 'mixed)          ;; highlight brackets if visible, else entire expression
+;;(setq show-paren-style 'expression)   ;; highlight entire expression
+;;(setq show-paren-style 'mixed)        ;; highlight brackets if visible, else entire expression
 
 ;; *
 ;;** get a visual indication of an exception
@@ -131,6 +135,60 @@
    mode
    `((,(concat "\\<\\(" font-lock-number "\\)\\>" ) 0 font-lock-number-face)
      (,(concat "\\<\\(" font-lock-hexnumber "\\)\\>" ) 0 font-lock-number-face))))
+
+
+;;*
+;;** font customisation functions
+(defun aqua/set-font-size (size)
+  "SIZE of the font to be set."
+  (interactive "nSize: ")
+  (aqua/set-mac-font "DejaVu Sans Mono" size))
+
+(defun aqua/resize-13 (&optional nosplit)
+  (interactive "P")
+  (aqua/set-font-size 13)
+  (aqua/arrange-frame 164 48 nosplit))
+
+(defun aqua/resize-1-col (&optional nosplit)
+  (interactive "P")
+  (rwd-set-font-size 13)
+  (rwd-arrange-frame 80 48 t))
+
+(defun aqua/resize-presentation ()
+  "Create a giant font window suitable for doing live demos."
+  (interactive)
+  (rwd-arrange-frame 92 34 t)
+  (rwd-set-font-size 20))
+
+(defun aqua/set-mac-font (name size)
+  "NAME and SIZE of the font to be set."
+  (interactive
+   (list (completing-read "font-name: "
+                          (mapcar (lambda (p) (list p p))
+                                  (font-family-list)) nil t)
+         (read-number "size: " 12)))
+  (set-face-attribute 'default nil
+                      :family name
+                      :slant  'normal
+                      :weight 'normal
+                      :width  'normal
+                      :height (* 10 size))
+  (frame-parameter nil 'font))
+
+;; (if window-system
+;;     (add-hook 'after-init-hook
+;;               (lambda () (run-with-idle-timer 0.25 nil #'aqua/resize-13)
+;;                          (server-start)) t))
+
+(when (boundp 'aquamacs-version)
+  (aquamacs-autoface-mode 0)
+  (setq mac-allow-anti-aliasing t)                           ;; anti-aliasing
+  (setq ns-use-srgb-colorspace nil)
+  (set-face-bold 'bold nil)                                  ;; disable bold fonts
+  ;; font settings
+  (aqua/set-mac-font "Monaco" 14))
+
+
 
 ;; *
 ;;** change the starup message in the echo area

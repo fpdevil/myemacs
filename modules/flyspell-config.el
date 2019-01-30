@@ -9,7 +9,8 @@
 ;;;
 ;;; Code:
 ;;;
-;;;=============================================================================
+;;;
+
 ;; {{ flyspell setup for web-mode
 (defun web-mode-flyspell-verify ()
   "Flyspell veriification setup for web-mode."
@@ -223,14 +224,14 @@ Please note RUN-TOGETHER will make aspell less capable.  So it should only be us
 ;; (custom-set-faces
 ;;  '(flyspell-duplicate ((t (:underline (:color "Blue" :style wave)))))
 ;;  '(flyspell-incorrect ((t (:underline (:color "Purple" :style wave))))))
-
-(set-face-attribute 'flyspell-duplicate nil
-                    :foreground "white"
-                    :background "orange" :box t :underline t)
-
-(set-face-attribute 'flyspell-incorrect nil
-                    :foreground "white"
-                    :background "red" :box t :underline t)
+(after 'flyspell
+  (set-face-attribute 'flyspell-duplicate nil
+                      :foreground "white"
+                      :background "orange" :box t :underline t)
+  (set-face-attribute 'flyspell-incorrect nil
+                      :foreground "white"
+                      :background "red" :box t :underline t)
+  )
 
 
 ;;{{{ auto dictionary switcher for flyspell

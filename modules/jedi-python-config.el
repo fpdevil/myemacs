@@ -62,6 +62,7 @@
     (add-to-list 'company-backends 'company-jedi)
     (setq-local company-backends (delete 'company-bbdb company-backends))
     ;;(setq-local company-minimum-prefix-length 0)
+    (setq-local company-quickhelp-delay 0.5)
     (setq-local company-minimum-prefix-length 2)
     (setq-local company-selection-wrap-around t))
 
@@ -70,11 +71,11 @@
 
 
 ;; ** jedi code auto completion
+(add-hook 'python-mode-hook 'jedi:setup)         ;;-- for company
 ;;
 ;; switched over to auto-complete as jedi was not yet ready for 3.7 python
 ;; and company was not showing completions. also added support for 3.7 manually
 ;; in the jedi module at /usr/local/lib/python3.7/site-packages/jedi/api/environment.py
-(add-hook 'python-mode-hook 'jedi:setup)         ;;-- for company
 (add-hook 'python-mode-hook 'jedi:ac-setup)      ;;-- for auto-complete
 
 ;; ** start completion at method dot

@@ -11,7 +11,7 @@
 ;;;
 ;;; Code:
 ;;;
-;;;===========================================================================
+
 (require 'cl)
 (require 'nxml-mode)
 
@@ -194,7 +194,7 @@
 ;; Keystroke for toggle on/off automatic completion.
 ;(setq auto-complete-nxml-toggle-automatic-key "C-c C-t")
 ;; If you want to start completion manually from the beginning
-;(setq auto-complete-nxml-automatic-p nil)
+(setq auto-complete-nxml-automatic-p nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'nxml-config)

@@ -17,7 +17,7 @@
 ;;;
 ;;; Code:
 ;;;
-;;===========================================================================
+
 (require 'latex-pretty-symbols)
 
 (add-to-list 'auto-mode-alist '("\\.tex\\'" . TeX-latex-mode))
@@ -350,6 +350,21 @@ citecolor=blue,filecolor=blue,menucolor=blue,urlcolor=blue"
 ;;**  files directly in Emacs
 (use-package latex-preview-pane
   :defer t)
+
+;;** LaTeX pretty symbols
+;; make emacs display unicode characters instead of latex commands
+(use-package latex-pretty-symbols
+  :defer t)
+
+;;** LaTeX math preview
+(use-package latex-math-preview
+  :defer t
+  :config
+  (autoload 'latex-math-preview-expression "latex-math-preview" nil t)
+  (autoload 'latex-math-preview-insert-symbol "latex-math-preview" nil t)
+  (autoload 'latex-math-preview-save-image-file "latex-math-preview" nil t)
+  (autoload 'latex-math-preview-beamer-frame "latex-math-preview" nil t)
+  )
 
 ;;** FlyMake integration
 (defun flymake-get-tex-args (file-name)

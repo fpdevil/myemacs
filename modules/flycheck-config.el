@@ -12,7 +12,8 @@
 ;;;
 ;;; Code:
 ;;;
-;;;============================================================================
+;;;
+
 (require-package 'flycheck)                   ;; flycheck lib
 (require-package 'flycheck-color-mode-line)   ;; flycheck color mode line
 (require-package 'flycheck-tip)               ;; show flycheck/flymake errors indent tooltip
@@ -90,7 +91,8 @@ clean buffer we're an order of magnitude laxer about checking."
 
 (custom-set-faces
  '(flycheck-error ((((class color)) (:underline "red"))))
- '(flycheck-info ((((class color)) (:underline "green")))))
+ '(flycheck-info ((((class color)) (:underline "green"))))
+ '(flycheck-warning ((((class color)) (:style wave :underline "orange")))))
 
 ;;-----------------------------------------------------------------------------
 ;; for flycheck-pos-tip

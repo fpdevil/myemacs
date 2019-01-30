@@ -3,6 +3,10 @@
 >*Set the DYLIB Path first*
 
 ```bash
+$ export EXTRA_CMAKE_ARGS="-DPATH_TO_LLVM_ROOT=/opt/software/clang+llvm-7.0.0-x86_64-apple-darwin"
+
+or
+
 $ export EXTRA_CMAKE_ARGS="-DEXTERNAL_LIBCLANG_PATH=/Library/Developer/CommandLineTools/usr/lib/libclang.dylib"
 ```
 

@@ -38,11 +38,11 @@
 (dim-minor-names '(
                    (flymake-mode               "FlyM")
                    (flyspell-mode              "FlyS")
-                   (rainbow-mode               "Ⓡ")
                    (company-mode               "Ⓒ" company)
                    (auto-complete-mode         "Ⓐ")
                    (yas-minor-mode             "Ⓨ" yas)
                    (interactive-haskell-mode   "Ⓘ" IntHS)
+                   ;;(rainbow-mode               "Ⓡ")
                    ;;(git-gutter-mode            "Ⓖ" git-gutter)
                    ;;(paredit-mode               "{ק}" paredit)
                    ))
@@ -84,6 +84,9 @@
 (after 'helm-mode (diminish 'helm-mode))
 (after 'ivy (diminish 'ivy-mode))
 (after 'git-gutter (diminish 'git-gutter-mode))
+(after 'yapfify (diminish 'yapf-mode))
+(after 'sphinx-doc (diminish 'sphinx-doc-mode))
+(after 'rainbow-mode (diminish 'rainbow-mode))
 
 
 (provide 'diminish-config)

@@ -15,12 +15,11 @@
 ;;* all utilities section
 ;;----------------------------------------------------------------------------
 (lazy-init
-
- ;;{{{ window switching, the visual way
+ ;;**
+ ;; window switching, the visual way
  ;; *visual* way to choose a window to switch (visual replacement for -> C-x o)
  ;;(require-package 'switch-window)
  ;;(require 'switch-window)
- ;;}}}
 
  (require-package 'pos-tip)
  (require 'pos-tip)
@@ -304,6 +303,36 @@
  ;; (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
  ;; (add-hook 'LaTeX-mode-hook 'outline-minor-mode)
  ;; (add-hook 'clojure-mode-hook 'outline-minor-mode)
+
+ ;;**
+ ;; pdf tools for viewing and interacting with pdf
+ (use-package pdf-tools
+   :ensure t
+   :mode ("\\.pdf\\'" . pdf-tools-install)
+   :bind ("C-c C-g" . pdf-sync-forward-search)
+   :defer t
+   :config
+   (setq mouse-wheel-follow-mouse t)
+   (setq pdf-view-resize-factor 1.10))
+
+ ;;**
+ ;; highlights bad word choices and has functions for calculating readability
+ (use-package writegood-mode
+   :ensure t
+   :bind ("C-c g" . writegood-mode)
+   :config
+   (add-to-list 'writegood-weasel-words "actionable"))
+
+ ;;**
+ ;; auto-compile Emacs lisp libraries
+ (use-package auto-compile
+   :defer nil
+   :config
+   (auto-compile-on-load-mode)
+   ;;(auto-compile-on-save-mode)
+   (setq auto-compile-display-buffer t
+	 auto-compile-use-mode-line nil))
+
 
  )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

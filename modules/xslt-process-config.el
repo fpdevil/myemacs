@@ -7,17 +7,17 @@
 ;;;
 ;;; elisp code for customizing the xslt settings
 ;;; http://xslt-process.sourceforge.net/documentation.php
-;;;===========================================================================
-(require 'cl)
-
 ;;;
 ;;; Code:
 ;;;
 
+(require 'cl)
+(require 'xslt-process)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; for xslt-process using saxon or xalan processor                          ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;(add-to-list 'load-path (expand-file-name "xslt-process/lisp" emacs-packages-dir))
+(add-to-list 'load-path (expand-file-name "xslt-process/lisp" emacs-packages-dir))
 ;; set up xslt-process minor mode
 (autoload 'xslt-process-mode "xslt-process" "Emacs XSLT processing" t)
 (autoload 'xslt-process-install-docbook "xslt-process"

@@ -3,9 +3,13 @@
 ;;; Commentary:
 ;;; Filename   : markdown-config.el
 ;;; description: elisp code for customizing markdown mode for Emacs
+;;
+;;  fpr rst (Online reStructuredText editor)
+;;  http://rst.ninjs.org/
 ;;;
 ;;; Code:
-;;;=============================================================================
+;;;
+;;;
 (require 'markdown-mode)
 
 ;;------------------------------------------------------------------------------
@@ -20,6 +24,14 @@
              '("\\.markdown" . markdown-mode))
        auto-mode-alist))
 (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+
+
+(setq markdown-header-scaling t
+      markdown-hide-urls t
+      markdown-marginalize-headers t
+      markdown-marginalize-headers-margin-width 4
+      markdown-fontify-code-blocks-natively t)
+
 
 (defun markdown-imenu-index ()
   "Provide an imenu handler for Markdown mode."
@@ -51,6 +63,11 @@
   "Add the markdown mode hook."
   (setq imenu-create-index-function 'markdown-imenu-index))
 (add-hook 'markdown-mode-hook 'markdown-mode-hook-setup)
+
+;; Use visual-line-mode in gfm-mode
+(defun my-gfm-mode-hook ()
+  (visual-line-mode 1))
+(add-hook 'gfm-mode-hook 'my-gfm-mode-hook)
 
 ;;------------------------------------------------------------------------------
 ;; Export Markdown to a LaTeX project
@@ -96,6 +113,7 @@
      ;; `pandoc' is better than obsolete `markdown'
      (if (executable-find "pandoc")
          (setq markdown-command "pandoc -f markdown"))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'markdown-config)

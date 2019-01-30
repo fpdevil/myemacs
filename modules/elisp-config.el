@@ -27,6 +27,10 @@
 
 ;;}}}
 
+;;**
+;; do not enable auto-fill-mode for lisp-mode
+(add-hook 'emacs-lisp-mode-hook 'turn-off-auto-fill)
+
 
 ;;{{{ display context sensitive help with eldoc for elisp-mode
 (require-package 'elisp-slime-nav)
@@ -210,13 +214,6 @@
        ;;(add-hook 'ielm-mode-hook 'ielm-auto-complete)
        (add-hook 'emacs-lisp-mode-hook 'ielm-auto-complete)
        )
-;;}}}
-
-;;{{{ Automatically compile Emacs Lisp libraries
-(require-package 'auto-compile)
-(auto-compile-on-save-mode)
-(setq auto-compile-display-buffer nil
-      auto-compile-use-mode-line nil)
 ;;}}}
 
 

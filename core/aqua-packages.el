@@ -129,7 +129,7 @@
     org                                         ;; org-mode setup
     org-plus-contrib                            ;; plus all contribs files
     org-ac                                      ;; auto completion for org
-    org-bullets                                 ;; org mode with bullets
+    ;;org-bullets                               ;; org mode with bullets
     ox-reveal                                   ;; for reveal.js presentations through org-mode
     org-tree-slide                              ;; presentations tools for org-mode
     ox-html5slide                               ;; export org-mode to html5 slide
@@ -315,6 +315,7 @@
     "cpp-addon"                         ;; addon to cc-mode
     "flycheck-google-cpplint"           ;; google c++ style checker for flycheck
     "emacs-clang-complete-async/elisp"
+    "ox-manuscript"
     )
   "Custom load paths that do not follow the normal vendor/elisp/module-name.el format.")
 

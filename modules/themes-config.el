@@ -18,50 +18,28 @@
 ;; with this setting all themes are safe to me
 (setq custom-safe-themes t)
 
-;;-------------------------------------------------------------------------------
-;; set a default color theme as required (from Steve Purcell .emacs)
-;;-------------------------------------------------------------------------------
-(setq-default custom-enabled-themes '(
-                                      ;;material-light
-                                      leuven
-                                      ;;darkokai
-                                      ;;majapahit-light
-                                      ;;doom-solarized-light
-                                      ;;doom-molokai
-                                      ;;gruvbox-dark-hard
-                                      ))
+;;------------------------------------------------------------------------------
+;; adapted from the prelude
+;; If you don't customize it, this is the theme you get.
+;;------------------------------------------------------------------------------
+(setq-default custom-enabled-themes
+              '(
+                ;;sanityinc-tomorrow-bright
+                ;;doom-molokai
+                ;;sanityinc-tomorrow-day
+                ))
 
-;;-------------------------------------------------------------------------------
-;; helper function's for changing, disabling and enabling themes
-;;-------------------------------------------------------------------------------
-(defun change-theme (theme)
-  "Disable the current theme if any and load the THEME."
-  (interactive
-   (list
-    (intern (completing-read "Load a custom theme: "
-                             (mapc 'symbol-name
-                                   (custom-available-themes))))))
-  (let ((enabled-themes custom-enabled-themes))
-    (mapc #'disable-theme custom-enabled-themes)
-    (load-theme theme t)))
-
-(defun disable-active-themes ()
-  "Disable the currently active themes listed from `custom-enabled-themes'."
-  (interactive)
-  (mapc #'disable-theme custom-enabled-themes))
-
-;;-------------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 ;; Ensure that themes will be applied even if they have not been customized
-;;-------------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 (defun reapply-themes ()
   "Forcibly load the themes listed in `custom-enabled-themes'."
   (interactive)
-  (setq color-theme-illegal-faces "^\\(w2-\\|dropdown-\\|info-\\|linum\\|yas-\\|font-lock\\|dired-directory\\)")
   (dolist (theme custom-enabled-themes)
     (unless (custom-theme-p theme)
-      (message "loading theme %s" theme)
-      (load-theme theme t)))
+      (load-theme theme)))
   (custom-set-variables `(custom-enabled-themes (quote ,custom-enabled-themes))))
+
 
 ;;-------------------------------------------------------------------------------
 ;; apply the themes after Emacs initializes
@@ -71,22 +49,22 @@
 ;; (setq default-frame-alist nil)
 (add-hook 'after-init-hook 'reapply-themes)
 
-
-;;-------------------------------------------------------------------------------
-;; Toggle between light and dark solarized themes
-;;-------------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
+;; Toggle between light and dark
+;;------------------------------------------------------------------------------
 (defun light ()
-  "Activate a solarized light color theme."
+  "Activate a light color theme."
   (interactive)
-  (require 'color-theme-sanityinc-solarized)
-  (color-theme-sanityinc-solarized-light))
+  (setq custom-enabled-themes '(sanityinc-tomorrow-day))
+  (reapply-themes))
 
 (defun dark ()
-  "Activate a solarized dark color theme."
+  "Activate a dark color theme."
   (interactive)
-  (require 'color-theme-sanityinc-tomorrow)
-  (color-theme-sanityinc-solarized-dark))
+  (setq custom-enabled-themes '(sanityinc-tomorrow-bright))
+  (reapply-themes))
 
+;; For zerodark theme
 ;;-------------------------------------------------------------------------------
 ;; enable the zerodark theme
 ;;-------------------------------------------------------------------------------
@@ -104,50 +82,8 @@
   ;;(set-selected-frame-dark)
   )
 
-; (zerodark)
-
-;;-------------------------------------------------------------------------------
-;; Toggle between prelude's light and dark solarized themes
-;;-------------------------------------------------------------------------------
-(defun prelude-solarized-settings ()
-  "Settings for the prelude solarized themes."
-  (interactive)
-  ;; make the fringe stand out from the background
-  (setq solarized-distinct-fringe-background t
-        ;; Don't change the font for some headings and titles
-        solarized-use-variable-pitch nil
-        ;; make the modeline high contrast
-        solarized-high-contrast-mode-line t
-        solarized-distinct-doc-face t
-        ;; Use less bold font
-        solarized-use-less-bold t
-        ;; Use more italics
-        solarized-use-more-italic t
-        ;; Use less colors for indicators such as git:gutter, flycheck and similar
-        solarized-emphasize-indicators nil
-        ;; Don't change size of org-mode headlines (but keep other size-changes)
-        solarized-scale-org-headlines nil
-        ;; Avoid all font-size changes
-        solarized-height-minus-1 1.0
-        solarized-height-plus-1 1.0
-        solarized-height-plus-2 1.0
-        solarized-height-plus-3 1.0
-        solarized-height-plus-4 1.0)
-  (message "loading the custom settings for solarized..."))
-
-(defun slight ()
-  "Activate prelude solarized light theme."
-  (interactive)
-  (require 'solarized-theme)
-  (prelude-solarized-settings)
-  (load-theme 'solarized-light t))
-
-(defun sdark ()
-  "Activate prelude solarized light theme."
-  (interactive)
-  (require 'solarized-theme)
-  (prelude-solarized-settings)
-  (load-theme 'solarized-dark t))
+;; enable zerodark
+;;(add-hook 'after-init-hook 'zerodark)
 
 ;;-------------------------------------------------------------------------------
 ;; Toggle between spacemacs's light and dark themes
@@ -163,8 +99,8 @@
   (interactive)
   (load-theme 'spacemacs-dark t))
 
-
 ;;-------------------------------------------------------------------------------
+;; enable moe's theme
 ;; automatically switch colors between dark and light based on the system time
 ;;-------------------------------------------------------------------------------
 ;; (require 'moe-theme-switcher)
@@ -181,12 +117,30 @@
   (moe-theme-set-color 'orange)
   (moe-light))
 
-;; (moe)
+;;(add-hook 'after-init-hook 'moe)
 
+;;-------------------------------------------------------------------------------
+;;** theme for org-mode
+;;-------------------------------------------------------------------------------
+(use-package org-beautify-theme
+  :after org
+  :ensure t)
+
+;;-------------------------------------------------------------------------------
+;;** variable pitch for org-mode and markdown-mode
+;;-------------------------------------------------------------------------------
+(custom-theme-set-faces
+ 'user
+ '(variable-pitch ((t (:family "Monaco for Powerline" :height 140 :weight light))))
+ '(fixed-pitch ((t (:family "Inconsolata for Powerline" :slant normal :weight normal :height 1.0 :width normal)))))
+(add-hook 'org-mode-hook 'variable-pitch-mode)
+(add-hook 'markdown-mode-hook 'variable-pitch-mode)
+
+(message "now loading themes-config.el...")
 ;;;;;;;;;;;;;;;;;;;;;;; color theme configuration end ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(provide 'themes-config)
 
+(provide 'themes-config)
 ;; Local Variables:
 ;; coding: utf-8
 ;; mode: emacs-lisp

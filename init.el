@@ -62,15 +62,13 @@
 ;;----------------------------------------------------------------------------
 ;;** [Pre-Initialization] - gc threshold setting
 ;;----------------------------------------------------------------------------
-(setq gc-cons-threshold (* 6 64 1024 1024)      ;; fixes gc/makes emacs start up faster
-      gc-cons-percentage 0.6
-      garbage-collection-messages t
-      )
-; (run-with-idle-timer 5 t #'garbage-collect)
-(add-hook 'focus-out-hook #'garbage-collect)
-(defvar aqua/file-name-handler-alist)
-(setq aqua/file-name-handler-alist file-name-handler-alist)
-(setq file-name-handler-alist nil)
+(setq gc-cons-threshold 10000000) ;; default gc threshold is 800kB
+;; restore gc after startup
+(add-hook 'after-init-hook
+          (lambda ()
+            (setq gc-cons-threshold 1000000)
+            (message "gc-cons-threshold restored to %S"
+                     gc-cons-threshold)))
 
 ;;----------------------------------------------------------------------------
 ;;** load the newest byte code every time
@@ -324,9 +322,9 @@ The elpa directory will be the one which houses all the .el packages."
 ;;----------------------------------------------------------------------------
 ;;** [Post-Initialization] - gc threshold setting
 ;;----------------------------------------------------------------------------
-(setq gc-cons-threshold (* 16 1024 1024)
-      gc-cons-percentage 0.1
-      file-name-handler-alist aqua/file-name-handler-alist)
+;; (setq gc-cons-threshold (* 16 1024 1024)
+;;       gc-cons-percentage 0.1
+;;       file-name-handler-alist aqua/file-name-handler-alist)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;; custom init settings completed ;;;;;;;;;;;;;;;;;;;;;;;;;;;

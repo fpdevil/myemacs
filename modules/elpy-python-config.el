@@ -51,8 +51,8 @@
 
 ;;**
 ;;**  set appropriate backend for ELPY (rope | jedi) and also rpc settings
-(setq python-shell-interpreter "python3")
-(setq elpy-rpc-backend "jedi"
+(setq python-shell-interpreter (executable-find "ipython3"))
+(setq elpy-rpc-backend "rope"
       elpy-rpc-python-command "/usr/local/bin/python3"
       elpy-rpc-python-path "/usr/local/lib/python3.7/site-packages")
 
@@ -88,7 +88,7 @@
 (if (require 'flycheck nil t)
     (lambda ()
       (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-      (set elpy-syntax-check-command "/usr/local/bin/flake8")
+      (set elpy-syntax-check-command "/usr/local/bin/pylint")
       (add-hook 'elpy-mode-hook 'flycheck-mode))
   (add-hook 'elpy-mode-hook
             '(lambda ()
