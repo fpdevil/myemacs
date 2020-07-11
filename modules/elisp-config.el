@@ -1,3 +1,8 @@
+;; File              : elisp-config.el
+;; Author            : Sampath Singamsetty <Singamsetty.Sampat@gmail.com>
+;; Date              : 14.04.2019
+;; Last Modified Date: 14.04.2019
+;; Last Modified By  : Sampath Singamsetty <Singamsetty.Sampat@gmail.com>
 ;;; package --- elisp configuration settings
 ;;;
 ;;; Commentary:
@@ -9,7 +14,7 @@
 ;;;
 ;;; Code:
 ;;;
-;;;==========================================================================
+;;;
 
 (require-package 'elisp-format)             ;; elisp code formatter
 
@@ -17,22 +22,24 @@
 (add-to-list 'auto-mode-alist '("archive-contents\\'" . emacs-lisp-mode))
 (add-to-list 'auto-mode-alist '("\\.emacs\\.bmk\\'"   . emacs-lisp-mode))
 
-(add-hook 'emacs-lisp-mode-hook 'global-prettify-symbols-mode)
-
-;;{{{ mode name shortening
+;;------------------------------------------------------------------------------
+;; mode name shortening
+;;------------------------------------------------------------------------------
 (defun shorten-emacs-lisp-mode-name ()
   "Shorten the mode name."
   (setq mode-name "Elisp"))
 (add-hook 'emacs-lisp-mode-hook #'shorten-emacs-lisp-mode-name)
 
-;;}}}
 
-;;**
+;;------------------------------------------------------------------------------
 ;; do not enable auto-fill-mode for lisp-mode
+;;------------------------------------------------------------------------------
 (add-hook 'emacs-lisp-mode-hook 'turn-off-auto-fill)
 
 
-;;{{{ display context sensitive help with eldoc for elisp-mode
+;;------------------------------------------------------------------------------
+;; display context sensitive help with eldoc for elisp-mode
+;;------------------------------------------------------------------------------
 (require-package 'elisp-slime-nav)
 (defun imenu-elisp ()
   "Handle sections of elisp under imenu."
@@ -51,38 +58,46 @@
 (add-hook 'ielm-mode-hook #'my-lisp-hook)
 (add-hook 'emacs-lisp-mode-hook #'my-lisp-hook)
 
+;; adds all of the familiar highlighting to cl-lib macros
+(use-package cl-lib-highlight
+  :after lisp-mode
+  :config
+  (cl-lib-highlight-initialize))
+
 ;; enable doc for ielm buffer
-(eval-after-load 'ielm
-  '(progn
-     (add-hook 'inferior-emacs-lisp-mode-hook
-               (lambda ()
-                 (eldoc-mode)))))
+; (eval-after-load 'ielm
+;   '(progn
+;      (add-hook 'inferior-emacs-lisp-mode-hook
+;                (lambda ()
+;                  (eldoc-mode)))))
+(add-hook 'inferior-emacs-lisp-mode-hook (lambda () (eldoc-mode)))
 
 ;; disable evil in the ielm
-(after "ielm"
-  (add-hook 'ielm-mode-hook 'turn-off-evil-mode)
-  (evil-set-initial-state 'ielm 'emacs))
+(add-hook 'ielm-mode-hook 'turn-off-evil-mode)
+(evil-set-initial-state 'ielm 'emacs)
 
-;;}}}
-
-;;{{{ flycheck
+;;------------------------------------------------------------------------------
+;; flycheck
+;;------------------------------------------------------------------------------
 (after "flycheck"
-       ;; do not show errors for require statements
-       (setq-default flycheck-emacs-lisp-load-path 'inherit)
-       (setq flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
-;;}}}
+  ;; do not show errors for require statements
+  (setq-default flycheck-emacs-lisp-load-path 'inherit)
+  (setq flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
-;;{{{ company elisp backend for auto completion support
+;;------------------------------------------------------------------------------
+;; company elisp backend for auto completion support
+;;------------------------------------------------------------------------------
 (after "company"
-       (add-hook 'emacs-lisp-mode-hook
-                 (lambda ()
-                   (set (make-local-variable 'company-backends) '(company-elisp))))
-       (add-hook 'ielm-mode-hook
-                 (lambda ()
-                   (set (make-local-variable 'company-backends) '(company-elisp)))))
-;;}}}
+  (add-hook 'emacs-lisp-mode-hook
+            (lambda ()
+              (set (make-local-variable 'company-backends) '(company-elisp))))
+  (add-hook 'ielm-mode-hook
+            (lambda ()
+              (set (make-local-variable 'company-backends) '(company-elisp)))))
 
-;;{{{ @see http://blog.urth.org/2011/06/02/flymake-versus-the-catalyst-restarter/
+;;------------------------------------------------------------------------------
+;; @see http://blog.urth.org/2011/06/02/flymake-versus-the-catalyst-restarter/
+;;------------------------------------------------------------------------------
 (defun flymake-create-temp-intemp (file-name prefix)
   "Return file name in temporary directory for checking FILE-NAME.  This is a replacement for `flymake-create-temp-inplace'.  The difference is that it gives a file name in `temporary-file-directory' instead of the same directory as FILE-NAME.  For the use of PREFIX see that function.  Note that not making the temporary file in another directory \(like here) will not if the file you are checking depends on relative paths to other files \(for the type of check which flymake does)."
   (unless (stringp file-name)
@@ -97,9 +112,10 @@
          (temp-name (make-temp-file name nil ext)))
     (flymake-log 3 "create-temp-intemp: file=%s temp=%s" file-name temp-name)
     temp-name))
-;;}}}
 
-;;{{{ read only mode for the Emacs library lisp files
+;;------------------------------------------------------------------------------
+;; read only mode for the Emacs library lisp files
+;;------------------------------------------------------------------------------
 (defun set-elisp-libs-readonly ()
   "If this elisp appears to be part of Emacs, then disallow editing."
   (when (and (buffer-file-name)
@@ -109,9 +125,10 @@
 
 (add-hook 'emacs-lisp-mode-hook 'set-elisp-libs-readonly)
 
-;;}}}
 
-;;{{{ flymake - do not use elisp lint
+;;------------------------------------------------------------------------------
+;; flymake - do not use elisp lint
+;;------------------------------------------------------------------------------
 (defun flymake-elisp-init ()
   "Do not use the elisp lint."
   (unless (or (string-match "^ " (buffer-name)) (aqua/is-buffer-file-temp))
@@ -137,18 +154,20 @@
                                 file (line-number-at-pos)))))))))
         local-file)))))
 
-;;}}}
 
-;;{{{ hippie-expand
+;;------------------------------------------------------------------------------
+;; hippie-expand
+;;------------------------------------------------------------------------------
 (defun set-up-hippie-expand-for-elisp ()
   "Locally set `hippie-expand' completion functions for use with Emacs Lisp."
   (make-local-variable 'hippie-expand-try-functions-list)
   (add-to-list 'hippie-expand-try-functions-list 'try-complete-lisp-symbol t)
   (add-to-list 'hippie-expand-try-functions-list 'try-complete-lisp-symbol-partially t))
 
-;;}}}
 
-;;{{{ elisp required features
+;;------------------------------------------------------------------------------
+;; elisp required features
+;;------------------------------------------------------------------------------
 (defun elisp-mode-hook-setup ()
   "Enable necessary features for elisp."
   (unless (aqua/is-buffer-file-temp)
@@ -158,14 +177,17 @@
       ;; (turn-on-eldoc-mode)
       (eldoc-mode))
     (enable-paredit-mode)
-    (rainbow-delimiters-mode t)
+    ;;(rainbow-delimiters-mode t)
     (set-up-hippie-expand-for-elisp)
     (flymake-mode)
     (checkdoc-minor-mode)))
-(add-hook 'emacs-lisp-mode-hook          #'elisp-mode-hook-setup)
-;;}}}
+(add-hook 'emacs-lisp-mode-hook #'elisp-mode-hook-setup)
+(add-hook 'lisp-interaction-mode-hook #'elisp-mode-hook-setup)
+(add-hook 'ielm-mode-hook #'elisp-mode-hook-setup)
 
-;;{{{ search lisp doc under the cursor
+;;------------------------------------------------------------------------------
+;; search lisp doc under the cursor
+;;------------------------------------------------------------------------------
 (defun lispdoc ()
   "Search lispdoc.com for SYMBOL, which is by default the symbol currently under the cursor."
   (interactive)
@@ -190,34 +212,30 @@
                                 "full+text+search"
                               "basic+search")))))))
 
-;;}}}
 
-;;{{{ for ielm Emacs lisp repl
-
-(after "auto-complete"
-       (require 'ac-slime)
-       (add-hook 'slime-mode-hook 'set-up-slime-ac)
-       (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
-       '(add-to-list 'ac-modes 'slime-repl-mode 'emacs-lisp-mode)
-
-       (defun ielm-auto-complete ()
-         "Enable `auto-complete' support in the \\[ielm]."
-         (setq ac-sources '(ac-source-functions
-                            ac-source-variables
-                            ac-source-features
-                            ac-source-symbols
-                            ac-source-words-in-same-mode-buffers))
-         ;;(add-to-list 'ac-modes 'inferior-emacs-lisp-mode-hook)
-        )
-
-       (add-hook 'ielm-mode-hook (lambda () (auto-complete-mode -1)))
-       ;;(add-hook 'ielm-mode-hook 'ielm-auto-complete)
-       (add-hook 'emacs-lisp-mode-hook 'ielm-auto-complete)
-       )
-;;}}}
+;;------------------------------------------------------------------------------
+;; for ielm Emacs lisp repl auto-complete
+;; by default ielm is not supported in auto complete with below it works.
+;;------------------------------------------------------------------------------
+(when (eq dotemacs-completion-engine 'auto-complete)
+  (defun ielm-auto-complete ()
+    "Enables `auto-complete' support in \\[ielm]."
+    (setq ac-sources '(ac-source-functions
+                       ac-source-variables
+                       ac-source-features
+                       ac-source-filename
+                       ac-source-files-in-current-dir
+                       ac-source-symbols
+                       ac-source-words-in-same-mode-buffers))
+    (add-to-list 'ac-modes 'inferior-emacs-lisp-mode)
+    (auto-complete-mode 1))
+  (add-hook 'ielm-mode-hook 'ielm-auto-complete)
+  (add-hook 'emacs-lisp-mode-hook 'ielm-auto-complete))
 
 
-;;{{{ popup documentation at idle
+;;------------------------------------------------------------------------------
+;; popup documentation at idle
+;;------------------------------------------------------------------------------
 (defun elisp-function-or-variable-quickhelp (symbol)
   "Display summary of function or variable at point for the SYMBOL.
 
@@ -249,7 +267,6 @@ Adapted from `describe-function-or-variable'."
              fdoc-short
              vdoc-short)
             :margin t)))))
-;;}}}
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

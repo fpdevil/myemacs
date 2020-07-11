@@ -26,7 +26,6 @@
     (make-local-variable 'company-backends)
     (push backend company-backends))
 
-  (require-package 'company)
   (require 'company)
 
   ;;** use company-mode in all buffers globally
@@ -70,23 +69,23 @@
   (setq company-backends (delete 'company-oddmuse company-backends))
   (setq-default company-backends (remove 'company-eclim company-backends))
 
-  (setq company-auto-complete nil         ;;  this will accept highlighted item with SPC if t
+  (setq company-auto-complete nil ;;  this will accept highlighted item with SPC if t
         company-minimum-prefix-length 2
-        company-tooltip-align-annotations nil
+        company-tooltip-align-annotations t
         company-selection-wrap-around t
         company-show-numbers t
-        company-require-match t
+
+        ;; does not require to match a completion when I type
+        company-require-match nil
         company-etags-ignore-case t
 
         ;; dabbrev backends should only look for candidates in buffers with the same major mode
         company-dabbrev-other-buffers t
         company-dabbrev-code-other-buffers t
-
         ;; auto complete should preserve the original case as much as possible
         company-dabbrev-downcase nil
         company-dabbrev-ignore-case t
         company-dabbrev-code-ignore-case t
-
         ;; completions in comments and strings if non nil
         company-dabbrev-code-everywhere t
 
@@ -94,74 +93,63 @@
         ;; is displayed on top (happens near the bottom of windows)
         company-tooltip-flip-when-above t
         ;; additional options
-        company-tooltip-limit 20               ;; bigger popup window
-        company-tooltip-minimum-width 50       ;; minimum width of tool-tips inner area
+        company-tooltip-limit 15 ;; bigger popup window
+        company-tooltip-minimum-width 50 ;; minimum width of tool-tips inner area
         ;; company-idle-delay 0.5              ;; decrease delay before completion popup shows
-        company-idle-delay 0.2                 ;; provide completions only if needed
-        company-echo-delay 0                   ;; remove annoying blinking
+        company-idle-delay 0.2 ;; provide completions only if needed
+        company-echo-delay 0   ;; remove annoying blinking
         company-clang-insert-arguments nil
         company-transformers '(company-sort-by-occurrence)
+        ;; company-transformers '(company-sort-by-statistics company-sort-by-backend-importance)
 
         ;; start autocompletion only after typing
         company-begin-commands '(self-insert-command))
 
-  (after "company"
-    (lazy-init
 
-     ;;** documentation popup for company
-     ;; unset M-h key
-     ;; (global-set-key (kbd "M-h") nil)
-     (require-package 'company-quickhelp)
-     (require 'company-quickhelp)
-     (setq company-quickhelp-use-propertized-text t
-           company-quickhelp-local-mode nil         ;; pop's an annoying frame for help
-           company-frontends (delq 'company-echo-metadata-frontend company-frontends)
-           company-quickhelp-color-background "Purple"
-           company-quickhelp-color-foreground "Yellow"
-           company-quickhelp-delay 0.1
-           company-quickhelp-max-lines nil
-           )
-     '(define-key company-active-map (kbd "M-h") #'company-quickhelp-manual-begin)
-     ;;(add-hook 'after-init-hook 'company-quickhelp-mode)
-     (company-quickhelp-mode 1)
+  ;;** documentation popup for company
+  ;; unset M-h key
+  ;; (global-set-key (kbd "M-h") nil)
+  (require 'company-quickhelp)
+  (setq company-quickhelp-use-propertized-text t
+        company-quickhelp-local-mode nil ;; pop's an annoying frame for help
+        company-frontends (delq 'company-echo-metadata-frontend company-frontends)
+        company-quickhelp-color-background "Purple"
+        company-quickhelp-color-foreground "Yellow"
+        company-quickhelp-delay 0.1
+        company-quickhelp-max-lines nil
+        )
+  ;;'(define-key company-active-map (kbd "M-h") #'company-quickhelp-manual-begin)
+  ;;(add-hook 'after-init-hook 'company-quickhelp-mode)
+  (company-quickhelp-mode 1)
 
-     ;;** port of ac-source-dictionary to company-mode
-     ;;   plus annotation and documentation support
-     (require-package 'company-dict)
-     (require 'company-dict)
-     ;; if you want it available everywhere
-     (add-to-list 'company-backends 'company-dict)
-     ;; Where to look for dictionary files. Default is ~/.emacs.d/dict
-     (setq company-dict-dir (expand-file-name "dict" cache-dir))
+  ;;** port of ac-source-dictionary to company-mode
+  ;;   plus annotation and documentation support
+  (require 'company-dict)
+  ;; if you want it available everywhere
+  (add-to-list 'company-backends 'company-dict)
+  ;; Where to look for dictionary files. Default is ~/.emacs.d/dict
+  (setq company-dict-dir (expand-file-name "dict" cache-dir))
 
-     ;;** fill column indicator
-     (add-hook 'company-completion-started-hook 'company-turn-off-fci)
-     (add-hook 'company-completion-finished-hook 'company-maybe-turn-on-fci)
-     (add-hook 'company-completion-cancelled-hook 'company-maybe-turn-on-fci)
+  ;;** fill column indicator
+  (add-hook 'company-completion-started-hook 'company-turn-off-fci)
+  (add-hook 'company-completion-finished-hook 'company-maybe-turn-on-fci)
+  (add-hook 'company-completion-cancelled-hook 'company-maybe-turn-on-fci)
 
-     ;;** adds fuzzy matching to company
-     (company-flx-mode +1)
+  ;;** adds fuzzy matching to company
+  (company-flx-mode +1)
 
-     ;; Tern mode javascript completion
-     (when (executable-find "tern")
-       (after "company-tern-autoloads"
-         (add-to-list 'company-backends 'company-tern)))
+  ;;** prevent space to complete automatically during company completions
+  (define-key company-active-map (kbd "SPC") #'aqua/company-stop-on-space)
 
-     ;;** prevent space to complete automatically during company completions
-     (define-key company-active-map (kbd "SPC") #'aqua/company-stop-on-space)
+  ;;** company math mode
+  ;;   (add-to-list 'company-math-symbols-unicode)
+  ;;   (add-to-list 'company-math-symbols-latex)
 
-
-     ;;** company math mode
-     ;;   (add-to-list 'company-math-symbols-unicode)
-     ;;   (add-to-list 'company-math-symbols-latex)
-
-     ;; A company-complete alternative that tries much harder to find completions.
-     ;; If none of the current completions look good, call the command again to try
-     ;; the next backend
-     ;; get all completions from company backends
-     (require 'company-try-hard)
-
-     ))
+  ;; A company-complete alternative that tries much harder to find completions.
+  ;; If none of the current completions look good, call the command again to try
+  ;; the next backend
+  ;; get all completions from company backends
+  (require 'company-try-hard)
 
   ;; work-around for issues with fci-mode
   (defvar-local company-fci-mode-on-p nil)
@@ -187,9 +175,10 @@
   (add-hook 'org-mode-hook 'company-ispell-setup)
   (add-hook 'text-mode-hook 'company-text-mode-hook)
 
+  ;;** company ispell integration
   ;;** functions to toggle company-ispell as needed
-  (defun switch-company-ispell ()
-    "Toggle company Ispell mode."
+  (defun toggle-company-ispell ()
+    "Toggle company Ispell mode with M-x."
     (interactive)
     (cond
      ((memq 'company-ispell company-backends)
@@ -212,6 +201,9 @@
     (make-local-variable 'company-backends)
     (add-to-list 'company-backends 'company-ispell)
     (setq company-ispell-dictionary (file-truename "~/.emacs.d/private/english-words.txt")))
+
+  ;; setup for text-mode
+  (add-hook 'text-mode-hook 'company-text-mode-hook)
 
 
   (after 'company-etags
@@ -250,8 +242,6 @@
                (append (if (consp backend) backend (list backend))
                        '(:with company-yasnippet))))
            company-backends)))
-
-
 
   ;;** Company mode and YASnippet step on each other toes. These functions
   ;; are to help expected TAB function. Attempt these actions, and do the
@@ -324,9 +314,24 @@
 
   ;; (add-hook 'company-mode-hook 'bind-tab-properly)
 
+  ;; company front-end with icons
+  ;;(require-package 'company-box)
+  ;;(add-hook 'company-mode-hook 'company-box-mode)
+
+  (defun trigger-org-company-complete ()
+    "Begins company-complete in org-mode buffer after pressing #+ chars."
+    (interactive)
+    (if (string-equal "#" (string (preceding-char)))
+        (progn
+          (insert "+")
+          (company-complete))
+      (insert "+")))
+  ;; (eval-after-load 'org '(define-key org-mode-map
+  ;;                          (kbd "+") 'trigger-org-company-complete))
+
   )
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (provide 'company-config)
 
 ;; Local Variables:

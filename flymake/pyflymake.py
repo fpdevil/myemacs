@@ -1,28 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-import imp
 import os
 import re
 import sys
-from subprocess import PIPE, Popen
+import imp
+import logging
 
+from subprocess import Popen, PIPE
 
-MAX_DESCRIPTION_LENGTH = 100
-
+MAX_DESCRIPTION_LENGTH = 60
 
 class LintRunner(object):
-    """ Base class provides common functionality to run python code checkers. """
+    """ Base class provides common functionality to run
+          python code checkers. """
 
     sane_default_ignore_codes = set([])
     command = None
     output_matcher = None
 
     custom_ignore_codes = None
-    # flymake: ("\\(.*\\) at \\([^ \n]+\\) line \\([0-9]+\\)[,.\n]" 2 3 nil 1)
-    # or in non-retardate: b'(.*) at ([^ \n]) line ([0-9])[,.\n]'
-    output_format = ("[{category}] {description} | {filename}:{line_number}")
+    #flymake: ("\\(.*\\) at \\([^ \n]+\\) line \\([0-9]+\\)[,.\n]" 2 3 nil 1)
+    #or in non-retardate: r'(.*) at ([^ \n]) line ([0-9])[,.\n]'
+    output_format = ("%(level)s %(tool)s/%(error_type)s%(error_number)s:"
+                     "%(description)s at %(filename)s line %(line_number)s.")
 
     def __init__(self, config):
         self.config = config
@@ -59,10 +60,10 @@ class LintRunner(object):
 
     @classmethod
     def process_output(cls, line):
-        line = line if isinstance(line, str) else line.decode()
         m = cls.output_matcher.match(line)
         if m:
-            fixed_data = dict.fromkeys(('level', 'category', 'description',
+            fixed_data = dict.fromkeys(('level', 'error_type',
+                                        'error_number', 'description',
                                         'filename', 'line_number'),
                                        '')
             fixed_data['tool'] = cls.__name__.split('Runner')[0].lower()
@@ -72,23 +73,29 @@ class LintRunner(object):
                 fixed_data['description'] = (
                     '%s...' %
                     fixed_data['description'][:MAX_DESCRIPTION_LENGTH - 3])
-            fixed_data['description'] = fixed_data['description'].lstrip(',')
-            fixed_data['category'] = fixed_data['category'].upper()
-            print(cls.output_format.format(**fixed_data))
+            print(cls.output_format % fixed_data)
 
     def run(self, filename):
         cmdline = [self.command]
         cmdline.extend(self.run_flags)
         cmdline.append(filename)
+
         env = dict(os.environ, **self.env)
+        logging.debug(' '.join(cmdline))
         try:
             process = Popen(cmdline, stdout=PIPE, stderr=PIPE, env=env)
-        except OSError as exc:
+        except OSError, exc:
             raise OSError('failed to run command %s (%s)' % (
-                cmdline, exc))
+                    cmdline, exc))
 
         for line in getattr(process, self.stream):
-            self.process_output(line)
+            self.process_output(line.decode("utf-8"))
+
+        if logging.getLogger().isEnabledFor(logging.DEBUG):
+            other_stream = ('stdout', 'stderr')[self.stream == 'stdout']
+            for line in getattr(process, other_stream):
+                logging.debug('%s %s: %s',
+                              self.__class__.__name__, other_stream, line)
 
 
 class PylintRunner(LintRunner):
@@ -103,7 +110,7 @@ class PylintRunner(LintRunner):
     output_matcher = re.compile(
         r'(?P<filename>[^:]+):'
         r'(?P<line_number>\d+):'
-        r'(?P<category>[a-z]+) '
+        r'\s*\[(?P<error_type>[WECR])(?P<error_number>[^\]]+)]'
         r'\s*(?P<description>.*)$')
 
     sane_default_ignore_codes = set([
@@ -111,14 +118,14 @@ class PylintRunner(LintRunner):
         "C0111",  # Missing Docstring
         "E1002",  # Use super on old-style class
         "W0232",  # No __init__
-        "I0011",  # Warning locally suppressed using disable-msg
-        "I0012",  # Warning locally suppressed using disable-msg
-        # "W0511",  # FIXME/TODO
-        "W0142",  # *args or **kwargs magic.
-        # "R0904",  # Too many public methods
+        #"I0011",  # Warning locally suppressed using disable-msg
+        #"I0012",  # Warning locally suppressed using disable-msg
+        #"W0511",  # FIXME/TODO
+        #"W0142",  # *args or **kwargs magic.
+        "R0904",  # Too many public methods
         "R0903",  # Too few public methods
-        # "R0201",  # Method could be a function
-    ])
+        "R0201",  # Method could be a function
+        ])
 
     fixup_map = {'E': 'error', 'C': 'info', None: 'warning'}
 
@@ -131,13 +138,144 @@ class PylintRunner(LintRunner):
     @staticmethod
     def fixup_data(data):
         fixup_map = PylintRunner.fixup_map
+        data['level'] = fixup_map.get(data['error_type'][0], fixup_map[None])
         return data
 
     @property
     def run_flags(self):
-        return ('--msg-template', '{path}:{line}:{category} {msg} ({symbol})',
+
+        return ('--msg-template', '{path}:{line}: [{msg_id}], {obj} {msg}',
                 '--reports', 'n',
                 '--disable=' + ','.join(self.operative_ignore_codes))
+
+
+class PycheckerRunner(LintRunner):
+    """ Run pychecker, producing flymake readable output.
+
+    The raw output looks like:
+      render.py:49: Parameter (maptype) not used
+      render.py:49: Parameter (markers) not used
+      render.py:49: Parameter (size) not used
+      render.py:49: Parameter (zoom) not used """
+
+    command = 'python'
+
+    output_matcher = re.compile(
+        r'(?P<filename>.+):'
+        r'(?P<line_number>\d+):'
+        r'\s+(?P<description>.*)$')
+
+    custom_ignore_codes = 'IGNORE_CODES_PYCHECKER'
+
+    @staticmethod
+    def fixup_data(data):
+        #XXX: doesn't seem to give the level
+        data['level'] = 'warning'
+        return data
+
+    @property
+    def run_flags(self):
+        return ('-c',
+                ('import sys;'
+                 'import pychecker.checker;'
+                 'pychecker.checker.main(sys.argv)'),
+                '--no-deprecated',
+                '-0186',
+                '--only',
+                '-#0')
+
+
+class PyflakesRunner(LintRunner):
+    command = 'python'
+
+    output_matcher = re.compile(
+        r'(?P<filename>.+):'
+        r'(?P<line_number>\d+):'
+        r'\s+(?P<description>.*)$')
+
+    custom_ignore_codes = 'IGNORE_CODES_PYFLAKES'
+
+    @staticmethod
+    def fixup_data(data):
+        #XXX: doesn't seem to give the level
+        data['error_type'] = 'W'
+        data['level'] = 'warning'
+        return data
+
+    @property
+    def stream(self):
+        return 'stdout'
+
+    @property
+    def run_flags(self):
+        return ()
+
+
+class Pep8Runner(LintRunner):
+    """ Run pep8.py, producing flymake readable output.
+
+    The raw output looks like:
+      spiders/structs.py:3:80: E501 line too long (80 characters)
+      spiders/structs.py:7:1: W291 trailing whitespace
+      spiders/structs.py:25:33: W602 deprecated form of raising exception
+      spiders/structs.py:51:9: E301 expected 1 blank line, found 0 """
+
+    command = 'pep8'
+    # sane_default_ignore_codes = set([
+    #     'RW29', 'W391',
+    #     'W291', 'WO232'])
+
+    custom_ignore_codes = 'IGNORE_CODES_PEP8'
+
+    output_matcher = re.compile(
+        r'(?P<filename>.+):'
+        r'(?P<line_number>[^:]+):'
+        r'[^:]+:'
+        r' (?P<error_number>\w+) '
+        r'(?P<description>.+)$')
+
+    @staticmethod
+    def fixup_data(data):
+        if 'W' in data['error_number']:
+            data['level'] = 'info'
+        else:
+            data['level'] = 'info'
+
+        return data
+
+    @property
+    def run_flags(self):
+        return '--repeat', '--ignore=' + ','.join(self.operative_ignore_codes)
+
+
+class TestRunner(LintRunner):
+    """ Run unit tests, producing flymake readable output."""
+
+    @property
+    def command(self):
+        return self.config.TEST_RUNNER_COMMAND
+
+    output_matcher = re.compile(
+        r'(?P<filename>[^:]+):'
+        r'(?P<line_number>[^:]+): '
+        r'(?P<error_number>[^:]+): '
+        r'(?P<description>.+)$')
+
+    LEVELS = {'fail': 'error'}
+
+    @staticmethod
+    def fixup_data(data):
+        data['level'] = TestRunner.LEVELS.get(data['error_number'], 'warning')
+
+        return data
+
+    @property
+    def stream(self):
+        return self.config.TEST_RUNNER_OUTPUT
+
+    @property
+    def run_flags(self):
+        return self.config.TEST_RUNNER_FLAGS
 
 
 def find_config(path, trigger_type):
@@ -156,20 +294,34 @@ def find_config(path, trigger_type):
 
 
 class DefaultConfig(object):
-
     def __init__(self):
         self.VIRTUALENV = None
+        self.TEST_RUNNER_COMMAND = None
+        self.TEST_RUNNER_FLAGS = []
+        self.TEST_RUNNER_OUTPUT = 'stderr'
         self.ENV = {}
         self.PYLINT = True
+        self.PYCHECKER = False
+        self.PEP8 = True
+        self.PYFLAKES = True
         self.IGNORE_CODES = ()
         self.USE_SANE_DEFAULTS = True
 
 DEFAULT_CONFIG = dict(
     VIRTUALENV=None,
+    TEST_RUNNER_COMMAND=None,
+    TEST_RUNNER_FLAGS=[],
+    TEST_RUNNER_OUTPUT='stderr',
     ENV={},
-    # /Users/pascal/GDrive/pylint/bin/pylint
+    PYLINT=True,
     PYLINT_COMMAND='pylint',
+    PYCHECKER=False,
+    PEP8=True,
+    PYFLAKES=True,
     IGNORE_CODES=(),
+    IGNORE_CODES_PEP8=(),
+    IGNORE_CODES_PYCHECKER=(),
+    IGNORE_CODES_PYFLAKES=(),
     IGNORE_CODES_PYLINT=(),
     USE_SANE_DEFAULTS=True)
 
@@ -190,7 +342,15 @@ def main():
                       dest="ignore_codes",
                       default=None,
                       help="error codes to ignore")
+    parser.add_option("-d", "--debug",
+                      action='store_true',
+                      dest="debug",
+                      help="print debugging on stderr")
     options, args = parser.parse_args()
+
+    logging.basicConfig(
+        level=options.debug and logging.DEBUG or logging.WARNING,
+        format='%(levelname)-8s %(message)s')
 
     config = find_config(os.path.realpath(args[0]), options.trigger_type)
     for key, value in DEFAULT_CONFIG.items():
@@ -203,22 +363,24 @@ def main():
             setattr(config, option.upper(), value)
     config.IGNORE_CODES = set(config.IGNORE_CODES)
 
+    if config.TEST_RUNNER_COMMAND:
+        tests = TestRunner(config)
+        tests.run(args[0])
+
     def run(runner_class):
         runner = runner_class(config)
         runner.run(args[0])
 
-    run(PylintRunner)
+    if config.PYLINT:
+        run(PylintRunner)
+    if config.PYCHECKER:
+        run(PycheckerRunner)
+    if config.PEP8:
+        run(Pep8Runner)
+    if config.PYFLAKES:
+        run(PyflakesRunner)
 
     sys.exit()
 
 if __name__ == '__main__':
     main()
-
-
-# (flymake-parse-line "[CONVENTION] Missing function docstring (missing-docstring) | pyflymake.py:208")
-
-# (add-to-list 'flymake-err-line-patterns '("\\([^|]+\\)| \\([^:]+\\):\\([0-9]+\\)$" 2 3 nil 1))
-
-# (setq flymake-warning-predicate "^.[^E]")
-
-# (symbol-function flymake-warning-predicate)

@@ -1,3 +1,8 @@
+;; File              : hippie-config.el
+;; Author            : Sampath Singamsetty <Singamsetty.Sampat@gmail.com>
+;; Date              : 12.04.2019
+;; Last Modified Date: 12.04.2019
+;; Last Modified By  : Sampath Singamsetty <Singamsetty.Sampat@gmail.com>
 ;;; package  --- hippie-config.el
 ;;;
 ;;; Commentary:
@@ -7,9 +12,11 @@
 ;;;
 ;;;
 ;;; elisp code for customizing the hippie expansion
-;;;===========================================================================
+;;;
 ;;; Code:
-(global-set-key (kbd "M-/") 'hippie-expand)
+;;;
+
+(global-set-key (kbd "C-c /") 'hippie-expand)
 
 (setq hippie-expand-try-functions-list
       '(
@@ -35,7 +42,6 @@
         ;; Try to complete word as an Emacs Lisp symbol.
         try-complete-lisp-symbol))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'hippie-config)
 
 ;; Local Variables:

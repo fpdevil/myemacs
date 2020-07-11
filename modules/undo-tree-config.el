@@ -11,19 +11,23 @@
 ;;;
 ;;; Code:
 ;;;
-;;=============================================================================
+;;;
+
 (lazy-init
  (require 'undo-tree)
- ;;----------------------------------------------------------------------------
+
  ;; auto save the undo-tree history
- ;;----------------------------------------------------------------------------
  (after "undo-tree-autoloads"
    (setq undo-tree-auto-save-history t)
    (setq undo-tree-history-directory-alist
          `(("." . ,(expand-file-name "undo" cache-dir))))
    (setq undo-tree-visualizer-timestamps t)
    (setq undo-tree-visualizer-diff t)
-   (global-undo-tree-mode)))
+   (global-undo-tree-mode))
+ ;; volatile highlights
+ (after "volatile-highlights"
+   (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
+   (vhl/install-extension 'undo-tree)))
 
 (provide 'undo-tree-config)
 

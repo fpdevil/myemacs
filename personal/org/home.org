@@ -1,0 +1,23 @@
+#+TITLE: Personal
+#+AUTHOR: Sampath
+#+DATE: 2019:Oct:06
+#+DESCRIPTION: Personal blog creation information
+
+* Tasks
+Below are the links for considering website creation for now
+
++ https://makeawebsitehub.com/
++ https://websitesetup.org/
+
+Most of the recommendations point to _bluehost_ for domain name creation and hosting.
+
+** ⚑ WAITING TODO Gather the required content
+:LOGBOOK:
+- State "⚑ WAITING"  from              [2019-10-06 Sun 14:17] \\
+  Still gathering on the content and making ideas for the images and other auxilliary stuff.
+:END:
+** ₪ NEXT TODO Start creating own site
+:LOGBOOK:
+- State "₪ NEXT"     from              [2019-10-06 Sun 14:18] \\
+  Once the requirements are finished, this is the step to go with.
+:END:

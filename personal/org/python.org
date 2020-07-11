@@ -168,7 +168,6 @@ when we say ~M-x org-latex-export-to-pdf~
 
 #+call: square(7)
 
-
 ** Emitting output and feeding input
 :PROPERTIES:
 :ID:

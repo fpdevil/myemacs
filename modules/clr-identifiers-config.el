@@ -8,7 +8,7 @@
 ;;;              uniquely based on its name
 ;;;
 ;;; Code:
-;;;===========================================================================
+;;;
 
 (when (eq dotemacs-clr-identifiers 'color-identifiers)
   (require-package 'color-identifiers-mode)

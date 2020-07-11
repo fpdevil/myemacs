@@ -13,15 +13,12 @@
 
 (require 'elixir-mode)         ;; this is installed as a alchemist dependency
 (require 'alchemist)           ;; alchemist for elixir major mode
-(require 'flycheck-elixir)     ;; flycheck checker for Elixir files
-(require 'flycheck-mix)
-(require 'ac-alchemist)        ;; auto-complete source of alchemist
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; using elixir-mode and alchemist                                         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'elixir-mode-hook 'alchemist-mode)
-(add-to-list 'elixir-mode-hook 'company-mode)
 (setq alchemist-mix-command "/usr/local/bin/mix"
       alchemist-iex-program-name "/usr/local/bin/iex"
       alchemist-execute-command "/usr/local/bin/elixir"
@@ -29,25 +26,29 @@
       alchemist-key-command-prefix (kbd "C-c a"))
 
 ;; company integration
-(after 'company-mode
+(when (eq dotemacs-completion-engine 'company)
+  (add-to-list 'elixir-mode-hook 'company-mode)
   (add-hook 'elixir-mode-hook
-            (setq-local company-backends '((alchemist-company :with company-yasnippet)))))
+            (setq-local company-backends '((alchemist-company :with company-yasnippet))))
+  (add-hook 'elixir-mode-hook
+        (lambda()
+              (company-mode)
+              (alchemist-mode)
+              (add-to-list (make-local-variable 'company-backends)
+                '(alchemist-company
+                  :with company-yasnippet)))))
 
 ;; auto-complete integration
-(after "auto-complete"
+(when (eq dotemacs-completion-engine 'auto-complete)
+  (require 'ac-alchemist)        ;; auto-complete source of alchemist
   (add-hook 'elixir-mode-hook 'ac-alchemist-setup))
 
 ;; add support for Elixir and mix to flycheck.
-(flycheck-mix-setup)
-(add-hook 'elixir-mode-hook 'flycheck-mode)
-
-(add-hook 'elixir-mode-hook
-      (lambda()
-            (company-mode)
-            (alchemist-mode)
-            (add-to-list (make-local-variable 'company-backends)
-              '(alchemist-company
-                :with company-yasnippet))))
+(after "flycheck"
+  (require 'flycheck-elixir)     ;; flycheck checker for Elixir files
+  (require 'flycheck-mix)
+  (flycheck-mix-setup)
+  (add-hook 'elixir-mode-hook 'flycheck-mode))
 
 ;; add hook for indentation on save
 (add-hook 'elixir-mode-hook

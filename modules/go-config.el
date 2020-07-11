@@ -20,15 +20,12 @@
 (require 'golint)
 (require 'go-guru)
 (require 'go-eldoc)
-
 (require-package 'flymake-go)
-(require 'flymake-go)
 
 ;; snag the user's PATH and GOPATH
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-env "GOPATH"))
-
 
 (defun my-go-mode-hook ()
   "GO customizations as needed."
@@ -44,7 +41,10 @@
 ;; (add-hook 'go-mode-hook 'compilation-auto-quit-window)
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 
-(with-eval-after-load 'go-mode
+(require-package 'go-complete)
+(add-hook 'completion-at-point-functions 'go-complete-at-point)
+
+(after 'go-mode
   (after "company"
     (require-package 'company-go)
     (require 'company-go)
@@ -56,21 +56,25 @@
   (after "auto-complete"
     (require 'go-autocomplete)
     ;; (add-to-list 'ac-modes 'go-mode)
-    (add-hook 'go-mode-hook 'auto-complete-mode))
-  )
+    (add-hook 'go-mode-hook 'auto-complete-mode)))
+
+;; Set up before-save hooks to format buffer and add/delete imports.
+;; Make sure you don't have other gofmt/goimports hooks enabled.
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
 (add-hook 'go-mode-hook 'yas-minor-mode)
 (add-hook 'go-mode-hook 'flycheck-mode)
 
-(setenv "GOPATH" (concat (getenv "HOME") "/sw/programming/gocode/go"))
+(setenv "GOPATH" (concat (getenv "HOME") "/sw/programming/go"))
 (add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs"))
 
-(after 'go-eldoc
-  (add-hook 'go-mode-hook 'go-eldoc-setup))
+(after 'go-eldoc (add-hook 'go-mode-hook 'go-eldoc-setup))
 
 ;; highlight identifiers
-(after 'go-guru
-  (go-guru-hl-identifier-mode))
+(after 'go-guru (go-guru-hl-identifier-mode))
 
 (provide 'go-config)
 

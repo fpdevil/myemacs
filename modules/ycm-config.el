@@ -12,7 +12,6 @@
 ;;;
 ;;; Code:
 ;;;
-;;;
 
 (when (eq dotemacs-completion-engine 'company)
 
@@ -26,15 +25,15 @@
   (require 'ycmd-eldoc)       ; adds eldoc support for ycmd-mode buffers
   (require 'company-ycmd)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;     YCMD Configuration for Emacs                                            ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (let ((ycmd-dir (expand-file-name "private/youcompleteme/" user-emacs-directory)))
     (if (not (file-exists-p ycmd-dir))
         (progn
           (message "Cloning and building YouCompleteMe ...")
           (setenv "EXTRA_CMAKE_ARGS"
-                  "-DPATH_TO_LLVM_ROOT=/opt/software/clang+llvm-7.0.0-x86_64-apple-darwin")
+                  "-DPATH_TO_LLVM_ROOT=/opt/software/clang+llvm-9.0.0-x86_64-darwin-apple")
           (shell-command (concat "git clone --recursive "
                                  "https://github.com/Valloric/ycmd.git "
                                  ycmd-dir
@@ -51,7 +50,7 @@
                   (list "/usr/local/bin/python3" (concat ycmd-dir "ycmd/"))))
 
   ;; for project specific configurations under "~/sw/programming/python/*"
-  (set-variable 'ycmd-extra-conf-whitelist '("~/sw/programming/python/*"))
+  ;; (set-variable 'ycmd-extra-conf-whitelist '("~/sw/programming/python/*"))
   ;; global ycmd configuration file
   (set-variable 'ycmd-global-config "~/.emacs.d/.ycm_extra_conf.py")
   (set-variable 'ycmd-global-modes 'nil)
@@ -76,20 +75,19 @@
   (set-variable 'ycmd-idle-change-delay 0.1)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; ycmd company integration
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  (after "company"
-    (add-to-list (make-local-variable 'company-backends)
-                 'company-ycmd)
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (add-to-list (make-local-variable 'company-backends)
+               'company-ycmd)
 
-    (after-load "company-ycmd-autoloads"
-      '(progn (company-ycmd-setup)))
+  (after-load "company-ycmd-autoloads"
+    '(progn (company-ycmd-setup)))
 
-    ;; if YCMD is used no need for default clang support
-    (setq company-backends (remove 'company-clang company-backends))
-    ;; ycmd company mode hook
-    (add-hook 'ycmd-mode-hook 'company-ycmd-setup))
+  ;; if YCMD is used no need for default clang support
+  (setq company-backends (remove 'company-clang company-backends))
+  ;; ycmd company mode hook
+  (add-hook 'ycmd-mode-hook 'company-ycmd-setup)
 
   ;; auto-completion setup without company mode
   (defun ycmd-setup-completion-at-point-function ()
@@ -108,7 +106,7 @@
   ;;}}}
 
   ;; flycheck integration
-  (after-load 'flycheck
+  (after 'flycheck
     (add-hook 'python-mode-hook
               (lambda () (add-to-list 'flycheck-disabled-checkers 'ycmd)))
     (add-hook 'ycmd-mode-hook 'flycheck-ycmd-setup)
@@ -119,7 +117,7 @@
     (add-to-list 'flycheck-checkers 'ycmd))
 
   ;; for eldoc integration
-  (after-load 'eldoc
+  (after 'eldoc
     (add-hook 'ycmd-mode-hook 'ycmd-eldoc-setup))
 
   )

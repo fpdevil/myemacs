@@ -1,4 +1,9 @@
-;;; package --- org helpers configuration
+;; File              : org-helper-config.el
+;; Author            : Sampath Singamsetty <Singamsetty.Sampat@gmail.com>
+;; Date              : 31.05.2019
+;; Last Modified Date: 31.05.2019
+;; Last Modified By  : Sampath Singamsetty <Singamsetty.Sampat@gmail.com>
+;;; package --- org helpers configuration -*- lexical-binding:t ; -*-
 ;;;
 ;;; Commentary:
 ;;;
@@ -6,294 +11,100 @@
 ;;; Description: Some helper functions and utils for org-mode
 ;;
 ;; elisp code for org helpers and utilities
+;; Examples using Emacs org mode babel inline source code with
+;; different backend languages
+;; https://github.com/dfeich/org-babel-examples
+;; http://ehneilsen.net/notebook/orgExamples/org-examples.html
+;; https://texblog.org/2017/12/12/color-table-series-part-1-introduction-colortbl-package/
 ;;;
 ;;; Code:
 ;;;
-;;;
 
-;; * Block templates
-;; add <p for python expansion
-(add-to-list 'org-structure-template-alist
-             '("p" "#+BEGIN_SRC python :results output org drawer\n?\n#+END_SRC"
-               "<src lang=\"python\">\n?\n</src>"))
+(defun s-org-mode-hook ()
+  "Aiding capf completions through company."
+  (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+(add-hook 'org-mode-hook #'s-org-mode-hook)
 
-;; add <por for python expansion with raw output
-(add-to-list 'org-structure-template-alist
-             '("por" "#+BEGIN_SRC python :results output raw\n?\n#+END_SRC"
-               "<src lang=\"python\">\n?\n</src>"))
+;;-----------------------------------------------------------------------------
+;; enable flycheck for babel source code blocks
+;;-----------------------------------------------------------------------------
+(defadvice org-edit-src-code (around set-buffer-file-name activate compile)
+  "Enable FlyCheck AROUND SET-BUFFER-FILE-NAME ACTIVATE COMPILE."
+  (let ((file-name (buffer-file-name))) ;; (1)
+    ad-do-it                            ;; (2)
+    (setq buffer-file-name file-name))) ;; (3)
 
-;; add <pv for python expansion with value
-(add-to-list 'org-structure-template-alist
-             '("pv" "#+BEGIN_SRC python :results value\n?\n#+END_SRC"
-               "<src lang=\"python\">\n?\n</src>"))
+;;-----------------------------------------------------------------------------
+;; for better bullet point handling, use font-lock
+;;-----------------------------------------------------------------------------
+(font-lock-add-keywords
+ 'org-mode
+ '(("^ *\\([-]\\) "
+    (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-;; add <el for emacs-lisp expansion
-(add-to-list 'org-structure-template-alist
-             '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"
-               "<src lang=\"emacs-lisp\">\n?\n</src>"))
+;;-----------------------------------------------------------------------------
+;; for prettifying the check boxes
+;;-----------------------------------------------------------------------------
+(defface org-checkbox-done-text
+  '((t (:foreground "#71696A" :strike-through t)))
+  "Face for the text part of a checked org-mode checkbox.")
 
-(add-to-list 'org-structure-template-alist
-             '("ell" "#+BEGIN_SRC emacs-lisp :lexical t\n?\n#+END_SRC"
-               "<src lang=\"emacs-lisp\">\n?\n</src>"))
+(font-lock-add-keywords
+ 'org-mode
+ `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)"
+    1 'org-checkbox-done-text prepend))
+ 'append)
 
-;; add <sh for shell
-(add-to-list 'org-structure-template-alist
-             '("sh" "#+BEGIN_SRC sh\n?\n#+END_SRC"
-               "<src lang=\"shell\">\n?\n</src>"))
+;;------------------------------------------------------------------------------
+;; for lists (https://orgmode.org/manual/Plain-lists.html)
+;; If you  find that using a  different bullet for a  sub-list (than that
+;; used for  the current list-level) improves  readability, customize the
+;; variable org-list-demote-modify-bullet
+;;------------------------------------------------------------------------------
+(setq org-list-demote-modify-bullet (quote (("+" . "-")
+					    ("*" . "-")
+					    ("1." . "-")
+					    ("1)" . "a)"))))
 
-(add-to-list 'org-structure-template-alist
-             '("lh" "#+latex_header: " ""))
+;;------------------------------------------------------------------------------
+;; adjust scale of formulas or preview objects change value of scale to 2.0
+;;------------------------------------------------------------------------------
+(setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
 
-(add-to-list 'org-structure-template-alist
-             '("lc" "#+latex_class: " ""))
-
-(add-to-list 'org-structure-template-alist
-             '("lco" "#+latex_class_options: " ""))
-
-(add-to-list 'org-structure-template-alist
-             '("ao" "#+attr_org: " ""))
-
-(add-to-list 'org-structure-template-alist
-             '("al" "#+attr_latex: " ""))
-
-(add-to-list 'org-structure-template-alist
-             '("ca" "#+caption: " ""))
-
-(add-to-list 'org-structure-template-alist
-             '("tn" "#+tblname: " ""))
-
-(add-to-list 'org-structure-template-alist
-             '("n" "#+name: " ""))
-
-(add-to-list 'org-structure-template-alist
-             '("o" "#+options: " ""))
-
-(add-to-list 'org-structure-template-alist
-             '("ti" "#+title: " ""))
-
-;;{{{ for table expansions
-(loop for i from 1 to 6
-      do
-      (let ((template (make-string i ?t))
-            (expansion (concat "|"
-                               (mapconcat
-                                'identity
-                                (loop for j to i collect "   ")
-                                "|"))))
-        (setf (substring expansion 2 3) "?")
-        (add-to-list 'org-structure-template-alist
-                     `(,template ,expansion ""))))
-;;}}}
-
-
-;;{{{ proportional fonts in different sizes for headlines.
-;;    listed fonts will be attempted in sequence
-(let* ((variable-tuple
-        (cond ((x-list-fonts "Monaco for Powerline") '(:font "Monaco for Powerline"))
-              ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
-              ((x-list-fonts "Menlo")         '(:font "Menlo"))
-              ((x-family-fonts "Avenir")    '(:family "Avenir"))
-              (nil (warn "Cannot find Avenir Font.  Install the same."))))
-       (base-font-color     (face-foreground 'default nil 'default))
-       (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
-
-  (custom-theme-set-faces
-   'user
-   `(org-level-8 ((t (,@headline ,@variable-tuple))))
-   `(org-level-7 ((t (,@headline ,@variable-tuple))))
-   `(org-level-6 ((t (,@headline ,@variable-tuple))))
-   `(org-level-5 ((t (,@headline ,@variable-tuple))))
-   `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
-   `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.25))))
-   `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
-   `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.75))))
-   `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))))
-;;}}}
-
-
-;;{{{  Colored src blocks
-;;     based on patches from Rasmus <rasmus@gmx.us>
-;;     This function overwrites the org-src function to make src blocks be colored again.
-(defun org-src-font-lock-fontify-block (lang start end)
-  "Fontify code block.
-LANG is the language of the block.  START and END are positions of
-the block.  This function is called by Emacs automatic
-fontification, as long as `org-src-fontify-natively' is non-nil."
-  (let ((lang-mode (org-src--get-lang-mode lang)))
-    (when (fboundp lang-mode)
-      (let ((string (buffer-substring-no-properties start end))
-            (modified (buffer-modified-p))
-            (org-buffer (current-buffer))
-            (block-faces (let ((face-name (intern (format "org-block-%s" lang))))
-                           (append (and (facep face-name) (list face-name))
-                                   '(org-block)))))
-        (remove-text-properties start end '(face nil))
-        (with-current-buffer
-            (get-buffer-create
-             (format " *org-src-fontification:%s*" lang-mode))
-          (erase-buffer)
-          (insert string " ") ;; so there's a final property change
-          (unless (eq major-mode lang-mode) (funcall lang-mode))
-          (org-font-lock-ensure)
-          (let ((pos (point-min)) next)
-            (while (setq next (next-single-property-change pos 'face))
-              (let ((new-face (get-text-property pos 'face)))
-                (put-text-property
-                 (+ start (1- pos)) (1- (+ start next)) 'face
-                 (list :inherit (append (and new-face (list new-face))
-                                        block-faces))
-                 org-buffer))
-              (setq pos next))
-            ;; Add the face to the remaining part of the font.
-            (put-text-property (1- (+ start pos))
-                               end 'face
-                               (list :inherit block-faces) org-buffer)))
-        (add-text-properties
-         start end
-         '(font-lock-fontified t fontified t font-lock-multiline t))
-        (set-buffer-modified-p modified)))))
-
-
-(defun org-fontify-meta-lines-and-blocks-1 (limit)
-  "Fontify #+ lines and blocks."
-  (let ((case-fold-search t))
-    (if (re-search-forward
-   "^\\([ \t]*#\\(\\(\\+[a-zA-Z]+:?\\| \\|$\\)\\(_\\([a-zA-Z]+\\)\\)?\\)[ \t]*\\(\\([^ \t\n]*\\)[ \t]*\\(.*\\)\\)\\)"
-   limit t)
-  (let ((beg (match-beginning 0))
-        (block-start (match-end 0))
-        (block-end nil)
-        (lang (match-string 7))
-        (beg1 (line-beginning-position 2))
-        (dc1 (downcase (match-string 2)))
-        (dc3 (downcase (match-string 3)))
-        end end1 quoting block-type ovl)
-    (cond
-     ((and (match-end 4) (equal dc3 "+begin"))
-      ;; Truly a block
-      (setq block-type (downcase (match-string 5))
-      quoting (member block-type org-protecting-blocks))
-      (when (re-search-forward
-       (concat "^[ \t]*#\\+end" (match-string 4) "\\>.*")
-       nil t)  ;; on purpose, we look further than LIMIT
-        (setq end (min (point-max) (match-end 0))
-        end1 (min (point-max) (1- (match-beginning 0))))
-        (setq block-end (match-beginning 0))
-        (when quoting
-    (org-remove-flyspell-overlays-in beg1 end1)
-    (remove-text-properties beg end
-          '(display t invisible t intangible t)))
-        (add-text-properties
-         beg end '(font-lock-fontified t font-lock-multiline t))
-        (add-text-properties beg beg1 '(face org-meta-line))
-        (org-remove-flyspell-overlays-in beg beg1)
-        (add-text-properties  ; For end_src
-         end1 (min (point-max) (1+ end)) '(face org-meta-line))
-        (org-remove-flyspell-overlays-in end1 end)
-        (cond
-         ((and lang (not (string= lang "")) org-src-fontify-natively)
-    (org-src-font-lock-fontify-block lang block-start block-end)
-    (add-text-properties beg1 block-end (list 'src-block t 'lang (substring-no-properties lang))))
-         (quoting
-    (add-text-properties beg1 (min (point-max) (1+ end1))
-             (let ((face-name (intern (format "org-block-%s" lang))))
-               (append (and (facep face-name) (list face-name))
-                 '(face org-block))))) ; end of source block
-         ((not org-fontify-quote-and-verse-blocks))
-         ((string= block-type "quote")
-    (add-text-properties beg1 (min (point-max) (1+ end1)) '(face org-quote)))
-         ((string= block-type "verse")
-    (add-text-properties beg1 (min (point-max) (1+ end1)) '(face org-verse))))
-        (add-text-properties beg beg1 '(face org-block-begin-line))
-        (add-text-properties (min (point-max) (1+ end)) (min (point-max) (1+ end1))
-           '(face org-block-end-line))
-        t))
-     ((member dc1 '("+title:" "+author:" "+email:" "+date:"))
-      (org-remove-flyspell-overlays-in
-       (match-beginning 0)
-       (if (equal "+title:" dc1) (match-end 2) (match-end 0)))
-      (add-text-properties
-       beg (match-end 3)
-       (if (member (intern (substring dc1 1 -1)) org-hidden-keywords)
-     '(font-lock-fontified t invisible t)
-         '(font-lock-fontified t face org-document-info-keyword)))
-      (add-text-properties
-       (match-beginning 6) (min (point-max) (1+ (match-end 6)))
-       (if (string-equal dc1 "+title:")
-     '(font-lock-fontified t face org-document-title)
-         '(font-lock-fontified t face org-document-info))))
-     ((equal dc1 "+caption:")
-      (org-remove-flyspell-overlays-in (match-end 2) (match-end 0))
-      (remove-text-properties (match-beginning 0) (match-end 0)
-            '(display t invisible t intangible t))
-      (add-text-properties (match-beginning 1) (match-end 3)
-         '(font-lock-fontified t face org-meta-line))
-      (add-text-properties (match-beginning 6) (+ (match-end 6) 1)
-         '(font-lock-fontified t face org-block))
-      t)
-     ((member dc3 '(" " ""))
-      (org-remove-flyspell-overlays-in beg (match-end 0))
-      (add-text-properties
-       beg (match-end 0)
-       '(font-lock-fontified t face font-lock-comment-face)))
-     (t ;; just any other in-buffer setting, but not indented
-      (org-remove-flyspell-overlays-in (match-beginning 0) (match-end 0))
-      (remove-text-properties (match-beginning 0) (match-end 0)
-            '(display t invisible t intangible t))
-      (add-text-properties beg (match-end 0)
-         '(font-lock-fontified t face org-meta-line))
-      t))))))
-
-
-(defface org-block-emacs-lisp
-  `((t (:background "LightCyan1")))
-  "Face for elisp src blocks")
-
-(defface org-block-python
-  `((t (:background "DarkSeaGreen1")))
-  "Face for python blocks")
-
-(defface org-block-ipython
-  `((t (:background "thistle1")))
-  "Face for python blocks")
-
-(defface org-block-jupyter-hy
-  `((t (:background "light goldenrod yellow")))
-  "Face for hylang blocks")
-
-(defface org-block-sh
-  `((t (:background "gray90")))
-  "Face for python blocks")
-
-;;;}}}
-
-;;{{{ org agenda files
+;;-----------------------------------------------------------------------------
+;; org agenda files
+;;-----------------------------------------------------------------------------
 (setq org-directory (expand-file-name "org" personal-dir))
 (setq org-agenda-files (list (expand-file-name "home.org" org-directory)
-                             (expand-file-name "python.org" org-directory)
-                             (expand-file-name "todo.org" org-directory)))
+			     			 (expand-file-name "python.org" org-directory)
+			     			 (expand-file-name "todo.org" org-directory))
+      org-agenda-include-all-todo t
+      org-agenda-include-diary t
+      org-agenda-inhibit-startup t                ;; this speeds up by ~50x
+      org-agenda-use-tag-inheritance nil)
 
-(setq org-agenda-include-all-todo t)
-(setq org-agenda-include-diary t)
-(setq org-agenda-inhibit-startup t) ;; speedup by ~50x
-(setq org-agenda-use-tag-inheritance nil)
 
-
-;; Refile targets include this file and any file contributing to the agenda - up to 5 levels deep
-(setq org-refile-targets (quote ((nil :maxlevel . 5) (org-agenda-files :maxlevel . 5))))
+;;-----------------------------------------------------------------------------
+;; Refile targets include this file and any file contributing
+;; to the agenda - up to 5 levels deep
+;;-----------------------------------------------------------------------------
+(setq org-refile-targets
+      (quote ((nil :maxlevel . 5) (org-agenda-files :maxlevel . 5))))
 ;; Targets start with the file name - allows creating level 1 tasks
 (setq org-refile-use-outline-path (quote file))
-;; Targets complete in steps so we start with filename, TAB shows the next level of targets etc
+;; Targets complete in steps so we start with filename, TAB
+;; shows the next level of targets etc
 (setq org-outline-path-complete-in-steps t)
-;;}}}
 
-;;{{{  Image handling in org
-;; Display images in org mode enable image mode first
+;;-----------------------------------------------------------------------------
+;;**  Image handling in org
+;;    Display images in org mode enable image mode first
+;;-----------------------------------------------------------------------------
 (iimage-mode)
 
 ;; add the org file link format to the iimage mode regex
 (add-to-list 'iimage-mode-image-regex-alist
-             (cons (concat "\\[\\[file:\\(~?" iimage-mode-image-filename-regex "\\)\\]")  1))
+	     (cons (concat "\\[\\[file:\\(~?" iimage-mode-image-filename-regex "\\)\\]")  1))
 
 ;;  add a hook so we can display images on load
 (add-hook 'org-mode-hook
@@ -317,60 +128,45 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
   (call-interactively 'iimage-mode))
 
 (define-key org-mode-map (kbd "C-S-a") 'org-archive-subtree)
-;;}}}
 
-;;{{{ yasnippet compatibility
-;;(add-hook 'org-mode-hook
-;;  (lambda ()
-;;    (org-set-local 'yas/trigger-key [tab])
-;;    (define-key yas/keymap [tab] 'yas/next-field-or-maybe-expand)))
-;;
-;;(defun yas/org-very-safe-expand ()
-;;  (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
-;;
-;;(add-hook 'org-mode-hook
-;;  (lambda ()
-;;    (make-variable-buffer-local 'yas/trigger-key)
-;;    (setq yas/trigger-key [tab])
-;;    (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-;;    (define-key yas/keymap [tab] 'yas/next-field)))
-;;}}}
 
-;;{{{ Drag images and files onto org-mode and insert a link to them
-;;    inserting images from web M-x org-easy-img-insert
+;;-----------------------------------------------------------------------------
+;;** Drag images and files onto org-mode and insert a link to them
+;;   inserting images from web M-x org-easy-img-insert
 ;;
 ;; http://kitchingroup.cheme.cmu.edu/blog/2015/07/10/
 ;; Drag-images-and-files-onto-org-mode-and-insert-a-link-to-them/
+;;-----------------------------------------------------------------------------
 (require 'org-download)
 (defun my-dnd-func (event)
   (interactive "e")
   (goto-char (nth 1 (event-start event)))
   (x-focus-frame nil)
   (let* ((payload (car (last event)))
-         (type (car payload))
-         (fname (cadr payload))
-         (img-regexp "\\(png\\|jp[e]?g\\)\\>"))
+	 (type (car payload))
+	 (fname (cadr payload))
+	 (img-regexp "\\(png\\|jp[e]?g\\)\\>"))
     (cond
      ;; insert image link
      ((and  (eq 'drag-n-drop (car event))
-            (eq 'file type)
-            (string-match img-regexp fname))
+	    (eq 'file type)
+	    (string-match img-regexp fname))
       (insert (format "[[%s]]" fname))
       (org-display-inline-images t t))
      ;; insert image link with caption
      ((and  (eq 'C-drag-n-drop (car event))
-            (eq 'file type)
-            (string-match img-regexp fname))
+	    (eq 'file type)
+	    (string-match img-regexp fname))
       (insert "#+ATTR_ORG: :width 300\n")
       (insert (concat  "#+CAPTION: " (read-input "Caption: ") "\n"))
       (insert (format "[[%s]]" fname))
       (org-display-inline-images t t))
      ;; C-drag-n-drop to open a file
      ((and  (eq 'C-drag-n-drop (car event))
-            (eq 'file type))
+	    (eq 'file type))
       (find-file fname))
      ((and (eq 'M-drag-n-drop (car event))
-           (eq 'file type))
+	   (eq 'file type))
       (insert (format "[[attachfile:%s]]" fname)))
      ;; regular drag and drop on file
      ((eq 'file type)
@@ -378,38 +174,104 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
      (t
       (error "I am not equipped for dnd on %s" payload)))))
 
-
 (define-key org-mode-map (kbd "<drag-n-drop>") 'my-dnd-func)
 (define-key org-mode-map (kbd "<C-drag-n-drop>") 'my-dnd-func)
 (define-key org-mode-map (kbd "<M-drag-n-drop>") 'my-dnd-func)
-;;}}}
 
-;;{{{
+
+;;-----------------------------------------------------------------------------
+;; pdf tools for viewing and interacting with pdf
+;;-----------------------------------------------------------------------------
+(setenv "PKG_CONFIG_PATH"
+        (concat (shell-command-to-string "printf %s \"$(brew --prefix libffi)\"") "/lib/pkgconfig/"))
+(use-package pdf-tools
+  :defer t
+  :config
+  (pdf-tools-install)
+  ;; open pdfs scaled to the fit page
+  (setq-default pdf-view-display-size 'fit-page)
+  ;; auto annotate highlights
+  (setq pdf-annot-activate-created-annotations t)
+  ;; use regular isearch
+  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+  (setq mouse-wheel-follow-mouse t)
+  ;;  more fine grained zooming with + and - than the default 25%, now 10%
+  (setq pdf-view-resize-factor 1.10)
+  ;; cua mode interferes with copying text from pdf
+  (add-hook 'pdf-view-mode-hook (lambda () (cua-mode 0))))
+
+
+;;-----------------------------------------------------------------------------
 ;; org-mode modules for citations, cross-references, bibliographies in the
 ;; org-mode and useful bibtex tools to go with it
-(require-package 'org-ref)
-(require 'org-ref)
+;;-----------------------------------------------------------------------------
+(use-package org-ref
+  :ensure t
+  :init
+  (setq reftex-default-bibliography '("~/.emacs.d/personal/org/resources/bibliography/references.bib")
+        org-ref-bibliography-notes '("~/.emacs.d/personal/org/resources/bibliography/notes.org")
+        org-ref-default-bibliography '("~/.emacs.d/personal/org/resources/bibliography/references.bib")
+        org-ref-pdf-directory '("~/.emacs.d/personal/org/resources/bibliography/bibtex-pdfs/")
+        bibtex-autokey-year-length 4
+        bibtex-autokey-name-year-separator "-"
+        bibtex-autokey-year-title-separator "-"
+        bibtex-autokey-titleword-separator "-"
+        bibtex-autokey-titlewords 2
+        bibtex-autokey-titlewords-stretch 1
+        bibtex-autokey-titleword-length 5
+        org-ref-bibtex-hydra-key-binding (kbd "H-b"))
+  ;; (define-key bibtex-mode-map org-ref-bibtex-hydra-key-binding 'org-ref-bibtex-hydra/body)
+  ;; (global-set-key (kbd "H-b") 'org-ref-bibtex-hydra/body)
+  )
 
-(setq bibtex-autokey-year-length 4
-      bibtex-autokey-name-year-separator "-"
-      bibtex-autokey-year-title-separator "-"
-      bibtex-autokey-titleword-separator "-"
-      bibtex-autokey-titlewords 2
-      bibtex-autokey-titlewords-stretch 1
-      bibtex-autokey-titleword-length 5
-      org-ref-bibtex-hydra-key-binding (kbd "H-b"))
-;;}}}
 
-;;{{{ allow for export=>beamer by placing
-;;    http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-mode-and.html
-;;    http://mirror.utexas.edu/ctan/macros/latex/contrib/beamer/doc/beameruserguide.pdf
+;; various functions useful for bibliography management
+(defun my-bibliography-selector-hook (backend)
+  (case backend
+    (latex
+     (when (save-excursion
+             (re-search-forward "^[ \t]*\\bibliography\\(?:style\\)?{" nil t))
+       (while (re-search-forward "^[ \t]*#+BIBLIOGRAPHY:.*$" nil t)
+         (when (eq (org-element-type (save-match-data (org-element-at-point)))
+                   'keyword)
+           (replace-match "")))))
+    (html
+     (when (save-excursion
+             (re-search-forward "^[ \t]*#+BIBLIOGRAPHY:.*$" nil t))
+       (while (re-search-forward "^[ \t]*\\bibliography\\(?:style\\)?{.*$" nil t)
+         (replace-match ""))))))
+
+(add-hook 'org-export-before-parsing-hook 'my-bibliography-selector-hook)
+
+(require 'reftex)
+(require-package 'bibretrieve)
+(setq bibretrieve-backends '(("citebase" . 10) ("mrl" . 10) ("arxiv" . 5) ("zbm" . 5)))
+
+(defun bibretrieve-amazon-create-url (author title)
+  (concat "http://lead.to/amazon/en/?key="(mm-url-form-encode-xwfu title) "&si=ble&op=bt&bn=&so=sa&ht=us"))
+
+(defun bibretrieve-amazon ()
+  (interactive)
+  (setq mm-url-use-external t)
+  (setq mm-url-program "w3m")
+  (setq mm-url-arguments (list "-dump"))
+  (setq bibretrieve-backends '(("amazon" . 5)))
+  (bibretrieve)
+  (setq mm-url-use-external nil))
+
+
+;;-----------------------------------------------------------------------------
+;;** allow for export=>beamer by placing
+;;   http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-mode-and.html
+;;   http://mirror.utexas.edu/ctan/macros/latex/contrib/beamer/doc/beameruserguide.pdf
 ;; #+LaTeX_CLASS: beamer in org files
+;;-----------------------------------------------------------------------------
 (unless (boundp 'org-export-latex-classes)
   (setq org-export-latex-classes nil))
 (add-to-list 'org-export-latex-classes
-             ;; beamer class, for presentations
-             '("beamer"
-               "\\documentclass[11pt,professionalfonts]{beamer}\n
+	     ;; beamer class, for presentations
+	     '("beamer"
+	       "\\documentclass[11pt,professionalfonts]{beamer}\n
       \\mode<{{{beamermode}}}>\n
       \\usetheme{{{{beamertheme}}}}\n
       \\usecolortheme{{{{beamercolortheme}}}}\n
@@ -447,30 +309,49 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
       \\usepackage{verbatim}\n
       \\institute{{{{beamerinstitute}}}}\n
        \\subject{{{{beamersubject}}}}\n"
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\begin{frame}[fragile]\\frametitle{%s}"
-                "\\end{frame}"
-                "\\begin{frame}[fragile]\\frametitle{%s}"
-                "\\end{frame}")))
+	       ("\\section{%s}" . "\\section*{%s}")
+	       ("\\begin{frame}[fragile]\\frametitle{%s}"
+		"\\end{frame}"
+		"\\begin{frame}[fragile]\\frametitle{%s}"
+		"\\end{frame}")))
 
 ;; letter class, for formal letters
 (add-to-list 'org-export-latex-classes
-             '("letter"
-               "\\documentclass[11pt]{letter}\n
-      \\usepackage[utf8]{inputenc}\n
-      \\usepackage[T1]{fontenc}\n
-      \\usepackage{color}"
+	     '("letter"
+	       "\\documentclass[11pt]{letter}\n
+		    \\usepackage[utf8]{inputenc}\n
+		    \\usepackage[T1]{fontenc}\n
+		    \\usepackage{color}"
+	       ("\\section{%s}" . "\\section*{%s}")
+	       ("\\subsection{%s}" . "\\subsection*{%s}")
+	       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+	       ("\\paragraph{%s}" . "\\paragraph*{%s}")
+	       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-               ("\\paragraph{%s}" . "\\paragraph*{%s}")
-               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+;; private latex classes (referred from http://www.star.bris.ac.uk/bjm/org-basics.html)
+(add-to-list 'org-latex-classes
+	     '("bjmarticle"
+	       "\\documentclass{article}
+			\\usepackage[utf8]{inputenc}
+			\\usepackage[T1]{fontenc}
+			\\usepackage{graphicx}
+			\\usepackage{longtable}
+			\\usepackage{hyperref}
+			\\usepackage{natbib}
+			\\usepackage{amssymb}
+			\\usepackage{amsmath}
+			\\usepackage{geometry}
+			\\geometry{a4paper,left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,marginparsep=7pt, marginparwidth=.6in}"
+	       ("\\section{%s}" . "\\section*{%s}")
+	       ("\\subsection{%s}" . "\\subsection*{%s}")
+	       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+	       ("\\paragraph{%s}" . "\\paragraph*{%s}")
+	       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-;;}}}
 
-
+;;-----------------------------------------------------------------------------
 ;;** Wrap Region
+;;-----------------------------------------------------------------------------
 (use-package wrap-region
   :diminish wrap-region-mode
   :config
@@ -485,21 +366,25 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
    (add-hook 'latex-mode-hook 'wrap-region-mode)))
 
 
-;;*
+;;-----------------------------------------------------------------------------
 ;; utilities to export scientific manuscripts
+;;-----------------------------------------------------------------------------
 ;; (use-package ox-manuscript
 ;;   :after org
 ;;   :ensure t
 ;;   :load-path (lambda () (expand-file-name "ox-manuscript" vendor-dir)))
 
-;;* swagger to org
+;;-----------------------------------------------------------------------------
+;;** swagger file to org
 ;; M-x swagger-to-org-from-file-name
+;;-----------------------------------------------------------------------------
 (use-package swagger-to-org
   :after org
   :defer t)
 
-
+;;-----------------------------------------------------------------------------
 ;;** custom faces
+;;-----------------------------------------------------------------------------
 (custom-theme-set-faces
  'user
  '(org-block                 ((t (:inherit fixed-pitch))))
@@ -512,10 +397,11 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
  '(org-tag                   ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
  '(org-verbatim              ((t (:inherit (shadow fixed-pitch))))))
 
-;;**
-;; clear org cache
+;;-----------------------------------------------------------------------------
+;;** clear org cache
+;;-----------------------------------------------------------------------------
 (defun clear-org-cache ()
-  "Clears all kinds of Org-mode caches and re-builds them if possible"
+  "Clears all kinds of Org-mode caches and re-builds them if possible."
   (interactive)
   (measure-time
    (org-element-cache-reset)
@@ -524,13 +410,140 @@ fontification, as long as `org-src-fontify-natively' is non-nil."
    (setq org-agenda-tags-column (- (- (window-total-width) 3))) ;; total width minus 3
    (when (my-buffer-exists "*Org Agenda*")
      (kill-buffer "*Org Agenda*")
-     (org-agenda-list)
-     )
-   )
-  )
+     (org-agenda-list))))
+
+;;-----------------------------------------------------------------------------
+;;** reformat the buffer
+;;-----------------------------------------------------------------------------
+(defun org-reformat-buffer ()
+  ("Reformat the org buffer.")
+  (interactive)
+  (when (y-or-n-p "Dow you really want to format current buffer? ")
+    (let ((document (org-element-interpret-data (org-element-parse-buffer))))
+      (erase-buffer)
+      (insert document)
+      (goto-char (point-min)))))
+
+;;-----------------------------------------------------------------------------
+;;** publishing a website using org-mode
+;;-----------------------------------------------------------------------------
+(require 'ox-publish)
+(setq org-html-coding-system 'utf-8-unix)
+
+;;
+;;** project tree for publishing (4 directories)
+;; www
+;; |-- org
+;; |-- _org
+;; |-- static_html
+;; |-- utils
+;;
+(setq org-publish-project-alist
+      '(
+        ;; static html content
+        ("html-static"
+         :base-directory "~/www/static_html/"
+         :base-extension "html\\|xml\\|css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|zip\\|gz\\|csv\\|m\\|R"
+         :include (".htaccess")
+         :publishing-directory "~/public_html/"
+         :recursive t
+         :publishing-function org-publish-attachment)
+
+        ;; notes from org
+        ("org-notes"
+         :base-directory "~/www/org/"
+         :base-extension "org"
+         :publishing-directory "~/public_html/org/"
+         :recursive t
+         :exclude ".*-reveal\.org"        ;; exclude org-reveal slides
+         :publishing-function org-html-publish-to-html
+         :headline-levels 2               ;; Just the default for this project.
+         :auto-sitemap t                  ;; Generate sitemap.org automagically...
+         :sitemap-filename "sitemap.org"  ;; ... call it sitemap.org (it's the default)...
+         :sitemap-title "Sitemap"         ;; ... with title 'Sitemap'.
+         :with-creator nil       ;; Disable the inclusion of "Created by Org" in the postamble.
+         :with-email nil         ;; Disable the inclusion of "(your email)" in the postamble.
+         :with-author nil        ;; Enable the inclusion of "Author: Your Name" in the postamble.
+         :auto-preamble t;       ;; Enable auto preamble
+         :auto-postamble t       ;; Enable auto postamble
+         :table-of-contents t    ;; Set this to "t" if you want a table of contents, set to "nil" disables TOC.
+         :toc-levels 2           ;; Just the default for this project.
+         :section-numbers nil    ;; Set this to "t" if you want headings to have numbers.
+         :html-head-include-default-style nil ;Disable the default css style
+         :html-head-include-scripts nil ;Disable the default javascript snippet
+         :html-head "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.i3s.unice.fr/~malapert/css/worg.min.css\"/>\n<script type=\"text/javascript\" src=\"http://www.i3s.unice.fr/~malapert/js/ga.min.js\"></script>" ;Enable custom css style and other tags
+         :html-link-home "index.html"    ;; Just the default for this project.
+         :html-link-up "../index.html"   ;; Just the default for this project.
+		 )
+
+        ;; static org contents
+        ("org-static"
+         :base-directory "~/www/org/"
+         :base-extension "html\\|xml\\|css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|zip\\|gz\\|csv\\|m\\|R"
+         :publishing-directory "~/public_html/org/"
+         :recursive t
+         :publishing-function org-publish-attachment
+         :exclude "Rplots.pdf"
+         )
+
+        ;; from org-notes
+        ("org"
+         :components ("org-notes" "org-static" "html-static")
+         )
+
+        ;; with html
+        ("_org-notes"
+         :base-directory "~/www/_org/"
+         :base-extension "org"
+         :publishing-directory "~/private_html/"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :headline-levels 2    ;; Just the default for this project.
+         :auto-preamble t
+         :auto-sitemap nil     ;; Do NOT Generate sitemap.org automagically...
+         :with-creator nil     ;; Disable the inclusion of "Created by Org" in the postamble.
+         :with-email nil       ;; Disable the inclusion of "(your email)" in the postamble.
+         :with-author nil      ;; Enable the inclusion of "Author: Your Name" in the postamble.
+         :auto-preamble t;     ;; Enable auto preamble
+         :auto-postamble t     ;; Enable auto postamble
+         :table-of-contents t  ;; Set this to "t" if you want a table of contents, set to "nil" disables TOC.
+         :toc-levels 2         ;; Just the default for this project.
+         :section-numbers nil  ;; Set this to "t" if you want headings to have numbers.
+         :html-head-include-default-style nil ;Disable the default css style
+         :html-head-include-scripts nil ;Disable the default javascript snippet
+         :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.i3s.unice.fr/~malapert/css/worg.min.css\"/>" ;Enable custom css style
+         )
+
+        ("_org-static"
+         :base-directory "~/www/_org/"
+         :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|zip\\|gz"
+         :publishing-directory "~/private_html/"
+         :recursive t
+         :publishing-function org-publish-attachment
+         :exclude "Rplots.pdf"
+         )
+
+        ("_org"
+         :components ("_org-notes" "_org-static")
+         )
+        )
+      )
 
 
 ;;-----------------------------------------------------------------------------
+;; https://github.com/dangom/writefreely.el
+;; *Frictionless* blogging with Org Mode
+;;-----------------------------------------------------------------------------
+(use-package writefreely
+  :after org
+  :ensure t
+  ;; Authentification token, if wanted.
+  ;; Alternatively (setq writefreely-auth-token "00000000-0000-0000-0000-000000000000")
+  :config (load-library "writefreely-auth-token.el.gpg"))
+
+(use-package toc-org
+  :defer t)
+
 
 (provide 'org-helper-config)
 

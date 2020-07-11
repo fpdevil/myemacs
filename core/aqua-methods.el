@@ -115,10 +115,6 @@ With two prefix arguments, write out the day and month name."
      '(defadvice ,mode (after rename-modeline activate)
         (setq mode-name ,new-name))))
 
-;; (rename-modeline "js2-mode" js2-mode "JS2")
-;; (rename-modeline "clojure-mode" clojure-mode "Clj")
-
-
 ;;------------------------------------------------------------------------------
 ;;** reloading the .emacs configuration file
 ;;------------------------------------------------------------------------------
@@ -267,17 +263,17 @@ is used instead. If neither are provided, the mode will not show in the mode lin
 (add-hook 'after-save-hook 'aqua/command-buffer-run-hook)
 
 ;; http://endlessparentheses.com/fill-and-unfill-paragraphs-with-a-single-key.html
-(defun aqua/fill-or-unfill ()
-  "Like `fill-paragraph', but unfill if used twice."
-  (interactive)
-  (let ((fill-column
-         (if (eq last-command 'endless/fill-or-unfill)
-             (progn (setq this-command nil)
-                    (point-max))
-           fill-column)))
-    (call-interactively #'fill-paragraph)))
+; (defun aqua/fill-or-unfill ()
+;   "Like `fill-paragraph', but unfill if used twice."
+;   (interactive)
+;   (let ((fill-column
+;          (if (eq last-command 'endless/fill-or-unfill)
+;              (progn (setq this-command nil)
+;                     (point-max))
+;            fill-column)))
+;     (call-interactively #'fill-paragraph)))
 
-(bind-key [remap fill-paragraph] #'endless/fill-or-unfill)
+; (bind-key [remap fill-paragraph] #'endless/fill-or-unfill)
 
 ;;------------------------------------------------------------------------------
 ;;** indentation function
@@ -294,6 +290,21 @@ is used instead. If neither are provided, the mode will not show in the mode lin
 (defvar aqua-display-system-init-list '()
   "Function list to be run after display system initialization.")
 
+;;----------------------------------------------------------------------------
+;;** toggle menu-bar, scroll-bar and tool-bar
+;;----------------------------------------------------------------------------
+(defun aqua/toggle-bars ()
+ "Toggles the menu, tool and scroll bars."
+ (interactive)
+ (if menu-bar-mode
+     (progn
+       (menu-bar-mode -1)
+       (tool-bar-mode -1)
+       (scroll-bar-mode -1))
+   (progn
+     (menu-bar-mode 1)
+     (scroll-bar-mode 1)
+     (tool-bar-mode 1))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

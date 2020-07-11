@@ -32,11 +32,12 @@
 ;;;
 ;;; Code:
 ;;;
-;;=================================================================================
-(require 'cl-lib)
 
+;;(require 'cl-lib)
 
-;; {{{ utility function to handle versioned dirs
+;;-------------------------------------------------------------------
+;;** utility function to handle versioned dirs
+;;-------------------------------------------------------------------
 (defun wild (dir stem)
   "Return the last (alphabetically) filename that match DIR/STEM*."
   (car
@@ -45,10 +46,10 @@
      (let (value)
        (dolist (element (file-name-all-completions stem dir) value)
          (setq value (cons (concat dir element) value)))) 'string-lessp))))
-;;}}}
 
-
+;;-------------------------------------------------------------------
 ;;** [Setup] - locations for erlang root and other packages
+;;-------------------------------------------------------------------
 (defvar erlang-erl-path "/usr/local/opt/erlang/lib/erlang")
 (setq erlang-root-dir erlang-erl-path)
 
@@ -57,17 +58,19 @@
   (setq erlang-root-dir "/usr/local/opt/erlang/lib/erlang"))
 (add-hook 'erlang-mode-hook 'my-erlang-load-hook)
 
-;;find and load the erlang mode .el file
+;; find and load the erlang mode .el file
 (defvar erlang-erlmode-path
   (concat (wild (concat erlang-erl-path "/lib/") "tools-") "emacs"))
-(add-to-list 'load-path erlang-erlmode-path)           ; add erlang tools to the path
+;; add erlang tools to the path
+(add-to-list 'load-path erlang-erlmode-path)
 (add-to-list 'exec-path (concat erlang-root-dir "/bin"))
 
 ;;** now start the erlang mode
 (require 'erlang-start)
 
-
+;;-------------------------------------------------------------------
 ;;** [associate file extensions with major-modes]
+;;-------------------------------------------------------------------
 (setq auto-mode-alist
       (reverse
        (append auto-mode-alist
@@ -87,7 +90,9 @@
                  ("sys.config$"      . erlang-mode)))))
 
 
+;;-------------------------------------------------------------------
 ;;** [WRANGLER] - erlang path for Wrangler and start Wrangler, load the graphviz
+;;-------------------------------------------------------------------
 ;; (defvar erlang-wrangler-path "/usr/local/lib/erlang/lib/wrangler-1.2.0/elisp")
 ;; (unless (member erlang-wrangler-path load-path)
 ;;   (add-to-list 'load-path erlang-wrangler-path))
@@ -97,16 +102,18 @@
 ;; to compile the same and view in graphviz specify the below.
 ;; (load-file (concat erlang-wrangler-path "/graphviz-dot-mode.el"))
 
-
+;;-------------------------------------------------------------------
 ;;** [MAN PAGES]
+;;-------------------------------------------------------------------
 (setq erlang-man-root-dir (expand-file-name "man" erlang-erl-path))
 (setq erlang-man-dirs (list '("Man - Commands" "lib/erlang/man/man1" t)
                             '("Man - Modules" "lib/erlang/man/man3" t)
                             '("Man - Files" "lib/erlang/man/man4" t)
                             '("Man - Applications" "lib/erlang/man/man6" t)))
 
-
+;;-------------------------------------------------------------------
 ;;** [imenu, indentation] - Imenu, indentation and machine-options
+;;-------------------------------------------------------------------
 (defun init-erl-utils ()
   "interactive"
   (setq indent-tabs-mode nil)
@@ -116,15 +123,17 @@
   (imenu-add-to-menubar "imenu"))
 (add-hook 'erlang-mode-hook 'init-erl-utils)
 
-
+;;-------------------------------------------------------------------
 ;;** [DISTEL] - Erlang Development Support
+;;-------------------------------------------------------------------
 (defvar erlang-distel-path "/opt/erlang/distel/elisp")
 (unless (member erlang-distel-path load-path)
   ;; add distel to end of load path
   (setq load-path (append load-path (list erlang-distel-path))))
 
-
+;;-------------------------------------------------------------------
 ;;** Erlang Distel setup continuation
+;;-------------------------------------------------------------------
 (require 'distel)
 (add-hook 'erlang-mode-hook
           (lambda ()
@@ -133,7 +142,10 @@
             ;; the node name.  Pass -name, not -sname so you
             ;; could talk to this node from other machines.
             ;; (setq inferior-erlang-machine-options '("-name" "emacs"))
-            (setq inferior-erlang-machine-options '("-sname" "emacs"))
+            ;; (setq inferior-erlang-machine-options
+            ;;     '("-name" "emacs@127.0.0.1" "-setcookie" "emacs" "-pa" "../ebin"))
+            (setq inferior-erlang-machine-options
+                '("-name" "emacs@127.0.0.1" "-setcookie" "distel"))
             ;; tell distel to default to that node
             (setq erl-nodename-cache
                   (make-symbol
@@ -148,10 +160,11 @@
             (setq erl-reload-dwim t)))
 
 (add-hook 'erlang-mode-hook 'init-shell)
-
 (distel-setup)
 
+;;-------------------------------------------------------------------
 ;;** [Erl Shell] - Setup the Erlang Shell
+;;-------------------------------------------------------------------
 (defun init-shell ()
   (add-hook 'erlang-shell-mode-hook 'erlang-shell-init)
   (defun erlang-shell-init ()
@@ -169,8 +182,7 @@
       ("\M-?"      erl-complete)
       ("\M-."      erl-find-source-under-point)
       ("\M-,"      erl-find-source-unwind)
-      ("\M-*"      erl-find-source-unwind)
-      )
+      ("\M-*"      erl-find-source-unwind))
     "Additional keys to bind when in Erlang shell.")
 
   (add-hook 'erlang-shell-mode-hook
@@ -182,12 +194,12 @@
               (dolist (spec distel-shell-keys)
                 (define-key erlang-shell-mode-map (car spec) (cadr spec))))))
 
-
+;;-------------------------------------------------------------------
 ;;** [auto-complete-mode]
-;;    auto-complete-mode so can interact with inferior erlang and
-;;    popup completion turn on when needed.
-(add-hook 'erlang-mode-hook
-          (lambda () (auto-complete-mode 1)))
+;; auto-complete-mode so can interact with inferior erlang and
+;; popup completion turn on when needed.
+;;-------------------------------------------------------------------
+(add-hook 'erlang-mode-hook (lambda () (auto-complete-mode 1)))
 
 ;; -- setup auto complete for distel
 ;;    erlang ide set-up and erlang auto-completion using auto-complete and distel
@@ -195,14 +207,16 @@
   (require 'auto-complete-distel)
   ;;(setq ac-modes (append ac-modes '(erlang-mode)))
   ;;(setq ac-modes (append ac-modes '(erlang-shell-mode)))
-  (setq ac-modes (append ac-modes (list 'erlang-mode)))
-  (setq ac-modes (append ac-modes (list 'erlang-shell-mode)))
-  (add-to-list 'ac-sources 'auto-complete-distel))
+  (setq-local ac-modes (append ac-modes (list 'erlang-mode)))
+  (setq-local ac-modes (append ac-modes (list 'erlang-shell-mode)))
+  ;;(add-to-list 'ac-sources 'auto-complete-distel)
+  (push 'auto-complete-distel ac-sources))
 
-
+;;-------------------------------------------------------------------
 ;;** [company-mode]
-;;    setup company completions with distel
-;;    erlang auto completion using company mode and distel
+;; setup company completions with distel
+;; erlang auto completion using company mode and distel
+;;-------------------------------------------------------------------
 (after "company"
   (require 'company-distel)
   (add-to-list (make-local-variable 'company-backends)
@@ -210,16 +224,17 @@
 
   ;; render company's doc-buffer (default <F1> when on a completion-candidate)
   ;; in a small popup (using popup.el) instead of showing the whole help-buffer.
-  (setq company-distel-popup-help t)
+  (setq-local company-distel-popup-help t)
   ;; specify the height of the help popup created by company
-  (setq company-distel-popup-height 30)
+  (setq-local company-distel-popup-height 30)
   ;; get documentation from internet
-  (setq distel-completion-get-doc-from-internet t)
+  (setq-local distel-completion-get-doc-from-internet t)
   ;; Change completion symbols
-  (setq distel-completion-valid-syntax "a-zA-Z:_-"))
+  (setq-local distel-completion-valid-syntax "a-zA-Z:_-"))
 
-
+;;-------------------------------------------------------------------
 ;;** [ESENSE] - Erlang IDE Features
+;;-------------------------------------------------------------------
 (defvar erlang-esense-path (wild "/opt/erlang/" "esense-"))
 (defun init-esense ()
   "Set esense configuration."
@@ -234,8 +249,9 @@
 ;;** initialize Esense
 (init-esense)
 
-
+;;-------------------------------------------------------------------
 ;;** [Compile] - Erlang Make and Compile
+;;-------------------------------------------------------------------
 (add-hook 'erlang-mode-hook 'my-erlang-mode-hook)
 (defun my-erlang-mode-hook ()
   "Erlang hook for Make and Compile."
@@ -269,12 +285,11 @@
   (local-set-key [up] 'comint-previous-input)
   (local-set-key [down] 'comint-next-input))
 
-
-
+;;-------------------------------------------------------------------
 ;;** [IDE with EDTS]
-;;    EDTS - Erlang Development Tool Suite
-;;    start edts - place the configuration file .edts in the project
-;;(add-to-list 'safe-local-variable-values '(erlang-indent-level . 4))
+;; EDTS - Erlang Development Tool Suite
+;; start edts - place the configuration file .edts in the project
+;;-------------------------------------------------------------------
 (defun start-edts ()
   "Initialize EDTS for ERLANG."
   (interactive)
@@ -284,6 +299,7 @@
   (setq edts-code-issue-wrap-around t)
   (setq edts-log-level 'debug)
   (require 'edts-start))
+;;(add-to-list 'safe-local-variable-values '(erlang-indent-level . 4))
 
 
 ;; (setq edts-projects
@@ -307,19 +323,27 @@
               'custom-edts-project-config-default))
 
 (add-hook 'erlang-mode-hook 'start-edts)
-;;(add-hook 'after-init-hook 'start-edts)
-;;(add-hook 'erlang-mode-hook (lambda () (require 'edts-start)))
 
+;;-------------------------------------------------------------------
+;;** require the official lsp-mode package
+;; Ensure you have Erlang (i.e. `erl`, `escript` and friends) as part
+;; of your Emacs path. If you don't, you can try the following:
+;;-------------------------------------------------------------------
+; (setq lsp-erlang-server-install-dir "~/sw/programming/fp/erlang/my-projects/erlang_ls")
+; (add-hook 'erlang-mode-hook #'lsp)
+; (setq lsp-log-io t)
 
-;;** [Syntax Checking] - Syntax Checking and Miscellaneous function loading
-;;                       erlang flycheck support and custom helpers
+;;-------------------------------------------------------------------
+;;** [Syntax Checking]
+;; Syntax Checking and Miscellaneous function loading erlang flycheck
+;; support and custom helpers
+;;-------------------------------------------------------------------
 (require 'erlang-flycheck-config)
 (require 'erlang-helper-config)
 
 
 (provide 'erlang-config)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Local Variables:
 ;; coding: utf-8

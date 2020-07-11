@@ -10,35 +10,36 @@
 ;;;
 ;;; Code:
 ;;;
-;;==============================================================================
 
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == ==
 ;; flcheck handler for checking Haskell source code with hlint.
+;; improved flycheck support for Haskell
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == ==
-(require 'flycheck-haskell)           ;; improved flycheck support for Haskell
-(after 'flycheck
-  '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
-(setq flycheck-haskell-hlint-executable (executable-find "hlint"))
-
+(after "flycheck"
+  (require 'flycheck-haskell)
+  '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup)
+  (setq flycheck-haskell-hlint-executable (executable-find "hlint")))
 
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == ==
 ;; flymake handler for checking Haskell source code with hlint.
+;; flymake-hlint is handler for checking Haskell source with hlint
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == ==
-(require 'flymake-hlint)              ;; flymake handler for checking Haskell source with hlint
-(add-hook 'haskell-mode-hook 'flymake-hlint-load)
+(after "flymake"
+  (require 'flymake-hlint)
+  (add-hook 'haskell-mode-hook 'flymake-hlint-load)
 
-;; haskell flymake configuration
-(when (load "flymake" t)
-  (defun flymake-hslint-init ()
-    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                       'flymake-create-temp-inplace))
-           (local-file (file-relative-name
-                        temp-file
-                        (file-name-directory buffer-file-name))))
-      (list "~/.emacs.d/flycheck/hslint" (list local-file))))
+  ;; haskell flymake configuration
+  (when (load "flymake" t)
+    (defun flymake-hslint-init ()
+      (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                         'flymake-create-temp-inplace))
+             (local-file (file-relative-name
+                          temp-file
+                          (file-name-directory buffer-file-name))))
+        (list "~/.emacs.d/flycheck/hslint" (list local-file))))
 
-  (add-to-list 'flymake-allowed-file-name-masks '("\\.hs$\\'" flymake-hslint-init))
-  (add-to-list 'flymake-allowed-file-name-masks '("\\.lhs$\\'" flymake-hslint-init)))
+    (add-to-list 'flymake-allowed-file-name-masks '("\\.hs$\\'" flymake-hslint-init))
+    (add-to-list 'flymake-allowed-file-name-masks '("\\.lhs$\\'" flymake-hslint-init))))
 
 
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == ==
@@ -191,23 +192,20 @@
               (haskell-arrows      . "\\(\\s-+\\)\\(->\\|→\\)\\s-+")
               (haskell-left-arrows . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")))))
 
+;; Setup haskell-doc
+(use-package haskell-doc
+  :diminish haskell-doc-mode
+  :config
+  (setq haskell-doc-show-global-types nil
+        haskell-doc-show-reserved     t
+        haskell-doc-show-prelude      nil ;;t
+        haskell-doc-show-strategy     t
+        haskell-doc-show-user-defined t
+        haskell-doc-chop-off-context  nil ;; t
+        haskell-doc-chop-off-fctname  nil
+        haskell-doc-prettify-types    nil)
+  (add-hook 'haskell-mode-hook 'haskell-doc-mode))
 
-;;------------------------------------------------------------------------------
-;; intero (not used, so commented)
-;;------------------------------------------------------------------------------
-;; (require-package 'intero)
-;; (require 'intero)                   ;; complete development mode for haskell
-;; (defun haskell-process-cabal-build-and-restart ()
-;;   "Build and restart the Cabal project."
-;;   (interactive)
-;;   (intero-devel-reload))
-;;
-;; (add-hook 'haskell-mode-hook 'intero-mode)
-;; ;; key map
-;; (define-key intero-mode-map (kbd "C-`") 'flycheck-list-errors)
-;; (define-key intero-mode-map [f12] 'intero-devel-reload)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'haskell-helper-config)
 

@@ -35,19 +35,19 @@
 ;; for auto completiion using the company mode
 ;; c++ header completion for standard libraries
 ;;------------------------------------------------------------------------------
-(require 'company-c-headers) ;; company backends for completing C/C++ headers
+(when (eq dotemacs-completion-engine 'company)
+  (require 'company-c-headers) ;; company backends for completing C/C++ headers
 
-(defun company-c-headers-setup ()
-  "Set headers for company backends."
-  (add-to-list 'company-backends 'company-c-headers))
+  (defun company-c-headers-setup ()
+    "Set headers for company backends."
+    (add-to-list 'company-backends 'company-c-headers))
 
-(defun company-c-headers-path-user-irony ()
-  "Return the user include paths for the current buffer."
-  (when irony-mode (irony--extract-user-search-paths irony--compile-options
-                                                     irony--working-directory)))
-;;(setq company-c-headers-path-user #'company-c-headers-path-user-irony)
+  (defun company-c-headers-path-user-irony ()
+    "Return the user include paths for the current buffer."
+    (when irony-mode (irony--extract-user-search-paths irony--compile-options
+                                                       irony--working-directory)))
+  ;;(setq company-c-headers-path-user #'company-c-headers-path-user-irony)
 
-(after "company"
   (defun my:company-c-headers-init ()
     "Build the c headers for adding."
     ;;(setq company-idle-delay nil)
@@ -64,14 +64,14 @@
     (add-to-list 'company-c-headers-path-system
                  "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1")
     (add-to-list 'company-c-headers-path-system
-                 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/9.0.0/include")
+                 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/10.0.1/include")
     (add-to-list 'company-c-headers-path-system
                  "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include")
     ;; (mapcar (lambda (item)
     ;;           (add-to-list
     ;;            'company-c-headers-path-system item))
     ;;         '("/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"
-    ;;           "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/include"
+    ;;           "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/10.0.1/include"
     ;;           "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"
     ;;           "/usr/local/include"
     ;;           "/usr/include"))
@@ -82,10 +82,9 @@
     "Company clang configuration."
     ;; delete company-semantic because it has higher precedence than company-clang
     (setq company-backends (delete 'company-semantic company-backends))
-    (setq company-clang-arguments '("-std=c++14" "-stdlib=libc++"))
+    (setq company-clang-arguments '("-std=c++11" "-stdlib=libc++"))
     ;; company-clang system paths
     (setq company-clang-executable
-          ;;"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
           ;;(executable-find "clang")
           "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang")
     ;;(add-to-list 'company-backends 'company-c-headers)
@@ -98,37 +97,35 @@
   (add-hook 'c++-mode-hook 'my:company-c-headers-init)
   (add-hook 'c-mode-hook 'my:company-c-headers-init)
   (my:company-clang)
-
-  ;; (setq company-clang-arguments
-  ;;       '("-std=c++11"
-  ;;         "-stdlib=libc++"
-  ;;         "-I/System/Library/Frameworks/Python.framework/Headers"
-  ;;         "-isysroot"
-  ;;         "-I/usr/include/c++/4.2.1"))
   )
 
+;; (setq company-clang-arguments
+;;       '("-std=c++11"
+;;         "-stdlib=libc++"
+;;         "-I/System/Library/Frameworks/Python.framework/Headers"
+;;         "-isysroot"
+;;         "-I/usr/include/c++/4.2.1"))
 
 
 ;;------------------------------------------------------------------------------
 ;; [Auto Complete Clang] - Completion settings for Auto-Complete
 ;; ac-clang-flags to include from echo "" | g++ -v -x c++ -E -
 ;;------------------------------------------------------------------------------
-(after "auto-complete"
+(when (eq dotemacs-completion-engine 'auto-complete)
   ;; define a function which initializes auto-complete-c-headers and then
   ;; gets called for the relevant c/c++ hooks
   (defun my:ac-c-header-init ()
     "Auto completion using ac."
     ;; auto-complete source for C/C++ header files
-    (require-package
-     'auto-complete-c-headers)
     (require 'auto-complete-c-headers)
     (setq ac-sources (append '(ac-source-yasnippet) ac-sources))
     (add-to-list 'ac-sources 'ac-source-c-headers)
+
     ;; execute command `gcc -xc++ -E -v -` to find the header directories
     (add-to-list 'achead:include-directories '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1")
-    (add-to-list 'achead:include-directories '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/9.0.0/include")
+    (add-to-list 'achead:include-directories '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/10.0.1/include")
     (add-to-list 'achead:include-directories '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include")
-    (add-to-list 'achead:include-directories '"/usr/local/opt/gcc/include/c++/8.1.0")
+    (add-to-list 'achead:include-directories '"/usr/local/opt/gcc/include/c++/9.1.0")
     (add-to-list 'achead:include-directories '"/usr/local/include")
     (add-to-list 'achead:include-directories '"/usr/include"))
 
@@ -140,7 +137,6 @@
   (defun aqua/auto-complete-clang-setup ()
     "auto-complete mode add the necessary include locations."
     ;; auto complete source for clang. AC+Clang+Yasnippet
-    (require-package 'auto-complete-clang)
     (require 'auto-complete-clang)
 
     ;; (setq ac-auto-start t)
@@ -152,11 +148,11 @@
     (setq command "echo | g++ -v -x c++ -E - 2>&1 |
                    grep -A 20 starts | grep include | grep -v search")
     (setq ac-clang-flags
-      (append '("-std=c++14")
-              (mapcar
-               (lambda (item)
-                 (concat "-I" item))
-               (split-string (shell-command-to-string command)))))
+          (append '("-std=c++14")
+                  (mapcar
+                   (lambda (item)
+                     (concat "-I" item))
+                   (split-string (shell-command-to-string command)))))
 
     ;; completion for C/C++ macros.
     (push "-code-completion-macros" ac-clang-flags)
@@ -166,57 +162,44 @@
   (defun aqua/my-ac-cc-mode-setup ()
     (setq ac-sources (append '(ac-source-clang ac-source-yasnippet) ac-sources)))
   (add-hook 'c-mode-common-hook 'aqua/my-ac-cc-mode-setup)
-  (aqua/auto-complete-clang-setup))
+  (aqua/auto-complete-clang-setup)
 
+  ;;-----------------------------------------------------------------------------
+  ;; [ auto-complete-clang-async ] -- C/C++ auto-completion mechanism
+  ;;-----------------------------------------------------------------------------
+  (require 'auto-complete-clang-async)
 
-
-;;-----------------------------------------------------------------------------
-;; [ auto-complete-clang-async ] -- C/C++ auto-completion mechanism
-;;-----------------------------------------------------------------------------
-(after-load 'auto-complete
-  (require-package 'auto-complete-clang-async)
-  (require 'auto-complete-clang-async))
-
-;; auto complete source for clang. AC+Clang+Yasnippet!
-(defun ac-cc-mode-setup ()
-  "Setup the ac-clang specific values."
-  (setq ac-clang-complete-executable "~/.emacs.d/bin/clang-complete")
-  (setq clang-completion-suppress-error 't)
-  (setq ac-clang-cflags
-        (mapcar (lambda (item)(concat "-I" item))
-                (split-string
-                 "
+  ;; auto complete source for clang. AC+Clang+Yasnippet!
+  (defun ac-cc-mode-setup ()
+    "Setup the ac-clang specific values."
+    (setq ac-clang-complete-executable "~/.emacs.d/bin/clang-complete")
+    (setq clang-completion-suppress-error 't)
+    (setq ac-clang-cflags
+          (mapcar (lambda (item)(concat "-I" item))
+                  (split-string
+                   "
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1
 /usr/local/include
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.1.0/include
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/10.0.1/include
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include
 /usr/include
 ")))
 
-  (setq ac-clang-cflags (append '("-std=c++14") ac-clang-cflags))
-  (setq ac-sources '(ac-source-clang-async))
-  (ac-clang-launch-completion-process))
+    (setq ac-clang-cflags (append '("-std=c++14") ac-clang-cflags))
+    (setq ac-sources '(ac-source-clang-async))
+    (ac-clang-launch-completion-process))
 
-(defun my-ac-config ()
-  "Add hooks for the modes."
-  (add-hook 'c-mode-common-hook 'ac-cc-mode-setup)
-  (add-hook 'auto-complete-mode-hook 'ac-common-setup)
-  ;;(global-auto-complete-mode t)
+  (defun my-ac-config ()
+    "Add hooks for the modes."
+    (add-hook 'c-mode-common-hook 'ac-cc-mode-setup)
+    (add-hook 'auto-complete-mode-hook 'ac-common-setup)
+    ;;(global-auto-complete-mode t)
+    )
+
+  (my-ac-config)
   )
 
 
-(after 'auto-complete
-  (my-ac-config))
-
-
-;;-----------------------------------------------------------------------------
-;; [cpputils-cmake] Easy realtime C++ syntax check and IntelliSense with CMake
-;;-----------------------------------------------------------------------------
-(require-package 'cpputils-cmake)
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'cpp-config)
 
 ;; Local Variables:

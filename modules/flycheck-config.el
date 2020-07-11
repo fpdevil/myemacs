@@ -38,8 +38,10 @@
 ;;-----------------------------------------------------------------------------
 ;; additional flycheck options
 ;;-----------------------------------------------------------------------------
-(setq flycheck-highlighting-mode 'lines)        ; highlight the whole line, as it’s much faster
-                                                ; other options are nil, symbol etc
+
+;; highlight the whole line, as it’s much faster
+;; other options are nil, symbol etc
+(setq flycheck-highlighting-mode 'lines)
 
 ;; indicate any syntax errors/warnings in the left-fringe.
 (setq flycheck-indication-mode 'left-fringe)
@@ -53,10 +55,10 @@
 ;; Removing newline checks, as they would trigger an immediate check
 ;; when we want the idle-change-delay to be in effect while editing.
 (setq flycheck-check-syntax-automatically
- '(save
-   ;; new-line
-   idle-change
-   mode-enabled))
+      '(save
+        ;; new-line
+        idle-change
+        mode-enabled))
 
 ;; enable flycheck globally
 (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -84,10 +86,10 @@ clean buffer we're an order of magnitude laxer about checking."
 ;; style flycheck errors consistently with flymake
 ;;-----------------------------------------------------------------------------
 (eval-after-load 'flycheck
-    '(progn
-      ;; use an italic face for the checker name
-      ;; (set-face-attribute 'flycheck-error-list-checker-name nil :inherit 'italic)
-      (set-face-attribute 'flycheck-warning nil :foreground "OrangeRed2" :background "azure1")))
+  '(progn
+     ;; use an italic face for the checker name
+     ;; (set-face-attribute 'flycheck-error-list-checker-name nil :inherit 'italic)
+     (set-face-attribute 'flycheck-warning nil :foreground "OrangeRed2" :background "azure1")))
 
 (custom-set-faces
  '(flycheck-error ((((class color)) (:underline "red"))))
@@ -128,13 +130,25 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;;-----------------------------------------------------------------------------
 (add-to-list 'display-buffer-alist
              `(,(rx bos "*Flycheck errors*" eos)
-              (display-buffer-reuse-window
-               display-buffer-in-side-window)
-              (side            . bottom)
-              (reusable-frames . visible)
-              (window-height   . 0.33)))
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.33)))
 
 ;;-----------------------------------------------------------------------------
+;; Show flycheck errors via posframe.el
+;;-----------------------------------------------------------------------------
+;;(use-package flycheck-posframe
+;;  :defer t
+;;  :after flycheck
+;;  :config
+;;  (setq flycheck-posframe-warning-prefix "⚠ "
+;;        flycheck-posframe-info-prefix "··· "
+;;        flycheck-posframe-error-prefix "✕ ")
+;;  (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode))
+
+
 
 (provide 'flycheck-config)
 

@@ -11,7 +11,7 @@
 ;;; To open the undo tree, C-x u
 ;;;
 ;;; Code:
-;;===========================================================================
+;;;
 
 ;;; -- custom conditions
 (defgroup dotemacs-evil-modes nil
@@ -64,7 +64,6 @@
 (add-hook 'evil-jumps-post-jump-hook #'recenter)
 
 ;;; -- evil mode (for vim emulation)
-(require-package 'evil)
 (require 'evil)
 (evil-mode)                                   ;; enable evil-mode globally
 
@@ -90,7 +89,7 @@
 ;;; -- activate evil-mc and evil-smartparens
 ;; (evil-mc-mode  1)                ;; enable
 ;; (evil-mc-mode -1)                ;; disable
-(global-evil-mc-mode  1)            ;; enable
+;; (global-evil-mc-mode  1)            ;; enable
 ;; (global-evil-mc-mode -1)         ;; disable
 (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
 
@@ -115,54 +114,41 @@
   (evil-esc-mode))
 
 ;;; -- commenting the blocks with evil
-(require-package 'evil-commentary)
 (evil-commentary-mode t)
 
 ;;; -- vim surround emulation for Emacs
-(require-package 'evil-surround)
 (global-evil-surround-mode t)
 ;; use `s' for surround instead of `substitute'
 (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)
 (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
 
 ;;; -- Port of vim-exchange
-(require-package 'evil-exchange)
 (evil-exchange-install)
 
 ;;; -- anzu for Evil
-(require-package 'evil-anzu)
 (require 'evil-anzu)
 
 ;;; -- Make ediff a little more evil
-(require-package 'evil-ediff)
 (evil-ediff-init)
 
 ;;; -- magit for evil
 (after 'magit
-  (require-package 'evil-magit)
   (require 'evil-magit))
 
 ;;; -- Evil motion with avy: choose where after which
-(require-package 'evil-avy)
 (evil-avy-mode)
 
 ;;; Vim matchit ported into Emacs
-(require-package 'evil-matchit)
 (defun evilmi-customize-keybinding ()
   (evil-define-key 'normal evil-matchit-mode-map
     "%" 'evilmi-jump-items))
 (global-evil-matchit-mode t)
 
 ;;; -- Textobject for evil based on indentation
-(require-package 'evil-indent-textobject)
 (require 'evil-indent-textobject)
 
 ;;; -- Start a * or # search from the visual selection (similar to vim)
-(require-package 'evil-visualstar)
 (global-evil-visualstar-mode t)
-
-;;; -- Increment and decrement numbers in Emacs
-(require-package 'evil-numbers)
 
 ;;; -- evil terminal integration
 (defun my-send-string-to-terminal (string)
@@ -187,7 +173,6 @@
 
 ;;; -- Leader Key itegration aka VIM
 ;;; -- default leader key is - enable evil-leader globally
-(require-package 'evil-leader)
 (require 'evil-leader)
 (setq evil-leader/in-all-states 1)
 (global-evil-leader-mode)
@@ -283,7 +268,6 @@
 ; (add-hook 'emacs-lisp-mode-hook 'evil-paredit-mode)
 
 ;; -- get rid of the emc in the mode line when multiple cursors are not used
-(require-package 'evil-mc)
 (require 'evil-mc)                 ;; evil multiple cursors
 (setq evil-mc-mode-line
   '(:eval (when (> (evil-mc-get-cursor-count) 1)
@@ -304,7 +288,11 @@
 ;; suppress the ad-handle definition warning messages
 (setq ad-redefinition-action 'accept)
 
-
+ ;; for volatile highlights mode
+ (after "volatile-highlights"
+   (vhl/define-extension 'evil 'evil-paste-after 'evil-paste-before
+                         'evil-paste-pop 'evil-move)
+   (vhl/install-extension 'evil))
 
 
 (provide 'evil-config)

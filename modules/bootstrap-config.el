@@ -78,36 +78,10 @@ FEATURE may be any one of:
 (global-set-key (kbd "C-x o") 'switch-window)
 
 ;;------------------------------------------------------------------------------
-;;** suppress gui features
-;;------------------------------------------------------------------------------
-(setq use-file-dialog nil)
-(setq use-dialog-box nil)
-(setq inhibit-default-init t)
-(setq inhibit-startup-screen nil)
-(setq inhibit-startup-buffer-menu t)
-(setq inhibit-startup-echo-area-message t)
-(setq inhibit-startup-echo-area-message nil)
-(setq initial-buffer-choice t)
-(setq initial-major-mode 'fundamental-mode)
-
-
-;;------------------------------------------------------------------------------
-;;** display an initial scratch message & prettify symbols
-;;------------------------------------------------------------------------------
-(setq initial-scratch-message nil)
-; (setq initial-scratch-message
-;         (concat "ॐ  Emacs With ❤️ " user-login-name "!\n" "☆ సంపత్ కుమార్ ☆" "\n"))
-
-;;------------------------------------------------------------------------------
-;;** show a marker in the left fringe for lines not in the buffer
-;;------------------------------------------------------------------------------
-(setq indicate-empty-lines t)
-
-;;------------------------------------------------------------------------------
 ;;** prettify the symbols
 ;;------------------------------------------------------------------------------
 (when (fboundp 'global-prettify-symbols-mode)
-  (global-prettify-symbols-mode))
+  (global-prettify-symbols-mode 1))
 
 
 ;;------------------------------------------------------------------------------
@@ -212,6 +186,7 @@ FEATURE may be any one of:
 ;;------------------------------------------------------------------------------
 (add-hook 'comint-exec-hook
           (lambda () (set-process-query-on-exit-flag (get-buffer-process (current-buffer)) nil)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -11,29 +11,29 @@
 ;;; Code:
 ;;;
 
-
-;;** unsetting the menu
+;;* unsetting the menu
 (global-set-key (kbd "<menu>") 'nil)
 
-;;** a variable for holding the system type
-;;*** check if the system is mac os x
-(setq *is-mac* (eq system-type 'darwin))
-(setq *win64* (eq system-type 'windows-nt) )
-(setq *cygwin* (eq system-type 'cygwin) )
-(setq *linux* (or (eq system-type 'gnu/linux) (eq system-type 'linux)) )
-(setq *unix* (or *linux* (eq system-type 'usg-unix-v) (eq system-type 'berkeley-unix)) )
-(setq *emacs24* (and (not (featurep 'xemacs)) (or (>= emacs-major-version 24))) )
-(setq *emacs25* (and (not (featurep 'xemacs)) (or (>= emacs-major-version 25))) )
-(setq *no-memory*
-      (cond
-       (*is-mac*
-        (< (string-to-number (nth 1 (split-string (shell-command-to-string "sysctl hw.physmem")))) 4000000000))
-       (*linux* nil)
-       (t nil)))
-
-(setq *emacs24old*
-      (or (and (= emacs-major-version 24) (= emacs-minor-version 3))
-          (not *emacs24*)))
+;;* a variable for holding the system type
+;;** check if the system is mac os x
+; (setq *is-mac* (eq system-type 'darwin))
+; (setq *win64* (eq system-type 'windows-nt) )
+; (setq *cygwin* (eq system-type 'cygwin) )
+; (setq *linux* (or (eq system-type 'gnu/linux) (eq system-type 'linux)) )
+; (setq *unix* (or *linux* (eq system-type 'usg-unix-v) (eq system-type 'berkeley-unix)) )
+; (setq *emacs24* (and (not (featurep 'xemacs)) (or (>= emacs-major-version 24))) )
+; (setq *emacs25* (and (not (featurep 'xemacs)) (or (>= emacs-major-version 25))) )
+;
+; (setq *no-memory*
+;       (cond
+;        (*is-mac*
+;         (< (string-to-number (nth 1 (split-string (shell-command-to-string "sysctl hw.physmem")))) 4000000000))
+;        (*linux* nil)
+;        (t nil)))
+;
+; (setq *emacs24old*
+;       (or (and (= emacs-major-version 24) (= emacs-minor-version 3))
+;           (not *emacs24*)))
 
 ;;** for text enrichment
 (eval-after-load "enriched"
@@ -59,8 +59,11 @@
 (global-auto-revert-mode t)              ;; auto revert
 (setq pcomplete-ignore-case t)           ;; pcomplete
 (setq default-indent-tabs-mode nil)      ;; tab indentation
-(setq create-lockfiles nil)              ;; lock files generation
+(setq create-lockfiles nil)              ;; stop lock files generation
 (setq ring-bell-function 'ignore)        ;; ignore the bell
+(setq delete-by-moving-to-trash t)       ;; move files to trash when deleting
+(setq completion-ignore-case t)          ;; ignore case for completion
+(setq read-file-name-completion-ignore-case t)
 
 ;;----------------------------------------------------------------------------
 ;;** typing related
@@ -100,42 +103,43 @@
 
 ;;** do not display continuation lines
 (setq truncate-lines t)
-(add-hook 'minibuffer-setup-hook
-      (lambda () (setq truncate-lines nil)))
+(add-hook 'minibuffer-setup-hook (lambda () (setq truncate-lines nil)))
 
 ;;----------------------------------------------------------------------------
-;;** Display a prompt box before closing Emacs
+;;** Display prompt box before closing Emacs (prompt while exiting in any way)
 ;;----------------------------------------------------------------------------
-;; prompt while exiting in any way
-;; (setq kill-emacs-query-functions
-;;       (cons (lambda () (yes-or-no-p "Quit Aquamacs? "))
-;;             kill-emacs-query-functions))
+(setq kill-emacs-query-functions
+      (cons (lambda () (yes-or-no-p "Quit Aquamacs? "))
+            kill-emacs-query-functions))
+
+;;----------------------------------------------------------------------------
+;;** save place and save frame positions
+;;----------------------------------------------------------------------------
+(setq custom-file (expand-file-name "places.el" preferences-dir))
+(setq smart-frame-prior-positions (expand-file-name "frame-positions.el" preferences-dir))
 
 ;;----------------------------------------------------------------------------
 ;;** Display a prompt in the mode line while exiting with [C-x C-c]
 ;;----------------------------------------------------------------------------
-(defun ask-before-closing ()
-  "Ask whether or not to close, and then close if y is pressed."
-  (interactive)
-  (if (y-or-n-p (format "Are you sure you want to exit Emacs? "))
-      (if (< emacs-major-version 22)
-          (save-buffers-kill-terminal)
-        (save-buffers-kill-emacs))
-    (message "Canceled exit")))
-;; check only if in gui mode
-(when window-system
-  (global-set-key (kbd "C-x C-c") 'ask-before-closing))
-
-(put 'upcase-region 'disabled nil)
+; (defun ask-before-closing ()
+;   "Ask whether or not to close, and then close if y is pressed."
+;   (interactive)
+;   (if (y-or-n-p (format "Are you sure you want to exit Emacs? "))
+;       (if (< emacs-major-version 22)
+;           (save-buffers-kill-terminal)
+;         (save-buffers-kill-emacs))
+;     (message "Canceled exit")))
+; ;; check only if in gui mode
+; (when window-system
+;   (global-set-key (kbd "C-x C-c") 'ask-before-closing))
 
 ;;----------------------------------------------------------------------------
 ;;** [Autosave] - file backup and saving Emacs sessions
 ;;----------------------------------------------------------------------------
-(setq desktop-save nil)                               ; save without asking
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
+(setq desktop-save nil)                      ;; save without asking
+(setq backup-directory-alist `((".*" . ,temporary-file-directory)))
 
-(message "Deleting old backup files...")
+;; Deleting old backup files...
 (let ((week (* 60 60 24 7))
       (current (float-time (current-time))))
   (dolist (file (directory-files temporary-file-directory t))
@@ -190,8 +194,7 @@
       (while (and (< (point) posEnd)
                   (re-search-forward "\\w+\\W*" posEnd t))
         (setq wordCount (1+ wordCount)))
-      (message "Words: %d. Chars: %d." wordCount charCount)
-      )))
+      (message "Words: %d. Chars: %d." wordCount charCount))))
 
 ;;----------------------------------------------------------------------------
 ;;** Relplace the newlines with single spaces [Paragraph and Region]
@@ -200,7 +203,8 @@
   "Replace newline chars in current paragraph by single spaces.
 This command does the inverse of `fill-paragraph'."
   (interactive)
-  (let ((fill-column 90002000)) ; 90002000 is just random. you can use `most-positive-fixnum'
+  ;; 90002000 is just random. you can use `most-positive-fixnum'
+  (let ((fill-column 90002000))
     (fill-paragraph nil)))
 
 
@@ -214,8 +218,7 @@ This command does the inverse of `fill-region'."
 ;;----------------------------------------------------------------------------
 ;;** meant for latex file editing
 ;;----------------------------------------------------------------------------
-(setq auto-mode-alist
-      (cons '("\\.org$" . org-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.org$" . org-mode) auto-mode-alist))
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
@@ -238,31 +241,6 @@ This command does the inverse of `fill-region'."
       compilation-scroll-output 'first-error)   ;; scroll to first error automatically
 
 (add-hook 'compilation-filter-hook #'aqua/colorize-compilation-buffer)
-
-;;----------------------------------------------------------------------------
-;;**  Programming Mode Hooks
-;;*** make sure things like FIXME and TODO are highlighted so they stand out
-;;----------------------------------------------------------------------------
-(defun add-watchwords ()
-  "Highlight FIXME, TODO, and NOCOMMIT in code TODO."
-  (font-lock-add-keywords
-   nil '(("\\<\\(TODO\\(?:(.*)\\)?:?\\)\\>"  1 'warning prepend)
-         ("\\<\\(FIXME\\(?:(.*)\\)?:?\\)\\>" 1 'error prepend)
-         ("\\<\\(NOCOMMIT\\(?:(.*)\\)?:?\\)\\>"  1 'error prepend))))
-
-(add-hook 'prog-mode-hook #'add-watchwords)
-
-(defun annotate-todo ()
-  "Put a fringe marker on TODO: lines in the curent buffer."
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (while (re-search-forward "TODO:" nil t)
-      (let ((overlay (make-overlay (- (point) 5) (point))))
-        (overlay-put overlay
-                     'before-string
-                     (propertize (format "A")
-                                 'display '(left-fringe right-triangle)))))))
 
 ;----------------------------------------------------------------------------
 ;;** display world times of interest with [M-x display-time-world]
@@ -289,7 +267,6 @@ This command does the inverse of `fill-region'."
   (put 'ns-print-buffer 'disabled t)
   (put 'suspend-frame 'disabled t))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'aqua-internals)
 

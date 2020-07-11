@@ -14,11 +14,10 @@
 ;;;
 ;;; Code:
 ;;;
-;;;
 
+(require 'js2-mode)                 ;; js2 javascript mode
 (require 'js2-highlight-vars)       ;; highlight occurrences of vars
 (require 'js-doc)                   ;; insert JsDoc style comment easily
-(require 'js2-mode)                 ;; js2 javascript mode
 (require 'jsfmt)                    ;; formatting with jsfmt
 (require 'json-mode)                ;; for json
 (require 'json-navigator)           ;; view json docs (M-x json-navigator)
@@ -56,31 +55,19 @@
 ;;------------------------------------------------------------------------------
 (add-to-list 'auto-mode-alist '("\\.js\\'"         . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.js$"           . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.jsx\\'"        . js2-mode))    ;; for jsx
+(add-to-list 'auto-mode-alist '("\\.jsx\\'"        . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.eslintrc.*$"   . json-mode))
 (add-to-list 'auto-mode-alist '("\\.babelrc$"      . json-mode))
 (add-to-list 'auto-mode-alist '("\\.jsbeautifyrc$" . json-mode))
-
 (add-to-list 'interpreter-mode-alist (cons "node" 'js2-mode))
-;; (add-to-list 'interpreter-mode-alist '("node"    . js2-mode))
 
 ;;------------------------------------------------------------------------------
 ;;** [js2 and json modes]
 ;;** https://truongtx.me/2014/02/23/set-up-javascript-development-environment-in-emacs
 ;;------------------------------------------------------------------------------
 (add-hook 'js-mode-hook 'js2-minor-mode)
-(add-hook 'js2-mode-hook #'js2-imenu-extras-mode) ;; for better imenu support, enable the extras
-
-
-;;------------------------------------------------------------------------------
-;;** [auto-completion] - through ac-js2
-;;** for auto-completion using Js2-mode's parser and Skewer-mode
-;;------------------------------------------------------------------------------
-(require-package 'ac-js2)                   ;; javascript auto-completion in Emacs
-(require 'ac-js2)
-(add-hook 'js2-mode-hook 'ac-js2-mode)
-(setq ac-js2-evaluate-calls t)
-
+;; for better imenu support, enable the extras
+(add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
 
 ;;------------------------------------------------------------------------------
 ;;** [highlight variables] - js2 variable highlighting where applicable
@@ -114,41 +101,32 @@
 
 ;;------------------------------------------------------------------------------
 ;;** [refactoring] - javascript js2 refactoring
+;; javascript code refactoring - https://github.com/magnars/js2-refactor.el
 ;;------------------------------------------------------------------------------
-(after "js2-mode-autoloads"
-  ;; javascript code refactoring
-  ;; https://github.com/magnars/js2-refactor.el
-  (require-package 'js2-refactor)
-  (after 'js2-refactor
-    ;; kbd prefix as C-c C-m (extract function with `C-c C-m ef`)
-    (js2r-add-keybindings-with-prefix "C-c C-m")))
+(after [js2-mode-autoloads js2-refactor]
+  ;; kbd prefix as C-c C-m (extract function with `C-c C-m ef`)
+  (js2r-add-keybindings-with-prefix "C-c C-m"))
 
 ;;------------------------------------------------------------------------------
 ;;** [Tern] - intelligent javascript tooling
 ;;** first install with npm - install -g tern
 ;;------------------------------------------------------------------------------
-(require-package 'tern)
-(add-hook 'js-mode-hook (lambda () (tern-mode t)))
+(require 'tern)
+(message "[js] tern mode for auto-complete")
+(add-hook 'js2-mode-hook
+          '(lambda ()
+             ;; .term-port file creation
+             ;; (setq tern-command '("node" "/usr/local/bin/tern" "--no-port-file"))
+             (setq tern-command (append tern-command '("/usr/local/bin/tern" "--no-port-file")))
+             (tern-mode t)))
 
-(after "auto-complete"
-  (message "[js] tern mode for auto-complete")
-  (add-hook 'js2-mode-hook
-            '(lambda ()
-               (when (locate-library "tern")
-                 ;; .term-port file creation
-                 (setq tern-command '("node" "/usr/local/bin/tern" "--no-port-file"))
-                 (tern-mode t)
-                 (after 'tern
-                   '(progn
-                      (require 'tern-auto-complete)
-                      (tern-ac-setup)))))))
+(message "[js] tern mode for company")
+(eval-after-load 'tern
+  '(progn
+    (add-to-list 'company-backends 'company-tern)
+    (require 'tern-auto-complete)
+    (tern-ac-setup)))
 
-(after "company"
-  (message "[js] tern mode for company")
-  (add-hook 'js2-mode-hook
-            '(lambda ()
-               (setq-local company-backends
-                           '((company-tern :with company-yasnippet))))))
 
 ;;------------------------------------------------------------------------------
 ;;** Force restart of tern in new projects (M-x delete-tern-process)
@@ -159,7 +137,6 @@
   "If Tern based auto-refresh is not happening disable Tern."
   (interactive)
   (delete-process "Tern"))
-
 
 ;;------------------------------------------------------------------------------
 ;;** code beautification through web-beautify and js-beautify npm package
@@ -254,8 +231,16 @@
   (add-hook 'css-mode-hook #'skewer-css-mode)
   (add-hook 'html-mode-hook #'skewer-html-mode))
 
+;;------------------------------------------------------------------------------
+;;** [auto-completion] - through ac-js2
+;;** for auto-completion using Js2-mode's parser and Skewer-mode
+;;------------------------------------------------------------------------------
+; (require 'ac-js2)
+; (add-hook 'js2-mode-hook 'ac-js2-mode)
+; (add-to-list 'company-backends 'ac-js2-company)
+; (setq ac-js2-evaluate-calls t)
 
-(require-package 'livid-mode)
+
 (require 'livid-mode)
 
 ;;------------------------------------------------------------------------------
@@ -311,45 +296,30 @@
               (define-key js2-mode-map "@" 'js-doc-insert-tag)))
 
 ;;------------------------------------------------------------------------------
-;; [key bindings] - for node-ac node js auto-completion for emacs
-;;------------------------------------------------------------------------------
-; (require 'node-ac-mode)             ;; nodejs auto-completion
-; (setq node-ac-node-modules-path "/usr/local/lib/node_modules")
-
-;; [optional] - key bindings
-;; (add-hook 'js2-mode-hook
-;;           (lambda ()
-;;        (local-set-key (kbd "C-.") 'node-ac-auto-complete)
-;;        (local-set-key (kbd "C-c C-d") 'node-ac-show-document)
-;;        (local-set-key (kbd "C-c C-j") 'node-ac-jump-to-definition)))
-
-;;------------------------------------------------------------------------------
 ;; [FlyCheck jsxhint] - syntax checking and linting
 ;; first install checker using package manager - npm install -g jsxhint
 ;;------------------------------------------------------------------------------
 (after "flycheck"
   '(progn
-    ;; (require 'flycheck)
+     ;; turn on flycheck globally
+     ;; (add-hook 'after-init-hook #'global-flycheck-mode)
 
-    ;; turn on flycheck globally
-    ;; (add-hook 'after-init-hook #'global-flycheck-mode)
+     ;; use eslint with web-mode for jsx files
+     (flycheck-add-mode 'javascript-eslint 'web-mode)
+     (flycheck-add-mode 'javascript-eslint 'js2-mode)
 
-    ;; use eslint with web-mode for jsx files
-    (flycheck-add-mode 'javascript-eslint 'web-mode)
-    (flycheck-add-mode 'javascript-eslint 'js2-mode)
+     ;; customize flycheck temp file prefix
+     (setq-default flycheck-temp-prefix ".flycheck")
 
-    ;; customize flycheck temp file prefix
-    (setq-default flycheck-temp-prefix ".flycheck")
+     ;; disable jshint since we prefer eslint checking
+     (setq-default flycheck-disabled-checkers
+                   (append flycheck-disabled-checkers
+                           '(javascript-jshint)))
 
-    ;; disable jshint since we prefer eslint checking
-    (setq-default flycheck-disabled-checkers
-      (append flycheck-disabled-checkers
-        '(javascript-jshint)))
-
-    ;; disable json-jsonlist checking for json files
-    (setq-default flycheck-disabled-checkers
-      (append flycheck-disabled-checkers
-        '(json-jsonlist)))))
+     ;; disable json-jsonlist checking for json files
+     (setq-default flycheck-disabled-checkers
+                   (append flycheck-disabled-checkers
+                           '(json-jsonlist)))))
 
 ;;------------------------------------------------------------------------------
 ;; [eslint] - use local eslint from node_modules before global
@@ -443,8 +413,7 @@ See URL `https://github.com/tensor5/JSLinter'."
 ;;------------------------------------------------------------------------------
 ;; [ FlyCheck ] syntax checker
 ;;------------------------------------------------------------------------------
-(add-hook 'js-mode-hook
-          (lambda () (flycheck-mode t)))
+(add-hook 'js-mode-hook (lambda () (flycheck-mode t)))
 
 ;;------------------------------------------------------------------------------
 ;;; [ import-js ] -- A tool to simplify importing of JS modules.
@@ -469,42 +438,9 @@ See URL `https://github.com/tensor5/JSLinter'."
 ;;------------------------------------------------------------------------------
 ;; [REPL Interaction] - send code to a running node repl
 ;;------------------------------------------------------------------------------
-(require-package 'js-comint)
 (require 'js-comint)
 
 ;;------------------------------------------------------------------------------
-;; [Tern Context Coloring] - tern plugin adding scope coloring
-;;------------------------------------------------------------------------------
-;; (eval-after-load 'context-coloring
-;;   '(tern-context-coloring-setup))
-
-
-;; enable tern-mode and then context-coloring-mode when opening js
-;; (add-hook 'js-mode-hook (lambda ()
-;;                           (unless (eq major-mode 'json-mode)
-;;                             (tern-mode)
-;;                             (context-coloring-mode))))
-
-;;------------------------------------------------------------------------------
-;; [tj-mode] - Highlight JavaScript with Tern
-;;------------------------------------------------------------------------------
-;;(require 'tj-mode)
-;;(add-to-list 'auto-mode-alist '("\\.js\\'" . tj-mode))
-
-;;------------------------------------------------------------------------------
-;; [indium] - for js evaluation in js buffers (formerly jade)
-;;------------------------------------------------------------------------------
-;; (add-hook 'js2-mode-hook #'jade-interaction-mode)
-;; (require 'indium)
-;; (add-hook 'js2-mode-hook #'indium-interaction-mode)
-
-;;------------------------------------------------------------------------------
-;; [react js]
-;;------------------------------------------------------------------------------
-(use-package rjsx-mode
-  :ensure t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'js-config)
 

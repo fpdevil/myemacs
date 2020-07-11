@@ -27,20 +27,19 @@
 (add-to-list 'auto-mode-alist '("\\.pu\\'"       . plantuml-mode))
 
 ;;** disable electric indent mode
-(add-hook 'electric-indent-mode-hook (lambda () (electric-indent-local-mode -1)))
+(add-hook 'electric-indent-mode-hook
+          (lambda () (electric-indent-local-mode -1)))
 ;; to restore
 (add-hook 'electric-indent-mode-hook
           (lambda () (local-set-key (kbd "C-j") #'newline-and-indent)))
 
 ;;-----------------------------------------------------------------------------
 ;;; plantuml configuration
-;;-----------------------------------------------------------------------------
 ;; tell org-mode where to find the plantuml JAR file
-;; (setq org-plantuml-jar-path (concat user-emacs-directory "/vendor/java/plantuml.jar")
-;;       plantuml-jar-path (concat user-emacs-directory "/vendor/java/plantuml.jar"))
+;;-----------------------------------------------------------------------------
 (setq org-plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar"
       plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
-(message "--> loading plantuml from %s" org-plantuml-jar-path)
+;; (message "--> loading plantuml from %s" org-plantuml-jar-path)
 
 ;;-----------------------------------------------------------------------------
 ;;; activate Babel language and use plantuml as org-babel language

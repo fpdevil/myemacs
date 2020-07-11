@@ -9,11 +9,13 @@
 ;;;              https://github.com/syohex/emacs-git-gutter
 ;;;
 ;;; elisp code for customizing the git-gutter settings
-;;;==========================================================================
-(require 'git-gutter)
+;;; https://learngitbranching.js.org/
 ;;;
 ;;; Code:
 ;;;
+
+(require 'git-gutter)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Emacs port of GitGutter (git integration)                                ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

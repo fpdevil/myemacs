@@ -17,16 +17,14 @@
         (cons '(erlang-mode
                 "^\\([a-z][a-zA-Z0-9_]*\\|'[^\n']*[^\\]'\\)\\s *(" nil "%"
                 erlang-end-of-clause) hs-special-modes-alist))
-  (hs-minor-mode 1)
   (local-set-key [?\M-s] 'hs-toggle-hiding)
   (local-set-key [?\M-h] 'hs-hide-all)
   (local-set-key [?\M-u] 'hs-show-all))
-
 (add-hook 'erlang-mode-hook 'init-fun-hide)
 
-;;-----------------------------------------------------------------------------
+;;-------------------------------------------------------------------
 ;;** helper for formatting the erlang records
-;;-----------------------------------------------------------------------------
+;;-------------------------------------------------------------------
 (defun align-erlang-record ()
   "Formatting the erlang record data structure."
   (interactive)
@@ -45,9 +43,9 @@
     (my-align-region-by "::")))
 
 
-;;-----------------------------------------------------------------------------
+;;-------------------------------------------------------------------
 ;;** Font Locking, Prettify symbols and matching parentheses highlight
-;;-----------------------------------------------------------------------------
+;;-------------------------------------------------------------------
 (global-font-lock-mode t)
 
 (add-hook 'erlang-mode-hook 'erlang-font-lock-level-4)
@@ -144,9 +142,9 @@
                 (erl-find-pair 'search-backward-regexp '(-1) (point)))))))))
 
 
-;;-----------------------------------------------------------------------------
+;;-------------------------------------------------------------------
 ;;** [Code Format] - format the Erlang code
-;;-----------------------------------------------------------------------------
+;;-------------------------------------------------------------------
 (defun format-erl ()
   "Format an Erlang file specified as argument."
   (interactive)
@@ -158,19 +156,9 @@
   (save-buffer 0))
 
 
-;;-------------------------------------------------------------------------------
+;;-------------------------------------------------------------------
 ;;** electric commands
-;;-------------------------------------------------------------------------------
-;; (set-variable 'erlang-electric-commands nil) ; to disable
-;; (setq erlang-electric-commands
-;;       ;; Insert a comma character and possibly a new indented line.
-;;       '(erlang-electric-comma
-;;         ;; Insert a semicolon character and possibly a prototype for the next line.
-;;         erlang-electric-semicolon
-;;         ;; Insert a '>'-sign and possible a new indented line.
-;;         erlang-electric-gt
-;;         ))
-
+;;-------------------------------------------------------------------
 (defun erl/electric-mode-hook ()
   "Handle the electric commands."
   (setq erlang-electric-commands
@@ -186,12 +174,9 @@
   (setq erlang-electric-newline-inhibit t))
 (add-hook 'erlang-mode-hook 'erl/electric-mode-hook)
 
-
-;;-------------------------------------------------------------------------------
+;;-------------------------------------------------------------------
 ;;** new file declarations
-;;-------------------------------------------------------------------------------
-;;** handling of new erlang files with header
-
+;;-------------------------------------------------------------------
 (defun erl-file-header ()
   "Insert a custom edoc header at the top."
   (interactive)
@@ -222,11 +207,40 @@
 ;;** erlang skels options
 (eval-after-load "erlang-skels"
   (progn
+    (setq erlang-skel-author "Sampath Singamsetty")
     (setq erlang-skel-mail-address "Singamsetty.Sampath@gmail.com")))
 
 
+;; Open documentation for erlang modules in a web browser
+(defvar aqua/erlang-doc-root
+  erlang-root-dir
+  "Path to the local Erlang OTP documentation (HTTP format).")
+(defvar browse-erlang-doc-history nil)
+(defvar erlang-doc-root-dir aqua/erlang-doc-root)
+(defun browse-erlang-doc (module)
+  "Open documentation for erlang module MODULE in a web browser."
+  (interactive
+   (let* ((files
+           (append
+            (file-expand-wildcards
+             (concat erlang-doc-root-dir
+                     "/lib/*/doc/html/*.html"))))
+          (completion-table
+           (mapcar
+            (lambda (file)
+              (cons (file-name-sans-extension
+                     (file-name-nondirectory file))
+                    file))
+            files))
+          (module-name (completing-read "Search: "
+                                        completion-table
+                                        nil t nil
+                                        'browse-erlang-doc-history)))
+     (list (cdr (assoc module-name completion-table)))))
+  (browse-url-of-file module))
+(local-set-key (kbd "C-e d") 'browse-erlang-doc)
+
 (provide 'erlang-helper-config)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Local Variables:
 ;; coding: utf-8

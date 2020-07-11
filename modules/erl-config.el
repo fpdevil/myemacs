@@ -45,7 +45,6 @@
           (cons '(erlang-mode
                   "^\\([a-z][a-zA-Z0-9_]*\\|'[^\n']*[^\\]'\\)\\s *(" nil "%"
                   erlang-end-of-clause) hs-special-modes-alist))
-    (hs-minor-mode 1)
     (local-set-key [?\M-s] 'hs-toggle-hiding)
     (local-set-key [?\M-h] 'hs-hide-all)
     (local-set-key [?\M-u] 'hs-show-all))

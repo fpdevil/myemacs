@@ -11,7 +11,6 @@
 ;;;
 ;;; Code:
 ;;;
-;;;===========================================================================
 (require 'wttrin)                  ; get weather information
 (require 'sunshine)                ; weather and forecast information
 

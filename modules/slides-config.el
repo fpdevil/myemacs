@@ -56,7 +56,6 @@
         (ad-activate 'htmlize-buffer-1))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'slides-config)
 
 ;; Local Variables:

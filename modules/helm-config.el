@@ -29,6 +29,7 @@
     (helm-descbinds-mode 1)
     (setq-default helm-descbinds-window-style 'split-window)
 
+    (require-package 'helm-core)
 
     (require-package 'helm-flx)
     (helm-flx-mode t)

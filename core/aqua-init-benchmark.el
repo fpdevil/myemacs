@@ -9,7 +9,8 @@
 ;;;
 ;;; Code:
 ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 (defun sanityinc/time-subtract-millis (b a)
   "Get difference of B and A."
   (* 1000.0 (float-time (time-subtract b a))))

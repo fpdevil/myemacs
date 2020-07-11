@@ -9,15 +9,17 @@
 ;;;
 ;;; Code:
 ;;;
-;;;;===========================================================================
+;;;
+
 (require 'cl)
 (require 'cc-mode)           ;; major mode for c and similar languages
 (require 'google-c-style)    ;; google's c/c++ style for c-mode
 (require 'c-eldoc)           ;; helpful c documentation
 
+;;------------------------------------------------------------------------------
 ;; file support
-;; This adds additional extensions which indicate files normally
-;; handled by cc-mode.
+;; add additional extensions which indicate files normally handled by cc-mode.
+;;------------------------------------------------------------------------------
 (add-to-list 'auto-mode-alist '("\\.h\\'"   . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.cpp\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.hpp\\'" . c++-mode))
@@ -25,6 +27,9 @@
 (add-to-list 'auto-mode-alist '("\\.hh\\'"  . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.c\\'"   . c-mode))
 
+;; invoke the yas mode if on c/c++ buffers
+(add-hook 'c-mode-hook 'yas-minor-mode)
+(add-hook 'c++-mode-hook 'yas-minor-mode)
 
 ;;------------------------------------------------------------------------------
 ;; OSX System base path for Xcode platform
@@ -34,9 +39,9 @@
 ;;------------------------------------------------------------------------------
 ;; set LD_LIBRARY_PATH (for linux) / DYLD_LIBRARY_PATH (for mac)
 ;;------------------------------------------------------------------------------
-;;(setenv "LD_LIBRARY_PATH" "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/")
 (setenv "LC_CTYPE" "UTF-8")
-(setenv "DYLD_LIBRARY_PATH" "/opt/software/clang+llvm-7.0.0-x86_64-apple-darwin/lib/")
+(setenv "DYLD_LIBRARY_PATH" "/opt/software/clang+llvm-8.0.0-x86_64-apple-darwin/lib/")
+;;(setenv "LD_LIBRARY_PATH" "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/")
 
 ;;------------------------------------------------------------------------------
 ;; code indentation (making code gnu style)
@@ -70,11 +75,10 @@
   (c-toggle-hungry-state 1)
 
   (c-toggle-electric-state -1)
-  ;;
+
   ;; code indentation
   ;; google "C/C++/Java code indentation in Emacs" for more advanced skills
-  ;; C code:
-  ;;   if(1) // press ENTER here, zero means no indentation
+  ;; C code: if(1) // press ENTER here, zero means no indentation
   (fix-c-indent-offset-according-to-syntax-context 'substatement 0)
   ;;   void fn() // press ENTER here, zero means no indentation
   (fix-c-indent-offset-according-to-syntax-context 'func-decl-cont 0))
@@ -87,7 +91,6 @@
   ;; emacs-c-opening-corresponding-header-file
   (local-set-key (kbd "C-x C-n") 'ff-find-other-file)
   (setq cc-search-directories '("."
-                                "/usr/include"
                                 "/usr/local/include/*"
                                 "../*/include"
                                 "$WXWIN/include"))
@@ -162,13 +165,18 @@
     :commands sarcasm-clang-format-set-c-style
     :init (add-hook 'c++-mode-hook 'sarcasm-clang-format-set-c-style)))
 
-;; c++ completion for GNU Emacs
-(require-package 'function-args)
+;; Complementation for C/C ++. Modern replacement of CEDET
 (require 'function-args)
 (fa-config-default)
 (setq fa-insert-method 'name-space-parens)
 (define-key function-args-mode-map (kbd "M-i") nil)
 (define-key function-args-mode-map (kbd "C-2") 'fa-show)
+(custom-set-faces
+ '(fa-face-hint ((t (:background "#3f3f3f" :foreground "#ffffff"))))
+ '(fa-face-hint-bold ((t (:background "#3f3f3f" :weight bold))))
+ '(fa-face-semi ((t (:background "#3f3f3f" :foreground "#ffffff" :weight bold))))
+ '(fa-face-type ((t (:inherit (quote font-lock-type-face) :background "#3f3f3f"))))
+ '(fa-face-type-bold ((t (:inherit (quote font-lock-type-face) :background "#999999" :bold t)))))
 
 
 ;;------------------------------------------------------------------------------
@@ -194,8 +202,7 @@
                     (require 'flycheck-google-cpplint)
                     ;; Add Google C++ Style checker.
                     ;; In default, syntax checked by Clang and Cppcheck.
-                    ;; (flycheck-add-next-checker 'c/c++-clang
-                    ;;                       '(warning . c/c++-googlelint))
+                    ;; (flycheck-add-next-checker 'c/c++-clang '(warning . c/c++-googlelint)
                     (add-to-list 'flycheck-checkers 'c/c++-googlelint)
                     (flycheck-add-next-checker 'c/c++-cppcheck '(warning . c/c++-googlelint))))
 
@@ -204,82 +211,80 @@
    (lambda (item)
      (concat "-I" item))
    (split-string "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1
-                  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/9.1.0/include
+                  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/10.0.1/include
                   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include
                   /usr/local/include
                   /usr/include")))
 
-(after 'flycheck (add-hook 'c++-mode-hook
-                           (lambda ()
-                             (setq flycheck-clang-language-standard "c++14")
-                             ;; (setq flycheck-clang-include-path (list "/usr/local/include" "/usr/include"))
-                             (setq flycheck-clang-include-path include-path)
-                             (setq flycheck-c/c++-gcc-executable (executable-find "clang++")))))
+(after 'flycheck
+  (add-hook 'c++-mode-hook
+            (lambda ()
+              (setq flycheck-clang-language-standard "c++11")
+              ;; (setq flycheck-clang-include-path (list "/usr/local/include" "/usr/include"))
+              (setq flycheck-clang-include-path include-path)
+              (setq flycheck-c/c++-gcc-executable (executable-find "clang++")))))
 
 
-  ;; Integrate Clang Static Analyzer with flycheck for on-the-fly
-  ;; static analysis in Emacs
+;; Integrate Clang Static Analyzer with flycheck for on-the-fly
+;; static analysis in Emacs
 (use-package flycheck-clang-analyzer
   :ensure t
   :after flycheck
   :init
-  (setq flycheck-clang-analyzer-executable "/opt/software/clang+llvm-7.0.0-x86_64-apple-darwin/bin/clang")
+  (setq flycheck-clang-analyzer-executable "/opt/software/clang+llvm-8.0.0-x86_64-apple-darwin/bin/clang")
   :config (flycheck-clang-analyzer-setup))
 
 
 ;; Interactively configure FlyCheck using pkg-config
 ;; Usage M-x flycheck-pkg-config
 (use-package flycheck-pkg-config
-  :ensure t
-  )
+  :ensure t)
 
 ;;------------------------------------------------------------------------------
 ;; [FlyMake] - syntax checking and integration with CMake
 ;;------------------------------------------------------------------------------
-(after "flymake"
-  ;; get the required libraries
-  (require 'cmake-project)
-  ;;(require 'flymake-cursor)
-  (defun my:flymake-google-init()
-    (require 'flymake-google-cpplint)
-    (custom-set-variables '(flymake-google-cpplint-command (executable-find "cpplint")))
-    (flymake-google-cpplint-load))
-  (add-hook 'c-mode-hook 'my:flymake-google-init)
-  (add-hook 'c++-mode-hook 'my:flymake-google-init)
-  (setq flymake-gui-warnings-enabled nil)
-  (set-variable 'flymake-start-syntax-check-on-newline nil)
+;;(require 'flymake-cursor)
+(defun my:flymake-google-init()
+  (require 'flymake-google-cpplint)
+  (custom-set-variables '(flymake-google-cpplint-command (executable-find "cpplint")))
+  (flymake-google-cpplint-load))
+(add-hook 'c-mode-hook 'my:flymake-google-init)
+(add-hook 'c++-mode-hook 'my:flymake-google-init)
+(setq flymake-gui-warnings-enabled nil)
+(set-variable 'flymake-start-syntax-check-on-newline nil)
+
+(use-package cmake-project
+  :config
   (defun maybe-cmake-project-hook ()
-    (if (file-exists-p "CMakeLists.txt")
-        (cmake-project-mode)))
+    (if (file-exists-p "CMakeLists.txt") (cmake-project-mode)))
   (add-hook 'c-mode-hook 'maybe-cmake-project-hook)
-  (add-hook 'c++-mode-hook 'maybe-cmake-project-hook)
-  (defun turn-on-flymake-mode()
-    (if (and (boundp 'flymake-mode)
-             flymake-mode)
-        ()
-      (flymake-mode t)))
-  (add-hook 'c-mode-common-hook
-            (lambda ()
-              (turn-on-flymake-mode)))
-  (add-hook 'c++-mode-hook
-            (lambda ()
-              (turn-on-flymake-mode)))
-  (defun cmake-project-current-build-command ()
-    "Command line to compile current project as configured in the
-  build directory."
-    (concat "cmake --build " (shell-quote-argument (expand-file-name cmake-project-build-directory))
-            " -- -j 8" ))
-  (defun cmake-project-flymake-init ()
-    "Check for the Cmake build directory."
-    (list (executable-find "cmake")
-          (list "--build" (expand-file-name cmake-project-build-directory) "--" "-j" "8" ))))
+  (add-hook 'c++-mode-hook 'maybe-cmake-project-hook))
+
+(defun turn-on-flymake-mode()
+  "Turning FlyMake mode on."
+  (if (and (boundp 'flymake-mode)
+           flymake-mode)
+      ()
+    (flymake-mode t)))
+(add-hook 'c-mode-common-hook (lambda () (turn-on-flymake-mode)))
+(add-hook 'c++-mode-hook (lambda () (turn-on-flymake-mode)))
+
+;; (defun cmake-project-current-build-command ()
+;;   "Command line to compile current project as configured in the
+;;   build directory."
+;;   (concat "cmake --build " (shell-quote-argument (expand-file-name cmake-project-build-directory))
+;;           " -- -j 8" ))
+
+;; (defun cmake-project-flymake-init ()
+;;   "Check for the Cmake build directory."
+;;   (list (executable-find "cmake")
+;;         (list "--build" (expand-file-name cmake-project-build-directory) "--" "-j" "8" )))
 
 
 ;;-----------------------------------------------------------------------------
 ;; [ modern-cpp-font-lock ] -- font-locking for C++ mode
 ;;-----------------------------------------------------------------------------
-(use-package
-  modern-cpp-font-lock
+(use-package modern-cpp-font-lock
   :ensure t
   :defer t
   :init
@@ -288,7 +293,8 @@
 
 
 ;; show #if 0 / #endif etc regions in comment face - taken from
-;; http://stackoverflow.com/questions/4549015/in-c-c-mode-in-emacs-change-face-of-code-in-if-0-endif-block-to-comment-fa
+;; http://stackoverflow.com/questions/4549015/
+;; in-c-c-mode-in-emacs-change-face-of-code-in-if-0-endif-block-to-comment-fa
 (defun c-mode-font-lock-if0 (limit)
   "Fontify #if 0 / #endif as comments for c modes etc.
 Bound search to LIMIT as a buffer position to find appropriate
@@ -316,6 +322,7 @@ code sections."
   nil)
 
 (defun my-c-mode-common-hook ()
+  "Font locking."
   (font-lock-add-keywords
    nil
    '((my-c-mode-font-lock-if0 (0 font-lock-comment-face prepend))) 'add-to-end))
@@ -326,11 +333,16 @@ code sections."
 ;;------------------------------------------------------------------------------
 ;; [eldoc] - documentation support
 ;;------------------------------------------------------------------------------
-(with-eval-after-load 'c-eldoc
+(after 'c-eldoc
  (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
  (add-hook 'c++-mode-hook 'c-turn-on-eldoc-mode)
- (setq c-eldoc-cpp-command (executable-find "clang")))
+ (setq c-eldoc-buffer-regenerate-time 60
+       c-eldoc-cpp-command (executable-find "clang")))
 
+;;------------------------------------------------------------------------------
+;; [emacs-dbgr] - RealGUD an extensible debugger for Emacs
+;;------------------------------------------------------------------------------
+; (require 'realgud)
 
 ;;------------------------------------------------------------------------------
 ;; auto-insert the comment strings at top based on the file types
@@ -410,12 +422,14 @@ code sections."
 ;; using gtags
 ;;------------------------------------------------------------------------------
 (use-package ggtags
-:ensure t
-:config
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
-              (ggtags-mode 1)))))
+  :ensure t
+  :config
+  (add-hook 'c-mode-common-hook
+            (lambda ()
+              (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+                (ggtags-mode 1))))
+  (setq-local eldoc-documentation-function #'ggtags-eldoc-function)
+  (setq-local imenu-create-index-function #'ggtags-build-imenu-index))
 
 
 ;;------------------------------------------------------------------------------
@@ -426,12 +440,16 @@ code sections."
   "Get explanations of functions in c++."
   (interactive)
   (if (eq major-mode 'c++-mode)
-      (progn (interactive) (shell-command
-                            (concat "c++decl explain \"" (buffer-substring (region-beginning)
-                                                                           (region-end)) "\"")))
-    (progn (interactive) (shell-command
-                          (concat "cdecl explain \"" (buffer-substring (region-beginning)
-                                                                       (region-end)) "\"")))))
+      (progn
+        (interactive)
+        (shell-command
+         (concat "c++decl explain \"" (buffer-substring (region-beginning)
+                                                        (region-end)) "\"")))
+    (progn
+      (interactive)
+      (shell-command
+       (concat "cdecl explain \"" (buffer-substring (region-beginning)
+                                                    (region-end)) "\"")))))
 ;; END allow us to get english language explanations of complex C++ declarations
 
 ;;------------------------------------------------------------------------------
@@ -453,6 +471,13 @@ code sections."
              ;;M-q to fill /** */ Paragraph Segments
              (setq paragraph-start "^[ ]*\\(///\\|\\**\\)[ ]*\\([ ]*$\\|@\\)\\|^\f")
              ))
+
+;; to generate quick main
+(defun main ()
+  "Insert main.cpp template at cursor point."
+  (interactive)
+  (insert "\n#include \n\nusing namespace std;\n\nint main() {\n  \n  \n  return 0;\n}\n")
+  (backward-char 18))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -87,6 +87,8 @@
 (after 'yapfify (diminish 'yapf-mode))
 (after 'sphinx-doc (diminish 'sphinx-doc-mode))
 (after 'rainbow-mode (diminish 'rainbow-mode))
+(after 'company-box-mode (diminish 'company-box-mode))
+(after 'python-docstring-mode (diminish 'python-docstring-mode))
 
 
 (provide 'diminish-config)
@@ -96,4 +98,4 @@
 ;; mode: emacs-lisp
 ;; End:
 
-;;; delighted-config.el ends here
+;;; diminish-config.el ends here

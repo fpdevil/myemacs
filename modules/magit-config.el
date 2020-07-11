@@ -7,6 +7,7 @@
 ;;; Code:
 ;;;
 
+(require 'delight)
 
 (defun me/unboldify (&optional faces)
   "Set the weight property of FACES to `normal'.
@@ -56,8 +57,6 @@ If FACES is not provided or nil, use `face-list' instead."
   ;; Customize faces
   (set-face-attribute 'magit-diff-file-heading-highlight nil :background nil)
   (set-face-attribute 'magit-diff-hunk-region nil :inherit 'region)
-  (set-face-attribute 'magit-popup-heading nil :height me/font-size-title)
-  (set-face-attribute 'magit-section-heading nil :height me/font-size-title)
   (set-face-attribute 'magit-section-highlight nil :background nil)
   (me/unboldify '(magit-branch-current
                   magit-branch-local

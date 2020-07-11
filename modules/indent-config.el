@@ -22,7 +22,11 @@
 
     ;; enable for certain modes
     (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+    (add-hook 'inferior-emacs-lisp-mode #'aggressive-indent-mode)
+    (add-hook 'ielm-mode #'aggressive-indent-mode)
     (add-hook 'lisp-mode-hook #'aggressive-indent-mode)
+    (add-hook 'clojure-mode-hook #'aggressive-indent-mode)
+    (add-hook 'clojurescript-mode-hook #'aggressive-indent-mode)
 
     ;; if a prticular mode needs to be disabled while enabling globally
     ;; (add-to-list 'aggressive-indent-excluded-modes 'html-mode)

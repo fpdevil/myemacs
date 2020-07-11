@@ -49,7 +49,8 @@ like (λ [a] (+ a 5)), ƒ(+ % 5), and ∈{2 4 6} for MODE."
 ;;-----------------------------------------------------------------------------
 (defun clj-coding-defaults ()
   (smartparens-strict-mode +1)
-  (rainbow-delimiters-mode +1))
+  ;;(rainbow-delimiters-mode +1)
+  )
 
 (setq clj-coding-hook 'clj-coding-defaults)
 
@@ -93,7 +94,7 @@ like (λ [a] (+ a 5)), ƒ(+ % 5), and ∈{2 4 6} for MODE."
 
 
 ;; helm integration
-(after 'helm
+(when (eq dotemacs-switch-engine 'helm)
   (add-hook 'cider-mode-hook #'helm-cider-mode))
 
 (after 'evil
@@ -125,9 +126,6 @@ like (λ [a] (+ a 5)), ƒ(+ % 5), and ∈{2 4 6} for MODE."
             (put-clojure-indent 'reg-sub 1)
             ))
 
-;;** aggressive indentation for clojure
-(add-hook 'clojure-mode-hook #'aggressive-indent-mode)
-(add-hook 'clojurescript-mode-hook #'aggressive-indent-mode)
 
 ;;** eldoc and cider
 (define-advice cider-eldoc-format-function (:around (old-fun thing pos eldoc-info) docstring)
@@ -235,8 +233,8 @@ like (λ [a] (+ a 5)), ƒ(+ % 5), and ∈{2 4 6} for MODE."
   (require-package 'clj-refactor)
   ;; Add clj-refactor to clojure-mode
   (add-hook 'clojure-mode-hook '(lambda () (clj-refactor-mode 1)))
-  (setq cljr-auto-sort-ns nil                 ; no auto sort
-        cljr-favor-prefix-notation nil)       ; do not prefer prefixes when using clean-ns
+  (setq cljr-auto-sort-ns nil             ; no auto sort
+        cljr-favor-prefix-notation nil)   ; do not prefer prefixes when using clean-ns
   ;; This choice of keybinding leaves cider-macroexpand-1 unbound
   (cljr-add-keybindings-with-prefix "C-c C-m"))
 

@@ -2,7 +2,6 @@
 ;;; -*- coding: utf-8 -*-
 ;;;
 ;;; Commentary:
-;;;
 ;;; Filename   : cpp-irony-config.el
 ;;; Description: C/C++ IDE Support using the company and irony modes
 ;;;
@@ -12,10 +11,10 @@
 ;;;
 ;;; cpp -v
 ;;; Code:
-;;;;===========================================================================
+;;;
+;;;
+
 (require 'irony)                        ;; irony cpp ide plugin
-(require 'company-irony-c-headers)      ;; company backend for irony c-headers
-(require 'company-c-headers)      ;; company backend for irony c-headers
 (require 'irony-eldoc)                  ;; eldpc support for irony
 (require 'flycheck-irony)               ;; flycheck checker for the C, C++ and Objective-C
 
@@ -25,9 +24,10 @@
 ;;(setenv "LD_LIBRARY_PATH" "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/")
 (setenv "LC_CTYPE" "UTF-8")
 (setenv "DYLD_LIBRARY_PATH"
-        (concat "/opt/software/clang+llvm-7.0.0-x86_64-apple-darwin/lib/"
+        (concat "/opt/software/clang+llvm-8.0.0-x86_64-apple-darwin/lib/"
                 ":"
-                "/usr/local/opt/opencv3/lib/"))
+                "/usr/local/opt/opencv/lib/"
+                ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                        setup irony modes for c/c++                         ;;
@@ -62,7 +62,9 @@
 ;     "-stdlib=libc++"))
 
 
-(after "company"
+(when (eq dotemacs-completion-engine 'company)
+  (require 'company-irony-c-headers)      ;; company backend for irony c-headers
+  (require 'company-c-headers)            ;; company backend for irony c-headers
   ;; A function to add path to company-c-headers
   (defun company-c-headers-includes ()
     ;; You just need to modified the path inside the quote to your header files path
@@ -79,11 +81,11 @@
   (company-c-headers-includes)
 
   ;; set the company backends as needed by irony
-  ; (custom-set-variables
-  ;  '(company-backends (quote (company-irony
-  ;                             company-c-headers
-  ;                             company-irony-c-headers
-  ;                             ))))
+  ;; (custom-set-variables
+  ;;  '(company-backends (quote (company-irony
+  ;;                             company-c-headers
+  ;;                             company-irony-c-headers
+  ;;                             ))))
   ;;(setq-local company-backends
   ;;  '(company-irony company-c-headers company-irony-c-headers))
 
@@ -91,8 +93,8 @@
             (lambda () (company-config/push-company-backends-locally 'company-irony)))
   (add-hook 'c++-mode-hook
             (lambda () (company-config/push-company-backends-locally 'company-c-headers)))
-   (add-hook 'c++-mode-hook
-             (lambda () (company-config/push-company-backends-locally 'company-irony-c-headers)))
+  (add-hook 'c++-mode-hook
+            (lambda () (company-config/push-company-backends-locally 'company-irony-c-headers)))
 
   ;; adds CC special commands to `company-begin-commands' in order to trigger
   ;; completion at interesting places, such as after scope operator, std::
@@ -100,10 +102,11 @@
   (setq company-backends (delete 'company-semantic company-backends))
   )
 
-;; Irony-mode configuration
+;; irony-mode configuration
 (add-hook 'c++-mode-hook 'irony-mode)
 (add-hook 'c-mode-hook 'irony-mode)
 (add-hook 'objc-mode-hook 'irony-mode)
+(add-hook 'c-mode-common-hook 'irony-mode)
 
 ;; replace the `completion-at-point` and `complete-symbol` bindings in
 ;; irony-mode's buffers by irony-mode's function
@@ -128,9 +131,11 @@
 ;;------------------------------------------------------------------------------
 ;;** [flycheck] - realtime syntax checking
 ;;------------------------------------------------------------------------------
-(after-load 'flycheck
-  '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
-
+(eval-after-load "flycheck"
+  '(progn
+     (when (locate-library "flycheck-irony")
+       ;; '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup)
+       (flycheck-irony-setup))))
 
 ;;------------------------------------------------------------------------------
 ;; bind TAB key for indent-or-complete (optional)
@@ -166,23 +171,23 @@
 ;;------------------------------------------------------------------------------
 ;; [auto-complete] - completion mode
 ;;------------------------------------------------------------------------------
-; (after 'auto-complete
-;   (defun my:ac-cc-mode-setup ()
-;     "AutoComplete CC Mode."
-;     (setq ac-sources
-;           (append '(ac-source-clang ac-source-yasnippet)
-;                   ac-sources))
-;     (define-key irony-mode-map (kbd "M-RET") 'ac-complete-irony-async))
-;   ;; (add-hook 'c-mode-common-hook 'my:ac-cc-mode-setup)
-;   (add-hook 'irony-mode-hook 'my:ac-cc-mode-setup))
+(when (eq dotemacs-completion-engine 'auto-coplete)
+  (after 'auto-complete
+    (defun my:ac-cc-mode-setup ()
+      "AutoComplete CC Mode."
+      (setq ac-sources
+            (append '(ac-source-clang ac-source-yasnippet) ac-sources))
+      (define-key irony-mode-map (kbd "M-RET") 'ac-complete-irony-async))
+    ;; (add-hook 'c-mode-common-hook 'my:ac-cc-mode-setup)
+    (add-hook 'irony-mode-hook 'my:ac-cc-mode-setup))
+  )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'cpp-irony-config)
 
+;;; cpp-irony-config.el ends here
 ;; Local Variables:
 ;; coding: utf-8
 ;; mode: emacs-lisp
 ;; End:
-
-;;; ccpp-irony-config.el ends here

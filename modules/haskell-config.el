@@ -14,8 +14,8 @@
 ;;;
 
 ;; load all the pre-requisite libraries
-(require 'cl)
-(require 'cl-lib)
+;; (require 'cl)
+;; (require 'cl-lib)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; Haskell settings for Emacs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; templates used from the below links.  Thanks to both                       ;;
@@ -31,12 +31,11 @@
 (require 'haskell-mode)               ;; haskell editing mode for Emacs
 (require 'hindent)                    ;; indentation for haskell program
 (require 'haskell-font-lock)          ;; font lock mode for haskell
-(require 'ghc)                        ;; sub mode for haskell mode
 (require 'inf-haskell)                ;; haskell inferior mode
 (require 'haskell-interactive-mode)   ;; haskell ghci support
 (require 'haskell-process)            ;; haskell ghci repl support
-(require 'company-ghc)                ;; company backend haskell-mode via ghc-mod
-(require 'shm)                        ;; structured haskell mode
+(require 'ghc)                        ;; sub mode for haskell mode
+
 
 (autoload 'haskell-mode "haskell-mode" "Haskell mode." t)
 
@@ -45,17 +44,10 @@
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
 ;; Make Emacs look in to the Cabal directory for installed binaries
 ;; and then set the same into the classpath for ready access
-
-(let ((my-cabal-path (expand-file-name (concat (getenv "HOME") "/Library/Haskell/bin"))))
-  ;; setup the cabal path and put into classpath
-  (setenv "PATH" (concat "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:"
-                         my-cabal-path ":"
-                         (getenv "PATH")))
-  (add-to-list 'exec-path my-cabal-path))
-
 (setenv "PATH" (shell-command-to-string "echo $PATH"))
-(add-to-list 'exec-path (concat (getenv "HOME") "/Library/Haskell/bin"))
-(setq ghc-module-command "~/Library/Haskell/bin/ghc-mod")
+(add-to-list 'exec-path (concat (getenv "HOME") "/.local/bin"))
+(add-to-list 'exec-path (concat (getenv "HOME") "/.cabal/bin"))
+(setq ghc-module-command "~/.local/bin/ghc-mod")
 
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
 ;;**                        file mode associations
@@ -65,11 +57,17 @@
 (add-to-list 'auto-mode-alist '("\\.cabal$" . haskell-cabal-mode))
 
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
+;;** haskell yasnippets
+;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
+(require-package 'haskell-snippets)
+
+;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
 ;;**                emacs haskell-mode configuration setup
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'haskell-decl-scan-mode)
-(add-to-list 'completion-ignored-extensions ".hi")  ;; ignore compiled Haskell files in filename completions
+;; ignore compiled Haskell files in filename completions
+(add-to-list 'completion-ignored-extensions ".hi")
 
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
 ;;**               hoogle executable for documentation
@@ -77,7 +75,7 @@
 (defvar hoogle-url-base "http://haskell.org/hoogle/?q="
   "The base for the URL that will be used for web Hoogle lookups.")
 
-(defvar hoogle-local-command  (concat (getenv "HOME") "/Library/Haskell/bin/hoogle")
+(defvar hoogle-local-command  (concat (getenv "HOME") "/.local/bin/hoogle")
   "The name of the executable used for hoogle not found in $PATH (using `executable-find'), then a web lookup is used.")
 
 (defvar hoogle-always-use-web nil
@@ -94,6 +92,18 @@
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
 (add-hook 'haskell-mode-hook 'yas-minor-mode)
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+
+;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
+;;** haskell language server protocol
+;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
+(require-package 'lsp-haskell)
+(require 'lsp-haskell)
+(setq lsp-haskell-process-path-hie (executable-find "hie-wrapper"))
+(setq lsp-haskell-process-args-hie '())
+(setq lsp-haskell-set-completion-snippets-on t)
+(add-hook 'haskell-mode-hook #'lsp-haskell-enable)
+(add-hook 'haskell-mode-hook #'lsp)
+
 
 
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
@@ -112,19 +122,20 @@
 (add-hook 'haskell-mode-hook #'hindent-mode)
 (setq hindent-style "johan-tibell")
 
-
 ;;** disable electric indent mode for Haskell to prevent aggressive indenting
-;; (add-hook 'haskell-mode-hook (lambda () (setq electric-indent-inhibit t)))
 (add-hook 'haskell-mode-hook (lambda () (electric-indent-local-mode -1)))
 
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
 ;;** [shm] - structured-haskell-mode configuration
+;;**         using haskell-indentation instead of SHM
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
-;;** using haskell-indentation instead of SHM
-;; (add-hook 'haskell-mode-hook 'structured-haskell-mode)
-(setq shm-program-name (executable-find "structured-haskell-mode"))
-(set-face-background 'shm-current-face nil)
-(set-face-background 'shm-quarantine-face nil)
+; (when (executable-find "structured-haskell-mode")
+;   (require 'shm)
+;   ;; using haskell-indentation, instead of SHM
+;   ;; (add-hook 'haskell-mode-hook 'structured-haskell-mode)
+;   (setq shm-program-name (executable-find "structured-haskell-mode"))
+;   (set-face-background 'shm-current-face nil)
+;   (set-face-background 'shm-quarantine-face nil))
 
 ;; ** customize colors while running shm (good colors for solarized) **
 ;; (set-face-background 'shm-current-face "#eee8d5")
@@ -157,7 +168,7 @@
       haskell-interactive-mode-include-file-name t
       haskell-interactive-mode-eval-pretty t
       haskell-process-do-cabal-format-string ":!cd %s && unset GHC_PACKAGE_PATH && %s"
-      shm-use-hdevtools t
+      shm-use-hdevtools nil
       shm-use-presentation-mode t
       shm-auto-insert-skeletons t
       shm-auto-insert-bangs t
@@ -207,13 +218,6 @@
      (define-key haskell-mode-map (kbd "C-c C-o") 'haskell-compile)
      (define-key haskell-mode-map (kbd "C-c C-d") 'ac-haskell-process-popup-doc)))
 
-; (eval-after-load 'haskell-cabal '(progn
-;   (define-key haskell-cabal-mode-map (kbd "C-c C-n C-z") 'haskell-interactive-switch)
-;   (define-key haskell-cabal-mode-map (kbd "C-c C-n C-k") 'haskell-interactive-mode-clear)
-;   (define-key haskell-cabal-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
-;   (define-key haskell-cabal-mode-map (kbd "C-c C-n C-o") 'haskell-compile)
-;   (define-key haskell-cabal-mode-map (kbd "C-c C-n c")   'haskell-process-cabal)))
-
 (eval-after-load 'haskell-cabal
   '(progn
      (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
@@ -228,7 +232,7 @@
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
 (autoload 'ghc-init "ghc" nil t)
 (autoload 'ghc-debug "ghc" nil t)
-(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+; (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
 
 ;; with the below setting, we can watch the communication between Emacs
 ;; front-end and ghc-modi in the "*GHC Debug*" buffer.
@@ -241,7 +245,9 @@
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
 ;; company-ghc configuration (enable company-mode for auto-completion)
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
-(after 'company
+(after "company"
+  ;; company backend haskell-mode via ghc-mod
+  (require 'company-ghc)
   ;; (add-hook 'haskell-mode-hook 'company-mode)
   ;; get auto completions in the ghci REPL
   (add-hook 'haskell-interactive-mode-hook 'company-mode)
@@ -381,22 +387,16 @@
 (setq haskell-process-use-ghci t)
 
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
-;;** haskell yasnippets
-;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
-(require-package 'haskell-snippets)
-
-;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
 ;;** laod the Haskell helpers...
 ;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
-(defcustom haskell-helper-config nil
-  "Haskell helpers.")
+(defcustom haskell-helper-config nil "Haskell helpers.")
 
 (setq haskell-helper-config
       (expand-file-name "haskell-helper-config.el" module-dir))
 (when (file-exists-p haskell-helper-config)
   (load haskell-helper-config 'noerror))
 
-;;== == == == == == == == == == == == == == == == == == == == == == == == == == ==
+
 
 (provide 'haskell-config)
 

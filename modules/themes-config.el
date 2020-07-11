@@ -15,23 +15,42 @@
 
 (require-package 'color-theme)
 
+;;----------------------------------------------------------------------------
+;; disable current theme and load new theme
+;;----------------------------------------------------------------------------
+(defun change-theme (theme)
+  "Disable current theme and call THEME."
+  (interactive
+   (list
+    (intern (completing-read "call custom theme -> "
+                             (mapc 'symbol-name
+                                   (custom-available-themes))))))
+  (let ((currently-enabled-themes custom-enabled-themes))
+    (mapc #'disable-theme custom-enabled-themes)
+    (load-theme theme t)))
+
+(defun disable-themes ()
+  "Disable currently active themes."
+  (interactive)
+  (mapc #'disable-theme custom-enabled-themes))
+
+
 ;; with this setting all themes are safe to me
 (setq custom-safe-themes t)
 
-;;------------------------------------------------------------------------------
+;;----------------------------------------------------------------------------
 ;; adapted from the prelude
 ;; If you don't customize it, this is the theme you get.
-;;------------------------------------------------------------------------------
-(setq-default custom-enabled-themes
-              '(
-                ;;sanityinc-tomorrow-bright
-                ;;doom-molokai
-                ;;sanityinc-tomorrow-day
-                ))
+;;----------------------------------------------------------------------------
+(setq-default custom-enabled-themes '(
+                                      doom-one-light
+                                      ;;sanityinc-tomorrow-day
+                                      ;;solarized-wombat-dark
+                                      ))
 
-;;------------------------------------------------------------------------------
+;;----------------------------------------------------------------------------
 ;; Ensure that themes will be applied even if they have not been customized
-;;------------------------------------------------------------------------------
+;;----------------------------------------------------------------------------
 (defun reapply-themes ()
   "Forcibly load the themes listed in `custom-enabled-themes'."
   (interactive)
@@ -40,18 +59,38 @@
       (load-theme theme)))
   (custom-set-variables `(custom-enabled-themes (quote ,custom-enabled-themes))))
 
-
-;;-------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 ;; apply the themes after Emacs initializes
-;;-------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 (setq color-theme-illegal-faces "^\\(w2-\\|dropdown-\\|info-\\|linum\\|yas-\\|font-lock\\|dired-directory\\)")
 ;; to fix the aquamacs theme setup issue
 ;; (setq default-frame-alist nil)
 (add-hook 'after-init-hook 'reapply-themes)
 
-;;------------------------------------------------------------------------------
-;; Toggle between light and dark
-;;------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
+;;** theme for org-mode
+;;-----------------------------------------------------------------------------
+(use-package org-beautify-theme
+  :after org
+  :ensure t)
+
+;;-----------------------------------------------------------------------------
+;;** variable pitch for org-mode and markdown-mode
+;;-----------------------------------------------------------------------------
+(custom-theme-set-faces
+ 'user
+ '(variable-pitch ((t (:family "Monaco for Powerline" :height 140 :weight light))))
+ '(fixed-pitch ((t (:family "Inconsolata for Powerline" :slant normal :weight normal :height 1.0 :width normal)))))
+
+; (dolist (fn '(
+;               org-mode-hook
+;               markdown-mode-hook
+;               ))
+;   (add-hook 'org-mode-hook fn))
+
+;;----------------------------------------------------------------------------
+;; toggle between light and dark themes [solarized]
+;;----------------------------------------------------------------------------
 (defun light ()
   "Activate a light color theme."
   (interactive)
@@ -64,10 +103,9 @@
   (setq custom-enabled-themes '(sanityinc-tomorrow-bright))
   (reapply-themes))
 
-;; For zerodark theme
-;;-------------------------------------------------------------------------------
-;; enable the zerodark theme
-;;-------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
+;; For enabling zerodark theme
+;;-----------------------------------------------------------------------------
 (defun zerodark ()
   "Enable the `Zerodark' theme."
   (interactive)
@@ -82,27 +120,25 @@
   ;;(set-selected-frame-dark)
   )
 
-;; enable zerodark
-;;(add-hook 'after-init-hook 'zerodark)
+;;(add-hook 'after-init-hook 'zerodark)           ; to enable zerodark
 
-;;-------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 ;; Toggle between spacemacs's light and dark themes
-;;-------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 (defun space-light ()
   "Activate spacemacs light theme."
   (interactive)
   (load-theme 'spacemacs-light t))
-
 
 (defun space-dark ()
   "Activate spacemacs light theme."
   (interactive)
   (load-theme 'spacemacs-dark t))
 
-;;-------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 ;; enable moe's theme
 ;; automatically switch colors between dark and light based on the system time
-;;-------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 ;; (require 'moe-theme-switcher)
 (defun moe ()
   "Activate moe light theme."
@@ -116,29 +152,9 @@
         moe-theme-resize-rst-title '(1.5 1.4 1.3 1.2 1.1 1.0))
   (moe-theme-set-color 'orange)
   (moe-light))
-
 ;;(add-hook 'after-init-hook 'moe)
 
-;;-------------------------------------------------------------------------------
-;;** theme for org-mode
-;;-------------------------------------------------------------------------------
-(use-package org-beautify-theme
-  :after org
-  :ensure t)
-
-;;-------------------------------------------------------------------------------
-;;** variable pitch for org-mode and markdown-mode
-;;-------------------------------------------------------------------------------
-(custom-theme-set-faces
- 'user
- '(variable-pitch ((t (:family "Monaco for Powerline" :height 140 :weight light))))
- '(fixed-pitch ((t (:family "Inconsolata for Powerline" :slant normal :weight normal :height 1.0 :width normal)))))
-(add-hook 'org-mode-hook 'variable-pitch-mode)
-(add-hook 'markdown-mode-hook 'variable-pitch-mode)
-
-(message "now loading themes-config.el...")
-;;;;;;;;;;;;;;;;;;;;;;; color theme configuration end ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;;;;;;;;;;;;;;;;;;;;;; color theme configuration end ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'themes-config)
 ;; Local Variables:

@@ -12,17 +12,14 @@
 ;;;
 
 (require-package 'highlight-numbers)
-(add-hook 'prog-mode-hook 'highlight-numbers-mode)
+(add-hook 'prog-mode-hook #'highlight-numbers-mode)
 
 (require-package 'highlight-quoted)
-(add-hook 'prog-mode-hook 'highlight-quoted-mode)
+(add-hook 'prog-mode-hook #'highlight-quoted-mode)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fancy modeline(s) - powerline, airline and sml
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (require 'powerline)
-;; (powerline-default-theme)
+;;**
+;; [fancy modeline(s) - powerline, airline and sml]
 (use-package smart-mode-line-powerline-theme
   :ensure t
   :after powerline
@@ -32,9 +29,8 @@
   ;; (sml/apply-theme 'powerline)
   )
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; define constants for holding the themes
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;**
+;; [define constants for holding the themes]
 (defcustom aqua-airline-theme nil
   "Select an appropriate Airline Theme."
   :type 'symbol)
@@ -43,10 +39,12 @@
   "Theme for smart-mode-line."
   :type 'symbol)
 
-;; change the airline themes as required from the below
+;;
+;; [change the airline themes as required from the below]
 (setq aqua-airline-theme 'airline-cool)
 
-;; set smart-mode-line theme
+;;**
+;; [set smart-mode-line theme]
 (setq aqua-sml-theme 'dark)
 ;; alternative themes available:
 ;; (sml/apply-theme 'powerline)
@@ -56,9 +54,8 @@
 ;; (sml/apply-theme 'automatic)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; vim airline theme for emacs modeline customized display
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;**
+;; [vim airline theme for emacs modeline customized display]
 (defun load-airline-settings ()
   "Load required Airline theme settings."
   (interactive)
@@ -82,9 +79,9 @@
   (load-airline-settings)
   (load-theme aqua-airline-theme t))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; smart-mode-line enable/disable
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;**
+;; [sml] - smart-mode-line enable/disable
 (defun apply-smart-modeline ()
   "Apply SML Smart Model Line if selected."
   (interactive)
@@ -103,8 +100,7 @@
       ;; delegate theme to the current active one
       (setq sml/theme 'dark))
     (sml/setup)
-    (sml/apply-theme aqua-sml-theme))
-  )
+    (sml/apply-theme aqua-sml-theme)))
 
 
 (defun apply-sml ()
@@ -148,22 +144,19 @@
           (t
            (set-face-background 'mode-line dotemacs--original-mode-line-bg)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; uncomment if airline themes are required (load airline settings)
-;; (add-hook 'after-init-hook 'load-airline-settings)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;**
+;; [airline] - uncomment if airline themes are required (load airline settings)
 (when (eq dotemacs-mode-line 'airline)
   (add-hook 'after-init-hook 'apply-airline))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; uncomment if smart mode line is required
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;**
+;; [sml] - uncomment if smart mode line is required
 (when (eq dotemacs-mode-line 'sml)
   (add-hook 'after-init-hook 'apply-sml))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; uncomment if spaceline mode line is required
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;**
+;; [spaceline] - uncomment if spaceline mode line is required
 (when (eq dotemacs-mode-line 'spaceline)
   (require-package 'spaceline)
   (require 'spaceline-config)
