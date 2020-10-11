@@ -1,5 +1,9 @@
 ./SessionDesktop.el
 ./custom-settings.el
+./.dap-breakpoints
+./ac-comphist.dat
+./amx-items
+./places
 games/
 *.elc
 .DS_Store
@@ -14,8 +18,6 @@ edts/
 
 # package nw settings
 ./network-security.data
-
-.cask
 
 # under eshell
 /eshell/
@@ -38,5 +40,16 @@ private/*
 /elpa/
 elpa/
 
+# ignore other packages data
+quelpa/
+straight/
+.cask
+
 # AUCTeX auto folder
 /auto/
+
+# ignore backups
+backups/
+
+# ignore semanticdb data
+semanticdb/
