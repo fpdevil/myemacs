@@ -34,6 +34,7 @@
 
        ;; disable flymake to html file.
        (delete '("\\.html?\\'" flymake-xml-init) flymake-allowed-file-name-masks)
+       (delete '("\\.tex?\\'" flymake-simple-tex-init) flymake-allowed-file-name-masks)
 
        (defun flymake-errors-on-current-line ()
          "Return the errors on the current line or nil if none exist"
@@ -102,7 +103,7 @@ it has errors and/or warnings."
          (flymake-start-syntax-check "edit"))
 
        (setq flymake-extension-use-showtip t)  ;use `showtip' display error or warning.
-       (add-hook 'find-file-hook 'flymake-find-file-hook)
+       ;;(add-hook 'find-file-hook 'flymake-find-file-hook)
        )
 
 
