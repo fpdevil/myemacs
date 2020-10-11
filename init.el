@@ -1,6 +1,5 @@
 ;; package --- Aquamacs initialization file
 ;; -*- lexical-binding: t; -*-
-;; -*- coding: utf-8 -*-
 ;; -*-no-byte-compile: t; -*-
 ;;;
 ;;;         ███████╗███╗   ███╗ █████╗  ██████╗███████╗
@@ -59,11 +58,11 @@
 ;;----------------------------------------------------------------------------
 (lexical-let ((emacs-startup-time (current-time)))
   (add-hook 'emacs-startup-hook
-            (lambda ()
-              (let ((elapsed-time
-                     (float-time
-                      (time-subtract (current-time) emacs-startup-time))))
-                (message "$$ Emacs Initialized in %.3fs $$" elapsed-time)))))
+	    (lambda ()
+	      (let ((elapsed-time
+		     (float-time
+		      (time-subtract (current-time) emacs-startup-time))))
+		(message "** Emacs Initialized in %.3fs **" elapsed-time)))))
 
 ;;----------------------------------------------------------------------------
 ;;** [Pre-Initialization] - gc threshold setting
@@ -73,47 +72,42 @@
 (setq gc-cons-percentage 0.5)
 (run-with-idle-timer 5 t #'garbage-collect)
 (add-hook 'after-init-hook
-          (lambda ()
-            (setq gc-cons-threshold (* 16 1024 1024))))
-
-; (let ((gc-cons-threshold (* 64 1024 1024))
-;       (gc-cons-percentage 0.5)
-;       (file-name-handler-alist nil))
+	  (lambda ()
+	    (setq gc-cons-threshold (* 16 1024 1024))))
 
 ;;----------------------------------------------------------------------------
 ;;** finalizers (for debugging and recompiling)
 ;;*** uncomment while debuging
 ;;----------------------------------------------------------------------------
-(setq debug-on-error t)
-; (setq debug-on-signal t)
 (setq-default message-log-max t)
+(setq debug-on-error t)
+;; (setq debug-on-signal t)
 
 ;;----------------------------------------------------------------------------
 ;;** Disable loading of “default.el” at startup
 ;;----------------------------------------------------------------------------
 (setq inhibit-default-init t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Define user, package and custom directories for the packages and modules ;;
-;; packages/elpa will contain the standard packages installed by Emacs      ;;
-;; modules dir will contain the custom built and lang specific modules      ;;
-;; vendor dir will contain 3rd party or unavailable packages                ;;
-;; Define a top-level, vendor and custom files                              ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;----------------------------------------------------------------------------
-;;** Group Declarations
-;;** define a custom group for .emacs
-;;----------------------------------------------------------------------------
-(defgroup dotemacs nil
-  "Customized configuration group for .emacs."
-  :group 'local)
-
 ;;----------------------------------------------------------------------------
 ;;** system and user information (directories | names etc.,)
 ;;----------------------------------------------------------------------------
 (setq user-full-name "Sampath Singamsetty")
 (setq user-mail-address "Singamsetty.Sampath@gmail.com")
+
+;;----------------------------------------------------------------------------
+;;* Custom group and directory structure
+;; Define  user, package  and  custom directories  for  the packages  and
+;; modules packages/elpa will contain  the standard packages installed by
+;; Emacs  modules dir  will contain  the custom  built and  lang specific
+;; modules vendor dir will contain  3rd party or unavailable packages and
+;; also Define a top-level, vendor and custom files
+;;----------------------------------------------------------------------------
+
+;;** Group Declarations
+;;** define a custom group for .emacs
+(defgroup dotemacs nil
+  "Customized configuration group for .emacs."
+  :group 'local)
 
 ;;** set/get the user's home directory
 (defconst user-home-directory
@@ -128,9 +122,8 @@
       (file-name-as-directory
        (expand-file-name ".emacs.d" user-home-directory)))
 
-;;----------------------------------------------------------------------------
-;; define variables for holding various directory locations
-;;----------------------------------------------------------------------------
+
+;;** define variables for holding various directory locations
 (defcustom sampath-dir user-emacs-directory
   "Junk."
   :group 'dotemacs)
@@ -164,10 +157,14 @@ The elpa directory will be the one which houses all the .el packages."
   "Custom preferences storage."
   :group 'dotemacs)
 
+(defcustom emacs-major-version 28
+  "My custom variable to mask."
+  :group 'dotemacs)
+
 ;;----------------------------------------------------------------------------
 ;;** specify to which directory elpa packages are installed in,
-;;** Defined in the package.el.
-;;(setq package-user-dir (expand-file-name "elpa" aqua-dir))
+;;   default is described in the package.el.
+;;   (setq package-user-dir (expand-file-name "elpa" aqua-dir))
 ;;----------------------------------------------------------------------------
 (setq package-user-dir pkg-dir)
 
@@ -178,9 +175,9 @@ The elpa directory will be the one which houses all the .el packages."
   'ivy
   "The primary engine to use for narrowing and navigation."
   :type '(radio
-          (const :tag "helm" helm)
-          (const :tag "ido" ido)
-          (const :tag "ivy" ivy))
+	  (const :tag "helm" helm)
+	  (const :tag "ido" ido)
+	  (const :tag "ivy" ivy))
   :group 'dotemacs)
 
 ;;----------------------------------------------------------------------------
@@ -190,8 +187,8 @@ The elpa directory will be the one which houses all the .el packages."
   'company
   "The default Auto Completion engine to be used for all prog modes."
   :type '(radio
-          (const :tag "company-mode" company)
-          (const :tag "auto-complete-mode" auto-complete))
+	  (const :tag "company-mode" company)
+	  (const :tag "auto-complete-mode" auto-complete))
   :group 'dotemacs)
 
 ;; Enable/disable yasnippet for company: t or nil
@@ -204,9 +201,9 @@ The elpa directory will be the one which houses all the .el packages."
   'sml
   "The default mode line display to be used for all prog modes."
   :type '(radio
-          (const :tag "airline mode line" airline)
-          (const :tag "spaceline" spaceline)
-          (const :tag "sml mode line" sml))
+	  (const :tag "airline mode line" airline)
+	  (const :tag "spaceline" spaceline)
+	  (const :tag "sml mode line" sml))
   :group 'dotemacs-visual)
 
 ;;----------------------------------------------------------------------------
@@ -216,35 +213,28 @@ The elpa directory will be the one which houses all the .el packages."
   'rainbow-identifiers
   "The default color identifiers mode display to be used for all prog modes."
   :type '(radio
-          (const :tag "rainbow-identifiers-mode" rainbow-identifiers)
-          (const :tag "color-identifiers-mode" color-identifiers))
+	  (const :tag "rainbow-identifiers-mode" rainbow-identifiers)
+	  (const :tag "color-identifiers-mode" color-identifiers))
   :group 'dotemacs)
 
 ;;----------------------------------------------------------------------------
 ;;** core settings configuration
 ;;** load the core .el files
 ;;----------------------------------------------------------------------------
-; (defmacro load-core-config (pkg)
-;   "Load the specified file PKG from the core-dir directory."
-;   (message "loading package %s %s" core-dir pkg)
-;   `(load (file-truename (format (concat core-dir "/%s") ,pkg))))
-
-; ;;**  load core package, custom methods and internal settings for Aquamacs
-; (let ((file-name-handler-alist nil))
-;   (load-core-config 'aqua-internals)
-;   (load-core-config 'aqua-ui)
-;   (load-core-config 'aqua-methods)
-;   (load-core-config 'aqua-customizations)
-;   (load-core-config 'aqua-packages)
-;   (load-core-config 'aqua-packages-init)
-;   (load-core-config 'aqua-init-benchmark))
+;;**  load core package, custom methods and internal settings for Aquamacs
+;; (let ((file-name-handler-alist nil))
+;;   (load-core-config 'aqua-internals)
+;;   (load-core-config 'aqua-ui)
+;;   (load-core-config 'aqua-methods)
+;;   (load-core-config 'aqua-customizations)
+;;   (load-core-config 'aqua-packages)
+;;   (load-core-config 'aqua-packages-init)
+;;   (load-core-config 'aqua-init-benchmark))
 
 (defun load-core (path)
-  "
-  Load all elisp files (*.el) of a directory
-  Usage: (load-dir <path>)
-  Example: (load-dir \"~/.emacs.d/custom\")
-  "
+  "Load all elisp files (*.el) of a directory from the supplied argument PATH.
+Usage: (load-dir <path>)
+Example: (load-dir \"~/.emacs.d/custom\")"
   (mapc (lambda (x) (message x)) (directory-files-recursively core-dir "\\.el$"))
   (mapc #'load (directory-files path t "\\.el$")))
 
@@ -253,9 +243,7 @@ The elpa directory will be the one which houses all the .el packages."
 
 ;;----------------------------------------------------------------------------
 ;;** Load all the individual configurations from the modules dir
-;;**  aqua-package-repos.el will load the package repository settings
-;;(setq aqua-pkg-repos
-;;      (expand-file-name "aqua-package-repos-minimal.el" user-emacs-directory))
+;;   aqua-package-repos.el will load the package repository settings
 ;;----------------------------------------------------------------------------
 (setq aqua-pkg-repos (expand-file-name "aqua-package-repos.el" user-emacs-directory))
 (when (file-exists-p aqua-pkg-repos)
@@ -270,8 +258,8 @@ The elpa directory will be the one which houses all the .el packages."
   (interactive)
   (byte-recompile-directory pkg-dir 0))
 
-;; (byte-recompile-init-files)
-;; (setq load-prefer-newer t) ;; load the newest byte code every time
+;;(byte-recompile-init-files)
+;;(setq load-prefer-newer t) ;; load the newest byte code every time
 
 ;;----------------------------------------------------------------------------
 ;;** customizations.el will store any custom settings made on Emacs
@@ -285,16 +273,16 @@ The elpa directory will be the one which houses all the .el packages."
 ;;----------------------------------------------------------------------------
 (setenv "SHELL" "/bin/zsh")
 
-;; Set PATH correctly from the shell using a utility function to help find
+;; set PATH correctly from the shell using a utility function to help find
 ;; any executable. may be required for the OS X environments
 (defun aqua/set-env-from-shell (env-var)
-  "Set up Emacs' `exec-path' and PATH environment variable to match one used by the user's shell.
+  "Set up Emacs' `exec-path' using ENV-VAR to match one used by user's shell.
 This might be particularly useful for Mac OSX, where GUI apps are not started from a shell."
   (interactive)
   (let ((env-var-from-shell (replace-regexp-in-string
-                             "[ \t\n]*$" ""
-                             (shell-command-to-string
-                              (format "$SHELL --login -i -c 'echo $%s'" env-var)))))
+			     "[ \t\n]*$" ""
+			     (shell-command-to-string
+			      (format "$SHELL --login -i -c 'echo $%s'" env-var)))))
     (setenv env-var env-var-from-shell)))
 
 (defun set-exec-path-from-shellpath ()
@@ -308,38 +296,24 @@ This might be particularly useful for Mac OSX, where GUI apps are not started fr
     (setq eshell-path-env path-from-shell)
     (setq exec-path (split-string path-from-shell path-separator))))
 
-(if window-system (set-exec-path-from-shellpath))
-
-;; == system path variables
-; (dolist (dir '("/sbin"
-;                "/usr/sbin"
-;                "/bin"
-;                "/usr/sbin"
-;                "/usr/local/bin"))
-;   (setenv "PATH" (concat dir ":" (getenv "PATH")))
-;   (add-to-list 'exec-path dir))
-
-;; == environment
-; (setq exec-path-from-shell-arguments '("-l"))
-; (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
-; (setq exec-path (append exec-path '("/usr/local/bin")))
 
 ;;**
 ;;*** for Mac OSX...
-(if (equal window-system 'ns)
-    (push "/Applications/Emacs.app/Contents/MacOS/bin" exec-path))
+;; (if window-system (set-exec-path-from-shellpath))
+;; (if (equal window-system 'ns)
+;;     (push "/Applications/Emacs.app/Contents/MacOS/bin" exec-path))
 
 ;;** Haskell Environment loading
 ;;*** for haskell ghc-mod
 ;;    path setting needed for identifying the ghc-mod package
 ;;    for some reason the same specified in haskell custom configuration
 ;;    is not working, so placing it here
-(let ((my-cabal-path (expand-file-name (concat (getenv "HOME") "/.cabal/bin"))))
-  ;; setup the cabal path and put into classpath
-  (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
-  (add-to-list 'exec-path my-cabal-path))
+;; (let ((my-cabal-path (expand-file-name (concat (getenv "HOME") "/.cabal/bin"))))
+;;   ;; setup the cabal path and put into classpath
+;;   (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
+;;   (add-to-list 'exec-path my-cabal-path))
 
-;;;;;;;;;;;;;;;;;;;;;;; custom init settings completed ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (provide 'init)
 
