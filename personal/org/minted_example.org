@@ -2,9 +2,9 @@
 #+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK") date:t e:t
 #+OPTIONS: email:nil f:t inline:t num:t p:nil pri:nil prop:nil stat:t tags:t
 #+OPTIONS: tasks:t tex:t timestamp:t title:t toc:t todo:t |:t
-#+TITLE: A demo of code snippet exports using Minted package
-#+DESCRIPTION: Walktrough of code snippets through minted
-#+DATE: <2018-08-13 Mon>
+#+TITLE: Walktrough of code snippets through MINTED
+#+DESCRIPTION: A demo of code snippet exports using Minted package
+#+DATE: 2020-08-28 19:59
 #+AUTHOR: Sampath Singamsetty
 #+EMAIL: Singamsetty.Sampath@gmail.com
 #+LANGUAGE: en
@@ -15,12 +15,10 @@
 
 #+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
 
-#+latex_header: \usepackage[utf8x]{inputenc} %% For unicode chars
-#+latex_header: \usepackage[english]{babel}
+#+LATEX_HEADER: \usepackage[utf8x]{inputenc} %% For unicode chars
+#+LATEX_HEADER: \usepackage[english]{babel}
 #+LATEX_HEADER: \usepackage[hyperref,x11names]{xcolor}
-#+LATEX_HEADER: \usepackage[colorlinks=true,urlcolor=SteelBlue4,linkcolor=Firebrick4]{hyperref}
-
-#+LaTeX_HEADER: \usemintedstyle{pastie}
+#+LATEX_HEADER: \usemintedstyle{pastie}
 
 # uses fonts to support Greek letters etc...
 #+LATEX_HEADER: \usepackage{fontspec}
@@ -39,14 +37,14 @@ during pdf exports. The main python package which supports the coloring of
 code blocks using minted is *pygments* which needs to be installed first using
 python package manager /pip/
 
-#+BEGIN_SRC shell
+#+begin_src sh
 pip3 install -U pygments --no-cache
-#+END_SRC
+#+end_src
 
 ** A /cpp/ code block example
 
 #+attr_latex: :options rulecolor=\color{gray!40}
-#+BEGIN_SRC c++ :exports both
+#+begin_src c++ :exports both
 #include <iostream>
 
 int main(int argc, char** argv)
@@ -54,12 +52,26 @@ int main(int argc, char** argv)
      std::cout << "Hello, world." << std::endl;
      return 0;
 }
-#+END_SRC
+#+end_src
+
+** A C code block example
+
+#+HEADERS: :includes <math.h> :flags -lm
+#+HEADERS: :var x=1.0 :var y=4.0 :var z=10.0
+#+attr_latex: optios rulecolor=\color{blue!40}
+#+begin_src c :exports both
+double pi = 4*atan(1);
+double r, theta, phi;
+r = sqrt(x*x+y*y+z*z);
+theta = acos(z/r) * 180.0/pi;
+phi = atan2(y,x) * 180.0/pi;
+printf("%f %f %f", r, theta, phi);
+#+end_src
 
 ** A simple /python/ code block example
 
 #+attr_latex: :options rulecolor=\color{gray!40}
-#+begin_src python
+#+begin_src python :exports both
 #!/usr/bin/env python3
 
 def example_function():
@@ -73,11 +85,28 @@ b = "I am python code"
 ** A simple /elisp/ code block example
 
 #+attr_latex: :options rulecolor=\color{gray!40}
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun org-xor (a b)
      "Exclusive or."
      (if a (not b) b))
-#+END_SRC
+#+end_src
+
+** A simple javascript example
+
+#+attr_latex: :options rulecolor=\color{purple!40}
+#+begin_src js
+(function(root) {
+    root.loadScript = function(url) {
+        let script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = url;
+        document.head.appendChild(script);
+    }
+}(window));
+
+loadScript('https://cdn.plot.ly/plotly-latest.min.js');
+#+end_src
+
 
 ** An example of a simple post request using the /curl/ command.
 
@@ -101,7 +130,7 @@ curl -k https://mysimpletestservice.cloud.com/api/oauth/token \
 ** A simple /python/ code block for demonstration
 
 #+attr_latex: :options rulecolor=\color{gray!40}
-#+BEGIN_SRC python
+#+begin_src python
 # example with numpy
 import numpy as np
 
@@ -111,7 +140,7 @@ alpha = np.array([-1.0, -0.5])
 species = ['H2', 'O2']
 print ''.join(['{0:4s}{1:1.2f}\n'.format(sp,x) for sp,x in zip(species, - M0 / alpha)])
 print 'The maximum extent is {0} moles.'.format(min(- M0 / alpha))
-#+END_SRC
+#+end_src
 
 ** An example of a diagram generated with /ditaa/
 
@@ -126,6 +155,18 @@ print 'The maximum extent is {0} moles.'.format(min(- M0 / alpha))
 |    |cPNK|
 |    |    |
 +----+----+
+#+end_src
+
+
+** An example Sequence Diagram using plantuml
+
+#+CAPTION: This is a plantuml sequence diagram example
+#+LABEL: fig:sequence
+#+ATTR_LaTeX: width=8cm,angle=90
+#+begin_src plantuml :file sequence_diagram.png
+skinparam monochrome true
+ Foo -> Bar: synchronous call
+ Foo ->> Bar: asynchronous call
 #+end_src
 
 ** A Simple code block showing the /erlang/ syntax highlighting
@@ -154,5 +195,178 @@ print 'The maximum extent is {0} moles.'.format(min(- M0 / alpha))
 
   codeswitch(Sum) -> loop(Sum).
 #+end_src
+
+
+** Diagrams for the hg branching strategy
+
+*** Base workflow
+
+#+begin_src ditaa :file hgbranchingoverview.png
+
+                               |                                 |
+                   programmers | maintainers         maintainers | users
+                               |                                 |
+                          +----+----+                        +---+----+
+  /--------------\        |         |                        |        |
+  |regular commit+----=---+ default |                        | stable |
+  \--------------/        |         |                        |        |
+                          |         |                        |        |
+  /--------------\        |         |                        |        |
+  |regular commit+----=---+         |                        |        |
+  \--------------/        |         |                        |        |
+                          |         +-------release merge--->|        |
+   ...                    |         |                        |        |
+                          |         |                        |        |
+                          |         |        /-----------\   |        |
+                          |         |<-merge-+release tag+-=-+        |
+                          |         |        \-----------/   |  cBLU  |
+                          |         |                        |        |
+     +----------------+   |         |                        |        |
+     |                |<--+         |                        |        |
+     | feature branch |   |  cGRE   |                        |        |
+     |            {d} |   |     {d} |                        |    {d} |
+     +----+------+----+   |         |        /-----------\   |        |
+          :      |        |         |<-merge-+hotfix cRED+-=-+        |
+          |      |        |         |        \-----------/   |        |
+          |      |        |         |                        |        |
+          |      +-merge->|         |                        |        |
+          |               |         |                        |        |
+          |               +---------+                        +--------+
+          |
+  /-------+------\
+  |regular commit|                           +--------------------+
+  \--------------/                           |  Glossary          |
+                                             |                    |
+   ...                                       | --- branch change  |
+                                             | -=- stay on branch |
+                                             +--------------------+
+#+end_src
+
+#+RESULTS:
+[[file:hgbranchingoverview.png]]
+
+*** Maintain several releases side-by-side
+
+#+begin_src ditaa :file hgbranchingmaintain.png
+
+                                |                                         |
+                    programmers | maintainers                 maintainers | users
+                                |                                         |
+                           +----+----+                                +---+----+
+  /--------------\         |         |                                |        |
+  |regular commit+----=----+ default |                                | stable |
+  \--------------/         |         |                                |        |
+                           |         |                                |        |
+  /--------------\         |         |                                |        |
+  |regular commit+----=----+         |                                |        |
+  \--------------/         |         |                                |        |
+                           |         +------------release merge------>|        |
+   ...                     |         |                                |        |
+                           |         |                                |        |
+                           |         |             /-----------\      |        |
+                           |         |<-merge------+release tag+-=----|        |
+                           |         |             \-----------/      |        |
+                           |         |                                |        |
+                           |         |                                |        |
+                           |         |    /----------------------\    |        |
+                           |         |    |maintained release 1.x+-=--|        |
+                           |         |    \-----------+----------/    |  cBLU  |
+     +----------------+    |         |                |               |        |
+     |                |<---+         |                :               |        |
+     | feature branch |    |  cGRE   |                v               |        |
+     |            {d} |    |     {d} |        /-----------\           |    {d} |
+     +----+------+----+    |         |        |hotfix cRED|           |        |
+          :      |         |         |        \-------+---/           |        |
+          |      |         |         |                |               |        |
+          |      |         |         |                :               |        |
+          |      |         |         |                v               |        |
+          |      |         |         |     /-------------------\      |        |
+          |      |         |         |     |release tag 1.(x+1)|      |        |
+          |      |         |         |     \----------+--------/      |        |
+          |      |         |         |                |               |        |
+          |      |         |         |              merge             |        |
+          |      |         |         |                :               |        |
+          |      |         |         |                v               |        |
+          |      |         |         |    /----------------------\    |        |
+          |      |         |         |    |maintained release 2.y|    |        |
+          |      |         |         |    \-----------+----------/    |  cBLU  |
+          |      |         |         |                |               |        |
+          |      |         |         |                :               |        |
+          |      |         |         |                v               |        |
+          |      |         |         | /-------------------\          |        |
+          |      |         |         | |release tag 2.(y+1)+-=-merge->|        |
+          |      |         |         | \-------------------/          |        |
+          |      |         |         |               ...              |        |
+          |      |         |         |                                |        |
+          |      +-merge-->|         |<--------merge hotfix-----------+        |
+          |                |         |                                |        |
+          |                +---------+                                +--------+
+          |
+  /-------+------\
+  |regular commit|                           +--------------------+
+  \--------------/                           |  Glossary          |
+                                             |                    |
+   ...                                       | --- branch change  |
+                                             | -=- stay on branch |
+                                             +--------------------+
+#+end_src
+
+#+RESULTS:
+[[file:hgbranchingmaintain.png]]
+
+*** Graft releases
+
+#+begin_src ditaa :file hgbranchinggraft.png
+
+                               |                                 |
+                   programmers | maintainers         maintainers | users
+                               |                                 |
+                          +----+----+                        +---+----+
+  /--------------\        |         |                        |        |
+  |regular commit+----=---+ default |   +----------------+   | stable |
+  \--------------/        |         |   |                |   |        |
+                          |         +-->+  nextrelease   |   |        |
+  /--------------\        |         |   |  c1AB      {d} |   |        |
+  |regular commit+----=---+         |   +---+------+-----+   |        |
+  \--------------/        |         |       |      |         |        |
+   ...                    |         |       :      |         |        |
+                          |         |       |      |         |        |
+                          |         |   /---+---\  |         |        |
+                          |         +-->+ graft |  |         |        |
+                          |         |   \-------/  |         |        |
+                          |         |    ...       |         |        |
+                          |         |              v         |        |
+                          |         |                        |        |
+                          |         |        release merge-->|        |
+                          |         |                        |        |
+                          |         |                        |        |
+                          |         |        /-----------\   |        |
+                          |         |<-merge-+release tag+-=-+        |
+                          |         |        \-----------/   |  cBLU  |
+                          |         |                        |        |
+     +----------------+   |         |                        |        |
+     |                |<--+         |                        |        |
+     | feature branch |   |  cGRE   |                        |        |
+     |            {d} |   |     {d} |                        |    {d} |
+     +----+------+----+   |         |        /-----------\   |        |
+          :      |        |         |<-merge-+hotfix cRED+-=-+        |
+          |      |        |         |        \-----------/   |        |
+          |      |        |         |                        |        |
+          |      +-merge->|         |                        |        |
+          |               |         |                        |        |
+          |               +---------+                        +--------+
+          |
+  /-------+------\
+  |regular commit|                           +--------------------+
+  \--------------/                           |  Glossary          |
+                                             |                    |
+   ...                                       | --- branch change  |
+                                             | -=- stay on branch |
+                                             +--------------------+
+#+end_src
+
+#+RESULTS:
+[[file:hgbranchinggraft.png]]
+
 
 Thats all for now
