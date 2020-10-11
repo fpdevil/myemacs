@@ -53,3 +53,5 @@ backups/
 
 # ignore semanticdb data
 semanticdb/
+
+vendor/emacs-clang-complete-async
