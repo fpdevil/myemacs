@@ -30,8 +30,8 @@
 ;;** [FlyCheck] - Real Time syntax checking support through rebar3
 ;;-------------------------------------------------------------------
 (after "flycheck"
-  (require 'flycheck-rebar3)
-  (flycheck-rebar3-setup)
+  ;; (require 'flycheck-rebar3)
+  ;; (flycheck-rebar3-setup)
 
   (flycheck-define-checker erlang
     "awesome erlang checker."
