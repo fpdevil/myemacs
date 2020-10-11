@@ -27,7 +27,8 @@
     (setq ivy-use-virtual-buffers t)
     (setq ivy-use-selectable-prompt t)
     (setq ivy-display-style 'fancy)
-    (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+    ;; default pattern ignores order.
+    (setf (cdr (assoc t ivy-re-builders-alist)) 'ivy--regex-ignore-order)
     (setq ivy-count-format "[%d/%d] ")
     (setq ivy-initial-inputs-alist nil)
     (define-prefix-command 'counsel-prefix-map)
