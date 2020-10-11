@@ -12,24 +12,35 @@
 ;;; Code:
 ;;;
 
-(require-package 'company)
-(require-package 'ensime)               ; ensime loads scala-mode2 internally
-(require-package 'sbt-mode)             ; interact with scala and sbt projects
+(use-package scala-mode
+  :mode "\\.s\\(cala\\|bt\\)$")
+
+;; interact with scala and sbt projects
+(use-package sbt-mode
+  :commands sbt-start sbt-command
+  :config
+  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+  ;; allows using SPACE when in the minibuffer
+  (substitute-key-definition
+   'minibuffer-complete-word
+   'self-insert-command
+   minibuffer-local-completion-map)
+   ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
+   (setq sbt:program-options '("-Dsbt.supershell=false"))
+)
+
+;; Optional - enable lsp-mode automatically in scala files
+(add-hook 'scala-mode-hook #'lsp)
+(add-hook 'lsp-mode-hook #'lsp-lens-mode)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ENhanced Scala Interaction Mode for Emacs (for scala development)        ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-to-list 'auto-mode-alist '("\\.scala$" . scala-mode))
-(setq ensime-startup-snapshot-notification nil)
-(setq ensime-completion-style 'company
-      ensime-graphical-tooltips t
-      ensime-auto-generate-config t)
+;; Add metals backend for lsp-mode
+(use-package lsp-metals)
 
-(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
-
-(setq ensime-sbt-command (executable-find "sbt")
-      sbt:program-name (executable-find "sbt"))
+;; Use the Debug Adapter Protocol for running tests and debugging
+(use-package posframe
+  ;; Posframe is a pop-up tool that must be manually installed for dap-mode
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; scala pretty fonts                                                       ;;
@@ -58,56 +69,6 @@
     ("Unit"      . ?∅)
   ))
 
-(add-hook 'scala-mode-hook
-          (lambda ()
-            (ensime-scala-mode-hook)
-            (setq prettify-symbols-alist scala-prettify-symbols)
-            (prettify-symbols-mode)
-            (define-key scala-mode-map (kbd "C-x M-e") 'ensime-fully-reload)))
-
-(setq ensime-sem-high-faces
-      '(
-        (implicitConversion nil)
-        (var                . (:foreground "#ff2222"))
-        (val                . (:foreground "#dddddd"))
-        (varField           . (:foreground "#ff3333"))
-        (valField           . (:foreground "#dddddd"))
-        (functionCall       . (:foreground "#dc9157"))
-        (param              . (:foreground "#ffffff"))
-        (object             . (:foreground "#D884E3"))
-        (class              . (:foreground "green"))
-        (trait              . (:foreground "#009933")) ;; "#084EA8"))
-        (operator           . (:foreground "#cc7832"))
-        (object             . (:foreground "#6897bb" :slant italic))
-        (package            . (:foreground "yellow"))
-        (implicitConversion . (:underline (:style wave :color "blue")))
-        (implicitParams     . (:underline (:style wave :color "blue")))
-        (deprecated         . (:strike-through "#a9b7c6"))
-        (implicitParams nil))
-      ;; ensime-completion-style 'company
-      ;; ensime-sem-high-enabled-p nil         ;; disable semantic highlighting
-      ensime-tooltip-hints t                   ;; disable type-inspecting tooltips
-      ensime-tooltip-type-hints t              ;; disable typeinspecting tooltips
-      )
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Ensime                                                                   ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun ensime-auto-start ()
-  "Start Ensime."
-  (interactive)
-  (unless (get-buffer-process "*ENSIME*")
-    (ensime)))
-
-;; if auto starting of ensime is needed
-;; (add-hook 'ensime-mode-hook #'ensime-auto-start)
-
-(defun ensime-fully-reload ()
-  "Reload Ensime."
-  (interactive)
-  (ensime-shutdown)
-  (ensime))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; scala and play                                                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -135,7 +96,6 @@
           (lambda ()
             (add-hook 'after-save-hook 'compile-sbt-project)))
 
-;;------------------------------------------------------------------------------
 
 (provide 'scala-config)
 
