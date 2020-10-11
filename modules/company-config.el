@@ -110,17 +110,16 @@
   ;; unset M-h key
   ;; (global-set-key (kbd "M-h") nil)
   (require 'company-quickhelp)
+  ;;(add-hook 'after-init-hook 'company-quickhelp-mode)
+  ;;'(define-key company-active-map (kbd "M-h") #'company-quickhelp-manual-begin)
+  (company-quickhelp-mode 1)
   (setq company-quickhelp-use-propertized-text t
         company-quickhelp-local-mode nil ;; pop's an annoying frame for help
         company-frontends (delq 'company-echo-metadata-frontend company-frontends)
         company-quickhelp-color-background "Purple"
         company-quickhelp-color-foreground "Yellow"
         company-quickhelp-delay 0.1
-        company-quickhelp-max-lines nil
-        )
-  ;;'(define-key company-active-map (kbd "M-h") #'company-quickhelp-manual-begin)
-  ;;(add-hook 'after-init-hook 'company-quickhelp-mode)
-  (company-quickhelp-mode 1)
+        company-quickhelp-max-lines nil)
 
   ;;** port of ac-source-dictionary to company-mode
   ;;   plus annotation and documentation support
