@@ -110,17 +110,16 @@
   ;;; Start tern-mode automatically when starting js mode
   (add-hook 'js-mode-hook (lambda () (tern-mode t))))
 
-;; (add-hook 'after-init-hook 'ac-load-tern)
+(add-hook 'after-init-hook 'ac-load-tern)
 
-(defun company-load-tern ()
-  (use-package company-tern
-    :commands company-tern
-    :hook (tern-mode . (lambda ()
-      (setq-local company-backends '(company-tern company-capf)))))
-  ;;; Start tern-mode automatically when starting js mode
-  (add-hook 'js-mode-hook (lambda () (tern-mode t))))
-
-(add-hook 'after-init-hook 'company-load-tern)
+;; (defun company-load-tern ()
+;;   (use-package company-tern
+;;     :commands company-tern
+;;     :hook (tern-mode . (lambda ()
+;;       (setq-local company-backends '(company-tern company-capf)))))
+;;   ;;; Start tern-mode automatically when starting js mode
+;;   (add-hook 'js-mode-hook (lambda () (tern-mode t))))
+;; (add-hook 'after-init-hook 'company-load-tern)
 
 ;;------------------------------------------------------------------------------
 ;;** Force restart of tern in new projects (M-x delete-tern-process)
