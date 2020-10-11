@@ -89,6 +89,13 @@
      (pos-tip-show (apply 'format format-string args))))
  ;; (setq eldoc-message-function #'aqua/eldoc-display-message)
 
+ ;; display eldoc documentation inline using a buffer text overlay
+ (use-package eldoc-overlay
+  :ensure t
+  :init (eldoc-overlay-mode 1)
+  :config
+  (setq eldoc-overlay-backend 'quick-peek))
+
  ;;--------------------------------------------------------------------------
  ;;** Show tooltip with function documentation at point
  ;;** by default clippy uses pos-tip - here we are using popup
@@ -98,13 +105,34 @@
    (setq clippy-tip-show-function #'clippy-pos-tip-show))
 
  ;;--------------------------------------------------------------------------
- ;;** buffer mode
+ ;;** moving text
+ ;; Bubble lines up and down: http://www.emacswiki.org/emacs/MoveLine
  ;;--------------------------------------------------------------------------
- (require 'buffer-move)
- (global-set-key (kbd "<S-s-up>")     'buf-move-up)
- (global-set-key (kbd "<S-s-down>")   'buf-move-down)
- (global-set-key (kbd "<S-s-left>")   'buf-move-left)
- (global-set-key (kbd "<S-s-right>")  'buf-move-right)
+ (defun move-line (n)
+   "Move the current line up or down by N lines."
+   (interactive "p")
+   (setq col (current-column))
+   (beginning-of-line) (setq start (point))
+   (end-of-line) (forward-char) (setq end (point))
+   (let ((line-text (delete-and-extract-region start end)))
+     (forward-line n)
+     (insert line-text)
+     ;; restore point to original column in moved line
+     (forward-line -1)
+     (forward-char col)))
+
+ (defun move-line-up (n)
+   "Move the current line up by N lines."
+   (interactive "p")
+   (move-line (if (null n) -1 (- n))))
+
+ (defun move-line-down (n)
+   "Move the current line down by N lines."
+   (interactive "p")
+   (move-line (if (null n) 1 n)))
+
+ (global-set-key [\M-\S-up] 'move-line-up)
+ (global-set-key [\M-\S-down] 'move-line-down)
 
  ;;--------------------------------------------------------------------------
  ;;** rotate the layout of emacs
@@ -129,7 +157,6 @@
  ;; (if (fboundp #'display-line-numbers-mode)
  ;;     (add-hook 'find-file-hook #'display-line-numbers-mode)
  ;;   (add-hook 'find-file-hook 'linum-mode))
-
 
  ;; -- highlight the current line
  ;; awesome in the terminal version of emacs though, so we don’t use that
@@ -168,13 +195,14 @@
  ;;--------------------------------------------------------------------------
  ;; indentation highlighting
  ;;--------------------------------------------------------------------------
-(use-package highlight-indent-guides
-  :defer t
-  :hook ((prog-mode . highlight-indent-guides-mode))
-  :diminish highlight-indent-guides-mode
-  :config
-  (setq highlight-indent-guides-method 'character
-        highlight-indent-guides-responsive 'top))
+ (use-package highlight-indent-guides
+   :defer t
+   :disabled t
+   :hook ((prog-mode . highlight-indent-guides-mode))
+   :diminish highlight-indent-guides-mode
+   :config
+   (setq highlight-indent-guides-method 'character
+         highlight-indent-guides-responsive 'top))
 
 
  ;;--------------------------------------------------------------------------
@@ -296,7 +324,8 @@
  ;;** auto-compile Emacs lisp libraries
  ;;--------------------------------------------------------------------------
  (use-package auto-compile
-   :demand t
+   ; :demand t
+   :defer t
    :config
    (auto-compile-on-load-mode)
    (auto-compile-on-save-mode)
@@ -314,7 +343,7 @@
  (use-package vi-tilde-fringe
    :defer t
    :init
-   (global-vi-tilde-fringe-mode))
+   (add-hook 'prog-mode-hook 'vi-tilde-fringe-mode))
 
  ;;--------------------------------------------------------------------------
  ;; restart emacs as needed
@@ -349,50 +378,10 @@
  (add-hook 'python-mode-hook
            (lambda () (define-key python-mode-map (kbd "C-c >") 'indent-tools-hydra/body)))
 
- ;;--------------------------------------------------------------------------
- ;;** Move Text/Regio
- ;;--------------------------------------------------------------------------
- (defun move-text-internal (arg)
-   (cond
-    ((and mark-active transient-mark-mode)
-     (if (> (point) (mark))
-            (exchange-point-and-mark))
-     (let ((column (current-column))
-              (text (delete-and-extract-region (point) (mark))))
-       (forward-line arg)
-       (move-to-column column t)
-       (set-mark (point))
-       (insert text)
-       (exchange-point-and-mark)
-       (setq deactivate-mark nil)))
-    (t
-     (beginning-of-line)
-     (when (or (> arg 0) (not (bobp)))
-       (forward-line)
-       (when (or (< arg 0) (not (eobp)))
-            (transpose-lines arg))
-       (forward-line -1)))))
-
- (defun move-text-down (arg)
-   "Move region (transient-mark-mode active) or current line
-  arg lines down."
-   (interactive "*p")
-   (move-text-internal arg))
-
- (defun move-text-up (arg)
-   "Move region (transient-mark-mode active) or current line
-  arg lines up."
-   (interactive "*p")
-   (move-text-internal (- arg)))
-
- (global-set-key [\M-\S-up] 'move-text-up)
- (global-set-key [\M-\S-down] 'move-text-down)
-
  (require 'drag-stuff)
  (drag-stuff-mode t)
 
  )
-
 
 
 (provide 'utils-config)
