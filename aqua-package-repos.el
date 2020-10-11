@@ -52,7 +52,7 @@
   (require 'bootstrap-config)                     ; initial settings and some miscellaneous stuff
   (require 'exec-path-config)                     ; setup $PATH
   (require 'utils-config)                         ; utilities like window configurations, imenu-list etc.
-  
+
   (require 'helm-config)                          ; emacs helm fuzzy
   (require 'ido-config)                           ; emacs ido navigation
   (require 'ivy-config)                           ; emacs ivy navigation
@@ -69,7 +69,7 @@
   (require 'ibuffer-config)                       ; iBuffer
   (require 'undo-tree-config)                     ; manage undo history
   (require 'which-func-config)                    ; display current function name under scope
-  
+
   (require 'dired-config)                         ; for dired*
   (require 'bookmarks-config)                     ; manage bookmarks
   (require 'indent-config)                        ; manage indentation
