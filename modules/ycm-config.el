@@ -25,29 +25,28 @@
   (require 'ycmd-eldoc)       ; adds eldoc support for ycmd-mode buffers
   (require 'company-ycmd)
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;;     YCMD Configuration for Emacs                                            ;;
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;     YCMD Configuration for Emacs
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (let ((ycmd-dir (expand-file-name "private/youcompleteme/" user-emacs-directory)))
     (if (not (file-exists-p ycmd-dir))
         (progn
           (message "Cloning and building YouCompleteMe ...")
           (setenv "EXTRA_CMAKE_ARGS"
-                  "-DPATH_TO_LLVM_ROOT=/opt/software/clang+llvm-9.0.0-x86_64-darwin-apple")
+                  "-DPATH_TO_LLVM_ROOT=/opt/software/clang+llvm-10.0.0-x86_64-apple-darwin")
           (shell-command (concat "git clone --recursive "
-                                 "https://github.com/Valloric/ycmd.git "
-                                 ycmd-dir
-                                 " && cd "
-                                 ycmd-dir
-                                 " && python3 build.py "
-                                 "--clang-completer "
-                                 "--system-libclang "
-                                 "--gocode-completer "
-                                 "--tern-completer"))
+                                 "https://github.com/ycm-core/YouCompleteMe " ycmd-dir
+                                 " && cd " ycmd-dir
+                                 " && python3 install.py "
+                                 "--clangd-completer "
+                                 "--go-completer "
+                                 "--ts-completer "
+                                 "--rust-completer"))
           (message "ycmd building/compilation done..."))
       (message "YouCompleteMe already exists; not cloning"))
     (set-variable 'ycmd-server-command
-                  (list "/usr/local/bin/python3" (concat ycmd-dir "ycmd/"))))
+                  (list "/usr/local/bin/python3"
+                        (concat ycmd-dir "/third_party/ycmd/ycmd"))))
 
   ;; for project specific configurations under "~/sw/programming/python/*"
   ;; (set-variable 'ycmd-extra-conf-whitelist '("~/sw/programming/python/*"))
@@ -73,6 +72,8 @@
   (set-variable 'ycmd-force-semantic-completion t)
   ;; time for re-parsing the file contents (default 0.5)
   (set-variable 'ycmd-idle-change-delay 0.1)
+  ;; for rust
+  (set-variable 'ycmd-rust-src-path "~/rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/src/rust/src")
 
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -122,7 +123,6 @@
 
   )
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'ycm-config)
 
 ;; Local Variables:
