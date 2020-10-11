@@ -96,15 +96,11 @@
 ;; == renumber the footnotes when new footnotes are inserted
 ;;------------------------------------------------------------------------------
 (setq org-footnote-auto-adjust t)
-
 ;; eye candies, indentation and font coloring in code blocks
 (setq org-startup-indented t)
-
 ;; display the wrapped lines instead of truncated lines
 (setq truncate-lines nil)
 (setq word-wrap t)
-
-(setq org-indent-indentation-per-level 2)
 (setq org-src-preserve-indentation t)        ;; no extra indentation in the source blocks
 (setq org-src-fontify-natively t)
 (setq org-fontify-done-headline t)
@@ -114,15 +110,11 @@
 (setq org-confirm-babel-evaluate nil)        ;; coding without prompt
 (setq org-src-window-setup 'current-window)
 (setq org-hide-leading-stars t)
-(setq org-alphabetical-lists t)
 (setq org-pretty-entities t)                 ;; have \alpha, \to and others display as utf8
-(setq org-confirm-elisp-link-function nil)
-(setq org-confirm-shell-link-function nil)
+(setq org-odd-levels-only t)
 (setq org-hide-emphasis-markers t)           ;; hide the *,=, or / markers
 (setq org-export-with-smart-quotes t)        ;; toggle smart quotes
-
-;; faster TODO selection
-(setq org-use-fast-todo-selection t)
+(setq org-use-fast-todo-selection t)         ;; faster TODO selection
 ;; change a state using C-c C-t KEY where KEY is one of org-todo-keywords
 (setq org-treat-S-cursor-todo-selection-as-state-change nil)
 
@@ -131,20 +123,14 @@
 ;;  turn on the visual-line-mode for org-mode only (install adaptive-wrap)
 ;;------------------------------------------------------------------------------
 (require-package 'adaptive-wrap)
-(add-hook 'org-mode-hook 'visual-line-mode)
 (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
 (add-hook 'org-mode-hook
           (lambda ()
             ;; make the lines in the buffer wrap around the edges of the screen.
             ;; to press C-c q  or fill-paragraph ever again!
-            ;; (visual-line-mode 1)
+            (visual-line-mode 1)
             (org-indent-mode t))
           t)
-
-;; using the org-indent package
-(use-package org-indent
-  :ensure nil
-  :diminish)
 
 ;;------------------------------------------------------------------------------
 ;;  auto complete sources for org
@@ -179,8 +165,10 @@
             "lisp"
             "ditaa"
             "haskell"
+            ;;"scala"
             "latex"
             "org"
+            "go"
             "erlang")))
      (list (ido-completing-read "Source code type: " src-code-types))))
   (progn
@@ -203,14 +191,11 @@
              ;; turn on flyspell-mode by default
              (flyspell-mode 1)
              ;; C-TAB for expanding
-             (local-set-key (kbd "C-<tab>")
-                            'yas/expand-from-trigger-key)
+             (local-set-key (kbd "C-<tab>") 'yas/expand-from-trigger-key)
              ;; keybinding for editing source code blocks
-             (local-set-key (kbd "C-c s e")
-                            'org-edit-src-code)
+             (local-set-key (kbd "C-c s e") 'org-edit-src-code)
              ;; keybinding for inserting code blocks
-             (local-set-key (kbd "C-c s i")
-                            'org-insert-src-block)))
+             (local-set-key (kbd "C-c s i") 'org-insert-src-block)))
 
 ;;------------------------------------------------------------------------------
 ;; spell check in org-mode -  making ispell work with the org-mode
@@ -242,7 +227,6 @@
 (setq org-agenda-todo-ignore-with-date t)
 (setq org-agenda-start-on-weekday nil) ;; start on current day
 (setq org-upcoming-deadline '(:foreground "blue" :weight bold))
-
 ;; use timestamps in date-trees. for the journal
 (setq org-datetree-add-timestamp 'active)
 
@@ -333,11 +317,10 @@
         ("BONUS"    . (:foreground "DarkGoldenRod1" :weight bold))
         ("noexport" . (:foreground "Red" :weight bold))))
 
-
 (setq org-outline-path-complete-in-steps nil)
-(setq org-completion-use-ido t)
 
 (defun /org/org-mode-hook ()
+  "Truncate long lines and show trailing whitespaces."
   (toggle-truncate-lines t)
   (setq show-trailing-whitespace t))
 (add-hook 'org-mode-hook #'/org/org-mode-hook)
@@ -354,28 +337,25 @@
 ;;------------------------------------------------------------------------------
 ;; (setq org-ellipsis "⤵")               ;; this will change the ellipsis face
 
-;;  org bullets for markdown
 ;;  use org-bullets-mode for utf8 symbols as org bullets
 ;;  select, do [M-x eval-region]. The *s will be replaced with utf-8 bullets
 ;;  next time you open an org file
-(require 'org-bullets)
-(add-hook 'org-mode-hook #'org-bullets-mode)
+
+(require 'org-bullets)              ;  org bullets for markdown
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode)))
+(setq org-bullets-bullet-list '("◉" "☯" "○" "☯" "✸" "☯" "✿" "☯" "✜" "☯" "◆" "☯" "▶"))
 ;;(setq org-bullets-bullet-list '("◉" "○" "✸" "◇" "▻"))
 
-;; automatically change list bullets
+;; automatically change list bullets (https://orgmode.org/manual/Plain-lists.html)
+;; If you  find that using a  different bullet for a  sub-list (than that
+;; used for  the current list-level) improves  readability, customize the
+;; variable org-list-demote-modify-bullet
 (setq org-list-demote-modify-bullet
-      (quote (("+" . "-")
-             (("*" . "-"))
-             ("1." . "-")
-             ("1)" . "-")
-             ("A)" . "-")
-             ("B)" . "-")
-             ("a)" . "-")
-             ("b)" . "-")
-             ("A." . "-")
-             ("B." . "-")
-             ("a." . "-")
-             ("b." . "-"))))
+      '(("+" . "-")
+        ("-" . "+")
+        ("1." . "-")
+        ("1)" . "a)")
+        ("*" . "+")))
 
 ;;------------------------------------------------------------------------------
 ;;  some custom settings and todo configuration from pragmatic emacs
@@ -468,7 +448,6 @@
   (require 'ob-latex)
   (require 'ob-haskell)
   (require 'ob-elixir)
-  (require 'ob-scala)
   (require 'ob-python)
   (require 'ob-ipython)
   (require 'ob-C)
@@ -479,12 +458,12 @@
   (require 'ob-sed)
   (require 'ob-css)
   (require 'ob-js)
-  ;; do not export code on export by default
-  (setq org-export-babel-evaluate nil)
+  (require 'ob-go)
+  ;;(require 'ob-scala)
+  ;; do not export code on export by default (obsolete)
+  ;; (setq org-export-babel-evaluate nil)
   ;; increase imenu depth to include third level headings
   (setq org-imenu-depth 3)
-  ;; set python3 as default
-  (setq org-babel-python-command "python3")
   ;; Out of the box Emacs supports js with js-mode.
   ;; define language javascript to use js2-mode
   (add-to-list 'org-src-lang-modes '("javascript" . js2))
@@ -534,11 +513,12 @@
     python
     ipython
     restclient ; ob-restclient
-    scala
+    ;;scala
     js
     java
     shell
     sql
+    go
     dot)
   "A list of org-babel languages to load.")
 
@@ -621,6 +601,7 @@
       (setq ad-return-value (replace-regexp-in-string "\\(^Pasting code; enter '--' alone on the line to stop or use Ctrl-D\.[\r\n]:*\\)" "" ad-return-value))))
 
 (defun org-babel-tangle-and-execute ()
+  "Handle src code block execution handling."
   (interactive)
   (org-babel-tangle)
   (org-babel-execute-buffer)
@@ -636,10 +617,9 @@
     (save-excursion
       (unless (org-before-first-heading-p) (org-narrow-to-subtree))
       (org-element-map (org-element-parse-buffer) 'table
-	(lambda (tbl)
-	  (goto-char (org-element-property :post-affiliated tbl))
-	  (org-table-align))))))
-
+        (lambda (tbl)
+          (goto-char (org-element-property :post-affiliated tbl))
+          (org-table-align))))))
 (add-hook 'org-babel-after-execute-hook 'org-align-result-table)
 
 ;;------------------------------------------------------------------------------
@@ -657,9 +637,7 @@
 ;; if org-latex-listings: nil is used then code blocks will be exported
 ;; using the default verbatim with no additional dependencies
 ;;------------------------------------------------------------------------------
-;;(setq org-latex-listings t)
 (setq org-latex-listings 'minted)      ;; using minted style
-
 (add-to-list 'org-latex-packages-alist '("" "minted"))
 (add-to-list 'org-latex-packages-alist '("" "listings"))
 (add-to-list 'org-latex-packages-alist '("" "color"))
@@ -676,7 +654,6 @@
         ("mathescape" "true")
         ("linenos" "")
         ("breaklines" "true")
-        ;;("obeytabs" "true")
         ("breakanywhere" "true")))
 
 ;;------------------------------------------------------------------------------
@@ -733,21 +710,19 @@
                   ("\\subsection{%s}" . "\\subsection*{%s}")
                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
 
-
-
   ;; template for thesis
-  (add-to-list 'org-latex-classes '("thesis" "\\documentclass{thesis}"
+  (add-to-list 'org-latex-classes '("thesis"
+                                    "\\documentclass{thesis}"
                                     ("\\chapter{%s}" . "\\chapter*{%s}")
                                     ("\\section{%s}" . "\\section*{%s}")
                                     ("\\subsection{%s}" . "\\subsection*{%s}")
                                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
 
-
   ;; template for documentation
   (add-to-list 'org-latex-classes
                '("documentation"
                  "\\NeedsTeXFormat{LaTeX2e}
-                  \\documentclass[a4paper,10pt,twoside,openright,numbers=noenddot,headings=normal]{scrbook}
+                 \\documentclass[a4paper,10pt,twoside,openright,numbers=noenddot,headings=normal]{scrbook}
                   [NO-DEFAULT-PACKAGES]
 
                   % default packages (without inputenc, because we use xetex)
@@ -830,10 +805,11 @@
   ;; use #+Latex_Class: copernicus_discussions
   ;; #+LaTeX_CLASS_OPTIONS: [acpd, hvmath, online]
   (add-to-list 'org-latex-classes
-               `("copernicus_discussions" "\\documentclass{copernicus_discussions}
-                                          [NO-DEFAULT-PACKAGES]
-                                          [PACKAGES]
-                                          [EXTRA]"
+               `("copernicus_discussions"
+                 "\\documentclass{copernicus_discussions}
+               [NO-DEFAULT-PACKAGES]
+               [PACKAGES]
+               [EXTRA]"
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" "\\newpage" "\\subsection*{%s}" "\\newpage")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -845,8 +821,6 @@
                  "\\documentclass[12pt,a4paper]{article}
                 \\usepackage[T1]{fontenc}
                 \\usepackage{fontspec}
-                \\usepackage{xeCJK}
-                \\setCJKmainfont{Hiragino Sans GB W3}
                 \\XeTeXlinebreaklocale \"zh\"
                 \\XeTeXlinebreakskip = 0pt plus 1pt
                 \\usepackage{graphicx}
@@ -862,8 +836,8 @@
                 \\pagestyle{plain}
                 \\linespread{1.5}
                 \\title{}
-                      [NO-DEFAULT-PACKAGES]
-                      [NO-PACKAGES]"
+                [NO-DEFAULT-PACKAGES]
+                [NO-PACKAGES]"
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -898,35 +872,44 @@
 (setq org-latex-compiler "xelatex")
 (setq org-latex-pdf-process
       '(
-	"xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-    "bibtex %b"
-	"xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	"xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	;;"lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	;;"lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	;;"lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	;;"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	;;"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	;;"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	))
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "bibtex %b"
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        ;;"lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        ;;"lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        ;;"lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        ;;"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        ;;"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        ;;"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        ))
 
-(setq org-latex-logfiles-extensions (quote ("lof" "lot" "tex" "aux" "idx" "log" "out" "toc" "nav" "snm" "vrb" "dvi" "fdb_latexmk" "blg" "brf" "fls" "entoc" "ps" "spl" "bbl" "pygtex" "pygstyle")))
+(setq org-latex-logfiles-extensions
+      '("lof" "lot" "tex" "aux" "idx" "log"
+        "out" "toc" "nav" "snm" "vrb" "dvi"
+        "fdb_latexmk" "blg" "brf" "fls" "entoc"
+        "ps" "spl" "bbl" "pygtex" "pygstyle"))
 
 ;;**
-;;** interpret "_" and "^" for export when braces are used.
+;;*** LaTeX Export Settings
+;;*** interpret "_" and "^" for export when braces are used.
 (setq org-export-with-sub-superscripts '{})
 
 (setq org-latex-default-packages-alist
       '(("AUTO" "inputenc" t)
+        ;; this is for having good fonts
         ("" "lmodern" nil)
+        ;; This is for handling accented characters
         ("T1" "fontenc" t)
-        ("" "fixltx2e" nil)
+        ;; This makes standard margins
+        ("top=1in, bottom=1.in, left=1in, right=1in" "geometry" nil)
         ("" "graphicx" t)
         ("" "longtable" nil)
         ("" "float" nil)
-        ("" "wrapfig" nil)
+        ("" "wrapfig" nil)	  ;makes it possible to wrap text around figures
         ("" "rotating" nil)
         ("normalem" "ulem" t)
+        ;; These provide math symbols
         ("" "amsmath" t)
         ("" "textcomp" t)
         ("" "marvosym" t)
@@ -934,17 +917,25 @@
         ("" "amssymb" t)
         ("" "amsmath" t)
         ("theorems, skins" "tcolorbox" t)
+        ;; used for marking up chemical formulars
         ("version=3" "mhchem" t)
         ("numbers,super,sort&compress" "natbib" nil)
         ("" "natmove" nil)
         ("" "url" nil)
-        ("" "minted" nil)
-        ("" "underscore" nil)
+        ;; this is used for syntax highlighting of code
+        ("cache=false" "minted" nil)
+        ;; this allows you to use underscores in places like filenames. I still
+        ;; wouldn't do it.
+        ("strings" "underscore" nil)
         ("linktocpage,pdfstartview=FitH,colorlinks,
-      linkcolor=blue,anchorcolor=blue,
-      citecolor=blue,filecolor=blue,menucolor=blue,urlcolor=blue"
+linkcolor=blue,anchorcolor=blue,
+citecolor=blue,filecolor=blue,menucolor=blue,urlcolor=blue"
          "hyperref" nil)
-        ("" "attachfile" nil)))
+        ;; enables you to embed files in pdfs
+        ("" "attachfile" nil)
+        ;; set default spacing
+        ("" "setspace" nil)
+        ))
 
 ;; do not put in \hypersetup. Use your own if you want it e.g.
 ;; \hypersetup{pdfkeywords={%s},\n pdfsubject={%s},\n pdfcreator={%}}
@@ -955,7 +946,6 @@
 (setq org-highlight-latex-and-related '(latex script entities))
 (set-face-foreground 'org-latex-and-related "blue")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'org-config)
 
@@ -964,5 +954,4 @@
 ;; mode: emacs-lisp
 ;; byte-compile-warnings: (not cl-functions)
 ;; End:
-
 ;;; org-config.el ends here
