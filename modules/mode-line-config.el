@@ -45,7 +45,7 @@
 
 ;;**
 ;; [set smart-mode-line theme]
-(setq aqua-sml-theme 'dark)
+(setq aqua-sml-theme 'powerline)
 ;; alternative themes available:
 ;; (sml/apply-theme 'powerline)
 ;; (sml/apply-theme 'dark)
