@@ -487,9 +487,8 @@ If interactive and region active or CPOS and CEND are non-nil, use that region."
 (add-hook 'haskell-mode-hook 'dante-mode)
 
 ;;------------------------------------------------------------------------------
-;; EGLOT - Client for LSP Servers
+;; client for LSP Servers
 ;;------------------------------------------------------------------------------
-; (add-to-list 'eglot-server-programs '(haskell-mode . ("ghcide" "--lsp")))
 (setq flymake-no-changes-timeout nil)
 (setq flymake-start-syntax-check-on-newline nil)
 (setq flycheck-check-syntax-automatically '(save mode-enabled))
