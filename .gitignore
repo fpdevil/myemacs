@@ -1,9 +1,10 @@
-./SessionDesktop.el
-./custom-settings.el
-./.dap-breakpoints
-./ac-comphist.dat
-./amx-items
-./places
+!/SessionDesktop.el
+!/custom-settings.el
+!/.dap-breakpoints
+!/ac-comphist.dat
+!/amx-items
+!/places
+
 games/
 *.elc
 .DS_Store
