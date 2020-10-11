@@ -83,13 +83,13 @@
 (put 'evil-ex-history 'history-length 50)
 (put 'kill-ring 'history-length 25)
 
-
+;; aquamacs custom variables
 (setq desktop-path (quote ("~/.emacs.d" "." "~")))
 (setq aquamacs-autosave-directory (expand-file-name "AutoSave" cache-dir))
-;;(setq aquamacs-scratch-file (expand-file-name "scratch buffer" preferences-dir))
+(setq aquamacs-scratch-file (expand-file-name "scratch buffer" preferences-dir))
+(setq ede-simple-save-directory (expand-file-name "EDE" preferences-dir))
 ;;(setq save-frame-position-file (expand-file-name "frame-positions.el" preferences-dir))
 ;;(setq save-place-file (expand-file-name "places.el" preferences-dir))
-;;(setq ede-simple-save-directory (expand-file-name "EDE" preferences-dir))
 
 ;;------------------------------------------------------------------------------
 ;;** save-list-file customizations
@@ -166,7 +166,30 @@
                                               1 font-lock-preprocessor-face prepend)))
                )))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;; buffer menu highlighting
+(setq buffer-menu-buffer-font-lock-keywords
+      '(("^....[*]Man .*Man.*"   . font-lock-variable-name-face) ; Man page
+        (".*Dired.*"             . font-lock-comment-face)       ; Dired
+        ("^....[*]shell.*"       . font-lock-preprocessor-face)  ; shell buff
+        (".*[*]scratch[*].*"     . font-lock-function-name-face) ; scratch buffer
+        ("^....[*].*"            . font-lock-string-face)        ; "*" named buffers
+        ("^..[*].*"              . font-lock-constant-face)      ; Modified
+        ("^.[%].*"               . font-lock-keyword-face)))     ; Read only
+
+(defun buffer-menu-custom-font-lock  ()
+      (let ((font-lock-unfontify-region-function
+             (lambda (start end)
+               (remove-text-properties start end '(font-lock-face nil)))))
+        (font-lock-unfontify-buffer)
+        (set (make-local-variable 'font-lock-defaults)
+             '(buffer-menu-buffer-font-lock-keywords t))
+        (font-lock-fontify-buffer)))
+
+(add-hook 'buffer-menu-mode-hook 'buffer-menu-custom-font-lock)
+
+
 (provide 'aqua-customizations)
 
 ;; Local Variables:
