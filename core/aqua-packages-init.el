@@ -1,4 +1,3 @@
-;; -*- coding: utf-8; lexical-binding: t; -*-
 ;;; package --- package repositories and functions for installing packages
 ;;;
 ;;; Commentary:
@@ -9,7 +8,7 @@
 ;;;              required for installing all the listed and required packages.
 ;;;
 ;;; Code:
-;;; Updated    : 12 Dec 2018
+;;; Updated    : 13 Sep 2020
 ;;;
 
 
@@ -83,14 +82,14 @@
     company-irony                               ;; completion backend for irony-mode
     company-irony-c-headers                     ;; backend for C/C++ header files with irony-mode
     company-c-headers                           ;; auto-completion for C/C++ headers using Company
-    company-tern                                ;; tern backend for company-mode
+    ;;company-tern                              ;; tern backend for company-mode
     company-ghc                                 ;; haskell company auto-completion
     company-ghci                                ;; a company backend for haskell
     company-cabal                               ;; cabal company support
-    company-go                                  ;; Company complete for go
     company-web                                 ;; company backend for ac-html
     company-ycmd                                ;; company mode backend for ycmd
     company-lsp                                 ;; company mode backend for lsp
+    ;;company-go                                ;; Company complete for go
     ;;company-ycm                               ;; Emacs client for the YCM code-completion engine
     ;;;;;; auto-complete family                 ;;;;;;
     auto-complete                               ;; auto completion for gnu emacs
@@ -107,8 +106,10 @@
     ;;;;;; Language Server Protocol             ;;;;;;
     lsp-mode
     lsp-ui
+    lsp-ivy
     lsp-treemacs
-    eglot
+    dap-mode                                    ;; Debug Adapter Procol
+    ;; taken care of in lsp-config.el
     ;;;;;; some utilities                       ;;;;;;
     parent-mode                                 ;; get major mode's parent modes
     ;; exec-path-from-shell                     ;; make Emacs use the $PATH set up by the user's shell
@@ -128,11 +129,11 @@
     helm-flycheck                               ;; show flycheck errors with helm
     flycheck-haskell                            ;; haskell syntax checker
     flycheck-elixir                             ;; flycheck checker for elixir files
-    flycheck-mix                                ;; flycheck elixir mix support
+    ;;flycheck-mix                              ;; flycheck elixir mix support
     flycheck-clojure                            ;; flycheck clojure support
     flycheck-irony                              ;; flycheck c/c++ support via Irony
     flycheck-plantuml                           ;; flycheck for plantuml automatic syntax errors
-    flycheck-rebar3                             ;; flycheck integration for rebar3 projects
+    ;;flycheck-rebar3                           ;; flycheck integration for rebar3 projects
     ;;;;;; spell checking                       ;;;;;;
     flyspell-lazy                               ;; improve Emacs flyspell responsiveness using idle timers
     helm-flyspell                               ;; helm extension for correcting words with flyspell
@@ -154,11 +155,14 @@
     plantuml-mode                               ;; editing PlantUML sources
     latex-pretty-symbols                        ;; unicode display of characters
     org-download                                ;; image drag and drop for org-mode
+    biblio                                      ;; browsing and fetching references
     org-easy-img-insert                         ;; insert images from web
     ob-http                                     ;; make http request within org-mode babel
+    ob-go                                       ;; go babel
+    ;; ob-scala                                 ;; org scala
     epresent                                    ;; simple presentation mode for Emacs Org-mode
     htmlize                                     ;; convert buffer text and decorations to HTML
-    ;;org-bullets                               ;; org mode with bullets
+    org-bullets                                 ;; org mode with bullets
     ;;;;;; git integration                      ;;;;;;
     ;;magit                                     ;; git status
     git-gutter                                  ;; Emacs port of GitGutter
@@ -173,9 +177,9 @@
     pyvenv                                      ;; python virtual environment interface for Emacs
     py-autopep8                                 ;; integrate autopep8 into Emacs
     sphinx-doc                                  ;; sphinx style doc strings for python code
-    pydoc-info                                  ;; better python support for info lookup
     py-isort                                    ;; integrates isort into Emacs
     pyimpsort                                   ;; organize python imports
+    ;;pydoc-info                                ;; better python support for info lookup
     ;;python-pylint                             ;; python linter
     ;;;;;; haskell programming modes            ;;;;;;
     haskell-mode                                ;; haskell language support
@@ -192,15 +196,24 @@
     alchemist                                   ;; elixir tooling integration into Emacs
     ac-alchemist                                ;; auto-complete source for alchemist
     ;;;;;; scala development with ensime        ;;;;;;
-    ensime                                      ;; ENhanced Scala Interaction Mode for Emacs
+    ;;ensime                                    ;; ENhanced Scala Interaction Mode for Emacs
     scala-mode                                  ;; scala
     sbt-mode                                    ;; Emacs mode for interacting with scala sbt and projects
     ;;;;;; go development support               ;;;;;;
     go-mode                                     ;; major mode for go programming
     go-guru                                     ;; go guru analysis tool
     go-eldoc                                    ;; eldoc for go-mode
-    go-autocomplete                             ;; auto completion backend for go
     golint                                      ;; lint for go source
+    go-autocomplete                             ;; auto completion backend for go
+    ;;;;;; rust development support             ;;;;;;
+    rust-mode                                   ;; major mode for rust
+    cargo                                       ;; rust package manager
+    racer                                       ;; support for rust code completion
+    company-racer                               ;; company code completion for rust
+    ac-racer                                    ;; auto complete mode for rust
+    flycheck-rust                               ;; syntax checking for rust
+    toml-mode                                   ;; toml mode file handling
+    ;;rustic                                    ;; add on to rust-mode
     ;;;;;; c/c++ language support               ;;;;;;
     irony                                       ;; a c/c++ minor mode for Emacs powered by libclang
     irony-eldoc                                 ;; eldoc support in irony-mode
@@ -225,7 +238,6 @@
     ;;imenu-list                                ;; show the current buffer's imenu entries
     ;;;;;; essential packs and tools            ;;;;;;
     ecb                                         ;; emacs code browser
-    buffer-move                                 ;; move buffer
     neotree                                     ;; a tree plugin like NerdTree for Vim
     dired-imenu                                 ;; imenu binding for dired mode
     volatile-highlights                         ;; visual feedback on operations
@@ -329,14 +341,16 @@
   '(
     "xslide"                            ;; xml and xslt syntax, customization's
     "xslt-process/lisp"                 ;; xslt processor ide
-    "dircolors"                         ;; colored buffer
     "elisp/elisp-format"                ;; format elisp code
     "elisp/ps2pdf"                      ;; convert ps to pdf
     "psgml"                             ;; markup languages...
     "cpp-addon"                         ;; addon to cc-mode
     "flycheck-google-cpplint"           ;; google c++ style checker for flycheck
     "emacs-clang-complete-async/elisp"
-    "ox-manuscript"
+    "elisp/ox-manuscript"
+    ;;"lsp/eglot"
+    ;;"lsp/elisp-json-rpc"
+    ;;"dircolors"                       ;; colored buffer
     ;;"javascript/node-ac"              ;; node-js auto-complete package
     )
   "Custom load paths that do not follow the normal vendor/elisp/module-name.el format.")
@@ -345,6 +359,7 @@
 ;;** initialize all the defined packages
 ;;----------------------------------------------------------------------------
 (defun initialize-package ()
+  "Initializing the packages."
   (unless nil ;package--initialized
     ;; optimization, no need to activate all the packages so early
     (setq package-enable-at-startup nil)
@@ -395,11 +410,11 @@ But you may use safer HTTPS instead.")
           (org-plus-contrib      . "org")
           (org-download          . "melpa")
           (posframe              . "melpa")
-          (eglot                 . "melpa-stable")
           (jedi                  . "melpa-stable")
           (jedi-core             . "melpa-stable")
           (company-jedi          . "melpa-stable")
           (markdown-mode         . "melpa-stable")
+          (delight               . "gnu")
           (lsp-mode              . "melpa-stable")
           (dap-mode              . "melpa-stable")
           (smart-mode-line       . "melpa")
@@ -411,7 +426,6 @@ But you may use safer HTTPS instead.")
           (web-mode              . "melpa")
           (counsel               . "melpa")
           (which-key             . "melpa"))))
-
 
 (setq package-menu-hide-low-priority t)
 
@@ -479,45 +493,92 @@ FEATURE may be any one of:
            finally (cl-return t)))
 
 ;;--------------------------------------------------------------------------
+;; [straight.el] - package manager bootstrapping straight.el
+;;--------------------------------------------------------------------------
+(unless (featurep 'straight)
+  (defvar bootstrap-version)
+
+  (let ((bootstrap-file (concat user-emacs-directory
+                                "straight/repos/straight.el/bootstrap.el"))
+        (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage)))
+
+;; load the straight.el version of use-package
+(defvar straight-use-package-by-default)
+(straight-use-package 'use-package)
+(setq straight-check-for-modifications '(find-when-checking))
+;; tell straight to use use-package by default
+;; (setq straight-use-package-by-default t)
+(straight-use-package 'use-package)
+
+(if nil                             ; set to t when need to debug init
+    (progn
+      (setq use-package-verbose t
+            use-package-expand-minimally nil
+            use-package-compute-statistics t
+            debug-on-error t)
+      (require 'use-package))
+  (setq use-package-verbose nil
+        use-package-expand-minimally t))
+
+(setq use-package-always-defer t)
+
+;;--------------------------------------------------------------------------
 ;;** [use-package] - AddOn package manager for package installation
 ;;--------------------------------------------------------------------------
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+;; (unless (package-installed-p 'use-package)
+;;   (package-refresh-contents)
+;;   (package-install 'use-package))
 
-(setq use-package-verbose t
-      use-package-always-defer t
-      use-package-always-ensure t
-      use-package-enable-imenu-support t)
+;; (eval-and-compile
+;;   (setq use-package-verbose t)
+;;   (setq use-package-always-defer t)
+;;   (setq use-package-always-ensure t)
+;;   (setq use-package-expand-minimally t)
+;;   (setq use-package-compute-statistics t)
+;;   (setq use-package-enable-imenu-support t))
 
-(eval-when-compile
-  (require 'use-package))
+;; (eval-when-compile
+;;   (require 'use-package))
 
 ;; note on use-package declarations:
 ;;     :init          Code to run BEFORE package has been loaded.
 ;;     :config        Code to run AFTER package has been loaded.
 
+;;----------------------------------------------------------------------------
+;; quelpa package manager for the Emacs
+;;----------------------------------------------------------------------------
+(unless (package-installed-p 'quelpa)
+  (with-temp-buffer
+    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+    (eval-buffer)
+    (quelpa-self-upgrade)))
+
+;; do not update Quelpa or MELPA repo on initialization as it slows down launch time
+(setq quelpa-upgrade-p nil
+      quelpa-update-melpa-p nil)
 
 ;;----------------------------------------------------------------------------
-;; Next-generation, purely functional package manager for the Emacs
+;;** for GC and benchmarking
 ;;----------------------------------------------------------------------------
-;; (defvar bootstrap-version)
-;; (let ((bootstrap-file
-;;        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-;;       (bootstrap-version 5))
-;;   (unless (file-exists-p bootstrap-file)
-;;     (with-current-buffer
-;;         (url-retrieve-synchronously
-;;          "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-;;          'silent 'inhibit-cookies)
-;;       (goto-char (point-max))
-;;       (eval-print-last-sexp)))
-;;   (load bootstrap-file nil 'nomessage))
+(straight-use-package 'gcmh)
+(use-package gcmh
+  :demand t
+  :init
+  (setq gcmh-verbose             t
+        gcmh-lows-cons-threshold #x800000
+        gcmh-high-cons-threshold most-positive-fixnum
+        gcmh-idle-delay          3600)
+  :config
+  (gcmh-mode))
 
-
-;;----------------------------------------------------------------------------
-;;** for benchmarking
-;;----------------------------------------------------------------------------
 (require-package 'benchmark-init)
 (require 'benchmark-init)
 ;; To disable collection of benchmark data after init is done.
@@ -587,28 +648,28 @@ Helpful to get rid of unused packages."
 
 ;;**
 ;;** auto modes for which the packages will be installed
-(autoload-lazy-major-mode "CMakeLists\\.txt'" cmake-mode)
-(autoload-lazy-major-mode "PKGBUILD\\'" pkgbuild-mode)
-(autoload-lazy-major-mode "\\.jl\\'" julia-mode)
-(autoload-lazy-major-mode "\\.vim\\(rc\\)?\\'" vimrc-mode)
-(autoload-lazy-major-mode "\\.csv$" csv-mode)
-(autoload-lazy-major-mode "\\.elm$\\'" elm-mode)
-(autoload-lazy-major-mode "\\.groovy$\\'" groovy-mode)
-(autoload-lazy-major-mode "\\.lua$\\'" lua-mode)
-(autoload-lazy-major-mode "\\.cmake$\\'" cmake-mode)
-(autoload-lazy-major-mode "\\.php$\\'" php-mode)
-(autoload-lazy-major-mode "\\.proto$\\'" protobuf-mode)
-(autoload-lazy-major-mode "\\.rs$\\'" rust-mode)
-(autoload-lazy-major-mode "\\.swift$\\'" swift-mode)
-(autoload-lazy-major-mode "\\.coffee$\\'" coffee-mode)
+(autoload-lazy-major-mode "CMakeLists\\.txt'"   cmake-mode)
+(autoload-lazy-major-mode "PKGBUILD\\'"         pkgbuild-mode)
+(autoload-lazy-major-mode "\\.jl\\'"            julia-mode)
+(autoload-lazy-major-mode "\\.go\\'"            go-mode)
+(autoload-lazy-major-mode "\\.vim\\(rc\\)?\\'"  vimrc-mode)
+(autoload-lazy-major-mode "\\.csv$"             csv-mode)
+(autoload-lazy-major-mode "\\.elm$\\'"          elm-mode)
+(autoload-lazy-major-mode "\\.groovy$\\'"       groovy-mode)
+(autoload-lazy-major-mode "\\.lua$\\'"          lua-mode)
+(autoload-lazy-major-mode "\\.cmake$\\'"        cmake-mode)
+(autoload-lazy-major-mode "\\.php$\\'"          php-mode)
+(autoload-lazy-major-mode "\\.proto$\\'"        protobuf-mode)
+(autoload-lazy-major-mode "\\.rs$\\'"           rust-mode)
+(autoload-lazy-major-mode "\\.swift$\\'"        swift-mode)
+(autoload-lazy-major-mode "\\.coffee$\\'"       coffee-mode)
+(autoload-lazy-major-mode "Dockerfile\\'"       dockerfile-mode)
+(autoload-lazy-major-mode "\\.epub\\'"          nov-mode)
 (autoload-lazy-major-mode "\\.\\(yml\\|yaml\\)$" yaml-mode)
-(autoload-lazy-major-mode "Dockerfile\\'" dockerfile-mode)
-(autoload-lazy-major-mode "\\.epub\\'" nov-mode)
 
 (when (package-installed-p 'pkgbuild-mode)
   (add-to-list 'auto-mode-alist '("PKGBUILD\\'" . pkgbuild-mode)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'aqua-packages-init)
 
 ;; Local Variables:
