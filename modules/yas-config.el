@@ -20,9 +20,11 @@
  (setq yas-indent-line 'auto)
  (setq yas-also-auto-indent-first-line t)
  (setq yas-prompt-functions '(yas/ido-prompt yas/completing-prompt yas/dropdown-prompt))
- (yas-load-directory (concat user-emacs-directory "snippets"))
+
  ;; personal snippets
- ;; (setq yas-snippet-dirs (concat user-emacs-directory "snippets"))
+ (yas/initialize)
+ ;;(yas-load-directory (concat user-emacs-directory "snippets"))
+ (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
 
  (yas-reload-all)
  ;; (yas-global-mode +1)
@@ -53,7 +55,7 @@
 (provide 'yas-config)
 
 ;; Local Variables:
-;; coding: utf-8
+;; coding: utf-8; lexical-binding: t
 ;; mode: emacs-lisp
 ;; End:
 
