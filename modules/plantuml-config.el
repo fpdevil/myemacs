@@ -54,7 +54,7 @@
      (coq        . t)
      (js         . t)
      (emacs-lisp . t)
-     (scala      . t)
+     ;;(scala      . t)
      (js         . t)
      (java       . t)
      (C          . t)
