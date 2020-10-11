@@ -46,7 +46,15 @@
 ;; TeX Completion with Company
 (when (eq dotemacs-completion-engine 'company)
   (require-package 'company-auctex)
-  (add-hook 'LaTeX-mode-hook #'company-auctex-init))
+  ;; (add-hook 'LaTeX-mode-hook #'company-auctex-init)
+  (add-hook 'LaTeX-mode-hook
+            (lambda ()
+              (add-to-list (make-local-variable 'company-backends)
+                           '(company-auctex-labels
+                             company-auctex-bibs
+                             company-auctex-macros
+                             company-auctex-symbols
+                             company-auctex-environments)))))
 
 ;;
 ;; TeX Cmpletion with Auto-Complete
@@ -245,7 +253,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; interpret "_" and "^" for export when braces are used
 (setq org-export-with-sub-superscripts '{})
-
 (setq org-latex-default-packages-alist
       '(("AUTO" "inputenc" t)
         ("" "lmodern" nil)
@@ -278,7 +285,6 @@ citecolor=blue,filecolor=blue,menucolor=blue,urlcolor=blue"
 ;; do not put in \hypersetup. Use your own if you want it e.g.
 ;; \hypersetup{pdfkeywords={%s},\n pdfsubject={%s},\n pdfcreator={%}}
 (setq org-latex-with-hyperref nil)
-
 (setq org-export-latex-listings t)
 
 ;; avoid getting \maketitle right after begin{document}
@@ -306,6 +312,7 @@ citecolor=blue,filecolor=blue,menucolor=blue,urlcolor=blue"
   )
 
 (add-hook 'org-export-latex-after-initial-vars-hook 'my-auto-tex-cmd)
+
 ;; Default packages included in every tex file, pdflatex or xelatex
 (setq org-export-latex-packages-alist
       '(
@@ -321,33 +328,33 @@ citecolor=blue,filecolor=blue,menucolor=blue,urlcolor=blue"
   ;; default packages for ordinary latex or pdflatex export
   (setq org-export-latex-default-packages-alist
         '(("AUTO" "inputenc" t)
-          ("T1"   "fontenc"   t)
-          (""     "fixltx2e"  nil)
-          (""     "wrapfig"   nil)
-          (""     "soul"      t)
-          (""     "textcomp"  t)
-          (""     "marvosym"  t)
-          (""     "wasysym"   t)
-          (""     "latexsym"  t)
-          (""     "amssymb"   t)
-          (""     "hyperref"  nil)))
+          ("T1"   "fontenc"  t)
+          (""     "fixltx2e" nil)
+          (""     "wrapfig"  nil)
+          (""     "soul"     t)
+          (""     "textcomp" t)
+          (""     "marvosym" t)
+          (""     "wasysym"  t)
+          (""     "latexsym" t)
+          (""     "amssymb"  t)
+          (""     "hyperref" nil)))
 
   ;; Packages to include when xelatex is used
   ;; (see https://github.com/kjhealy/latex-custom-kjh for the
   ;; non-standard ones.)
   (if (string-match "LATEX_CMD: xelatex" (buffer-string))
       (setq org-export-latex-default-packages-alist
-            '(("" "fontspec" t)
-              ("" "xunicode" t)
-              ("" "url" t)
-              ("" "rotating" t)
-              ("" "memoir-article-styles" t)
-              ("american" "babel" t)
-              ("babel" "csquotes" t)
-              ("" "listings" nil)
+            '(("" "fontspec"               t)
+              ("" "xunicode"               t)
+              ("" "url"                    t)
+              ("" "rotating"               t)
+              ("" "memoir-article-styles"  t)
+              ("american" "babel"          t)
+              ("babel" "csquotes"          t)
+              ("svgnames" "xcolor"         t)
+              ("" "soul"                   t)
+              ("" "listings"                nil)
               ("" "listings-sweave-xelatex" nil)
-              ("svgnames" "xcolor" t)
-              ("" "soul" t)
               ("xetex, colorlinks=true, urlcolor=FireBrick, plainpages=false, pdfpagelabels, bookmarksnumbered" "hyperref" nil)
               )))
 
@@ -395,10 +402,10 @@ citecolor=blue,filecolor=blue,menucolor=blue,urlcolor=blue"
   (list "pdflatex"
         (list "-file-line-error" "-draftmode" "-interaction=nonstopmode" file-name)))
 
-(add-hook 'LaTeX-mode-hook 'flymake-mode)
+;; (add-hook 'LaTeX-mode-hook 'flymake-mode)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;
 (provide 'tex-config)
 
 ;; Local Variables:
