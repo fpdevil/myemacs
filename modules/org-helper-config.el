@@ -56,17 +56,6 @@
  'append)
 
 ;;------------------------------------------------------------------------------
-;; for lists (https://orgmode.org/manual/Plain-lists.html)
-;; If you  find that using a  different bullet for a  sub-list (than that
-;; used for  the current list-level) improves  readability, customize the
-;; variable org-list-demote-modify-bullet
-;;------------------------------------------------------------------------------
-(setq org-list-demote-modify-bullet (quote (("+" . "-")
-					    ("*" . "-")
-					    ("1." . "-")
-					    ("1)" . "a)"))))
-
-;;------------------------------------------------------------------------------
 ;; adjust scale of formulas or preview objects change value of scale to 2.0
 ;;------------------------------------------------------------------------------
 (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
@@ -75,9 +64,10 @@
 ;; org agenda files
 ;;-----------------------------------------------------------------------------
 (setq org-directory (expand-file-name "org" personal-dir))
-(setq org-agenda-files (list (expand-file-name "home.org" org-directory)
-			     			 (expand-file-name "python.org" org-directory)
-			     			 (expand-file-name "todo.org" org-directory))
+(setq org-agenda-files
+      (list (expand-file-name "home.org" org-directory)
+            (expand-file-name "python.org" org-directory)
+            (expand-file-name "todo.org" org-directory))
       org-agenda-include-all-todo t
       org-agenda-include-diary t
       org-agenda-inhibit-startup t                ;; this speeds up by ~50x
@@ -89,9 +79,10 @@
 ;; to the agenda - up to 5 levels deep
 ;;-----------------------------------------------------------------------------
 (setq org-refile-targets
-      (quote ((nil :maxlevel . 5) (org-agenda-files :maxlevel . 5))))
+      '((nil :maxlevel . 5)
+        (org-agenda-files :maxlevel . 5)))
 ;; Targets start with the file name - allows creating level 1 tasks
-(setq org-refile-use-outline-path (quote file))
+(setq org-refile-use-outline-path 'file)
 ;; Targets complete in steps so we start with filename, TAB
 ;; shows the next level of targets etc
 (setq org-outline-path-complete-in-steps t)
@@ -182,48 +173,81 @@
 ;;-----------------------------------------------------------------------------
 ;; pdf tools for viewing and interacting with pdf
 ;;-----------------------------------------------------------------------------
-(setenv "PKG_CONFIG_PATH"
-        (concat (shell-command-to-string "printf %s \"$(brew --prefix libffi)\"") "/lib/pkgconfig/"))
+;; (setenv "PKG_CONFIG_PATH"
+;;         (concat (shell-command-to-string "printf %s \"$(brew --prefix libffi)\"") "/lib/pkgconfig/"))
+;; (getenv "PKG_CONFIG_PATH")
+
+(if (string-equal system-type "darwin")
+    (setenv "PKG_CONFIG_PATH"
+            (concat (shell-command-to-string "printf %s \"$(brew --prefix libffi)\"") "/lib/pkgconfig/")
+            (getenv "PKG_CONFIG_PATH")))
+
 (use-package pdf-tools
   :defer t
+  :functions (pdf-view-revert-buffer-maybe pdf-view-revert-buffer)
+  :mode (("\\.pdf\\'" . pdf-view-mode))
+  :magic ("%PDF" . pdf-view-mode)
   :config
-  (pdf-tools-install)
+  (pdf-tools-install :no-query)
+  (add-hook 'doc-view-mode-hook 'pdf-tools-install)
   ;; open pdfs scaled to the fit page
   (setq-default pdf-view-display-size 'fit-page)
   ;; auto annotate highlights
-  (setq pdf-annot-activate-created-annotations t)
+  (require 'pdf-annot)
+  ;; (setq pdf-annot-activate-created-annotations t)
+  (setq pdf-annot-default-annotation-properties
+        `((t (label . ,user-full-name))
+          (text (icon . "Comment")
+                (color . "#ff0000"))
+          (highlight (color . "yellow"))
+          (squiggly (color . "orange"))
+          (strike-out(color . "red"))
+          (underline (color . "blue"))))
   ;; use regular isearch
-  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+  ;; (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
   (setq mouse-wheel-follow-mouse t)
   ;;  more fine grained zooming with + and - than the default 25%, now 10%
   (setq pdf-view-resize-factor 1.10)
   ;; cua mode interferes with copying text from pdf
-  (add-hook 'pdf-view-mode-hook (lambda () (cua-mode 0))))
+  ;; turn it off so that copy works
+  (add-hook 'pdf-view-mode-hook (lambda () (cua-mode 0)))
+  (add-hook 'pdf-view-mode-hook #'pdf-tools-enable-minor-modes)
+  (add-hook 'pdf-view-mode-hook #'pdf-sync-minor-mode)
+  (add-hook 'pdf-view-mode-hook #'pdf-links-minor-mode)
+
+    (defun pdf-view-revert-buffer-maybe (file)
+      (when-let ((buf (find-buffer-visiting file)))
+        (with-current-buffer buf
+          (when (derived-mode-p 'pdf-view-mode)
+            (pdf-view-revert-buffer nil t))))))
+
+
+;; a custom org link type for pdf-tools
+(use-package org-pdftools
+  :hook (org-load . org-pdftools-setup-link))
+
+(use-package org-noter-pdftools
+  :after org-noter
+  :config
+  (with-eval-after-load 'pdf-annot
+    (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
 
 
 ;;-----------------------------------------------------------------------------
 ;; org-mode modules for citations, cross-references, bibliographies in the
 ;; org-mode and useful bibtex tools to go with it
+;; reftex:
+;; https://tincman.wordpress.com/2011/01/04/
+;;         research-paper-management-with-emacs-org-mode-and-reftex/
 ;;-----------------------------------------------------------------------------
-(use-package org-ref
-  :ensure t
-  :init
-  (setq reftex-default-bibliography '("~/.emacs.d/personal/org/resources/bibliography/references.bib")
-        org-ref-bibliography-notes '("~/.emacs.d/personal/org/resources/bibliography/notes.org")
-        org-ref-default-bibliography '("~/.emacs.d/personal/org/resources/bibliography/references.bib")
-        org-ref-pdf-directory '("~/.emacs.d/personal/org/resources/bibliography/bibtex-pdfs/")
-        bibtex-autokey-year-length 4
-        bibtex-autokey-name-year-separator "-"
-        bibtex-autokey-year-title-separator "-"
-        bibtex-autokey-titleword-separator "-"
-        bibtex-autokey-titlewords 2
-        bibtex-autokey-titlewords-stretch 1
-        bibtex-autokey-titleword-length 5
-        org-ref-bibtex-hydra-key-binding (kbd "H-b"))
-  ;; (define-key bibtex-mode-map org-ref-bibtex-hydra-key-binding 'org-ref-bibtex-hydra/body)
-  ;; (global-set-key (kbd "H-b") 'org-ref-bibtex-hydra/body)
-  )
+(quelpa '(org-ref :fetcher git :url "https://github.com/jkitchin/org-ref.git"))
+(require 'org-ref)
+(require 'reftex)
+(setq org-ref-default-citation-link "citep")
+(setq org-ref-insert-cite-key "C-c )")
 
+;; for getting toprule and bottomrule
+(setq org-latex-caption-above '(image table special-block))
 
 ;; various functions useful for bibliography management
 (defun my-bibliography-selector-hook (backend)
@@ -243,23 +267,6 @@
 
 (add-hook 'org-export-before-parsing-hook 'my-bibliography-selector-hook)
 
-(require 'reftex)
-(require-package 'bibretrieve)
-(setq bibretrieve-backends '(("citebase" . 10) ("mrl" . 10) ("arxiv" . 5) ("zbm" . 5)))
-
-(defun bibretrieve-amazon-create-url (author title)
-  (concat "http://lead.to/amazon/en/?key="(mm-url-form-encode-xwfu title) "&si=ble&op=bt&bn=&so=sa&ht=us"))
-
-(defun bibretrieve-amazon ()
-  (interactive)
-  (setq mm-url-use-external t)
-  (setq mm-url-program "w3m")
-  (setq mm-url-arguments (list "-dump"))
-  (setq bibretrieve-backends '(("amazon" . 5)))
-  (bibretrieve)
-  (setq mm-url-use-external nil))
-
-
 ;;-----------------------------------------------------------------------------
 ;;** allow for export=>beamer by placing
 ;;   http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-mode-and.html
@@ -269,9 +276,9 @@
 (unless (boundp 'org-export-latex-classes)
   (setq org-export-latex-classes nil))
 (add-to-list 'org-export-latex-classes
-	     ;; beamer class, for presentations
-	     '("beamer"
-	       "\\documentclass[11pt,professionalfonts]{beamer}\n
+             ;; beamer class, for presentations
+             '("beamer"
+               "\\documentclass[11pt,professionalfonts]{beamer}\n
       \\mode<{{{beamermode}}}>\n
       \\usetheme{{{{beamertheme}}}}\n
       \\usecolortheme{{{{beamercolortheme}}}}\n
@@ -309,11 +316,11 @@
       \\usepackage{verbatim}\n
       \\institute{{{{beamerinstitute}}}}\n
        \\subject{{{{beamersubject}}}}\n"
-	       ("\\section{%s}" . "\\section*{%s}")
-	       ("\\begin{frame}[fragile]\\frametitle{%s}"
-		"\\end{frame}"
-		"\\begin{frame}[fragile]\\frametitle{%s}"
-		"\\end{frame}")))
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\begin{frame}[fragile]\\frametitle{%s}"
+                "\\end{frame}"
+                "\\begin{frame}[fragile]\\frametitle{%s}"
+                "\\end{frame}")))
 
 ;; letter class, for formal letters
 (add-to-list 'org-export-latex-classes
@@ -365,15 +372,6 @@
    (add-hook 'org-mode-hook 'wrap-region-mode)
    (add-hook 'latex-mode-hook 'wrap-region-mode)))
 
-
-;;-----------------------------------------------------------------------------
-;; utilities to export scientific manuscripts
-;;-----------------------------------------------------------------------------
-;; (use-package ox-manuscript
-;;   :after org
-;;   :ensure t
-;;   :load-path (lambda () (expand-file-name "ox-manuscript" vendor-dir)))
-
 ;;-----------------------------------------------------------------------------
 ;;** swagger file to org
 ;; M-x swagger-to-org-from-file-name
@@ -416,7 +414,7 @@
 ;;** reformat the buffer
 ;;-----------------------------------------------------------------------------
 (defun org-reformat-buffer ()
-  ("Reformat the org buffer.")
+  "Reformat the org buffer."
   (interactive)
   (when (y-or-n-p "Dow you really want to format current buffer? ")
     (let ((document (org-element-interpret-data (org-element-parse-buffer))))
