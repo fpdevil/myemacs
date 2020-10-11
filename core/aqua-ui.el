@@ -49,8 +49,9 @@
 
 ;;**  add a proper word wrapping
 ;;*** enable visual wordwrap in every text-mode (which includes org-mode)
-(global-visual-line-mode)
-(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+;; how long lines are handled, this appears to wrap long lines visually,
+;; but not add line-returns
+(global-visual-line-mode 1)
 
 ;;** additional mode line settings
 (line-number-mode 1)
@@ -60,7 +61,6 @@
 ;;** for pdf viewing
 (setq doc-view-continuous t)
 
-;;**
 ;;** display settings
 ;; no mode-specific faces, everything in Monaco
 (when (boundp 'aquamacs-version)
@@ -105,13 +105,21 @@
                       :height (* 10 size))
   (frame-parameter nil 'font))
 
+;;** set font and settings if for Aquamacs
 (when (boundp 'aquamacs-version)
   (aquamacs-autoface-mode 0)
-  ;; anti-aliasing
-  (setq mac-allow-anti-aliasing t)
+  (setq mac-allow-anti-aliasing t)      ; anti-aliasing
   (setq ns-use-srgb-colorspace nil)
-  ;; disable bold fonts
-  (set-face-bold 'bold nil)
+  (set-face-bold 'bold nil)             ; disable bold fonts
+  ;; (aqua/set-mac-font "Source Code Pro for Powerline" 14)
+  (aqua/set-mac-font "Monaco for Powerline" 14))
+
+;;** set font if for Emacs
+(when (boundp 'emacs-version)
+  (setq mac-allow-anti-aliasing t)      ; anti-aliasing
+  (setq ns-use-srgb-colorspace nil)
+  (set-face-bold 'bold nil)             ; disable bold fonts
+  ;; (aqua/set-mac-font "Monaco for Powerline" 14)
   (aqua/set-mac-font "Monaco for Powerline" 14))
 
 ;;** for Emoji fontset
@@ -119,13 +127,12 @@
                   (font-spec :family "Apple Color Emoji")
                   nil 'prepend)
 
-
 ;;** change the starup message in the echo area
 (defun display-startup-echo-area-message ()
   "Startup echo message."
   (message "Let the hacking begin!"))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (provide 'aqua-ui)
 
 ;; Local Variables:
