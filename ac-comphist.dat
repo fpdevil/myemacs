@@ -1,0 +1,16 @@
+((("light" .
+   [1 0 0 0 0])
+  ("sysroot" .
+   [1 0 0 0 0 0 0])
+  ("shell-command-to-string" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1])
+  ("concat" .
+   [1 0 0 0 0 0])
+  ("racer-rust-src-path" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1])
+  ("setq" .
+   [1 0 0 0])
+  ("shell-command" .
+   [0 0 0 0 0 0 0 0 1 0 0 0 0])
+  ("powerline" .
+   [1 0 0 0 0 0 0 0 0])))
