@@ -114,14 +114,14 @@
 
 ;;**
 ;;** python documentation under symbols pydoc-info
-(require 'pydoc-info)
-(pydoc-info-add-help '("python" "sphinx"))
-(info-lookup-add-help
- :mode 'python-mode
- :parse-rule 'pydoc-info-python-symbol-at-point
- :doc-spec
- '(("(python)Index" pydoc-info-lookup-transform-entry)
-   ("(TARGETNAME)Index" pydoc-info-lookup-transform-entry)))
+; (require 'pydoc-info)
+; (pydoc-info-add-help '("python" "sphinx"))
+; (info-lookup-add-help
+;  :mode 'python-mode
+;  :parse-rule 'pydoc-info-python-symbol-at-point
+;  :doc-spec
+;  '(("(python)Index" pydoc-info-lookup-transform-entry)
+;    ("(TARGETNAME)Index" pydoc-info-lookup-transform-entry)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; python linting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
