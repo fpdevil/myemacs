@@ -35,15 +35,13 @@
   (mapc #'disable-theme custom-enabled-themes))
 
 
-;; with this setting all themes are safe to me
-(setq custom-safe-themes t)
+(setq custom-safe-themes t)       ; with this setting all themes are safe to me
 
 ;;----------------------------------------------------------------------------
-;; adapted from the prelude
-;; If you don't customize it, this is the theme you get.
+;; adapted from the prelude - without customization, this is the theme you get.
 ;;----------------------------------------------------------------------------
 (setq-default custom-enabled-themes '(
-                                      doom-one-light
+                                      doom-acario-light
                                       ;;sanityinc-tomorrow-day
                                       ;;solarized-wombat-dark
                                       ))
@@ -136,10 +134,12 @@
   (load-theme 'spacemacs-dark t))
 
 ;;-----------------------------------------------------------------------------
-;; enable moe's theme
-;; automatically switch colors between dark and light based on the system time
+;; enable moe's theme - automatically switch colors between dark and
+;; light based on the system time
 ;;-----------------------------------------------------------------------------
 ;; (require 'moe-theme-switcher)
+;; (add-hook 'after-init-hook 'moe)
+
 (defun moe ()
   "Activate moe light theme."
   (interactive)
@@ -152,11 +152,10 @@
         moe-theme-resize-rst-title '(1.5 1.4 1.3 1.2 1.1 1.0))
   (moe-theme-set-color 'orange)
   (moe-light))
-;;(add-hook 'after-init-hook 'moe)
 
-;;;;;;;;;;;;;;;;;;;;;;; color theme configuration end ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'themes-config)
+
 ;; Local Variables:
 ;; coding: utf-8
 ;; mode: emacs-lisp
